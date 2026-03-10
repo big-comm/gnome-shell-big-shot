@@ -16,6 +16,18 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: attranslate\n"
 #: NEEDS WORK
+msgid "Screenshot taken"
+msgstr "Kuvakaader tehtud"
+#: NEEDS WORK
+msgid "Screenshots"
+msgstr "Kuvapildid"
+#: NEEDS WORK
+msgid "Screenshot from %s"
+msgstr "Kuvakaader %s-st"
+#: NEEDS WORK
+msgid "Drawing canvas"
+msgstr "Joonistuslina"
+#: NEEDS WORK
 msgid "Text…"
 msgstr "Tekst…"
 #: NEEDS WORK
@@ -25,29 +37,26 @@ msgstr "Annotatsiooni tekst"
 msgid "Confirm"
 msgstr "Kinnita"
 #: NEEDS WORK
-msgid "Desktop Audio"
-msgstr "Töölaua heli"
-#: NEEDS WORK
-msgid "Record Desktop Audio"
-msgstr "Salvestage töölaua heli"
-#: NEEDS WORK
-msgid "Microphone"
-msgstr "Mikrofon"
-#: NEEDS WORK
-msgid "Record Microphone"
-msgstr "Salvesta mikrofon"
-#: NEEDS WORK
 msgid "Desktop"
 msgstr "Töölaua"
 #: NEEDS WORK
 msgid "Mic"
 msgstr "Mikrofon"
 #: NEEDS WORK
+msgid "Record Desktop Audio"
+msgstr "Salvestage töölaua heli"
+#: NEEDS WORK
+msgid "Record Microphone"
+msgstr "Salvesta mikrofon"
+#: NEEDS WORK
 msgid "Gradient Angle"
 msgstr "Gradienti nurk"
 #: NEEDS WORK
 msgid "Border Radius"
 msgstr "Serva raadius"
+#: NEEDS WORK
+msgid "Select / Move"
+msgstr "Vali / Liiguta"
 #: NEEDS WORK
 msgid "Pen"
 msgstr "Pliiats"
@@ -73,23 +82,17 @@ msgstr "Markija"
 msgid "Censor"
 msgstr "Tsenseerida"
 #: NEEDS WORK
+msgid "Blur"
+msgstr "Hägu"
+#: NEEDS WORK
 msgid "Number"
 msgstr "Number"
 #: NEEDS WORK
-msgid "Background"
-msgstr "Taust"
+msgid "Color"
+msgstr "Värv"
 #: NEEDS WORK
-msgid "Crop"
-msgstr "Kärpimine"
-#: NEEDS WORK
-msgid "Padding"
-msgstr "Padding"
-#: NEEDS WORK
-msgid "Stroke Color"
-msgstr "Joonte värv"
-#: NEEDS WORK
-msgid "Fill Color"
-msgstr "Täitevärv"
+msgid "Fill"
+msgstr "Täida"
 #: NEEDS WORK
 msgid "Brush Size"
 msgstr "Harja suurus"
@@ -99,6 +102,12 @@ msgstr "Tagasi võtta"
 #: NEEDS WORK
 msgid "Redo"
 msgstr "Korda tagasi"
+#: NEEDS WORK
+msgid "Edit"
+msgstr "Redigeeri"
+#: NEEDS WORK
+msgid "Custom"
+msgstr "Kohandatud"
 #: NEEDS WORK
 msgid "No Fill"
 msgstr "Ei täitmist"

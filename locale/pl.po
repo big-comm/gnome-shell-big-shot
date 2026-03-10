@@ -16,6 +16,18 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: attranslate\n"
 #: NEEDS WORK
+msgid "Screenshot taken"
+msgstr "Zrzut ekranu wykonany"
+#: NEEDS WORK
+msgid "Screenshots"
+msgstr "Zrzuty ekranu"
+#: NEEDS WORK
+msgid "Screenshot from %s"
+msgstr "Zrzut ekranu z %s"
+#: NEEDS WORK
+msgid "Drawing canvas"
+msgstr "Płótno rysunkowe"
+#: NEEDS WORK
 msgid "Text…"
 msgstr "Tekst…"
 #: NEEDS WORK
@@ -25,29 +37,26 @@ msgstr "Tekst adnotacji"
 msgid "Confirm"
 msgstr "Potwierdź"
 #: NEEDS WORK
-msgid "Desktop Audio"
-msgstr "Audio pulpitu"
-#: NEEDS WORK
-msgid "Record Desktop Audio"
-msgstr "Nagrywaj dźwięk z pulpitu"
-#: NEEDS WORK
-msgid "Microphone"
-msgstr "Mikrofon"
-#: NEEDS WORK
-msgid "Record Microphone"
-msgstr "Nagrywanie mikrofonu"
-#: NEEDS WORK
 msgid "Desktop"
 msgstr "Pulpit"
 #: NEEDS WORK
 msgid "Mic"
 msgstr "Mikrofon"
 #: NEEDS WORK
+msgid "Record Desktop Audio"
+msgstr "Nagrywaj dźwięk z pulpitu"
+#: NEEDS WORK
+msgid "Record Microphone"
+msgstr "Nagrywanie mikrofonu"
+#: NEEDS WORK
 msgid "Gradient Angle"
 msgstr "Kąt gradientu"
 #: NEEDS WORK
 msgid "Border Radius"
 msgstr "Promień obramowania"
+#: NEEDS WORK
+msgid "Select / Move"
+msgstr "Wybierz / Przenieś"
 #: NEEDS WORK
 msgid "Pen"
 msgstr "Pióro"
@@ -73,23 +82,17 @@ msgstr "Podświetlacz"
 msgid "Censor"
 msgstr "Cenzor"
 #: NEEDS WORK
+msgid "Blur"
+msgstr "Rozmycie"
+#: NEEDS WORK
 msgid "Number"
 msgstr "Numer"
 #: NEEDS WORK
-msgid "Background"
-msgstr "Tło"
+msgid "Color"
+msgstr "Kolor"
 #: NEEDS WORK
-msgid "Crop"
-msgstr "Przytnij"
-#: NEEDS WORK
-msgid "Padding"
-msgstr "Wypełnienie"
-#: NEEDS WORK
-msgid "Stroke Color"
-msgstr "Kolor konturu"
-#: NEEDS WORK
-msgid "Fill Color"
-msgstr "Kolor wypełnienia"
+msgid "Fill"
+msgstr "Wypełnij"
 #: NEEDS WORK
 msgid "Brush Size"
 msgstr "Rozmiar pędzla"
@@ -99,6 +102,12 @@ msgstr "Cofnij"
 #: NEEDS WORK
 msgid "Redo"
 msgstr "Ponów"
+#: NEEDS WORK
+msgid "Edit"
+msgstr "Edytuj"
+#: NEEDS WORK
+msgid "Custom"
+msgstr "Niestandardowy"
 #: NEEDS WORK
 msgid "No Fill"
 msgstr "Brak wypełnienia"

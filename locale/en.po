@@ -15,6 +15,18 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+msgid "Screenshot taken"
+msgstr "Screenshot taken"
+
+msgid "Screenshots"
+msgstr "Screenshots"
+
+msgid "Screenshot from %s"
+msgstr "Screenshot from %s"
+
+msgid "Drawing canvas"
+msgstr "Drawing canvas"
+
 msgid "Text…"
 msgstr "Text…"
 
@@ -24,29 +36,26 @@ msgstr "Annotation text"
 msgid "Confirm"
 msgstr "Confirm"
 
-msgid "Desktop Audio"
-msgstr "Desktop Audio"
-
-msgid "Record Desktop Audio"
-msgstr "Record Desktop Audio"
-
-msgid "Microphone"
-msgstr "Microphone"
-
-msgid "Record Microphone"
-msgstr "Record Microphone"
-
 msgid "Desktop"
 msgstr "Desktop"
 
 msgid "Mic"
 msgstr "Mic"
 
+msgid "Record Desktop Audio"
+msgstr "Record Desktop Audio"
+
+msgid "Record Microphone"
+msgstr "Record Microphone"
+
 msgid "Gradient Angle"
 msgstr "Gradient Angle"
 
 msgid "Border Radius"
 msgstr "Border Radius"
+
+msgid "Select / Move"
+msgstr "Select / Move"
 
 msgid "Pen"
 msgstr "Pen"
@@ -72,23 +81,17 @@ msgstr "Highlighter"
 msgid "Censor"
 msgstr "Censor"
 
+msgid "Blur"
+msgstr "Blur"
+
 msgid "Number"
 msgstr "Number"
 
-msgid "Background"
-msgstr "Background"
+msgid "Color"
+msgstr "Color"
 
-msgid "Crop"
-msgstr "Crop"
-
-msgid "Padding"
-msgstr "Padding"
-
-msgid "Stroke Color"
-msgstr "Stroke Color"
-
-msgid "Fill Color"
-msgstr "Fill Color"
+msgid "Fill"
+msgstr "Fill"
 
 msgid "Brush Size"
 msgstr "Brush Size"
@@ -98,6 +101,12 @@ msgstr "Undo"
 
 msgid "Redo"
 msgstr "Redo"
+
+msgid "Edit"
+msgstr "Edit"
+
+msgid "Custom"
+msgstr "Custom"
 
 msgid "No Fill"
 msgstr "No Fill"

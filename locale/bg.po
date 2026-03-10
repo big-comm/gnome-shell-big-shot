@@ -16,6 +16,18 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: attranslate\n"
 #: NEEDS WORK
+msgid "Screenshot taken"
+msgstr "Скриншот направен"
+#: NEEDS WORK
+msgid "Screenshots"
+msgstr "Снимки на екрана"
+#: NEEDS WORK
+msgid "Screenshot from %s"
+msgstr "Скриншот от %s"
+#: NEEDS WORK
+msgid "Drawing canvas"
+msgstr "Рисувателна платформа"
+#: NEEDS WORK
 msgid "Text…"
 msgstr "Текст…"
 #: NEEDS WORK
@@ -25,29 +37,26 @@ msgstr "Текст на анотация"
 msgid "Confirm"
 msgstr "Потвърдете"
 #: NEEDS WORK
-msgid "Desktop Audio"
-msgstr "Десктоп Аудио"
-#: NEEDS WORK
-msgid "Record Desktop Audio"
-msgstr "Запис на настолен звук"
-#: NEEDS WORK
-msgid "Microphone"
-msgstr "Микрофон"
-#: NEEDS WORK
-msgid "Record Microphone"
-msgstr "Запис на микрофон"
-#: NEEDS WORK
 msgid "Desktop"
 msgstr "Работен плот"
 #: NEEDS WORK
 msgid "Mic"
 msgstr "Микрофон"
 #: NEEDS WORK
+msgid "Record Desktop Audio"
+msgstr "Запис на настолен звук"
+#: NEEDS WORK
+msgid "Record Microphone"
+msgstr "Запис на микрофон"
+#: NEEDS WORK
 msgid "Gradient Angle"
 msgstr "Ъгъл на градиента"
 #: NEEDS WORK
 msgid "Border Radius"
 msgstr "Радиус на границата"
+#: NEEDS WORK
+msgid "Select / Move"
+msgstr "Избор / Преместване"
 #: NEEDS WORK
 msgid "Pen"
 msgstr "Писалка"
@@ -73,23 +82,17 @@ msgstr "Маркер"
 msgid "Censor"
 msgstr "Цензор"
 #: NEEDS WORK
+msgid "Blur"
+msgstr "Замъгляване"
+#: NEEDS WORK
 msgid "Number"
 msgstr "Номер"
 #: NEEDS WORK
-msgid "Background"
-msgstr "Фон"
+msgid "Color"
+msgstr "Цвят"
 #: NEEDS WORK
-msgid "Crop"
-msgstr "Изрежи"
-#: NEEDS WORK
-msgid "Padding"
-msgstr "Падинг"
-#: NEEDS WORK
-msgid "Stroke Color"
-msgstr "Цвят на контур"
-#: NEEDS WORK
-msgid "Fill Color"
-msgstr "Цвят на запълване"
+msgid "Fill"
+msgstr "Запълване"
 #: NEEDS WORK
 msgid "Brush Size"
 msgstr "Размер на четката"
@@ -99,6 +102,12 @@ msgstr "Отмяна"
 #: NEEDS WORK
 msgid "Redo"
 msgstr "Повтори"
+#: NEEDS WORK
+msgid "Edit"
+msgstr "Редактиране"
+#: NEEDS WORK
+msgid "Custom"
+msgstr "Персонализиран"
 #: NEEDS WORK
 msgid "No Fill"
 msgstr "Без запълване"

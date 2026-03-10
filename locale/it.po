@@ -16,6 +16,18 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: attranslate\n"
 #: NEEDS WORK
+msgid "Screenshot taken"
+msgstr "Screenshot acquisito"
+#: NEEDS WORK
+msgid "Screenshots"
+msgstr "Screenshot"
+#: NEEDS WORK
+msgid "Screenshot from %s"
+msgstr "Screenshot da %s"
+#: NEEDS WORK
+msgid "Drawing canvas"
+msgstr "Tavola da disegno"
+#: NEEDS WORK
 msgid "Text…"
 msgstr "Testo…"
 #: NEEDS WORK
@@ -25,29 +37,26 @@ msgstr "Testo di annotazione"
 msgid "Confirm"
 msgstr "Conferma"
 #: NEEDS WORK
-msgid "Desktop Audio"
-msgstr "Audio del desktop"
-#: NEEDS WORK
-msgid "Record Desktop Audio"
-msgstr "Registra audio del desktop"
-#: NEEDS WORK
-msgid "Microphone"
-msgstr "Microfono"
-#: NEEDS WORK
-msgid "Record Microphone"
-msgstr "Registra Microfono"
-#: NEEDS WORK
 msgid "Desktop"
 msgstr "Desktop"
 #: NEEDS WORK
 msgid "Mic"
 msgstr "Microfono"
 #: NEEDS WORK
+msgid "Record Desktop Audio"
+msgstr "Registra audio del desktop"
+#: NEEDS WORK
+msgid "Record Microphone"
+msgstr "Registra Microfono"
+#: NEEDS WORK
 msgid "Gradient Angle"
 msgstr "Angolo di Gradiente"
 #: NEEDS WORK
 msgid "Border Radius"
 msgstr "Raggio del bordo"
+#: NEEDS WORK
+msgid "Select / Move"
+msgstr "Seleziona / Sposta"
 #: NEEDS WORK
 msgid "Pen"
 msgstr "Penna"
@@ -73,23 +82,17 @@ msgstr "Evidenziatore"
 msgid "Censor"
 msgstr "Censore"
 #: NEEDS WORK
+msgid "Blur"
+msgstr "Sfocatura"
+#: NEEDS WORK
 msgid "Number"
 msgstr "Numero"
 #: NEEDS WORK
-msgid "Background"
-msgstr "Sfondo"
+msgid "Color"
+msgstr "Colore"
 #: NEEDS WORK
-msgid "Crop"
-msgstr "Ritaglia"
-#: NEEDS WORK
-msgid "Padding"
-msgstr "Padding"
-#: NEEDS WORK
-msgid "Stroke Color"
-msgstr "Colore del tratto"
-#: NEEDS WORK
-msgid "Fill Color"
-msgstr "Colore di riempimento"
+msgid "Fill"
+msgstr "Riempi"
 #: NEEDS WORK
 msgid "Brush Size"
 msgstr "Dimensione Pennello"
@@ -99,6 +102,12 @@ msgstr "Annulla"
 #: NEEDS WORK
 msgid "Redo"
 msgstr "Ripeti"
+#: NEEDS WORK
+msgid "Edit"
+msgstr "Modifica"
+#: NEEDS WORK
+msgid "Custom"
+msgstr "Personalizzato"
 #: NEEDS WORK
 msgid "No Fill"
 msgstr "Nessun riempimento"

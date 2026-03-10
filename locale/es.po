@@ -16,6 +16,18 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: attranslate\n"
 #: NEEDS WORK
+msgid "Screenshot taken"
+msgstr "Captura de pantalla realizada"
+#: NEEDS WORK
+msgid "Screenshots"
+msgstr "Capturas de pantalla"
+#: NEEDS WORK
+msgid "Screenshot from %s"
+msgstr "Captura de pantalla de %s"
+#: NEEDS WORK
+msgid "Drawing canvas"
+msgstr "Lienzo de dibujo"
+#: NEEDS WORK
 msgid "Text…"
 msgstr "Texto…"
 #: NEEDS WORK
@@ -25,29 +37,26 @@ msgstr "Texto de anotación"
 msgid "Confirm"
 msgstr "Confirmar"
 #: NEEDS WORK
-msgid "Desktop Audio"
-msgstr "Audio de escritorio"
-#: NEEDS WORK
-msgid "Record Desktop Audio"
-msgstr "Grabar audio del escritorio"
-#: NEEDS WORK
-msgid "Microphone"
-msgstr "Micrófono"
-#: NEEDS WORK
-msgid "Record Microphone"
-msgstr "Grabar micrófono"
-#: NEEDS WORK
 msgid "Desktop"
 msgstr "Escritorio"
 #: NEEDS WORK
 msgid "Mic"
 msgstr "Mic"
 #: NEEDS WORK
+msgid "Record Desktop Audio"
+msgstr "Grabar audio del escritorio"
+#: NEEDS WORK
+msgid "Record Microphone"
+msgstr "Grabar micrófono"
+#: NEEDS WORK
 msgid "Gradient Angle"
 msgstr "Ángulo de degradado"
 #: NEEDS WORK
 msgid "Border Radius"
 msgstr "Radio de borde"
+#: NEEDS WORK
+msgid "Select / Move"
+msgstr "Seleccionar / Mover"
 #: NEEDS WORK
 msgid "Pen"
 msgstr "Lápiz"
@@ -73,23 +82,17 @@ msgstr "Resaltador"
 msgid "Censor"
 msgstr "Censurar"
 #: NEEDS WORK
+msgid "Blur"
+msgstr "Desenfoque"
+#: NEEDS WORK
 msgid "Number"
 msgstr "Número"
 #: NEEDS WORK
-msgid "Background"
-msgstr "Fondo"
+msgid "Color"
+msgstr "Color"
 #: NEEDS WORK
-msgid "Crop"
-msgstr "Recortar"
-#: NEEDS WORK
-msgid "Padding"
-msgstr "Relleno"
-#: NEEDS WORK
-msgid "Stroke Color"
-msgstr "Color de trazo"
-#: NEEDS WORK
-msgid "Fill Color"
-msgstr "Color de relleno"
+msgid "Fill"
+msgstr "Rellenar"
 #: NEEDS WORK
 msgid "Brush Size"
 msgstr "Tamaño del pincel"
@@ -99,6 +102,12 @@ msgstr "Deshacer"
 #: NEEDS WORK
 msgid "Redo"
 msgstr "Rehacer"
+#: NEEDS WORK
+msgid "Edit"
+msgstr "Editar"
+#: NEEDS WORK
+msgid "Custom"
+msgstr "Personalizado"
 #: NEEDS WORK
 msgid "No Fill"
 msgstr "Sin Relleno"

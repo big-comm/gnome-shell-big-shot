@@ -16,6 +16,18 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: attranslate\n"
 #: NEEDS WORK
+msgid "Screenshot taken"
+msgstr "Captură de ecran realizată"
+#: NEEDS WORK
+msgid "Screenshots"
+msgstr "Capturi de ecran"
+#: NEEDS WORK
+msgid "Screenshot from %s"
+msgstr "Captură de ecran din %s"
+#: NEEDS WORK
+msgid "Drawing canvas"
+msgstr "Canvas de desenare"
+#: NEEDS WORK
 msgid "Text…"
 msgstr "Text…"
 #: NEEDS WORK
@@ -25,29 +37,26 @@ msgstr "Text de anotare"
 msgid "Confirm"
 msgstr "Confirmare"
 #: NEEDS WORK
-msgid "Desktop Audio"
-msgstr "Audio de birou"
-#: NEEDS WORK
-msgid "Record Desktop Audio"
-msgstr "Înregistrare audio de pe desktop"
-#: NEEDS WORK
-msgid "Microphone"
-msgstr "Microfon"
-#: NEEDS WORK
-msgid "Record Microphone"
-msgstr "Înregistrare microfon"
-#: NEEDS WORK
 msgid "Desktop"
 msgstr "Desktop"
 #: NEEDS WORK
 msgid "Mic"
 msgstr "Microfon"
 #: NEEDS WORK
+msgid "Record Desktop Audio"
+msgstr "Înregistrare audio de pe desktop"
+#: NEEDS WORK
+msgid "Record Microphone"
+msgstr "Înregistrare microfon"
+#: NEEDS WORK
 msgid "Gradient Angle"
 msgstr "Unghiul Gradientului"
 #: NEEDS WORK
 msgid "Border Radius"
 msgstr "Raza de margine"
+#: NEEDS WORK
+msgid "Select / Move"
+msgstr "Selectați / Mutare"
 #: NEEDS WORK
 msgid "Pen"
 msgstr "Pix"
@@ -73,23 +82,17 @@ msgstr "Marcator"
 msgid "Censor"
 msgstr "Cenzor"
 #: NEEDS WORK
+msgid "Blur"
+msgstr "Estompare"
+#: NEEDS WORK
 msgid "Number"
 msgstr "Număr"
 #: NEEDS WORK
-msgid "Background"
-msgstr "Fundal"
+msgid "Color"
+msgstr "Culoare"
 #: NEEDS WORK
-msgid "Crop"
-msgstr "Decupare"
-#: NEEDS WORK
-msgid "Padding"
-msgstr "Umplere"
-#: NEEDS WORK
-msgid "Stroke Color"
-msgstr "Culoare contur"
-#: NEEDS WORK
-msgid "Fill Color"
-msgstr "Culoare de umplere"
+msgid "Fill"
+msgstr "Umple"
 #: NEEDS WORK
 msgid "Brush Size"
 msgstr "Dimensiune Pensulă"
@@ -99,6 +102,12 @@ msgstr "Anulează"
 #: NEEDS WORK
 msgid "Redo"
 msgstr "Refă"
+#: NEEDS WORK
+msgid "Edit"
+msgstr "Edita"
+#: NEEDS WORK
+msgid "Custom"
+msgstr "Personalizat"
 #: NEEDS WORK
 msgid "No Fill"
 msgstr "Fără umplere"

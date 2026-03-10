@@ -16,6 +16,18 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: attranslate\n"
 #: NEEDS WORK
+msgid "Screenshot taken"
+msgstr "Скріншот зроблено"
+#: NEEDS WORK
+msgid "Screenshots"
+msgstr "Screenshots"
+#: NEEDS WORK
+msgid "Screenshot from %s"
+msgstr "Скріншот з %s"
+#: NEEDS WORK
+msgid "Drawing canvas"
+msgstr "Робоча область для малювання"
+#: NEEDS WORK
 msgid "Text…"
 msgstr "Текст…"
 #: NEEDS WORK
@@ -25,29 +37,26 @@ msgstr "Текст анотації"
 msgid "Confirm"
 msgstr "Confirm"
 #: NEEDS WORK
-msgid "Desktop Audio"
-msgstr "Десктопний аудіо"
-#: NEEDS WORK
-msgid "Record Desktop Audio"
-msgstr "Записати аудіо з робочого столу"
-#: NEEDS WORK
-msgid "Microphone"
-msgstr "Мікрофон"
-#: NEEDS WORK
-msgid "Record Microphone"
-msgstr "Записати мікрофон"
-#: NEEDS WORK
 msgid "Desktop"
 msgstr "Рабочий стіл"
 #: NEEDS WORK
 msgid "Mic"
 msgstr "Мікрофон"
 #: NEEDS WORK
+msgid "Record Desktop Audio"
+msgstr "Записати аудіо з робочого столу"
+#: NEEDS WORK
+msgid "Record Microphone"
+msgstr "Записати мікрофон"
+#: NEEDS WORK
 msgid "Gradient Angle"
 msgstr "Градус градієнта"
 #: NEEDS WORK
 msgid "Border Radius"
 msgstr "Радіус межі"
+#: NEEDS WORK
+msgid "Select / Move"
+msgstr "Вибрати / Перемістити"
 #: NEEDS WORK
 msgid "Pen"
 msgstr "Pencil"
@@ -73,23 +82,17 @@ msgstr "Маркер"
 msgid "Censor"
 msgstr "Censor"
 #: NEEDS WORK
+msgid "Blur"
+msgstr "Flou"
+#: NEEDS WORK
 msgid "Number"
 msgstr "Номер"
 #: NEEDS WORK
-msgid "Background"
-msgstr "Фон"
+msgid "Color"
+msgstr "Colour"
 #: NEEDS WORK
-msgid "Crop"
-msgstr "Crop"
-#: NEEDS WORK
-msgid "Padding"
-msgstr "Padding"
-#: NEEDS WORK
-msgid "Stroke Color"
-msgstr "Контур кольору"
-#: NEEDS WORK
-msgid "Fill Color"
-msgstr "Заповнити колір"
+msgid "Fill"
+msgstr "Заповнити"
 #: NEEDS WORK
 msgid "Brush Size"
 msgstr "Розмір пензля"
@@ -99,6 +102,12 @@ msgstr "Відмінити"
 #: NEEDS WORK
 msgid "Redo"
 msgstr "Redo"
+#: NEEDS WORK
+msgid "Edit"
+msgstr "Редагувати"
+#: NEEDS WORK
+msgid "Custom"
+msgstr "Користувацький"
 #: NEEDS WORK
 msgid "No Fill"
 msgstr "No Fill"

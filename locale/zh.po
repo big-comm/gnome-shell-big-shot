@@ -16,6 +16,18 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: attranslate\n"
 #: NEEDS WORK
+msgid "Screenshot taken"
+msgstr "截图已保存"
+#: NEEDS WORK
+msgid "Screenshots"
+msgstr "截图"
+#: NEEDS WORK
+msgid "Screenshot from %s"
+msgstr "来自 %s 的截图"
+#: NEEDS WORK
+msgid "Drawing canvas"
+msgstr "绘图画布"
+#: NEEDS WORK
 msgid "Text…"
 msgstr "文本…"
 #: NEEDS WORK
@@ -25,29 +37,26 @@ msgstr "注释文本"
 msgid "Confirm"
 msgstr "确认"
 #: NEEDS WORK
-msgid "Desktop Audio"
-msgstr "桌面音频"
-#: NEEDS WORK
-msgid "Record Desktop Audio"
-msgstr "录制桌面音频"
-#: NEEDS WORK
-msgid "Microphone"
-msgstr "麦克风"
-#: NEEDS WORK
-msgid "Record Microphone"
-msgstr "录制麦克风"
-#: NEEDS WORK
 msgid "Desktop"
 msgstr "桌面"
 #: NEEDS WORK
 msgid "Mic"
 msgstr "麦克风"
 #: NEEDS WORK
+msgid "Record Desktop Audio"
+msgstr "录制桌面音频"
+#: NEEDS WORK
+msgid "Record Microphone"
+msgstr "录制麦克风"
+#: NEEDS WORK
 msgid "Gradient Angle"
 msgstr "渐变角度"
 #: NEEDS WORK
 msgid "Border Radius"
 msgstr "边框半径"
+#: NEEDS WORK
+msgid "Select / Move"
+msgstr "选择 / 移动"
 #: NEEDS WORK
 msgid "Pen"
 msgstr "笔"
@@ -73,23 +82,17 @@ msgstr "高亮工具"
 msgid "Censor"
 msgstr "审查员"
 #: NEEDS WORK
+msgid "Blur"
+msgstr "模糊"
+#: NEEDS WORK
 msgid "Number"
 msgstr "数字"
 #: NEEDS WORK
-msgid "Background"
-msgstr "背景"
+msgid "Color"
+msgstr "颜色"
 #: NEEDS WORK
-msgid "Crop"
-msgstr "裁剪"
-#: NEEDS WORK
-msgid "Padding"
+msgid "Fill"
 msgstr "填充"
-#: NEEDS WORK
-msgid "Stroke Color"
-msgstr "描边颜色"
-#: NEEDS WORK
-msgid "Fill Color"
-msgstr "填充颜色"
 #: NEEDS WORK
 msgid "Brush Size"
 msgstr "画笔大小"
@@ -99,6 +102,12 @@ msgstr "撤销"
 #: NEEDS WORK
 msgid "Redo"
 msgstr "重做"
+#: NEEDS WORK
+msgid "Edit"
+msgstr "编辑"
+#: NEEDS WORK
+msgid "Custom"
+msgstr "自定义"
 #: NEEDS WORK
 msgid "No Fill"
 msgstr "无填充"

@@ -16,6 +16,18 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: attranslate\n"
 #: NEEDS WORK
+msgid "Screenshot taken"
+msgstr "Capture d'écran effectuée"
+#: NEEDS WORK
+msgid "Screenshots"
+msgstr "Captures d'écran"
+#: NEEDS WORK
+msgid "Screenshot from %s"
+msgstr "Capture d'écran de %s"
+#: NEEDS WORK
+msgid "Drawing canvas"
+msgstr "Toile de dessin"
+#: NEEDS WORK
 msgid "Text…"
 msgstr "Texte…"
 #: NEEDS WORK
@@ -25,29 +37,26 @@ msgstr "Texte d'annotation"
 msgid "Confirm"
 msgstr "Confirmer"
 #: NEEDS WORK
-msgid "Desktop Audio"
-msgstr "Audio de bureau"
-#: NEEDS WORK
-msgid "Record Desktop Audio"
-msgstr "Enregistrer l'audio du bureau"
-#: NEEDS WORK
-msgid "Microphone"
-msgstr "Microphone"
-#: NEEDS WORK
-msgid "Record Microphone"
-msgstr "Enregistrer le microphone"
-#: NEEDS WORK
 msgid "Desktop"
 msgstr "Bureau"
 #: NEEDS WORK
 msgid "Mic"
 msgstr "Microphone"
 #: NEEDS WORK
+msgid "Record Desktop Audio"
+msgstr "Enregistrer l'audio du bureau"
+#: NEEDS WORK
+msgid "Record Microphone"
+msgstr "Enregistrer le microphone"
+#: NEEDS WORK
 msgid "Gradient Angle"
 msgstr "Angle de dégradé"
 #: NEEDS WORK
 msgid "Border Radius"
 msgstr "Rayon de bordure"
+#: NEEDS WORK
+msgid "Select / Move"
+msgstr "Sélectionner / Déplacer"
 #: NEEDS WORK
 msgid "Pen"
 msgstr "Stylo"
@@ -73,23 +82,17 @@ msgstr "Surligneur"
 msgid "Censor"
 msgstr "Censeur"
 #: NEEDS WORK
+msgid "Blur"
+msgstr "Flou"
+#: NEEDS WORK
 msgid "Number"
 msgstr "Numéro"
 #: NEEDS WORK
-msgid "Background"
-msgstr "Arrière-plan"
+msgid "Color"
+msgstr "Couleur"
 #: NEEDS WORK
-msgid "Crop"
-msgstr "Rogner"
-#: NEEDS WORK
-msgid "Padding"
-msgstr "Rembourrage"
-#: NEEDS WORK
-msgid "Stroke Color"
-msgstr "Couleur de contour"
-#: NEEDS WORK
-msgid "Fill Color"
-msgstr "Couleur de remplissage"
+msgid "Fill"
+msgstr "Remplir"
 #: NEEDS WORK
 msgid "Brush Size"
 msgstr "Taille du pinceau"
@@ -99,6 +102,12 @@ msgstr "Annuler"
 #: NEEDS WORK
 msgid "Redo"
 msgstr "Refaire"
+#: NEEDS WORK
+msgid "Edit"
+msgstr "Modifier"
+#: NEEDS WORK
+msgid "Custom"
+msgstr "Personnalisé"
 #: NEEDS WORK
 msgid "No Fill"
 msgstr "Aucun remplissage"

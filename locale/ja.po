@@ -16,6 +16,18 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: attranslate\n"
 #: NEEDS WORK
+msgid "Screenshot taken"
+msgstr "スクリーンショットを撮りました"
+#: NEEDS WORK
+msgid "Screenshots"
+msgstr "スクリーンショット"
+#: NEEDS WORK
+msgid "Screenshot from %s"
+msgstr "%sのスクリーンショット"
+#: NEEDS WORK
+msgid "Drawing canvas"
+msgstr "描画キャンバス"
+#: NEEDS WORK
 msgid "Text…"
 msgstr "テキスト…"
 #: NEEDS WORK
@@ -25,29 +37,26 @@ msgstr "注釈テキスト"
 msgid "Confirm"
 msgstr "確認"
 #: NEEDS WORK
-msgid "Desktop Audio"
-msgstr "デスクトップオーディオ"
-#: NEEDS WORK
-msgid "Record Desktop Audio"
-msgstr "デスクトップ音声を録音"
-#: NEEDS WORK
-msgid "Microphone"
-msgstr "マイクロフォン"
-#: NEEDS WORK
-msgid "Record Microphone"
-msgstr "マイクを録音"
-#: NEEDS WORK
 msgid "Desktop"
 msgstr "デスクトップ"
 #: NEEDS WORK
 msgid "Mic"
 msgstr "マイク"
 #: NEEDS WORK
+msgid "Record Desktop Audio"
+msgstr "デスクトップ音声を録音"
+#: NEEDS WORK
+msgid "Record Microphone"
+msgstr "マイクを録音"
+#: NEEDS WORK
 msgid "Gradient Angle"
 msgstr "グラデーション角度"
 #: NEEDS WORK
 msgid "Border Radius"
 msgstr "ボーダー半径"
+#: NEEDS WORK
+msgid "Select / Move"
+msgstr "選択 / 移動"
 #: NEEDS WORK
 msgid "Pen"
 msgstr "ペン"
@@ -73,23 +82,17 @@ msgstr "ハイライター"
 msgid "Censor"
 msgstr "検閲"
 #: NEEDS WORK
+msgid "Blur"
+msgstr "ぼかし"
+#: NEEDS WORK
 msgid "Number"
 msgstr "番号"
 #: NEEDS WORK
-msgid "Background"
-msgstr "背景"
+msgid "Color"
+msgstr "色"
 #: NEEDS WORK
-msgid "Crop"
-msgstr "トリミング"
-#: NEEDS WORK
-msgid "Padding"
-msgstr "パディング"
-#: NEEDS WORK
-msgid "Stroke Color"
-msgstr "ストロークカラー"
-#: NEEDS WORK
-msgid "Fill Color"
-msgstr "塗りつぶしの色"
+msgid "Fill"
+msgstr "塗りつぶし"
 #: NEEDS WORK
 msgid "Brush Size"
 msgstr "ブラシサイズ"
@@ -99,6 +102,12 @@ msgstr "元に戻す"
 #: NEEDS WORK
 msgid "Redo"
 msgstr "やり直し"
+#: NEEDS WORK
+msgid "Edit"
+msgstr "編集"
+#: NEEDS WORK
+msgid "Custom"
+msgstr "カスタム"
 #: NEEDS WORK
 msgid "No Fill"
 msgstr "塗りつぶしなし"

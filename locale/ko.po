@@ -16,6 +16,18 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: attranslate\n"
 #: NEEDS WORK
+msgid "Screenshot taken"
+msgstr "스크린샷이 찍혔습니다"
+#: NEEDS WORK
+msgid "Screenshots"
+msgstr "스크린샷"
+#: NEEDS WORK
+msgid "Screenshot from %s"
+msgstr "%s의 스크린샷"
+#: NEEDS WORK
+msgid "Drawing canvas"
+msgstr "드로잉 캔버스"
+#: NEEDS WORK
 msgid "Text…"
 msgstr "텍스트…"
 #: NEEDS WORK
@@ -25,29 +37,26 @@ msgstr "주석 텍스트"
 msgid "Confirm"
 msgstr "확인"
 #: NEEDS WORK
-msgid "Desktop Audio"
-msgstr "데스크탑 오디오"
-#: NEEDS WORK
-msgid "Record Desktop Audio"
-msgstr "데스크탑 오디오 녹음"
-#: NEEDS WORK
-msgid "Microphone"
-msgstr "마이크"
-#: NEEDS WORK
-msgid "Record Microphone"
-msgstr "마이크 녹음"
-#: NEEDS WORK
 msgid "Desktop"
 msgstr "바탕화면"
 #: NEEDS WORK
 msgid "Mic"
 msgstr "마이크"
 #: NEEDS WORK
+msgid "Record Desktop Audio"
+msgstr "데스크탑 오디오 녹음"
+#: NEEDS WORK
+msgid "Record Microphone"
+msgstr "마이크 녹음"
+#: NEEDS WORK
 msgid "Gradient Angle"
 msgstr "그라디언트 각도"
 #: NEEDS WORK
 msgid "Border Radius"
 msgstr "테두리 반경"
+#: NEEDS WORK
+msgid "Select / Move"
+msgstr "선택 / 이동"
 #: NEEDS WORK
 msgid "Pen"
 msgstr "펜"
@@ -73,23 +82,17 @@ msgstr "형광펜"
 msgid "Censor"
 msgstr "검열자"
 #: NEEDS WORK
+msgid "Blur"
+msgstr "블러"
+#: NEEDS WORK
 msgid "Number"
 msgstr "번호"
 #: NEEDS WORK
-msgid "Background"
-msgstr "배경"
+msgid "Color"
+msgstr "색상"
 #: NEEDS WORK
-msgid "Crop"
-msgstr "자르기"
-#: NEEDS WORK
-msgid "Padding"
-msgstr "패딩"
-#: NEEDS WORK
-msgid "Stroke Color"
-msgstr "선 색상"
-#: NEEDS WORK
-msgid "Fill Color"
-msgstr "채우기 색상"
+msgid "Fill"
+msgstr "채우기"
 #: NEEDS WORK
 msgid "Brush Size"
 msgstr "브러시 크기"
@@ -99,6 +102,12 @@ msgstr "실행 취소"
 #: NEEDS WORK
 msgid "Redo"
 msgstr "다시 실행"
+#: NEEDS WORK
+msgid "Edit"
+msgstr "편집"
+#: NEEDS WORK
+msgid "Custom"
+msgstr "사용자 정의"
 #: NEEDS WORK
 msgid "No Fill"
 msgstr "채우기 없음"

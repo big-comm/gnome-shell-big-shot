@@ -16,6 +16,18 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: attranslate\n"
 #: NEEDS WORK
+msgid "Screenshot taken"
+msgstr "Στιγμιότυπο οθόνης ληφθέν"
+#: NEEDS WORK
+msgid "Screenshots"
+msgstr "Στιγμιότυπα οθόνης"
+#: NEEDS WORK
+msgid "Screenshot from %s"
+msgstr "Στιγμιότυπο οθόνης από %s"
+#: NEEDS WORK
+msgid "Drawing canvas"
+msgstr "Καμβάς σχεδίασης"
+#: NEEDS WORK
 msgid "Text…"
 msgstr "Κείμενο…"
 #: NEEDS WORK
@@ -25,29 +37,26 @@ msgstr "Κείμενο σχολιασμού"
 msgid "Confirm"
 msgstr "Επιβεβαίωση"
 #: NEEDS WORK
-msgid "Desktop Audio"
-msgstr "Επιφάνεια Εργασίας Ήχου"
-#: NEEDS WORK
-msgid "Record Desktop Audio"
-msgstr "Καταγραφή Ήχου Επιφάνειας Εργασίας"
-#: NEEDS WORK
-msgid "Microphone"
-msgstr "Μικρόφωνο"
-#: NEEDS WORK
-msgid "Record Microphone"
-msgstr "Καταγραφή Μικροφώνου"
-#: NEEDS WORK
 msgid "Desktop"
 msgstr "Επιφάνεια εργασίας"
 #: NEEDS WORK
 msgid "Mic"
 msgstr "Μικρόφωνο"
 #: NEEDS WORK
+msgid "Record Desktop Audio"
+msgstr "Καταγραφή Ήχου Επιφάνειας Εργασίας"
+#: NEEDS WORK
+msgid "Record Microphone"
+msgstr "Καταγραφή Μικροφώνου"
+#: NEEDS WORK
 msgid "Gradient Angle"
 msgstr "Γωνία Γρανάζιου"
 #: NEEDS WORK
 msgid "Border Radius"
 msgstr "Ακτίνα Περιγράμματος"
+#: NEEDS WORK
+msgid "Select / Move"
+msgstr "Επιλογή / Μετακίνηση"
 #: NEEDS WORK
 msgid "Pen"
 msgstr "Στυλό"
@@ -73,23 +82,17 @@ msgstr "Υπογραμμιστής"
 msgid "Censor"
 msgstr "Λογοκρισία"
 #: NEEDS WORK
+msgid "Blur"
+msgstr "Θόλωμα"
+#: NEEDS WORK
 msgid "Number"
 msgstr "Αριθμός"
 #: NEEDS WORK
-msgid "Background"
-msgstr "Υπόβαθρο"
+msgid "Color"
+msgstr "Χρώμα"
 #: NEEDS WORK
-msgid "Crop"
-msgstr "Επεξεργασία"
-#: NEEDS WORK
-msgid "Padding"
+msgid "Fill"
 msgstr "Γέμισμα"
-#: NEEDS WORK
-msgid "Stroke Color"
-msgstr "Χρώμα περιγράμματος"
-#: NEEDS WORK
-msgid "Fill Color"
-msgstr "Χρώμα Γέμισης"
 #: NEEDS WORK
 msgid "Brush Size"
 msgstr "Μέγεθος Πινέλου"
@@ -99,6 +102,12 @@ msgstr "Αναίρεση"
 #: NEEDS WORK
 msgid "Redo"
 msgstr "Επαναφορά"
+#: NEEDS WORK
+msgid "Edit"
+msgstr "Επεξεργασία"
+#: NEEDS WORK
+msgid "Custom"
+msgstr "Προσαρμοσμένο"
 #: NEEDS WORK
 msgid "No Fill"
 msgstr "Χωρίς Γέμισμα"

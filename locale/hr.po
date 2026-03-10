@@ -16,6 +16,18 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: attranslate\n"
 #: NEEDS WORK
+msgid "Screenshot taken"
+msgstr "Snimka zaslona snimljena"
+#: NEEDS WORK
+msgid "Screenshots"
+msgstr "Snimke zaslona"
+#: NEEDS WORK
+msgid "Screenshot from %s"
+msgstr "Snimka zaslona iz %s"
+#: NEEDS WORK
+msgid "Drawing canvas"
+msgstr "Platno za crtanje"
+#: NEEDS WORK
 msgid "Text…"
 msgstr "Tekst…"
 #: NEEDS WORK
@@ -25,29 +37,26 @@ msgstr "Tekst anotacije"
 msgid "Confirm"
 msgstr "Potvrdi"
 #: NEEDS WORK
-msgid "Desktop Audio"
-msgstr "Desktop zvuk"
-#: NEEDS WORK
-msgid "Record Desktop Audio"
-msgstr "Snimi zvuk s radne površine"
-#: NEEDS WORK
-msgid "Microphone"
-msgstr "Mikrofon"
-#: NEEDS WORK
-msgid "Record Microphone"
-msgstr "Snimi mikrofon"
-#: NEEDS WORK
 msgid "Desktop"
 msgstr "Radna površina"
 #: NEEDS WORK
 msgid "Mic"
 msgstr "Mikrofon"
 #: NEEDS WORK
+msgid "Record Desktop Audio"
+msgstr "Snimi zvuk s radne površine"
+#: NEEDS WORK
+msgid "Record Microphone"
+msgstr "Snimi mikrofon"
+#: NEEDS WORK
 msgid "Gradient Angle"
 msgstr "Kutna nagib"
 #: NEEDS WORK
 msgid "Border Radius"
 msgstr "Radius obruba"
+#: NEEDS WORK
+msgid "Select / Move"
+msgstr "Odaberi / Premjesti"
 #: NEEDS WORK
 msgid "Pen"
 msgstr "Olovka"
@@ -73,23 +82,17 @@ msgstr "Marker"
 msgid "Censor"
 msgstr "Cenzor"
 #: NEEDS WORK
+msgid "Blur"
+msgstr "Zamućenje"
+#: NEEDS WORK
 msgid "Number"
 msgstr "Broj"
 #: NEEDS WORK
-msgid "Background"
-msgstr "Pozadina"
+msgid "Color"
+msgstr "Boja"
 #: NEEDS WORK
-msgid "Crop"
-msgstr "Izreži"
-#: NEEDS WORK
-msgid "Padding"
-msgstr "Puničenje"
-#: NEEDS WORK
-msgid "Stroke Color"
-msgstr "Boja obruba"
-#: NEEDS WORK
-msgid "Fill Color"
-msgstr "Boja ispune"
+msgid "Fill"
+msgstr "Ispuni"
 #: NEEDS WORK
 msgid "Brush Size"
 msgstr "Veličina četkice"
@@ -99,6 +102,12 @@ msgstr "Poništi"
 #: NEEDS WORK
 msgid "Redo"
 msgstr "Ponovi"
+#: NEEDS WORK
+msgid "Edit"
+msgstr "Uredi"
+#: NEEDS WORK
+msgid "Custom"
+msgstr "Prilagođeno"
 #: NEEDS WORK
 msgid "No Fill"
 msgstr "Bez ispunjavanja"

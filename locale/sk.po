@@ -16,6 +16,18 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: attranslate\n"
 #: NEEDS WORK
+msgid "Screenshot taken"
+msgstr "Snímka obrazovky bola vytvorená"
+#: NEEDS WORK
+msgid "Screenshots"
+msgstr "Snímky obrazovky"
+#: NEEDS WORK
+msgid "Screenshot from %s"
+msgstr "Snímka obrazovky z %s"
+#: NEEDS WORK
+msgid "Drawing canvas"
+msgstr "Kresliaca plátno"
+#: NEEDS WORK
 msgid "Text…"
 msgstr "Text…"
 #: NEEDS WORK
@@ -25,29 +37,26 @@ msgstr "Text anotácie"
 msgid "Confirm"
 msgstr "Potvrdiť"
 #: NEEDS WORK
-msgid "Desktop Audio"
-msgstr "Desktopový zvuk"
-#: NEEDS WORK
-msgid "Record Desktop Audio"
-msgstr "Nahrávať zvuk z plochy"
-#: NEEDS WORK
-msgid "Microphone"
-msgstr "Mikrofón"
-#: NEEDS WORK
-msgid "Record Microphone"
-msgstr "Nahrávať mikrofón"
-#: NEEDS WORK
 msgid "Desktop"
 msgstr "Pracovná plocha"
 #: NEEDS WORK
 msgid "Mic"
 msgstr "Mikrofón"
 #: NEEDS WORK
+msgid "Record Desktop Audio"
+msgstr "Nahrávať zvuk z plochy"
+#: NEEDS WORK
+msgid "Record Microphone"
+msgstr "Nahrávať mikrofón"
+#: NEEDS WORK
 msgid "Gradient Angle"
 msgstr "Uhol gradientu"
 #: NEEDS WORK
 msgid "Border Radius"
 msgstr "Polomer okrajov"
+#: NEEDS WORK
+msgid "Select / Move"
+msgstr "Vybrať / Presunúť"
 #: NEEDS WORK
 msgid "Pen"
 msgstr "Pero"
@@ -73,23 +82,17 @@ msgstr "Zvýrazňovač"
 msgid "Censor"
 msgstr "Cenzor"
 #: NEEDS WORK
+msgid "Blur"
+msgstr "Rozmazanie"
+#: NEEDS WORK
 msgid "Number"
 msgstr "Číslo"
 #: NEEDS WORK
-msgid "Background"
-msgstr "Pozadie"
+msgid "Color"
+msgstr "Farba"
 #: NEEDS WORK
-msgid "Crop"
-msgstr "Orezať"
-#: NEEDS WORK
-msgid "Padding"
-msgstr "Vyplnenie"
-#: NEEDS WORK
-msgid "Stroke Color"
-msgstr "Farba ťahu"
-#: NEEDS WORK
-msgid "Fill Color"
-msgstr "Farba výplne"
+msgid "Fill"
+msgstr "Vyplniť"
 #: NEEDS WORK
 msgid "Brush Size"
 msgstr "Veľkosť štetca"
@@ -99,6 +102,12 @@ msgstr "Zrušiť"
 #: NEEDS WORK
 msgid "Redo"
 msgstr "Znova"
+#: NEEDS WORK
+msgid "Edit"
+msgstr "Upraviť"
+#: NEEDS WORK
+msgid "Custom"
+msgstr "Vlastný"
 #: NEEDS WORK
 msgid "No Fill"
 msgstr "Žiadne vyplnenie"

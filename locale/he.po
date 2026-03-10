@@ -16,6 +16,18 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: attranslate\n"
 #: NEEDS WORK
+msgid "Screenshot taken"
+msgstr "צילום מסך נלקח"
+#: NEEDS WORK
+msgid "Screenshots"
+msgstr "צילומי מסך"
+#: NEEDS WORK
+msgid "Screenshot from %s"
+msgstr "צילום מסך מ-%s"
+#: NEEDS WORK
+msgid "Drawing canvas"
+msgstr "קנבס ציור"
+#: NEEDS WORK
 msgid "Text…"
 msgstr "טקסט…"
 #: NEEDS WORK
@@ -25,29 +37,26 @@ msgstr "טקסט הערה"
 msgid "Confirm"
 msgstr "אשר"
 #: NEEDS WORK
-msgid "Desktop Audio"
-msgstr "אודיו שולחן עבודה"
-#: NEEDS WORK
-msgid "Record Desktop Audio"
-msgstr "הקלטת אודיו מהשולחן עבודה"
-#: NEEDS WORK
-msgid "Microphone"
-msgstr "מיקרופון"
-#: NEEDS WORK
-msgid "Record Microphone"
-msgstr "הקלט מיקרופון"
-#: NEEDS WORK
 msgid "Desktop"
 msgstr "שולחן עבודה"
 #: NEEDS WORK
 msgid "Mic"
 msgstr "מיקרופון"
 #: NEEDS WORK
+msgid "Record Desktop Audio"
+msgstr "הקלטת אודיו מהשולחן עבודה"
+#: NEEDS WORK
+msgid "Record Microphone"
+msgstr "הקלט מיקרופון"
+#: NEEDS WORK
 msgid "Gradient Angle"
 msgstr "זווית גרדיאנט"
 #: NEEDS WORK
 msgid "Border Radius"
 msgstr "רדיוס גבול"
+#: NEEDS WORK
+msgid "Select / Move"
+msgstr "בחר / העבר"
 #: NEEDS WORK
 msgid "Pen"
 msgstr "עט"
@@ -73,23 +82,17 @@ msgstr "סמן"
 msgid "Censor"
 msgstr "צנזור"
 #: NEEDS WORK
+msgid "Blur"
+msgstr "טשטוש"
+#: NEEDS WORK
 msgid "Number"
 msgstr "מספר"
 #: NEEDS WORK
-msgid "Background"
-msgstr "רקע"
+msgid "Color"
+msgstr "צבע"
 #: NEEDS WORK
-msgid "Crop"
-msgstr "גזירה"
-#: NEEDS WORK
-msgid "Padding"
-msgstr "ריפוד"
-#: NEEDS WORK
-msgid "Stroke Color"
-msgstr "צבע קו"
-#: NEEDS WORK
-msgid "Fill Color"
-msgstr "צבע מילוי"
+msgid "Fill"
+msgstr "מלא"
 #: NEEDS WORK
 msgid "Brush Size"
 msgstr "גודל מברשת"
@@ -99,6 +102,12 @@ msgstr "ביטול"
 #: NEEDS WORK
 msgid "Redo"
 msgstr "בצע שוב"
+#: NEEDS WORK
+msgid "Edit"
+msgstr "ערוך"
+#: NEEDS WORK
+msgid "Custom"
+msgstr "מותאם אישית"
 #: NEEDS WORK
 msgid "No Fill"
 msgstr "אין מילוי"

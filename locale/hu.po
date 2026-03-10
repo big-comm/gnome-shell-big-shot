@@ -16,6 +16,18 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: attranslate\n"
 #: NEEDS WORK
+msgid "Screenshot taken"
+msgstr "Képernyőkép készült"
+#: NEEDS WORK
+msgid "Screenshots"
+msgstr "Képernyőképek"
+#: NEEDS WORK
+msgid "Screenshot from %s"
+msgstr "Képernyőkép a(z) %s-ból"
+#: NEEDS WORK
+msgid "Drawing canvas"
+msgstr "Rajzoló vászon"
+#: NEEDS WORK
 msgid "Text…"
 msgstr "Szöveg…"
 #: NEEDS WORK
@@ -25,29 +37,26 @@ msgstr "Megjegyzés szöveg"
 msgid "Confirm"
 msgstr "Megerősít"
 #: NEEDS WORK
-msgid "Desktop Audio"
-msgstr "Asztali hang"
-#: NEEDS WORK
-msgid "Record Desktop Audio"
-msgstr "Asztali hang rögzítése"
-#: NEEDS WORK
-msgid "Microphone"
-msgstr "Mikrofon"
-#: NEEDS WORK
-msgid "Record Microphone"
-msgstr "Mikrofon rögzítése"
-#: NEEDS WORK
 msgid "Desktop"
 msgstr "Asztal"
 #: NEEDS WORK
 msgid "Mic"
 msgstr "Mikrofon"
 #: NEEDS WORK
+msgid "Record Desktop Audio"
+msgstr "Asztali hang rögzítése"
+#: NEEDS WORK
+msgid "Record Microphone"
+msgstr "Mikrofon rögzítése"
+#: NEEDS WORK
 msgid "Gradient Angle"
 msgstr "Gradiens szög"
 #: NEEDS WORK
 msgid "Border Radius"
 msgstr "Sarok sugár"
+#: NEEDS WORK
+msgid "Select / Move"
+msgstr "Kiválasztás / Mozgatás"
 #: NEEDS WORK
 msgid "Pen"
 msgstr "Toll"
@@ -73,23 +82,17 @@ msgstr "Kiemelő"
 msgid "Censor"
 msgstr "Cenzor"
 #: NEEDS WORK
+msgid "Blur"
+msgstr "Elmosódás"
+#: NEEDS WORK
 msgid "Number"
 msgstr "Szám"
 #: NEEDS WORK
-msgid "Background"
-msgstr "Háttér"
+msgid "Color"
+msgstr "Szín"
 #: NEEDS WORK
-msgid "Crop"
-msgstr "Vágás"
-#: NEEDS WORK
-msgid "Padding"
+msgid "Fill"
 msgstr "Kitöltés"
-#: NEEDS WORK
-msgid "Stroke Color"
-msgstr "Vonal szín"
-#: NEEDS WORK
-msgid "Fill Color"
-msgstr "Kitöltő szín"
 #: NEEDS WORK
 msgid "Brush Size"
 msgstr "Ecsetméret"
@@ -99,6 +102,12 @@ msgstr "Visszavonás"
 #: NEEDS WORK
 msgid "Redo"
 msgstr "Újra végrehajtás"
+#: NEEDS WORK
+msgid "Edit"
+msgstr "Szerkesztés"
+#: NEEDS WORK
+msgid "Custom"
+msgstr "Egyedi"
 #: NEEDS WORK
 msgid "No Fill"
 msgstr "Nincs kitöltés"

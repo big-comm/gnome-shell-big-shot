@@ -16,6 +16,18 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: attranslate\n"
 #: NEEDS WORK
+msgid "Screenshot taken"
+msgstr "Snímek obrazovky pořízen"
+#: NEEDS WORK
+msgid "Screenshots"
+msgstr "Snímky obrazovky"
+#: NEEDS WORK
+msgid "Screenshot from %s"
+msgstr "Snímek obrazovky z %s"
+#: NEEDS WORK
+msgid "Drawing canvas"
+msgstr "Kreslicí plátno"
+#: NEEDS WORK
 msgid "Text…"
 msgstr "Text…"
 #: NEEDS WORK
@@ -25,29 +37,26 @@ msgstr "Text anotace"
 msgid "Confirm"
 msgstr "Potvrdit"
 #: NEEDS WORK
-msgid "Desktop Audio"
-msgstr "Desktopový zvuk"
-#: NEEDS WORK
-msgid "Record Desktop Audio"
-msgstr "Nahrávat zvuk plochy"
-#: NEEDS WORK
-msgid "Microphone"
-msgstr "Mikrofon"
-#: NEEDS WORK
-msgid "Record Microphone"
-msgstr "Nahrávat mikrofon"
-#: NEEDS WORK
 msgid "Desktop"
 msgstr "Plocha"
 #: NEEDS WORK
 msgid "Mic"
 msgstr "Mikrofon"
 #: NEEDS WORK
+msgid "Record Desktop Audio"
+msgstr "Nahrávat zvuk plochy"
+#: NEEDS WORK
+msgid "Record Microphone"
+msgstr "Nahrávat mikrofon"
+#: NEEDS WORK
 msgid "Gradient Angle"
 msgstr "Úhel gradientu"
 #: NEEDS WORK
 msgid "Border Radius"
 msgstr "Poloměr okraje"
+#: NEEDS WORK
+msgid "Select / Move"
+msgstr "Vybrat / Přesunout"
 #: NEEDS WORK
 msgid "Pen"
 msgstr "Pero"
@@ -73,23 +82,17 @@ msgstr "Zvýrazňovač"
 msgid "Censor"
 msgstr "Cenzor"
 #: NEEDS WORK
+msgid "Blur"
+msgstr "Rozostření"
+#: NEEDS WORK
 msgid "Number"
 msgstr "Číslo"
 #: NEEDS WORK
-msgid "Background"
-msgstr "Pozadí"
+msgid "Color"
+msgstr "Barva"
 #: NEEDS WORK
-msgid "Crop"
-msgstr "Oříznout"
-#: NEEDS WORK
-msgid "Padding"
-msgstr "Vyplnění"
-#: NEEDS WORK
-msgid "Stroke Color"
-msgstr "Barva tahu"
-#: NEEDS WORK
-msgid "Fill Color"
-msgstr "Barva výplně"
+msgid "Fill"
+msgstr "Vyplnit"
 #: NEEDS WORK
 msgid "Brush Size"
 msgstr "Velikost štětce"
@@ -99,6 +102,12 @@ msgstr "Zpět"
 #: NEEDS WORK
 msgid "Redo"
 msgstr "Znovu provést"
+#: NEEDS WORK
+msgid "Edit"
+msgstr "Upravit"
+#: NEEDS WORK
+msgid "Custom"
+msgstr "Vlastní"
 #: NEEDS WORK
 msgid "No Fill"
 msgstr "Žádné vyplnění"

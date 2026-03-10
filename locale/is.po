@@ -16,6 +16,18 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: attranslate\n"
 #: NEEDS WORK
+msgid "Screenshot taken"
+msgstr "Skjámynd tekin"
+#: NEEDS WORK
+msgid "Screenshots"
+msgstr "Skjámyndir"
+#: NEEDS WORK
+msgid "Screenshot from %s"
+msgstr "Skjámynd frá %s"
+#: NEEDS WORK
+msgid "Drawing canvas"
+msgstr "Teikniborð"
+#: NEEDS WORK
 msgid "Text…"
 msgstr "Text…"
 #: NEEDS WORK
@@ -25,29 +37,26 @@ msgstr "Athugasemdatexti"
 msgid "Confirm"
 msgstr "Staðfesta"
 #: NEEDS WORK
-msgid "Desktop Audio"
-msgstr "Skráborð Hljóð"
-#: NEEDS WORK
-msgid "Record Desktop Audio"
-msgstr "Skrá Desktop Hljóð"
-#: NEEDS WORK
-msgid "Microphone"
-msgstr "Mikrófón"
-#: NEEDS WORK
-msgid "Record Microphone"
-msgstr "Skráðu hljóðnema"
-#: NEEDS WORK
 msgid "Desktop"
 msgstr "Skráborð"
 #: NEEDS WORK
 msgid "Mic"
 msgstr "Míkrófón"
 #: NEEDS WORK
+msgid "Record Desktop Audio"
+msgstr "Skrá Desktop Hljóð"
+#: NEEDS WORK
+msgid "Record Microphone"
+msgstr "Skráðu hljóðnema"
+#: NEEDS WORK
 msgid "Gradient Angle"
 msgstr "Litsvæðisvinkill"
 #: NEEDS WORK
 msgid "Border Radius"
 msgstr "Mörkurrúm"
+#: NEEDS WORK
+msgid "Select / Move"
+msgstr "Velja / Hreyfa"
 #: NEEDS WORK
 msgid "Pen"
 msgstr "Penna"
@@ -73,23 +82,17 @@ msgstr "Merki"
 msgid "Censor"
 msgstr "Censúra"
 #: NEEDS WORK
+msgid "Blur"
+msgstr "Ófærð"
+#: NEEDS WORK
 msgid "Number"
 msgstr "Tala"
 #: NEEDS WORK
-msgid "Background"
-msgstr "Bakgrunn"
+msgid "Color"
+msgstr "Litur"
 #: NEEDS WORK
-msgid "Crop"
-msgstr "Klippa"
-#: NEEDS WORK
-msgid "Padding"
-msgstr "Fylling"
-#: NEEDS WORK
-msgid "Stroke Color"
-msgstr "Liturfarve"
-#: NEEDS WORK
-msgid "Fill Color"
-msgstr "Fyllingar litur"
+msgid "Fill"
+msgstr "Fyllir"
 #: NEEDS WORK
 msgid "Brush Size"
 msgstr "Bursta stærð"
@@ -99,6 +102,12 @@ msgstr "Afturkalla"
 #: NEEDS WORK
 msgid "Redo"
 msgstr "Endurtaka"
+#: NEEDS WORK
+msgid "Edit"
+msgstr "Breyta"
+#: NEEDS WORK
+msgid "Custom"
+msgstr "Sérsniðið"
 #: NEEDS WORK
 msgid "No Fill"
 msgstr "Engin ekki fyllingu"

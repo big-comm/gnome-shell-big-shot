@@ -14,6 +14,18 @@ msgstr  "Project-Id-Version: gnome-shell-big-shot\n"
         "Content-Type: text/plain; charset=UTF-8\n"
         "Content-Transfer-Encoding: 8bit\n"
 
+msgid   "Screenshot taken"
+msgstr  ""
+
+msgid   "Screenshots"
+msgstr  ""
+
+msgid   "Screenshot from %s"
+msgstr  ""
+
+msgid   "Drawing canvas"
+msgstr  ""
+
 msgid   "Text…"
 msgstr  ""
 
@@ -23,28 +35,25 @@ msgstr  ""
 msgid   "Confirm"
 msgstr  ""
 
-msgid   "Desktop Audio"
-msgstr  ""
-
-msgid   "Record Desktop Audio"
-msgstr  ""
-
-msgid   "Microphone"
-msgstr  ""
-
-msgid   "Record Microphone"
-msgstr  ""
-
 msgid   "Desktop"
 msgstr  ""
 
 msgid   "Mic"
 msgstr  ""
 
+msgid   "Record Desktop Audio"
+msgstr  ""
+
+msgid   "Record Microphone"
+msgstr  ""
+
 msgid   "Gradient Angle"
 msgstr  ""
 
 msgid   "Border Radius"
+msgstr  ""
+
+msgid   "Select / Move"
 msgstr  ""
 
 msgid   "Pen"
@@ -71,22 +80,16 @@ msgstr  ""
 msgid   "Censor"
 msgstr  ""
 
+msgid   "Blur"
+msgstr  ""
+
 msgid   "Number"
 msgstr  ""
 
-msgid   "Background"
+msgid   "Color"
 msgstr  ""
 
-msgid   "Crop"
-msgstr  ""
-
-msgid   "Padding"
-msgstr  ""
-
-msgid   "Stroke Color"
-msgstr  ""
-
-msgid   "Fill Color"
+msgid   "Fill"
 msgstr  ""
 
 msgid   "Brush Size"
@@ -96,6 +99,12 @@ msgid   "Undo"
 msgstr  ""
 
 msgid   "Redo"
+msgstr  ""
+
+msgid   "Edit"
+msgstr  ""
+
+msgid   "Custom"
 msgstr  ""
 
 msgid   "No Fill"

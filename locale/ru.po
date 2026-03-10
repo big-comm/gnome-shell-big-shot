@@ -16,6 +16,18 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: attranslate\n"
 #: NEEDS WORK
+msgid "Screenshot taken"
+msgstr "Скриншот сделан"
+#: NEEDS WORK
+msgid "Screenshots"
+msgstr "Скриншоты"
+#: NEEDS WORK
+msgid "Screenshot from %s"
+msgstr "Скриншот от %s"
+#: NEEDS WORK
+msgid "Drawing canvas"
+msgstr "Рисовальная панель"
+#: NEEDS WORK
 msgid "Text…"
 msgstr "Текст…"
 #: NEEDS WORK
@@ -25,29 +37,26 @@ msgstr "Текст аннотации"
 msgid "Confirm"
 msgstr "Подтвердить"
 #: NEEDS WORK
-msgid "Desktop Audio"
-msgstr "Десктопный звук"
-#: NEEDS WORK
-msgid "Record Desktop Audio"
-msgstr "Запись аудио с рабочего стола"
-#: NEEDS WORK
-msgid "Microphone"
-msgstr "Микрофон"
-#: NEEDS WORK
-msgid "Record Microphone"
-msgstr "Запись микрофона"
-#: NEEDS WORK
 msgid "Desktop"
 msgstr "Рабочий стол"
 #: NEEDS WORK
 msgid "Mic"
 msgstr "Микрофон"
 #: NEEDS WORK
+msgid "Record Desktop Audio"
+msgstr "Запись аудио с рабочего стола"
+#: NEEDS WORK
+msgid "Record Microphone"
+msgstr "Запись микрофона"
+#: NEEDS WORK
 msgid "Gradient Angle"
 msgstr "Угол градиента"
 #: NEEDS WORK
 msgid "Border Radius"
 msgstr "Радиус границы"
+#: NEEDS WORK
+msgid "Select / Move"
+msgstr "Выбрать / Переместить"
 #: NEEDS WORK
 msgid "Pen"
 msgstr "Ручка"
@@ -73,23 +82,17 @@ msgstr "Маркер"
 msgid "Censor"
 msgstr "Цензор"
 #: NEEDS WORK
+msgid "Blur"
+msgstr "Размытие"
+#: NEEDS WORK
 msgid "Number"
 msgstr "Число"
 #: NEEDS WORK
-msgid "Background"
-msgstr "Фон"
+msgid "Color"
+msgstr "Цвет"
 #: NEEDS WORK
-msgid "Crop"
-msgstr "Обрезка"
-#: NEEDS WORK
-msgid "Padding"
-msgstr "Заполнение"
-#: NEEDS WORK
-msgid "Stroke Color"
-msgstr "Цвет обводки"
-#: NEEDS WORK
-msgid "Fill Color"
-msgstr "Цвет заливки"
+msgid "Fill"
+msgstr "Заполнить"
 #: NEEDS WORK
 msgid "Brush Size"
 msgstr "Размер кисти"
@@ -99,6 +102,12 @@ msgstr "Отменить"
 #: NEEDS WORK
 msgid "Redo"
 msgstr "Повторить"
+#: NEEDS WORK
+msgid "Edit"
+msgstr "Редактировать"
+#: NEEDS WORK
+msgid "Custom"
+msgstr "Пользовательский"
 #: NEEDS WORK
 msgid "No Fill"
 msgstr "Нет заливки"

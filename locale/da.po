@@ -16,6 +16,18 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: attranslate\n"
 #: NEEDS WORK
+msgid "Screenshot taken"
+msgstr "Skærmbillede taget"
+#: NEEDS WORK
+msgid "Screenshots"
+msgstr "Skærmbilleder"
+#: NEEDS WORK
+msgid "Screenshot from %s"
+msgstr "Skærmbillede fra %s"
+#: NEEDS WORK
+msgid "Drawing canvas"
+msgstr "Tegne lærred"
+#: NEEDS WORK
 msgid "Text…"
 msgstr "Tekst…"
 #: NEEDS WORK
@@ -25,29 +37,26 @@ msgstr "Annoteringstekst"
 msgid "Confirm"
 msgstr "Bekræft"
 #: NEEDS WORK
-msgid "Desktop Audio"
-msgstr "Skrivebordslyd"
-#: NEEDS WORK
-msgid "Record Desktop Audio"
-msgstr "Optag skrivebordslyd"
-#: NEEDS WORK
-msgid "Microphone"
-msgstr "Mikrofon"
-#: NEEDS WORK
-msgid "Record Microphone"
-msgstr "Optag Mikrofon"
-#: NEEDS WORK
 msgid "Desktop"
 msgstr "Skrivebord"
 #: NEEDS WORK
 msgid "Mic"
 msgstr "Mikrofon"
 #: NEEDS WORK
+msgid "Record Desktop Audio"
+msgstr "Optag skrivebordslyd"
+#: NEEDS WORK
+msgid "Record Microphone"
+msgstr "Optag Mikrofon"
+#: NEEDS WORK
 msgid "Gradient Angle"
 msgstr "Gradientvinkel"
 #: NEEDS WORK
 msgid "Border Radius"
 msgstr "Border Radius"
+#: NEEDS WORK
+msgid "Select / Move"
+msgstr "Vælg / Flyt"
 #: NEEDS WORK
 msgid "Pen"
 msgstr "Pen"
@@ -73,23 +82,17 @@ msgstr "Marker"
 msgid "Censor"
 msgstr "Censur"
 #: NEEDS WORK
+msgid "Blur"
+msgstr "Sløring"
+#: NEEDS WORK
 msgid "Number"
 msgstr "Nummer"
 #: NEEDS WORK
-msgid "Background"
-msgstr "Baggrund"
+msgid "Color"
+msgstr "Farve"
 #: NEEDS WORK
-msgid "Crop"
-msgstr "Beskær"
-#: NEEDS WORK
-msgid "Padding"
-msgstr "Polstring"
-#: NEEDS WORK
-msgid "Stroke Color"
-msgstr "Stregfarve"
-#: NEEDS WORK
-msgid "Fill Color"
-msgstr "Udfyldningsfarve"
+msgid "Fill"
+msgstr "Udfyld"
 #: NEEDS WORK
 msgid "Brush Size"
 msgstr "Penselstørrelse"
@@ -99,6 +102,12 @@ msgstr "Fortryd"
 #: NEEDS WORK
 msgid "Redo"
 msgstr "Gendan"
+#: NEEDS WORK
+msgid "Edit"
+msgstr "Rediger"
+#: NEEDS WORK
+msgid "Custom"
+msgstr "Brugerdefineret"
 #: NEEDS WORK
 msgid "No Fill"
 msgstr "Ingen udfyldning"

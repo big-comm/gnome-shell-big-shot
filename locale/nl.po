@@ -16,6 +16,18 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: attranslate\n"
 #: NEEDS WORK
+msgid "Screenshot taken"
+msgstr "Screenshot gemaakt"
+#: NEEDS WORK
+msgid "Screenshots"
+msgstr "Schermafbeeldingen"
+#: NEEDS WORK
+msgid "Screenshot from %s"
+msgstr "Screenshot van %s"
+#: NEEDS WORK
+msgid "Drawing canvas"
+msgstr "Tekent canvas"
+#: NEEDS WORK
 msgid "Text…"
 msgstr "Tekst…"
 #: NEEDS WORK
@@ -25,29 +37,26 @@ msgstr "Annotatietekst"
 msgid "Confirm"
 msgstr "Bevestigen"
 #: NEEDS WORK
-msgid "Desktop Audio"
-msgstr "Bureaulaudio"
-#: NEEDS WORK
-msgid "Record Desktop Audio"
-msgstr "Desktopgeluid opnemen"
-#: NEEDS WORK
-msgid "Microphone"
-msgstr "Microfoon"
-#: NEEDS WORK
-msgid "Record Microphone"
-msgstr "Opnemen Microfoon"
-#: NEEDS WORK
 msgid "Desktop"
 msgstr "Bureaublad"
 #: NEEDS WORK
 msgid "Mic"
 msgstr "Microfoon"
 #: NEEDS WORK
+msgid "Record Desktop Audio"
+msgstr "Desktopgeluid opnemen"
+#: NEEDS WORK
+msgid "Record Microphone"
+msgstr "Opnemen Microfoon"
+#: NEEDS WORK
 msgid "Gradient Angle"
 msgstr "Gradiënthoek"
 #: NEEDS WORK
 msgid "Border Radius"
 msgstr "Randradius"
+#: NEEDS WORK
+msgid "Select / Move"
+msgstr "Selecteren / Verplaatsen"
 #: NEEDS WORK
 msgid "Pen"
 msgstr "Pen"
@@ -73,23 +82,17 @@ msgstr "Markeerstift"
 msgid "Censor"
 msgstr "Censor"
 #: NEEDS WORK
+msgid "Blur"
+msgstr "Vervagen"
+#: NEEDS WORK
 msgid "Number"
 msgstr "Nummer"
 #: NEEDS WORK
-msgid "Background"
-msgstr "Achtergrond"
+msgid "Color"
+msgstr "Kleur"
 #: NEEDS WORK
-msgid "Crop"
-msgstr "Bijsnijden"
-#: NEEDS WORK
-msgid "Padding"
-msgstr "Opvulling"
-#: NEEDS WORK
-msgid "Stroke Color"
-msgstr "Lijnkleur"
-#: NEEDS WORK
-msgid "Fill Color"
-msgstr "Vulkleur"
+msgid "Fill"
+msgstr "Vullen"
 #: NEEDS WORK
 msgid "Brush Size"
 msgstr "Borstelgrootte"
@@ -99,6 +102,12 @@ msgstr "Ongedaan maken"
 #: NEEDS WORK
 msgid "Redo"
 msgstr "Opnieuw"
+#: NEEDS WORK
+msgid "Edit"
+msgstr "Bewerken"
+#: NEEDS WORK
+msgid "Custom"
+msgstr "Aangepast"
 #: NEEDS WORK
 msgid "No Fill"
 msgstr "Geen Opvulling"
