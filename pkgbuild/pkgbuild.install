@@ -26,18 +26,12 @@ printMsg() {
 # }
 
 # Function executed after package installation
-# post_install() {
-#     printMsg "Configuring the package after installation..."
-#     # Example: Create a configuration directory
-#     # mkdir -p /etc/mypackage
-#     # chmod 755 /etc/mypackage
-#     # printMsg "Created configuration directory"
-#
-#     # Example: Start a service
-#     # systemctl enable myservice.service
-#     # systemctl start myservice.service
-#     # printMsg "Service enabled and started"
-# }
+post_install() {
+    # Apply screencast fix if needed (GNOME 49 Gst.init(null) bug)
+    if [ -x /usr/share/libalpm/scripts/gnome-shell-big-shot-screencast-fix.sh ]; then
+        /usr/share/libalpm/scripts/gnome-shell-big-shot-screencast-fix.sh --apply || true
+    fi
+}
 
 # Function executed before package upgrade
 # pre_upgrade() {
@@ -48,18 +42,12 @@ printMsg() {
 # }
 
 # Function executed after package upgrade
-# post_upgrade() {
-#     printMsg "Finalizing package upgrade..."
-#     # Usually, post_install is called here to ensure
-#     # all post-installation configurations are applied
-#     # post_install
-#
-#     # Example: Check and update configuration files
-#     # if [ -f /etc/mypackage/config.conf.pacnew ]; then
-#     #     printMsg "New configuration file available. Please review /etc/mypackage/config.conf.pacnew"
-#     # fi
-#     # printMsg "Upgrade completed successfully"
-# }
+post_upgrade() {
+    # Re-apply screencast fix if needed (gnome-shell update may have overwritten it)
+    if [ -x /usr/share/libalpm/scripts/gnome-shell-big-shot-screencast-fix.sh ]; then
+        /usr/share/libalpm/scripts/gnome-shell-big-shot-screencast-fix.sh --apply || true
+    fi
+}
 
 # Function executed before package removal
 # pre_remove() {
@@ -71,12 +59,9 @@ printMsg() {
 # }
 
 # Function executed after package removal
-# post_remove() {
-#     printMsg "Cleaning up after package removal..."
-#     # Example: Remove data directories created by the package
-#     # rm -rf /var/lib/mypackage
-#     # printMsg "Package directories removed"
-#
-#     # printMsg "If you want to remove all user data, run:"
-#     # printMsg "rm -rf /home/*/mypackage_data"
-# }
+post_remove() {
+    # Restore original screencast service file
+    if [ -x /usr/share/libalpm/scripts/gnome-shell-big-shot-screencast-fix.sh ]; then
+        /usr/share/libalpm/scripts/gnome-shell-big-shot-screencast-fix.sh --remove || true
+    fi
+}

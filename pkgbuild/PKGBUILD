@@ -81,6 +81,11 @@ package() {
         install -Dm644 LICENSE "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
     fi
 
+    # Ensure patch script is executable
+    if [ -f "${pkgdir}/usr/share/libalpm/scripts/gnome-shell-big-shot-screencast-fix.sh" ]; then
+        chmod 755 "${pkgdir}/usr/share/libalpm/scripts/gnome-shell-big-shot-screencast-fix.sh"
+    fi
+
     # Install documentation if present
     if [ -f "README.md" ]; then
         install -Dm644 README.md "${pkgdir}/usr/share/doc/${pkgname}/README.md"

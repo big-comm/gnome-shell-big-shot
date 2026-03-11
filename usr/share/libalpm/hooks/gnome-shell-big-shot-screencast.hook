@@ -1,0 +1,10 @@
+[Trigger]
+Type = Package
+Operation = Install
+Operation = Upgrade
+Target = gnome-shell
+
+[Action]
+Description = Checking GNOME Shell screencast fix (Big Shot)...
+When = PostTransaction
+Exec = /usr/share/libalpm/scripts/gnome-shell-big-shot-screencast-fix.sh --apply
