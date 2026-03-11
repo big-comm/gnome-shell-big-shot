@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
-export const APP_VERSION = '0.0.1';
+export const APP_VERSION = '0.1.0';
 
 import GLib from 'gi://GLib';
 import Gio from 'gi://Gio';
@@ -88,7 +88,7 @@ const VIDEO_PIPELINES = [
         id: 'nvidia-cuda-h264-nvenc',
         label: 'NVIDIA CUDA H.264',
         vendors: [GpuVendor.NVIDIA],
-        src: 'capsfilter caps=video/x-raw(memory:CUDAMemory),framerate=FRAMERATE_CAPS ! cudaconvert ! cudadownload',
+        src: 'capsfilter caps=video/x-raw(memory:CUDAMemory),framerate=FRAMERATE_CAPS ! cudaconvert ! cudadownload ! videoconvert ! queue',
         enc: 'nvh264enc rc-mode=cbr-hq bitrate=40000 ! h264parse',
         elements: ['cudaupload', 'cudaconvert', 'cudadownload', 'nvh264enc'],
         ext: 'mp4',
@@ -97,7 +97,7 @@ const VIDEO_PIPELINES = [
         id: 'nvidia-gl-h264-nvenc',
         label: 'NVIDIA GL H.264',
         vendors: [GpuVendor.NVIDIA],
-        src: 'capsfilter caps=video/x-raw(memory:GLMemory),framerate=FRAMERATE_CAPS ! gldownload',
+        src: 'capsfilter caps=video/x-raw(memory:GLMemory),framerate=FRAMERATE_CAPS ! gldownload ! videoconvert ! queue',
         enc: 'nvh264enc rc-mode=cbr-hq bitrate=40000 ! h264parse',
         elements: ['gldownload', 'nvh264enc'],
         ext: 'mp4',
@@ -123,40 +123,46 @@ const VIDEO_PIPELINES = [
         ext: 'mp4',
     },
     // ── Software fallbacks (any GPU / no GPU) ──
+    // Note: the screencast service prepends "capsfilter caps=video/x-raw,max-framerate=F/1"
+    // for custom pipelines, which forces video/x-raw (no DMABuf). DMABuf/GL pipelines will
+    // fail in the custom path but serve as fallback reference for future direct-pipeline mode.
     {
         id: 'sw-gl-h264-openh264',
         label: 'Software GL H.264',
         vendors: [],
-        src: 'capsfilter caps=video/x-raw(memory:DMABuf),framerate=FRAMERATE_CAPS ! gldownload',
+        src: 'capsfilter caps=video/x-raw(memory:DMABuf),framerate=FRAMERATE_CAPS ! glupload ! glcolorconvert ! gldownload ! queue',
         enc: 'openh264enc complexity=high bitrate=40000000 multi-thread=4 ! h264parse',
-        elements: ['gldownload', 'openh264enc'],
+        elements: ['glupload', 'glcolorconvert', 'gldownload', 'openh264enc'],
         ext: 'mp4',
     },
     {
         id: 'sw-memfd-h264-openh264',
         label: 'Software H.264',
         vendors: [],
-        src: 'capsfilter caps=video/x-raw,framerate=FRAMERATE_CAPS',
+        // No capsfilter here — the screencast service prepends its own
+        // capsfilter caps=video/x-raw,max-framerate=F/1 for custom pipelines.
+        // Adding a second capsfilter causes FATAL_ERRORS linking failure.
+        src: 'videoconvert chroma-mode=none dither=none matrix-mode=output-only n-threads=4 ! queue',
         enc: 'openh264enc complexity=high bitrate=40000000 multi-thread=4 ! h264parse',
-        elements: ['openh264enc'],
+        elements: ['videoconvert', 'openh264enc'],
         ext: 'mp4',
     },
     {
         id: 'sw-gl-vp8',
         label: 'Software GL VP8',
         vendors: [],
-        src: 'capsfilter caps=video/x-raw(memory:DMABuf),framerate=FRAMERATE_CAPS ! gldownload',
+        src: 'capsfilter caps=video/x-raw(memory:DMABuf),framerate=FRAMERATE_CAPS ! glupload ! glcolorconvert ! gldownload ! queue',
         enc: 'vp8enc min_quantizer=10 max_quantizer=50 cq_level=13 cpu-used=5 threads=4 deadline=1 static-threshold=1000 buffer-size=20000 ! queue',
-        elements: ['gldownload', 'vp8enc'],
+        elements: ['glupload', 'glcolorconvert', 'gldownload', 'vp8enc'],
         ext: 'webm',
     },
     {
         id: 'sw-memfd-vp8',
         label: 'Software VP8',
         vendors: [],
-        src: 'capsfilter caps=video/x-raw,framerate=FRAMERATE_CAPS',
+        src: 'videoconvert chroma-mode=none dither=none matrix-mode=output-only n-threads=4 ! queue',
         enc: 'vp8enc min_quantizer=10 max_quantizer=50 cq_level=13 cpu-used=5 threads=4 deadline=1 static-threshold=1000 buffer-size=20000 ! queue',
-        elements: ['vp8enc'],
+        elements: ['videoconvert', 'vp8enc'],
         ext: 'webm',
     },
 ];
@@ -167,8 +173,8 @@ const AUDIO_PIPELINE = {
 };
 
 const MUXERS = {
-    mp4: 'mp4mux fragment-duration=500 ! queue',
-    webm: 'webmmux ! queue',
+    mp4: 'mp4mux fragment-duration=500',
+    webm: 'webmmux',
 };
 
 // =============================================================================
@@ -259,7 +265,7 @@ export default class BigShotExtension extends Extension {
         // Initialize translations
         this.initTranslations();
 
-        console.debug('[Big Shot] Extension enabled');
+        console.log('[Big Shot] Extension enabled');
     }
 
     disable() {
@@ -285,7 +291,7 @@ export default class BigShotExtension extends Extension {
         this._screenshotUI = null;
         this._availableConfigs = null;
 
-        console.debug('[Big Shot] Extension disabled');
+        console.log('[Big Shot] Extension disabled');
     }
 
     _forceEnableScreencast() {
@@ -317,7 +323,7 @@ export default class BigShotExtension extends Extension {
             }
         }
 
-        console.debug('[Big Shot] Screencast button force-enabled');
+        console.log('[Big Shot] Screencast button force-enabled');
     }
 
     _revertForceScreencast() {
@@ -608,7 +614,7 @@ export default class BigShotExtension extends Extension {
 
         // 1. Detect GPU vendor(s) via lspci (same as big-video-converter)
         this._gpuVendors = detectGpuVendors();
-        console.debug(`[Big Shot] Detected GPU vendor(s): ${this._gpuVendors.join(', ')}`);
+        console.log(`[Big Shot] Detected GPU vendor(s): ${this._gpuVendors.join(', ')}`);
 
         const vendorSet = new Set(this._gpuVendors);
 
@@ -640,9 +646,9 @@ export default class BigShotExtension extends Extension {
         if (this._availableConfigs.length === 0) {
             console.warn('[Big Shot] No compatible GStreamer pipeline found!');
         } else {
-            console.debug(`[Big Shot] Pipeline priority (${this._availableConfigs.length} config(s)):`);
+            console.log(`[Big Shot] Pipeline priority (${this._availableConfigs.length} config(s)):`);
             this._availableConfigs.forEach((c, i) => {
-                console.debug(`  [${i}] ${c.id} — ${c.label}`);
+                console.log(`  [${i}] ${c.id} — ${c.label}`);
             });
         }
     }
@@ -694,8 +700,12 @@ export default class BigShotExtension extends Extension {
 
     _patchScreencast() {
         const screenshotUI = this._screenshotUI;
-        const screencastProxy = screenshotUI._screencastService;
-        if (!screencastProxy) return;
+        const screencastProxy = screenshotUI._screencastProxy;
+        if (!screencastProxy) {
+            console.log('[Big Shot] WARNING: _screencastProxy not found on screenshotUI');
+            return;
+        }
+        console.log('[Big Shot] Patching screencast proxy methods');
 
         // Save original methods
         this._origScreencast = screencastProxy.ScreencastAsync?.bind(screencastProxy);
@@ -721,7 +731,7 @@ export default class BigShotExtension extends Extension {
     }
 
     _unpatchScreencast() {
-        const screencastProxy = this._screenshotUI?._screencastService;
+        const screencastProxy = this._screenshotUI?._screencastProxy;
         if (!screencastProxy) return;
 
         if (this._origScreencast)
@@ -738,7 +748,7 @@ export default class BigShotExtension extends Extension {
         this._detectPipelines();
 
         if (this._availableConfigs.length === 0) {
-            console.debug('[Big Shot] No custom pipelines, using GNOME default');
+            console.log('[Big Shot] No custom pipelines, using GNOME default');
             return originalMethod(filePath, options);
         }
 
@@ -746,20 +756,32 @@ export default class BigShotExtension extends Extension {
         const downsize = this._downsize?.value ?? 1.0;
         const framerateCaps = `${framerate}/1`;
 
+        // Set framerate in D-Bus options
+        options['framerate'] = new GLib.Variant('i', framerate);
+
+        // Show indicator once at the start of cascade
+        this._indicator?.onPipelineStarting();
+
         // Try each config in cascade: GPU hw → VAAPI → Software
         for (let i = 0; i < this._availableConfigs.length; i++) {
             const config = this._availableConfigs[i];
             const pipeline = this._makePipelineString(config, framerateCaps, downsize);
-            const pipelineOptions = { ...options, pipeline };
+            const pipelineOptions = {
+                ...options,
+                pipeline: new GLib.Variant('s', pipeline),
+            };
 
-            console.debug(`[Big Shot] Trying pipeline [${i}]: ${config.id} (${config.label})`);
-            this._indicator?.onPipelineStarting();
+            console.log(`[Big Shot] Trying pipeline [${i}]: ${config.id} (${config.label})`);
+            console.log(`[Big Shot] Pipeline string: ${pipeline}`);
 
             try {
                 const result = await originalMethod(filePath, pipelineOptions);
-                console.debug(`[Big Shot] Pipeline ${config.id} succeeded`);
+                console.log(`[Big Shot] Pipeline ${config.id} succeeded`);
                 this._indicator?.onPipelineReady();
-                fixFilePath(filePath, config.ext);
+                // Service returns [success, actualPath] — rename .undefined → correct ext
+                const actualPath = Array.isArray(result) ? result[1] : null;
+                if (actualPath)
+                    fixFilePath(actualPath, config.ext);
                 return result;
             } catch (e) {
                 console.warn(`[Big Shot] Pipeline ${config.id} failed: ${e.message}`);
@@ -767,9 +789,9 @@ export default class BigShotExtension extends Extension {
             }
         }
 
-        // All custom pipelines exhausted — fall back to GNOME's default pipeline
+        // All custom pipelines exhausted — clean up indicator and fall back
         console.warn('[Big Shot] All pipelines failed, falling back to GNOME default');
-        this._indicator?.onPipelineStarting();
+        this._indicator?.onPipelineReady();
         return originalMethod(filePath, options);
     }
 
@@ -787,9 +809,17 @@ export default class BigShotExtension extends Extension {
         const ext = config.ext;
         const muxer = MUXERS[ext];
 
+        console.log(`[Big Shot] _makePipeline: audioInput=${audioInput ? 'YES' : 'NO'}, ext=${ext}`);
+
         if (audioInput) {
+            // GStreamer multi-branch pipeline for audio+video:
+            //   pipewiresrc ! video_chain ! queue ! mux.  pulsesrc ! audio_chain ! queue ! mux.  muxer name=mux ! filesink
+            // The screencast service prepends pipewiresrc and appends ! filesink
             const audioPipeline = ext === 'mp4' ? AUDIO_PIPELINE.aac : AUDIO_PIPELINE.vorbis;
-            return `${video} ! mux. ${audioInput} ! ${audioPipeline} ! mux. ${muxer} name=mux`;
+            const videoSeg = `${video} ! queue ! mux.`;
+            const audioSeg = `${audioInput} ! ${audioPipeline} ! mux.`;
+            const muxDef = `${muxer} name=mux`;
+            return `${videoSeg} ${audioSeg} ${muxDef}`;
         }
 
         return `${video} ! ${muxer}`;

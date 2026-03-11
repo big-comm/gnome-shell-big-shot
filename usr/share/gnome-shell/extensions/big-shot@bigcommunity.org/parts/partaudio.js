@@ -170,21 +170,64 @@ export class PartAudio extends PartUI {
         const desktopActive = this._desktopButton?.checked && this._desktopDevice;
         const micActive = this._micButton?.checked && this._micDevice;
 
-        if (!desktopActive && !micActive) return null;
+        console.log(`[Big Shot Audio] desktopBtn=${this._desktopButton?.checked}, micBtn=${this._micButton?.checked}, dDev=${this._desktopDevice}, mDev=${this._micDevice}`);
 
-        const audioCaps = 'audio/x-raw,channels=2,rate=48000';
-        const dDev = desktopActive ? GLib.shell_quote(this._desktopDevice) : '';
-        const mDev = micActive ? GLib.shell_quote(this._micDevice) : '';
-
-        if (desktopActive && micActive) {
-            return `audiomixer name=mix ! capsfilter caps=${audioCaps} ! audioconvert ! queue pulsesrc device=${dDev} ! capsfilter caps=${audioCaps} ! audioconvert ! queue ! mix. pulsesrc device=${mDev} ! capsfilter caps=${audioCaps} ! audioconvert ! queue ! mix.`;
+        if (!desktopActive && !micActive) {
+            console.log('[Big Shot Audio] No audio source active');
+            return null;
         }
 
+        // Desktop audio source
+        let desktopSource = null;
+        let desktopChannels = 2;
         if (desktopActive) {
-            return `pulsesrc device=${dDev} ! capsfilter caps=${audioCaps} ! audioconvert ! queue`;
+            const sink = this._mixer.get_default_sink();
+            if (sink) {
+                const channelMap = sink.get_channel_map();
+                if (channelMap)
+                    desktopChannels = channelMap.get_num_channels();
+            }
+            desktopSource = [
+                `pulsesrc device=${this._desktopDevice} provide-clock=false`,
+                `capsfilter caps=audio/x-raw,channels=${desktopChannels}`,
+                'audioconvert',
+                'queue',
+            ].join(' ! ');
         }
 
-        return `pulsesrc device=${mDev} ! capsfilter caps=${audioCaps} ! audioconvert ! queue`;
+        // Microphone source
+        let micSource = null;
+        if (micActive) {
+            const src = this._mixer.get_default_source();
+            let micChannels = 2;
+            if (src) {
+                const channelMap = src.get_channel_map();
+                if (channelMap)
+                    micChannels = channelMap.get_num_channels();
+            }
+            micSource = [
+                `pulsesrc device=${this._micDevice} provide-clock=false`,
+                `capsfilter caps=audio/x-raw,channels=${micChannels}`,
+                'audioconvert',
+                'queue',
+            ].join(' ! ');
+        }
+
+        // Both active — mix them
+        if (desktopSource && micSource) {
+            const result = [
+                `${desktopSource} ! audiomixer name=am latency=100000000`,
+                `${micSource} ! am.`,
+                `am. ! capsfilter caps=audio/x-raw,channels=${desktopChannels} ! audioconvert ! queue`,
+            ].join(' ');
+            console.log(`[Big Shot Audio] Mixed pipeline: ${result}`);
+            return result;
+        }
+
+        // Single source
+        const result = desktopSource || micSource;
+        console.log(`[Big Shot Audio] Single pipeline: ${result}`);
+        return result;
     }
 
     _onModeChanged(isCast) {
