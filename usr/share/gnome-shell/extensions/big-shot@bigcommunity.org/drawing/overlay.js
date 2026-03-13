@@ -10,12 +10,16 @@
 import Clutter from 'gi://Clutter';
 import St from 'gi://St';
 import GLib from 'gi://GLib';
+import Gio from 'gi://Gio';
+import Shell from 'gi://Shell';
 import { gettext as _ } from 'resource:///org/gnome/shell/extensions/extension.js';
 
 import {
     DrawingMode,
     DrawingOptions,
     createAction,
+    CensorAction,
+    BlurAction,
 } from './actions.js';
 
 const TOOL_TO_MODE = {
@@ -144,6 +148,7 @@ export class DrawingOverlay {
         const colorHex = toolbar?.currentColor || '#ed333b';
         const fillHex = toolbar?.fillColor;
         const size = toolbar?.brushSize || 3;
+        const intensity = toolbar?.intensity || 3;
 
         let fillColor = null;
         if (mode === DrawingMode.NUMBER) {
@@ -158,6 +163,7 @@ export class DrawingOverlay {
             size,
             fillColor,
             font: toolbar?.currentFont || 'Sans',
+            intensity,
         });
     }
 
@@ -329,6 +335,13 @@ export class DrawingOverlay {
         if (action) {
             this._actions.push(action);
             this._undoStack = []; // Clear redo stack on new action
+
+            // Generate real preview for effect actions (censor/blur)
+            if (action instanceof CensorAction || action instanceof BlurAction) {
+                this._generateEffectPreview(action).catch(e =>
+                    console.error(`[Big Shot] Preview generation failed: ${e.message}`)
+                );
+            }
         }
 
         this._isDrawing = false;
@@ -612,6 +625,41 @@ export class DrawingOverlay {
     }
 
     // =========================================================================
+    // EFFECT PREVIEW (censor / blur real preview from screenshot pixels)
+    // =========================================================================
+
+    async _ensurePixbufCache() {
+        if (this._cachedPixbuf) return;
+
+        const content = this._ui._stageScreenshot?.get_content();
+        if (!content) return;
+        const texture = content.get_texture();
+        if (!texture) return;
+
+        const bufScale = this._ui._scale || 1;
+        const stream = Gio.MemoryOutputStream.new_resizable();
+        const pixbuf = await Shell.Screenshot.composite_to_stream(
+            texture, 0, 0, -1, -1, bufScale,
+            null, 0, 0, 1,
+            stream
+        );
+        stream.close(null);
+
+        if (pixbuf) {
+            this._cachedPixbuf = pixbuf;
+            this._cachedBufScale = bufScale;
+        }
+    }
+
+    async _generateEffectPreview(action) {
+        await this._ensurePixbufCache();
+        if (!this._cachedPixbuf) return;
+
+        action.generatePreview(this._cachedPixbuf, this._cachedBufScale);
+        this._actor.queue_repaint();
+    }
+
+    // =========================================================================
     // CLEANUP
     // =========================================================================
 
@@ -619,11 +667,15 @@ export class DrawingOverlay {
         this._actions = [];
         this._undoStack = [];
         this._nextNumber = 1;
+        this._cachedPixbuf = null;
+        this._cachedBufScale = null;
         this._actor.queue_repaint();
     }
 
     destroy() {
         this._closeTextPopover();
+        this._cachedPixbuf = null;
+        this._cachedBufScale = null;
 
         // Ensure overlay is no longer reactive
         if (this._actor)

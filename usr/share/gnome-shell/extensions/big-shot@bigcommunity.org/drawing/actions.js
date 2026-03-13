@@ -9,6 +9,7 @@
 
 import Pango from 'gi://Pango';
 import PangoCairo from 'gi://PangoCairo';
+import cairo from 'gi://cairo';
 
 // =============================================================================
 // DRAWING MODES
@@ -40,6 +41,7 @@ export class DrawingOptions {
         borderColor = null,
         size = 3,
         font = 'Sans',
+        intensity = 3,
     } = {}) {
         this.mode = mode;
         this.primaryColor = primaryColor;
@@ -47,6 +49,7 @@ export class DrawingOptions {
         this.borderColor = borderColor;
         this.size = size;
         this.font = font;
+        this.intensity = intensity;
     }
 
     clone() {
@@ -57,6 +60,7 @@ export class DrawingOptions {
             borderColor: this.borderColor ? [...this.borderColor] : null,
             size: this.size,
             font: this.font,
+            intensity: this.intensity,
         });
     }
 }
@@ -434,7 +438,28 @@ export class HighlighterAction extends StrokeAction {
 // =============================================================================
 
 export class CensorAction extends RectAction {
-    draw(cr, toWidget, scale) {
+    draw(cr, toWidget, _scale) {
+        // If we have a real pixelation preview, draw it
+        if (this._previewBlocks) {
+            const baseX = Math.min(this.start[0], this.end[0]);
+            const baseY = Math.min(this.start[1], this.end[1]);
+
+            cr.save();
+            for (const block of this._previewBlocks) {
+                const [wx, wy] = toWidget(baseX + block.rx, baseY + block.ry);
+                const [wx2, wy2] = toWidget(
+                    baseX + block.rx + block.rw,
+                    baseY + block.ry + block.rh
+                );
+                cr.setSourceRGBA(block.r, block.g, block.b, 1.0);
+                cr.rectangle(wx, wy, wx2 - wx, wy2 - wy);
+                cr.fill();
+            }
+            cr.restore();
+            return;
+        }
+
+        // Fallback: checkerboard placeholder (shown during drag)
         let [x1, y1] = toWidget(...this.start);
         let [x2, y2] = toWidget(...this.end);
 
@@ -449,7 +474,7 @@ export class CensorAction extends RectAction {
         cr.rectangle(x, y, w, h);
         cr.clip();
 
-        const blockSize = 8 * scale;
+        const blockSize = this._blockSizeForIntensity(1);
         const blocksX = Math.max(1, Math.floor(w / blockSize));
         const blocksY = Math.max(1, Math.floor(h / blockSize));
 
@@ -470,6 +495,83 @@ export class CensorAction extends RectAction {
     }
 
     /**
+     * Compute block size from intensity level (1-5).
+     * Higher intensity → smaller blocks → stronger pixelation.
+     */
+    _blockSizeForIntensity(scaleFactor) {
+        const level = this.options?.intensity || 3;
+        // level 1=16, 2=12, 3=8, 4=5, 5=3
+        const sizes = [16, 12, 8, 5, 3];
+        const base = sizes[Math.max(0, Math.min(level - 1, 4))];
+        return Math.max(2, Math.round(base * scaleFactor));
+    }
+
+    /**
+     * Generate real pixelation preview from screenshot pixel data.
+     * Called by DrawingOverlay after the rectangle is committed.
+     */
+    generatePreview(pixbuf, bufScale) {
+        const regionX = Math.min(this.start[0], this.end[0]);
+        const regionY = Math.min(this.start[1], this.end[1]);
+        const regionW = Math.abs(this.end[0] - this.start[0]);
+        const regionH = Math.abs(this.end[1] - this.start[1]);
+
+        const imgW = pixbuf.get_width();
+        const imgH = pixbuf.get_height();
+
+        const x = Math.round(Math.max(0, Math.min(regionX * bufScale, imgW - 1)));
+        const y = Math.round(Math.max(0, Math.min(regionY * bufScale, imgH - 1)));
+        const w = Math.round(Math.min(regionW * bufScale, imgW - x));
+        const h = Math.round(Math.min(regionH * bufScale, imgH - y));
+
+        if (w < 2 || h < 2) return;
+
+        const blockSize = this._blockSizeForIntensity(bufScale);
+        const bytes = pixbuf.read_pixel_bytes();
+        const data = bytes.get_data();
+        const rowstride = pixbuf.get_rowstride();
+        const nChannels = pixbuf.get_n_channels();
+
+        const blocks = [];
+        const blocksX = Math.ceil(w / blockSize);
+        const blocksY = Math.ceil(h / blockSize);
+
+        for (let bxi = 0; bxi < blocksX; bxi++) {
+            for (let byi = 0; byi < blocksY; byi++) {
+                const bx0 = x + bxi * blockSize;
+                const by0 = y + byi * blockSize;
+                const bx1 = Math.min(bx0 + blockSize, x + w, imgW);
+                const by1 = Math.min(by0 + blockSize, y + h, imgH);
+
+                let rSum = 0, gSum = 0, bSum = 0, count = 0;
+                for (let py = by0; py < by1; py++) {
+                    for (let px = bx0; px < bx1; px++) {
+                        const off = py * rowstride + px * nChannels;
+                        rSum += data[off];
+                        gSum += data[off + 1];
+                        bSum += data[off + 2];
+                        count++;
+                    }
+                }
+
+                if (count > 0) {
+                    blocks.push({
+                        rx: (bx0 - x) / bufScale,
+                        ry: (by0 - y) / bufScale,
+                        rw: (bx1 - bx0) / bufScale,
+                        rh: (by1 - by0) / bufScale,
+                        r: rSum / count / 255,
+                        g: gSum / count / 255,
+                        b: bSum / count / 255,
+                    });
+                }
+            }
+        }
+
+        this._previewBlocks = blocks;
+    }
+
+    /**
      * Apply real pixelation on GdkPixbuf at save time.
      */
     drawReal(pixbuf, GdkPixbuf, GLib, toWidget, scale) {
@@ -486,7 +588,7 @@ export class CensorAction extends RectAction {
 
         if (w < 2 || h < 2) return pixbuf;
 
-        const blockSize = Math.max(4, Math.round(8 * scale));
+        const blockSize = this._blockSizeForIntensity(scale);
 
         const bytes = pixbuf.read_pixel_bytes();
         const data = bytes.get_data();
@@ -552,7 +654,18 @@ export class CensorAction extends RectAction {
 
 export class BlurAction extends RectAction {
     /**
-     * Preview draw — frosted/hatched overlay to indicate blur area.
+     * Compute blur intensity multiplier from level (1-5).
+     * Higher intensity → larger radius → stronger blur.
+     */
+    _blurIntensityMultiplier() {
+        const level = this.options?.intensity || 3;
+        const mults = [0.5, 0.8, 1.0, 1.5, 2.5];
+        return mults[Math.max(0, Math.min(level - 1, 4))];
+    }
+
+    /**
+     * Preview draw — uses cached downscaled surface for real blur preview,
+     * or falls back to frosted/hatched overlay during drag.
      */
     draw(cr, toWidget, scale) {
         let [x1, y1] = toWidget(...this.start);
@@ -565,14 +678,37 @@ export class BlurAction extends RectAction {
 
         if (w < 1 || h < 1) return;
 
-        cr.save();
+        // Real blur preview from cached downscaled surface
+        if (this._previewSurface) {
+            cr.save();
+            cr.rectangle(x, y, w, h);
+            cr.clip();
+            cr.translate(x, y);
+            cr.scale(w / this._previewSmallW, h / this._previewSmallH);
+            cr.setSourceSurface(this._previewSurface, 0, 0);
+            // BILINEAR filter (enum value 4) for smooth blur effect
+            const pattern = cr.getSource();
+            if (pattern.setFilter)
+                pattern.setFilter(4);
+            cr.paint();
+            cr.restore();
 
-        // Semi-transparent overlay to dim the area
+            // Border
+            cr.save();
+            cr.setSourceRGBA(0.6, 0.7, 1.0, 0.8);
+            cr.setLineWidth(1.5);
+            cr.rectangle(x, y, w, h);
+            cr.stroke();
+            cr.restore();
+            return;
+        }
+
+        // Fallback: frosted/hatched overlay (shown during drag)
+        cr.save();
         cr.rectangle(x, y, w, h);
         cr.setSourceRGBA(0.8, 0.85, 1.0, 0.35);
         cr.fill();
 
-        // Diagonal hatch lines to indicate blur
         cr.rectangle(x, y, w, h);
         cr.clip();
 
@@ -585,16 +721,89 @@ export class BlurAction extends RectAction {
             cr.lineTo(x + d + h, y + h);
         }
         cr.stroke();
-
         cr.restore();
 
-        // Border
         cr.save();
         cr.setSourceRGBA(0.6, 0.7, 1.0, 0.8);
         cr.setLineWidth(1.5);
         cr.rectangle(x, y, w, h);
         cr.stroke();
         cr.restore();
+    }
+
+    /**
+     * Generate real blur preview from screenshot pixel data.
+     * Creates a small downscaled Cairo ImageSurface; when painted back
+     * at full size with bilinear filtering, it produces a blur effect.
+     */
+    generatePreview(pixbuf, bufScale) {
+        const regionX = Math.min(this.start[0], this.end[0]);
+        const regionY = Math.min(this.start[1], this.end[1]);
+        const regionW = Math.abs(this.end[0] - this.start[0]);
+        const regionH = Math.abs(this.end[1] - this.start[1]);
+
+        const imgW = pixbuf.get_width();
+        const imgH = pixbuf.get_height();
+
+        const x = Math.round(Math.max(0, Math.min(regionX * bufScale, imgW - 1)));
+        const y = Math.round(Math.max(0, Math.min(regionY * bufScale, imgH - 1)));
+        const w = Math.round(Math.min(regionW * bufScale, imgW - x));
+        const h = Math.round(Math.min(regionH * bufScale, imgH - y));
+
+        if (w < 2 || h < 2) return;
+
+        const bytes = pixbuf.read_pixel_bytes();
+        const data = bytes.get_data();
+        const rowstride = pixbuf.get_rowstride();
+        const nChannels = pixbuf.get_n_channels();
+
+        // Downscale factor — larger = more blur
+        // Intensity 1-5 maps to multiplier [0.5, 0.8, 1.0, 1.5, 2.5]
+        const intensityMult = this._blurIntensityMultiplier();
+        const radius = Math.max(3, Math.round((this.options?.size || 8) * bufScale * intensityMult));
+        const downFactor = Math.max(2, Math.round(radius * 1.5));
+
+        const smallW = Math.max(2, Math.ceil(w / downFactor));
+        const smallH = Math.max(2, Math.ceil(h / downFactor));
+
+        const surface = new cairo.ImageSurface(cairo.Format.ARGB32, smallW, smallH);
+        const scr = new cairo.Context(surface);
+
+        for (let sy = 0; sy < smallH; sy++) {
+            for (let sx = 0; sx < smallW; sx++) {
+                const srcX0 = x + sx * downFactor;
+                const srcY0 = y + sy * downFactor;
+                const srcX1 = Math.min(srcX0 + downFactor, x + w, imgW);
+                const srcY1 = Math.min(srcY0 + downFactor, y + h, imgH);
+
+                let rSum = 0, gSum = 0, bSum = 0, count = 0;
+                for (let py = srcY0; py < srcY1; py++) {
+                    for (let px = srcX0; px < srcX1; px++) {
+                        const off = py * rowstride + px * nChannels;
+                        rSum += data[off];
+                        gSum += data[off + 1];
+                        bSum += data[off + 2];
+                        count++;
+                    }
+                }
+
+                if (count > 0) {
+                    scr.setSourceRGBA(
+                        rSum / count / 255,
+                        gSum / count / 255,
+                        bSum / count / 255,
+                        1.0
+                    );
+                    scr.rectangle(sx, sy, 1, 1);
+                    scr.fill();
+                }
+            }
+        }
+
+        surface.flush();
+        this._previewSurface = surface;
+        this._previewSmallW = smallW;
+        this._previewSmallH = smallH;
     }
 
     /**
@@ -621,7 +830,8 @@ export class BlurAction extends RectAction {
 
         if (w < 2 || h < 2) return pixbuf;
 
-        const radius = Math.max(3, Math.round((this.options?.size || 8) * scale));
+        const intensityMult = this._blurIntensityMultiplier();
+        const radius = Math.max(3, Math.round((this.options?.size || 8) * scale * intensityMult));
         const passes = 3;
 
         const bytes = pixbuf.read_pixel_bytes();

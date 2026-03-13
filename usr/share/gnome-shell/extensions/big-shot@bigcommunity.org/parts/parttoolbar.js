@@ -164,6 +164,33 @@ export class PartToolbar extends PartUI {
         this._fontButton.connect('leave-event', () => this._hideTooltip());
         styleRow.add_child(this._fontButton);
 
+        // Intensity level (visible only for Censor / Blur)
+        this._intensityLevel = 3;
+        const intensityBox = new St.BoxLayout({ style: 'spacing: 2px;' });
+        this._intensityIcon = new St.Icon({
+            icon_name: 'view-grid-symbolic',
+            icon_size: 14,
+            style: 'color: #ffffff;',
+        });
+        this._intensityLabel = new St.Label({
+            text: '3',
+            style: 'color: #ffffff; font-size: 14px;',
+            y_align: Clutter.ActorAlign.CENTER,
+        });
+        intensityBox.add_child(this._intensityIcon);
+        intensityBox.add_child(this._intensityLabel);
+        this._intensityButton = new St.Button({
+            style_class: 'big-shot-edit-tool-btn',
+            child: intensityBox,
+            can_focus: true,
+            accessible_name: _('Intensity'),
+            visible: false,
+        });
+        this._intensityButton.connect('clicked', () => this._showIntensityPopup());
+        this._intensityButton.connect('enter-event', () => this._showTooltip(this._intensityButton, _('Intensity')));
+        this._intensityButton.connect('leave-event', () => this._hideTooltip());
+        styleRow.add_child(this._intensityButton);
+
         // Separator
         styleRow.add_child(new St.Widget({ style_class: 'big-shot-edit-sep' }));
 
@@ -254,6 +281,7 @@ export class PartToolbar extends PartUI {
         }
         this._activeTool = btn.checked ? toolId : null;
         this._fontButton.visible = (this._activeTool === 'text');
+        this._intensityButton.visible = (this._activeTool === 'censor' || this._activeTool === 'blur');
         this._onToolChanged(this._activeTool);
     }
 
@@ -271,6 +299,7 @@ export class PartToolbar extends PartUI {
                 btn.checked = false;
             this._activeTool = null;
             this._fontButton.visible = false;
+            this._intensityButton.visible = false;
             this._onToolChanged(null);
             return;
         }
@@ -280,6 +309,7 @@ export class PartToolbar extends PartUI {
             otherBtn.checked = (id === toolId);
         this._activeTool = toolId;
         this._fontButton.visible = (toolId === 'text');
+        this._intensityButton.visible = (toolId === 'censor' || toolId === 'blur');
         this._onToolChanged(toolId);
     }
 
@@ -444,6 +474,95 @@ export class PartToolbar extends PartUI {
 
     get brushSize() {
         return parseInt(this._sizeLabel.text) || 3;
+    }
+
+    get intensity() {
+        return this._intensityLevel || 3;
+    }
+
+    _showIntensityPopup() {
+        this._closeIntensityPopup();
+        this._closeColorPopup();
+        this._closeSizePopup();
+
+        this._intensityPopup = new St.BoxLayout({
+            style_class: 'big-shot-edit-popup',
+            vertical: true,
+            reactive: true,
+        });
+
+        // Title row
+        const titleLabel = new St.Label({
+            text: _('Intensity'),
+            style: 'color: rgba(255,255,255,0.7); font-size: 11px; margin-bottom: 4px;',
+            x_align: Clutter.ActorAlign.CENTER,
+        });
+        this._intensityPopup.add_child(titleLabel);
+
+        // 5 level buttons
+        const row = new St.BoxLayout({ style_class: 'big-shot-edit-row' });
+        const labels = ['1', '2', '3', '4', '5'];
+        for (let i = 1; i <= 5; i++) {
+            const level = i;
+            const btn = new St.Button({
+                style_class: 'big-shot-edit-tool-btn',
+                can_focus: true,
+                child: new St.Label({
+                    text: labels[i - 1],
+                    style: 'color: #ffffff; font-size: 14px; min-width: 28px;',
+                    x_align: Clutter.ActorAlign.CENTER,
+                    y_align: Clutter.ActorAlign.CENTER,
+                }),
+                accessible_name: `${_('Intensity')} ${level}`,
+            });
+            if (level === this._intensityLevel)
+                btn.add_style_pseudo_class('checked');
+            btn.connect('clicked', () => {
+                this._intensityLevel = level;
+                this._intensityLabel.text = String(level);
+                this._closeIntensityPopup();
+            });
+            row.add_child(btn);
+        }
+        this._intensityPopup.add_child(row);
+
+        this._ui.add_child(this._intensityPopup);
+
+        GLib.idle_add(GLib.PRIORITY_DEFAULT, () => {
+            if (!this._intensityPopup) return GLib.SOURCE_REMOVE;
+            const [bx, by] = this._intensityButton.get_transformed_position();
+            const monitor = global.display.get_current_monitor();
+            const geo = global.display.get_monitor_geometry(monitor);
+            let cpx = bx;
+            let cpy = by - this._intensityPopup.height - 8;
+            cpx = Math.max(geo.x, Math.min(cpx, geo.x + geo.width - this._intensityPopup.width));
+            cpy = Math.max(geo.y, cpy);
+            this._intensityPopup.set_position(cpx, cpy);
+            return GLib.SOURCE_REMOVE;
+        });
+
+        this._intensityPopupTimeoutId = GLib.timeout_add(GLib.PRIORITY_DEFAULT, 100, () => {
+            this._intensityPopupTimeoutId = 0;
+            if (this._destroyed) return GLib.SOURCE_REMOVE;
+            this._intensityPopupClickId = global.stage.connect('button-press-event', () => {
+                this._closeIntensityPopup();
+                return Clutter.EVENT_PROPAGATE;
+            });
+            return GLib.SOURCE_REMOVE;
+        });
+    }
+
+    _closeIntensityPopup() {
+        if (this._intensityPopupTimeoutId) {
+            GLib.source_remove(this._intensityPopupTimeoutId);
+            this._intensityPopupTimeoutId = 0;
+        }
+        if (this._intensityPopupClickId) {
+            global.stage.disconnect(this._intensityPopupClickId);
+            this._intensityPopupClickId = null;
+        }
+        this._intensityPopup?.destroy();
+        this._intensityPopup = null;
     }
 
     _showColorPopup(target) {
@@ -619,6 +738,7 @@ export class PartToolbar extends PartUI {
         this._closeColorPopup();
         this._closeSizePopup();
         this._closeFontPopup();
+        this._closeIntensityPopup();
         this._hideTooltip();
 
         if (this._editButton) {
