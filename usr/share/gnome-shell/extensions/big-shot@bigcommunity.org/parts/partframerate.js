@@ -5,6 +5,7 @@
  */
 
 import { PartPopupSelect } from './partbase.js';
+import { gettext as _ } from 'resource:///org/gnome/shell/extensions/extension.js';
 
 export class PartFramerate extends PartPopupSelect {
     constructor(screenshotUI, extension) {
@@ -13,7 +14,8 @@ export class PartFramerate extends PartPopupSelect {
             extension,
             [15, 24, 30, 60],
             30,
-            (v) => `${v} FPS`
+            (v) => `${v} FPS`,
+            _('Frames per second')
         );
     }
 }

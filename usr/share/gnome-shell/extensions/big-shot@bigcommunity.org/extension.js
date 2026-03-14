@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
-export const APP_VERSION = '0.3.3';
+export const APP_VERSION = '0.4.0';
 
 import GLib from 'gi://GLib';
 import Gio from 'gi://Gio';
@@ -138,12 +138,12 @@ const VIDEO_PIPELINES = [
         ext: 'mp4',
     },
     {
-        id: 'sw-memfd-vp8',
-        label: 'Software VP8',
+        id: 'sw-memfd-vp9',
+        label: 'Software VP9',
         vendors: [],
         src: 'videoconvert chroma-mode=none dither=none matrix-mode=output-only n-threads=4 ! queue',
-        enc: 'vp8enc min_quantizer=10 max_quantizer=50 cq_level=13 cpu-used=5 threads=4 deadline=1 static-threshold=1000 buffer-size=20000 ! queue',
-        elements: ['videoconvert', 'vp8enc'],
+        enc: 'vp9enc min_quantizer=10 max_quantizer=50 cq_level=13 cpu-used=5 threads=4 deadline=1 static-threshold=1000 buffer-size=20000 row-mt=1 ! queue',
+        elements: ['videoconvert', 'vp9enc'],
         ext: 'webm',
     },
 ];
@@ -778,6 +778,7 @@ export default class BigShotExtension extends Extension {
 
         const framerate = this._framerate?.value ?? 30;
         const downsize = this._downsize?.value ?? 1.0;
+        const quality = this._toolbar?.videoQuality ?? 'high';
         const framerateCaps = `${framerate}/1`;
 
         // Set framerate in D-Bus options
@@ -786,10 +787,21 @@ export default class BigShotExtension extends Extension {
         // Show indicator once at the start of cascade
         this._indicator?.onPipelineStarting();
 
-        // Try each config in cascade: GPU hw → VAAPI → Software
-        for (let i = 0; i < this._availableConfigs.length; i++) {
-            const config = this._availableConfigs[i];
-            const pipeline = this._makePipelineString(config, framerateCaps, downsize);
+        // Build pipeline order: preferred codec first, then rest
+        let configs = [...this._availableConfigs];
+        const preferredId = this._toolbar?.selectedPipelineId;
+        if (preferredId) {
+            const idx = configs.findIndex(c => c.id === preferredId);
+            if (idx > 0) {
+                const [preferred] = configs.splice(idx, 1);
+                configs.unshift(preferred);
+            }
+        }
+
+        // Try each config in cascade: preferred → GPU hw → VAAPI → Software
+        for (let i = 0; i < configs.length; i++) {
+            const config = configs[i];
+            const pipeline = this._makePipelineString(config, framerateCaps, downsize, quality);
             const pipelineOptions = {
                 ...options,
                 pipeline: new GLib.Variant('s', pipeline),
@@ -863,14 +875,41 @@ export default class BigShotExtension extends Extension {
         });
     }
 
-    _makePipelineString(config, framerateCaps, downsize) {
+    _makePipelineString(config, framerateCaps, downsize, quality = 'high') {
         let video = config.src.replace('FRAMERATE_CAPS', framerateCaps);
         video += ` ! ${config.enc}`;
 
-        // Downsize
+        // Apply quality adjustment to bitrate
+        if (quality !== 'high') {
+            const factor = quality === 'medium' ? 0.5 : 0.25;
+            // HW encoders use bitrate in kbps (e.g., bitrate=40000)
+            // SW encoders use bitrate in bps (e.g., bitrate=40000000)
+            video = video.replace(/bitrate=(\d+)/g, (_match, val) => {
+                return `bitrate=${Math.round(parseInt(val) * factor)}`;
+            });
+            // VP8/VP9 use quantizer-based quality (higher = lower quality)
+            video = video.replace(/min_quantizer=(\d+)/g, (_match, val) => {
+                const adj = quality === 'medium' ? 5 : 10;
+                return `min_quantizer=${Math.min(parseInt(val) + adj, 63)}`;
+            });
+            video = video.replace(/max_quantizer=(\d+)/g, (_match, val) => {
+                const adj = quality === 'medium' ? 3 : 8;
+                return `max_quantizer=${Math.min(parseInt(val) + adj, 63)}`;
+            });
+        }
+
+        // Downsize — insert videoscale between videoconvert and encoder
         if (downsize < 1.0) {
-            const scaleStr = `videoscale ! video/x-raw,width=(int)(width*${downsize}),height=(int)(height*${downsize})`;
-            video = video.replace('capsfilter', `capsfilter ! ${scaleStr}`);
+            const monitor = global.display.get_current_monitor();
+            const geo = global.display.get_monitor_geometry(monitor);
+            const targetW = Math.round(geo.width * downsize);
+            const targetH = Math.round(geo.height * downsize);
+            // Insert videoscale after the first "queue" in the video chain
+            video = video.replace(
+                /queue/,
+                `queue ! videoscale ! video/x-raw,width=${targetW},height=${targetH}`
+            );
+            console.log(`[Big Shot] Downsize ${Math.round(downsize * 100)}%: ${geo.width}x${geo.height} → ${targetW}x${targetH}`);
         }
 
         const audioInput = this._audio?.makeAudioInput();

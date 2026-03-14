@@ -167,8 +167,28 @@ export class ArrowAction extends DrawingAction {
             Math.min(1.0, Math.max(0.3, dist / (120 * scale)));
         const arrowAngle = Math.PI / 6;
 
+        const lx = ex + headSize * Math.cos(angle + Math.PI - arrowAngle);
+        const ly = ey + headSize * Math.sin(angle + Math.PI - arrowAngle);
+        const rx = ex + headSize * Math.cos(angle + Math.PI + arrowAngle);
+        const ry = ey + headSize * Math.sin(angle + Math.PI + arrowAngle);
+
         cr.setLineWidth(width);
         cr.setLineCap(1); // ROUND
+
+        // Shadow
+        const shadowOff = Math.max(1, Math.round(scale));
+        cr.setSourceRGBA(0, 0, 0, 0.5);
+        cr.moveTo(sx + shadowOff, sy + shadowOff);
+        cr.lineTo(ex + shadowOff, ey + shadowOff);
+        cr.stroke();
+        cr.moveTo(ex + shadowOff, ey + shadowOff);
+        cr.lineTo(lx + shadowOff, ly + shadowOff);
+        cr.stroke();
+        cr.moveTo(ex + shadowOff, ey + shadowOff);
+        cr.lineTo(rx + shadowOff, ry + shadowOff);
+        cr.stroke();
+
+        // Arrow
         cr.setSourceRGBA(...this.options.primaryColor);
 
         // Shaft
@@ -177,11 +197,6 @@ export class ArrowAction extends DrawingAction {
         cr.stroke();
 
         // Arrowhead
-        const lx = ex + headSize * Math.cos(angle + Math.PI - arrowAngle);
-        const ly = ey + headSize * Math.sin(angle + Math.PI - arrowAngle);
-        const rx = ex + headSize * Math.cos(angle + Math.PI + arrowAngle);
-        const ry = ey + headSize * Math.sin(angle + Math.PI + arrowAngle);
-
         cr.moveTo(ex, ey);
         cr.lineTo(lx, ly);
         cr.stroke();
@@ -373,6 +388,12 @@ export class TextAction extends DrawingAction {
             cr.closePath();
             cr.fill();
         }
+
+        // Text shadow
+        const shadowOff = Math.max(1, Math.round(scale));
+        cr.moveTo(tx + shadowOff, ty + shadowOff);
+        cr.setSourceRGBA(0, 0, 0, 0.5);
+        PangoCairo.show_layout(cr, layout);
 
         // Text
         cr.moveTo(tx, ty);

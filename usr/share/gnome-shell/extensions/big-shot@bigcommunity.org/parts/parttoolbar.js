@@ -57,6 +57,10 @@ export class PartToolbar extends PartUI {
         this._fillColorHex = null;
         this._currentFont = 'Sans';
 
+        // Video settings state
+        this._videoQuality = 'high';   // 'high', 'medium', 'low'
+        this._selectedPipelineId = null; // null = auto cascade
+
         this._buildToolbar();
     }
 
@@ -223,6 +227,58 @@ export class PartToolbar extends PartUI {
         // Add floating panel directly to screenshotUI (NOT inside native _panel)
         this._ui.add_child(this._editPanel);
 
+        // === Video Settings Panel (floating, styled to match native GNOME UI) ===
+        this._videoSettingsPanel = new St.BoxLayout({
+            vertical: true,
+            visible: false,
+            reactive: true,
+            style: 'background-color: rgba(30, 30, 30, 0.95); border-radius: 18px; padding: 12px 16px; spacing: 10px;',
+        });
+
+        // Row 1: Quality label + buttons
+        const qualityBox = new St.BoxLayout({ vertical: false, style: 'spacing: 8px;' });
+        qualityBox.add_child(new St.Label({
+            text: _('Quality'),
+            style: 'color: rgba(255,255,255,0.6); font-size: 13px; min-width: 60px;',
+            y_align: Clutter.ActorAlign.CENTER,
+        }));
+        this._qualityButtons = new Map();
+        const qualityOptions = [
+            { id: 'high', label: _('High') },
+            { id: 'medium', label: _('Medium') },
+            { id: 'low', label: _('Low') },
+        ];
+        for (const q of qualityOptions) {
+            const btn = new St.Button({
+                style_class: 'screenshot-ui-show-pointer-button',
+                toggle_mode: true,
+                can_focus: true,
+                label: q.label,
+            });
+            btn.checked = (q.id === this._videoQuality);
+            const qid = q.id;
+            btn.connect('clicked', () => this._onQualityClicked(qid));
+            btn.connect('enter-event', () => this._showTooltip(btn, _('Recording quality (bitrate)')));
+            btn.connect('leave-event', () => this._hideTooltip());
+            qualityBox.add_child(btn);
+            this._qualityButtons.set(q.id, btn);
+        }
+        this._videoSettingsPanel.add_child(qualityBox);
+
+        // Row 2: Codec label + buttons (populated dynamically)
+        const codecBox = new St.BoxLayout({ vertical: false, style: 'spacing: 8px;' });
+        codecBox.add_child(new St.Label({
+            text: _('Codec'),
+            style: 'color: rgba(255,255,255,0.6); font-size: 13px; min-width: 60px;',
+            y_align: Clutter.ActorAlign.CENTER,
+        }));
+        this._codecButtonsRow = new St.BoxLayout({ style: 'spacing: 4px;' });
+        codecBox.add_child(this._codecButtonsRow);
+        this._videoSettingsPanel.add_child(codecBox);
+        this._codecButtons = new Map();
+
+        this._ui.add_child(this._videoSettingsPanel);
+
         // === Edit toggle button — placed in _showPointerButtonContainer ===
         // This keeps _shotCastContainer clean for native camera/video buttons
         this._editButton = new St.Button({
@@ -234,20 +290,33 @@ export class PartToolbar extends PartUI {
         });
         this._editButton.connect('notify::checked', () => {
             this._editMode = this._editButton.checked;
-            this._editPanel.visible = this._editMode && !this._isCastMode;
-            if (this._editPanel.visible) {
-                GLib.idle_add(GLib.PRIORITY_DEFAULT, () => {
-                    this._repositionEditPanel();
-                    return GLib.SOURCE_REMOVE;
-                });
+            if (this._isCastMode) {
+                // Video mode: show video settings panel
+                this._editPanel.visible = false;
+                this._videoSettingsPanel.visible = this._editMode;
+                if (this._videoSettingsPanel.visible) {
+                    this._populateVideoCodecs();
+                    GLib.idle_add(GLib.PRIORITY_DEFAULT, () => {
+                        this._repositionVideoSettingsPanel();
+                        return GLib.SOURCE_REMOVE;
+                    });
+                }
             } else {
-                // Deactivate current tool so overlay stops capturing events
-                this.selectTool(null);
+                // Screenshot mode: show annotation tools
+                this._videoSettingsPanel.visible = false;
+                this._editPanel.visible = this._editMode;
+                if (this._editPanel.visible) {
+                    GLib.idle_add(GLib.PRIORITY_DEFAULT, () => {
+                        this._repositionEditPanel();
+                        return GLib.SOURCE_REMOVE;
+                    });
+                } else {
+                    this.selectTool(null);
+                }
             }
         });
 
         // Place in show-pointer container (right side of bottom bar)
-        // This avoids displacing the native shot/cast (camera/video) buttons
         const showPointerContainer = this._ui._showPointerButtonContainer;
         if (showPointerContainer) {
             showPointerContainer.insert_child_at_index(this._editButton, 0);
@@ -674,6 +743,85 @@ export class PartToolbar extends PartUI {
     get fillColor() { return this._fillColorHex; }
     get currentFont() { return this._currentFont || 'Sans'; }
 
+    // Video settings getters
+    get videoQuality() { return this._videoQuality; }
+    get selectedPipelineId() { return this._selectedPipelineId; }
+
+    _onQualityClicked(qualityId) {
+        this._videoQuality = qualityId;
+        for (const [id, btn] of this._qualityButtons) {
+            btn.checked = (id === qualityId);
+        }
+    }
+
+    _populateVideoCodecs() {
+        // Trigger lazy pipeline detection
+        this._ext._detectPipelines();
+        const configs = this._ext._availableConfigs;
+        if (!configs) return;
+
+        // Only rebuild if configs changed
+        const configIds = configs.map(c => c.id).join(',');
+        if (this._lastCodecConfigIds === configIds) return;
+        this._lastCodecConfigIds = configIds;
+
+        // Clear existing buttons
+        this._codecButtonsRow.destroy_all_children();
+        this._codecButtons.clear();
+
+        // Auto button
+        const autoBtn = new St.Button({
+            style_class: 'screenshot-ui-show-pointer-button',
+            toggle_mode: true,
+            can_focus: true,
+            label: _('Auto'),
+        });
+        autoBtn.checked = (this._selectedPipelineId === null);
+        autoBtn.connect('clicked', () => this._onCodecClicked(null));
+        autoBtn.connect('enter-event', () => this._showTooltip(autoBtn, _('Use best available codec')));
+        autoBtn.connect('leave-event', () => this._hideTooltip());
+        this._codecButtonsRow.add_child(autoBtn);
+        this._codecButtons.set(null, autoBtn);
+
+        // One button per available pipeline
+        for (const config of configs) {
+            const btn = new St.Button({
+                style_class: 'screenshot-ui-show-pointer-button',
+                toggle_mode: true,
+                can_focus: true,
+                label: config.label,
+            });
+            btn.checked = (this._selectedPipelineId === config.id);
+            const cid = config.id;
+            btn.connect('clicked', () => this._onCodecClicked(cid));
+            btn.connect('enter-event', () => this._showTooltip(btn, _('Video codec')));
+            btn.connect('leave-event', () => this._hideTooltip());
+            this._codecButtonsRow.add_child(btn);
+            this._codecButtons.set(config.id, btn);
+        }
+    }
+
+    _onCodecClicked(pipelineId) {
+        this._selectedPipelineId = pipelineId;
+        for (const [id, btn] of this._codecButtons) {
+            btn.checked = (id === pipelineId);
+        }
+    }
+
+    _repositionVideoSettingsPanel() {
+        if (!this._videoSettingsPanel?.visible) return;
+        const panel = this._ui._panel;
+        if (!panel) return;
+        const [px, py] = panel.get_transformed_position();
+        const pw = panel.width;
+        const epw = this._videoSettingsPanel.width;
+        const eph = this._videoSettingsPanel.height;
+        this._videoSettingsPanel.set_position(
+            px + (pw - epw) / 2,
+            py - eph - 12
+        );
+    }
+
     _onUndo() { }
     _onRedo() { }
 
@@ -708,33 +856,32 @@ export class PartToolbar extends PartUI {
 
     _onUIVisibilityChanged() {
         if (this._ui.visible) {
+            this._editButton.visible = true;
             if (this._isCastMode) {
-                this._editButton.visible = false;
-                this._editButton.checked = false;
-                this._editMode = false;
                 this._editPanel.visible = false;
+                this.selectTool(null);
+                if (this._editMode)
+                    this._videoSettingsPanel.visible = true;
             } else {
-                this._editButton.visible = true;
+                this._videoSettingsPanel.visible = false;
             }
         } else {
             this._editButton.checked = false;
             this._editMode = false;
             this._editPanel.visible = false;
+            this._videoSettingsPanel.visible = false;
             this.selectTool(null);
         }
     }
 
     _onModeChanged(isCast) {
         super._onModeChanged(isCast);
-        if (isCast) {
-            this._editButton.visible = false;
-            this._editButton.checked = false;
-            this._editMode = false;
-            this._editPanel.visible = false;
-            this.selectTool(null);
-        } else if (this._ui.visible) {
-            this._editButton.visible = true;
-        }
+        this._editButton.visible = this._ui.visible;
+        this._editButton.checked = false;
+        this._editMode = false;
+        this._editPanel.visible = false;
+        this._videoSettingsPanel.visible = false;
+        this.selectTool(null);
     }
 
     destroy() {
@@ -756,8 +903,16 @@ export class PartToolbar extends PartUI {
             this._editPanel.destroy();
             this._editPanel = null;
         }
+        if (this._videoSettingsPanel) {
+            const p = this._videoSettingsPanel.get_parent();
+            if (p) p.remove_child(this._videoSettingsPanel);
+            this._videoSettingsPanel.destroy();
+            this._videoSettingsPanel = null;
+        }
 
         this._toolButtons.clear();
+        this._qualityButtons?.clear();
+        this._codecButtons?.clear();
         super.destroy();
     }
 }

@@ -5,6 +5,7 @@
  */
 
 import Clutter from 'gi://Clutter';
+import GLib from 'gi://GLib';
 import St from 'gi://St';
 
 // =============================================================================
@@ -72,7 +73,7 @@ export class PartUI extends PartBase {
 // =============================================================================
 
 export class PartPopupSelect extends PartUI {
-    constructor(screenshotUI, extension, options, defaultValue, labelFn) {
+    constructor(screenshotUI, extension, options, defaultValue, labelFn, tooltipText = null) {
         super(screenshotUI, extension);
 
         this._options = options;
@@ -91,6 +92,17 @@ export class PartPopupSelect extends PartUI {
         });
 
         this._button.connect('clicked', () => this._showPopup());
+
+        // Optional tooltip
+        if (tooltipText) {
+            this._tooltipText = tooltipText;
+            this._button.connect('enter-event', () => {
+                this._showButtonTooltip(this._button, this._tooltipText);
+            });
+            this._button.connect('leave-event', () => {
+                this._hideButtonTooltip();
+            });
+        }
 
         // Create popup container
         this._popup = new St.BoxLayout({
@@ -151,7 +163,30 @@ export class PartPopupSelect extends PartUI {
         if (!isCast) this._popup.visible = false;
     }
 
+    _showButtonTooltip(button, text) {
+        this._hideButtonTooltip();
+        this._tooltip = new St.Label({
+            text,
+            style: 'background: rgba(0,0,0,0.85); color: #ffffff; padding: 4px 8px; border-radius: 4px; font-size: 11px;',
+        });
+        this._ui.add_child(this._tooltip);
+        GLib.idle_add(GLib.PRIORITY_DEFAULT, () => {
+            if (!this._tooltip) return GLib.SOURCE_REMOVE;
+            const [bx, by] = button.get_transformed_position();
+            const bw = button.width;
+            const tw = this._tooltip.width;
+            this._tooltip.set_position(bx + (bw - tw) / 2, by - this._tooltip.height - 4);
+            return GLib.SOURCE_REMOVE;
+        });
+    }
+
+    _hideButtonTooltip() {
+        this._tooltip?.destroy();
+        this._tooltip = null;
+    }
+
     destroy() {
+        this._hideButtonTooltip();
         if (this._popup) {
             const popupParent = this._popup.get_parent();
             if (popupParent) popupParent.remove_child(this._popup);

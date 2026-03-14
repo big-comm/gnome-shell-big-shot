@@ -20,6 +20,7 @@ import {
     createAction,
     CensorAction,
     BlurAction,
+    TextAction,
 } from './actions.js';
 
 const TOOL_TO_MODE = {
@@ -191,6 +192,7 @@ export class DrawingOverlay {
     _onButtonPress(event) {
         const [x, y] = event.get_coords();
         const [ix, iy] = this._toImageCoords(x, y);
+        const now = GLib.get_monotonic_time();
 
         // Selection mode: no tool active or select tool → select/move objects
         const isSelectMode = !this._toolbar?.activeTool || this._toolbar.activeTool === 'select';
@@ -203,6 +205,19 @@ export class DrawingOverlay {
                     break;
                 }
             }
+
+            // Double-click on TextAction → edit it
+            if (found instanceof TextAction &&
+                this._lastClickAction === found &&
+                (now - this._lastClickTime) < 500000) { // 500ms
+                this._lastClickAction = null;
+                this._lastClickTime = 0;
+                this._editTextAction(found);
+                return Clutter.EVENT_STOP;
+            }
+
+            this._lastClickAction = found;
+            this._lastClickTime = now;
 
             this._selectedAction = found;
             if (found) {
@@ -427,7 +442,7 @@ export class DrawingOverlay {
     // TEXT POPOVER
     // =========================================================================
 
-    _showTextPopover(position, options) {
+    _showTextPopover(position, options, existingAction = null) {
         this._closeTextPopover();
 
         const [wx, wy] = this._toWidgetCoords(position[0], position[1]);
@@ -446,6 +461,11 @@ export class DrawingOverlay {
             accessible_name: _('Annotation text'),
         });
 
+        // Pre-fill with existing text when editing
+        if (existingAction) {
+            this._textEntry.set_text(existingAction.text);
+        }
+
         const confirmBtn = new St.Button({
             style_class: 'screenshot-ui-show-pointer-button',
             child: new St.Icon({ icon_name: 'object-select-symbolic', icon_size: 16 }),
@@ -455,7 +475,19 @@ export class DrawingOverlay {
 
         const confirmAction = () => {
             const text = this._textEntry.get_text().trim();
-            if (text) {
+            if (existingAction) {
+            // Editing existing text
+                if (text) {
+                    existingAction.text = text;
+                } else {
+                    // Empty text → remove the action
+                    const idx = this._actions.indexOf(existingAction);
+                    if (idx >= 0) {
+                        this._undoStack.push(this._actions.splice(idx, 1)[0]);
+                    }
+                }
+            } else if (text) {
+                // Creating new text
                 const action = createAction(DrawingMode.TEXT, {
                     position,
                     text,
@@ -464,10 +496,10 @@ export class DrawingOverlay {
                 if (action) {
                     this._actions.push(action);
                     this._undoStack = [];
-                    this._actor.queue_repaint();
                 }
             }
             this._closeTextPopover();
+            this._actor.queue_repaint();
         };
 
         confirmBtn.connect('clicked', confirmAction);
@@ -494,9 +526,21 @@ export class DrawingOverlay {
         // Focus the entry after a frame
         this._focusIdleId = GLib.idle_add(GLib.PRIORITY_DEFAULT, () => {
             this._focusIdleId = 0;
-            this._textEntry?.grab_key_focus();
+            if (this._textEntry) {
+                this._textEntry.grab_key_focus();
+                // Select all text when editing existing action
+                if (existingAction) {
+                    const clutterText = this._textEntry.clutter_text;
+                    clutterText.set_selection(0, clutterText.get_text().length);
+                }
+            }
             return GLib.SOURCE_REMOVE;
         });
+    }
+
+    _editTextAction(action) {
+        this._selectedAction = null;
+        this._showTextPopover(action.position, action.options, action);
     }
 
     _closeTextPopover() {
