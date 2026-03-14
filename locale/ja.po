@@ -55,6 +55,12 @@ msgstr "グラデーション角度"
 msgid "Border Radius"
 msgstr "ボーダー半径"
 #: NEEDS WORK
+msgid "Frames per second"
+msgstr "フレーム毎秒"
+#: NEEDS WORK
+msgid "Recording resolution"
+msgstr "録画解像度"
+#: NEEDS WORK
 msgid "Select / Move"
 msgstr "選択 / 移動"
 #: NEEDS WORK
@@ -109,6 +115,24 @@ msgstr "元に戻す"
 msgid "Redo"
 msgstr "やり直し"
 #: NEEDS WORK
+msgid "Quality"
+msgstr "品質"
+#: NEEDS WORK
+msgid "High"
+msgstr "高"
+#: NEEDS WORK
+msgid "Medium"
+msgstr "中程度"
+#: NEEDS WORK
+msgid "Low"
+msgstr "低"
+#: NEEDS WORK
+msgid "Recording quality (bitrate)"
+msgstr "録音品質（ビットレート）"
+#: NEEDS WORK
+msgid "Codec"
+msgstr "コーデック"
+#: NEEDS WORK
 msgid "Edit"
 msgstr "編集"
 #: NEEDS WORK
@@ -117,3 +141,12 @@ msgstr "カスタム"
 #: NEEDS WORK
 msgid "No Fill"
 msgstr "塗りつぶしなし"
+#: NEEDS WORK
+msgid "Auto"
+msgstr "自動"
+#: NEEDS WORK
+msgid "Use best available codec"
+msgstr "最適なコーデックを使用する"
+#: NEEDS WORK
+msgid "Video codec"
+msgstr "ビデオコーデック"

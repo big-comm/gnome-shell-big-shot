@@ -55,6 +55,12 @@ msgstr "Γωνία Γρανάζιου"
 msgid "Border Radius"
 msgstr "Ακτίνα Περιγράμματος"
 #: NEEDS WORK
+msgid "Frames per second"
+msgstr "Καρέ ανά δευτερόλεπτο"
+#: NEEDS WORK
+msgid "Recording resolution"
+msgstr "Ανάλυση εγγραφής"
+#: NEEDS WORK
 msgid "Select / Move"
 msgstr "Επιλογή / Μετακίνηση"
 #: NEEDS WORK
@@ -109,6 +115,24 @@ msgstr "Αναίρεση"
 msgid "Redo"
 msgstr "Επαναφορά"
 #: NEEDS WORK
+msgid "Quality"
+msgstr "Ποιότητα"
+#: NEEDS WORK
+msgid "High"
+msgstr "Υψηλός"
+#: NEEDS WORK
+msgid "Medium"
+msgstr "Μεσαίο"
+#: NEEDS WORK
+msgid "Low"
+msgstr "Χαμηλό"
+#: NEEDS WORK
+msgid "Recording quality (bitrate)"
+msgstr "Ποιότητα εγγραφής (bitrate)"
+#: NEEDS WORK
+msgid "Codec"
+msgstr "Κωδικοποιητής"
+#: NEEDS WORK
 msgid "Edit"
 msgstr "Επεξεργασία"
 #: NEEDS WORK
@@ -117,3 +141,12 @@ msgstr "Προσαρμοσμένο"
 #: NEEDS WORK
 msgid "No Fill"
 msgstr "Χωρίς Γέμισμα"
+#: NEEDS WORK
+msgid "Auto"
+msgstr "Αυτόματο"
+#: NEEDS WORK
+msgid "Use best available codec"
+msgstr "Χρησιμοποιήστε τον καλύτερο διαθέσιμο κωδικοποιητή"
+#: NEEDS WORK
+msgid "Video codec"
+msgstr "Κωδικοποιητής βίντεο"

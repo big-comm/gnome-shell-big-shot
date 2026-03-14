@@ -55,6 +55,12 @@ msgstr "זווית גרדיאנט"
 msgid "Border Radius"
 msgstr "רדיוס גבול"
 #: NEEDS WORK
+msgid "Frames per second"
+msgstr "פריימים לשנייה"
+#: NEEDS WORK
+msgid "Recording resolution"
+msgstr "רזולוציית הקלטה"
+#: NEEDS WORK
 msgid "Select / Move"
 msgstr "בחר / העבר"
 #: NEEDS WORK
@@ -109,6 +115,24 @@ msgstr "ביטול"
 msgid "Redo"
 msgstr "בצע שוב"
 #: NEEDS WORK
+msgid "Quality"
+msgstr "איכות"
+#: NEEDS WORK
+msgid "High"
+msgstr "גבוה"
+#: NEEDS WORK
+msgid "Medium"
+msgstr "בינוני"
+#: NEEDS WORK
+msgid "Low"
+msgstr "נמוך"
+#: NEEDS WORK
+msgid "Recording quality (bitrate)"
+msgstr "איכות הקלטה (קצב סיביות)"
+#: NEEDS WORK
+msgid "Codec"
+msgstr "קודקוד"
+#: NEEDS WORK
 msgid "Edit"
 msgstr "ערוך"
 #: NEEDS WORK
@@ -117,3 +141,12 @@ msgstr "מותאם אישית"
 #: NEEDS WORK
 msgid "No Fill"
 msgstr "אין מילוי"
+#: NEEDS WORK
+msgid "Auto"
+msgstr "אוטומטי"
+#: NEEDS WORK
+msgid "Use best available codec"
+msgstr "השתמש בקודק הטוב ביותר הזמין"
+#: NEEDS WORK
+msgid "Video codec"
+msgstr "קודקוד וידאו"

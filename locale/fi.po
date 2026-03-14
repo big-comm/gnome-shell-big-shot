@@ -55,6 +55,12 @@ msgstr "Gradientin kulma"
 msgid "Border Radius"
 msgstr "Reunakulma"
 #: NEEDS WORK
+msgid "Frames per second"
+msgstr "Kuvakehyksiä sekunnissa"
+#: NEEDS WORK
+msgid "Recording resolution"
+msgstr "Tallennusresoluutio"
+#: NEEDS WORK
 msgid "Select / Move"
 msgstr "Valitse / Siirrä"
 #: NEEDS WORK
@@ -109,6 +115,24 @@ msgstr "Kumoa"
 msgid "Redo"
 msgstr "Uudelleen tehdä"
 #: NEEDS WORK
+msgid "Quality"
+msgstr "Laatu"
+#: NEEDS WORK
+msgid "High"
+msgstr "Korkea"
+#: NEEDS WORK
+msgid "Medium"
+msgstr "Keskikokoinen"
+#: NEEDS WORK
+msgid "Low"
+msgstr "Alhainen"
+#: NEEDS WORK
+msgid "Recording quality (bitrate)"
+msgstr "Tallennuslaatu (bitrate)"
+#: NEEDS WORK
+msgid "Codec"
+msgstr "Koodekki"
+#: NEEDS WORK
 msgid "Edit"
 msgstr "Muokkaa"
 #: NEEDS WORK
@@ -117,3 +141,12 @@ msgstr "Mukautettu"
 #: NEEDS WORK
 msgid "No Fill"
 msgstr "Ei täyttöä"
+#: NEEDS WORK
+msgid "Auto"
+msgstr "Auto"
+#: NEEDS WORK
+msgid "Use best available codec"
+msgstr "Käytä parasta saatavilla olevaa koodekkia"
+#: NEEDS WORK
+msgid "Video codec"
+msgstr "Videokoodekki"

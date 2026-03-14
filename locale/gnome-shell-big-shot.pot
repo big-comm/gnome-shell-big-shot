@@ -53,6 +53,12 @@ msgstr  ""
 msgid   "Border Radius"
 msgstr  ""
 
+msgid   "Frames per second"
+msgstr  ""
+
+msgid   "Recording resolution"
+msgstr  ""
+
 msgid   "Select / Move"
 msgstr  ""
 
@@ -107,6 +113,24 @@ msgstr  ""
 msgid   "Redo"
 msgstr  ""
 
+msgid   "Quality"
+msgstr  ""
+
+msgid   "High"
+msgstr  ""
+
+msgid   "Medium"
+msgstr  ""
+
+msgid   "Low"
+msgstr  ""
+
+msgid   "Recording quality (bitrate)"
+msgstr  ""
+
+msgid   "Codec"
+msgstr  ""
+
 msgid   "Edit"
 msgstr  ""
 
@@ -114,4 +138,13 @@ msgid   "Custom"
 msgstr  ""
 
 msgid   "No Fill"
+msgstr  ""
+
+msgid   "Auto"
+msgstr  ""
+
+msgid   "Use best available codec"
+msgstr  ""
+
+msgid   "Video codec"
 msgstr  ""

@@ -55,6 +55,12 @@ msgstr "Litsvæðisvinkill"
 msgid "Border Radius"
 msgstr "Mörkurrúm"
 #: NEEDS WORK
+msgid "Frames per second"
+msgstr "Rammar á sekúndu"
+#: NEEDS WORK
+msgid "Recording resolution"
+msgstr "Upplausn fyrir upptöku"
+#: NEEDS WORK
 msgid "Select / Move"
 msgstr "Velja / Hreyfa"
 #: NEEDS WORK
@@ -109,6 +115,24 @@ msgstr "Afturkalla"
 msgid "Redo"
 msgstr "Endurtaka"
 #: NEEDS WORK
+msgid "Quality"
+msgstr "Gæði"
+#: NEEDS WORK
+msgid "High"
+msgstr "Hár"
+#: NEEDS WORK
+msgid "Medium"
+msgstr "Miðlungs"
+#: NEEDS WORK
+msgid "Low"
+msgstr "Lágur"
+#: NEEDS WORK
+msgid "Recording quality (bitrate)"
+msgstr "Upptökugæði (bitrate)"
+#: NEEDS WORK
+msgid "Codec"
+msgstr "Kóði"
+#: NEEDS WORK
 msgid "Edit"
 msgstr "Breyta"
 #: NEEDS WORK
@@ -117,3 +141,12 @@ msgstr "Sérsniðið"
 #: NEEDS WORK
 msgid "No Fill"
 msgstr "Engin ekki fyllingu"
+#: NEEDS WORK
+msgid "Auto"
+msgstr "Sjálfvirkt"
+#: NEEDS WORK
+msgid "Use best available codec"
+msgstr "Notaðu besta tiltæka kóðara"
+#: NEEDS WORK
+msgid "Video codec"
+msgstr "Vöruvíddarkóðari"

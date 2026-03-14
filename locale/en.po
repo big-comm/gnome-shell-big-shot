@@ -54,6 +54,12 @@ msgstr "Gradient Angle"
 msgid "Border Radius"
 msgstr "Border Radius"
 
+msgid "Frames per second"
+msgstr "Frames per second"
+
+msgid "Recording resolution"
+msgstr "Recording resolution"
+
 msgid "Select / Move"
 msgstr "Select / Move"
 
@@ -108,6 +114,24 @@ msgstr "Undo"
 msgid "Redo"
 msgstr "Redo"
 
+msgid "Quality"
+msgstr "Quality"
+
+msgid "High"
+msgstr "High"
+
+msgid "Medium"
+msgstr "Medium"
+
+msgid "Low"
+msgstr "Low"
+
+msgid "Recording quality (bitrate)"
+msgstr "Recording quality (bitrate)"
+
+msgid "Codec"
+msgstr "Codec"
+
 msgid "Edit"
 msgstr "Edit"
 
@@ -116,3 +140,12 @@ msgstr "Custom"
 
 msgid "No Fill"
 msgstr "No Fill"
+
+msgid "Auto"
+msgstr "Auto"
+
+msgid "Use best available codec"
+msgstr "Use best available codec"
+
+msgid "Video codec"
+msgstr "Video codec"

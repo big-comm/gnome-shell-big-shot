@@ -55,6 +55,12 @@ msgstr "渐变角度"
 msgid "Border Radius"
 msgstr "边框半径"
 #: NEEDS WORK
+msgid "Frames per second"
+msgstr "每秒帧数"
+#: NEEDS WORK
+msgid "Recording resolution"
+msgstr "录制分辨率"
+#: NEEDS WORK
 msgid "Select / Move"
 msgstr "选择 / 移动"
 #: NEEDS WORK
@@ -109,6 +115,24 @@ msgstr "撤销"
 msgid "Redo"
 msgstr "重做"
 #: NEEDS WORK
+msgid "Quality"
+msgstr "质量"
+#: NEEDS WORK
+msgid "High"
+msgstr "高"
+#: NEEDS WORK
+msgid "Medium"
+msgstr "中等"
+#: NEEDS WORK
+msgid "Low"
+msgstr "低"
+#: NEEDS WORK
+msgid "Recording quality (bitrate)"
+msgstr "录音质量（比特率）"
+#: NEEDS WORK
+msgid "Codec"
+msgstr "编解码器"
+#: NEEDS WORK
 msgid "Edit"
 msgstr "编辑"
 #: NEEDS WORK
@@ -117,3 +141,12 @@ msgstr "自定义"
 #: NEEDS WORK
 msgid "No Fill"
 msgstr "无填充"
+#: NEEDS WORK
+msgid "Auto"
+msgstr "自动"
+#: NEEDS WORK
+msgid "Use best available codec"
+msgstr "使用最佳可用编解码器"
+#: NEEDS WORK
+msgid "Video codec"
+msgstr "视频编码器"

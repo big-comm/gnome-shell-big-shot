@@ -55,6 +55,12 @@ msgstr "Gradientvinkel"
 msgid "Border Radius"
 msgstr "Hjørneradius"
 #: NEEDS WORK
+msgid "Frames per second"
+msgstr "Bilder per sekund"
+#: NEEDS WORK
+msgid "Recording resolution"
+msgstr "Oppløsning for opptak"
+#: NEEDS WORK
 msgid "Select / Move"
 msgstr "Velg / Flytt"
 #: NEEDS WORK
@@ -109,6 +115,24 @@ msgstr "Angre"
 msgid "Redo"
 msgstr "Gjør om"
 #: NEEDS WORK
+msgid "Quality"
+msgstr "Kvalitet"
+#: NEEDS WORK
+msgid "High"
+msgstr "Høy"
+#: NEEDS WORK
+msgid "Medium"
+msgstr "Medium"
+#: NEEDS WORK
+msgid "Low"
+msgstr "Lav"
+#: NEEDS WORK
+msgid "Recording quality (bitrate)"
+msgstr "Opptaks kvalitet (bitrate)"
+#: NEEDS WORK
+msgid "Codec"
+msgstr "Kodek"
+#: NEEDS WORK
 msgid "Edit"
 msgstr "Rediger"
 #: NEEDS WORK
@@ -117,3 +141,12 @@ msgstr "Egendefinert"
 #: NEEDS WORK
 msgid "No Fill"
 msgstr "Ingen fyll"
+#: NEEDS WORK
+msgid "Auto"
+msgstr "Auto"
+#: NEEDS WORK
+msgid "Use best available codec"
+msgstr "Bruk beste tilgjengelige kodek"
+#: NEEDS WORK
+msgid "Video codec"
+msgstr "Videokodek"

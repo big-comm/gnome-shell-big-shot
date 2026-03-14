@@ -55,6 +55,12 @@ msgstr "그라디언트 각도"
 msgid "Border Radius"
 msgstr "테두리 반경"
 #: NEEDS WORK
+msgid "Frames per second"
+msgstr "초당 프레임"
+#: NEEDS WORK
+msgid "Recording resolution"
+msgstr "녹화 해상도"
+#: NEEDS WORK
 msgid "Select / Move"
 msgstr "선택 / 이동"
 #: NEEDS WORK
@@ -109,6 +115,24 @@ msgstr "실행 취소"
 msgid "Redo"
 msgstr "다시 실행"
 #: NEEDS WORK
+msgid "Quality"
+msgstr "품질"
+#: NEEDS WORK
+msgid "High"
+msgstr "높음"
+#: NEEDS WORK
+msgid "Medium"
+msgstr "중간"
+#: NEEDS WORK
+msgid "Low"
+msgstr "낮음"
+#: NEEDS WORK
+msgid "Recording quality (bitrate)"
+msgstr "녹음 품질 (비트 전송률)"
+#: NEEDS WORK
+msgid "Codec"
+msgstr "코덱"
+#: NEEDS WORK
 msgid "Edit"
 msgstr "편집"
 #: NEEDS WORK
@@ -117,3 +141,12 @@ msgstr "사용자 정의"
 #: NEEDS WORK
 msgid "No Fill"
 msgstr "채우기 없음"
+#: NEEDS WORK
+msgid "Auto"
+msgstr "자동"
+#: NEEDS WORK
+msgid "Use best available codec"
+msgstr "최고의 사용 가능한 코덱 사용"
+#: NEEDS WORK
+msgid "Video codec"
+msgstr "비디오 코덱"

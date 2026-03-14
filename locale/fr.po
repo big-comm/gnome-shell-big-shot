@@ -55,6 +55,12 @@ msgstr "Angle de dégradé"
 msgid "Border Radius"
 msgstr "Rayon de bordure"
 #: NEEDS WORK
+msgid "Frames per second"
+msgstr "Images par seconde"
+#: NEEDS WORK
+msgid "Recording resolution"
+msgstr "Résolution d'enregistrement"
+#: NEEDS WORK
 msgid "Select / Move"
 msgstr "Sélectionner / Déplacer"
 #: NEEDS WORK
@@ -109,6 +115,24 @@ msgstr "Annuler"
 msgid "Redo"
 msgstr "Refaire"
 #: NEEDS WORK
+msgid "Quality"
+msgstr "Qualité"
+#: NEEDS WORK
+msgid "High"
+msgstr "Élevé"
+#: NEEDS WORK
+msgid "Medium"
+msgstr "Moyen"
+#: NEEDS WORK
+msgid "Low"
+msgstr "Faible"
+#: NEEDS WORK
+msgid "Recording quality (bitrate)"
+msgstr "Qualité d'enregistrement (débit binaire)"
+#: NEEDS WORK
+msgid "Codec"
+msgstr "Codec"
+#: NEEDS WORK
 msgid "Edit"
 msgstr "Modifier"
 #: NEEDS WORK
@@ -117,3 +141,12 @@ msgstr "Personnalisé"
 #: NEEDS WORK
 msgid "No Fill"
 msgstr "Aucun remplissage"
+#: NEEDS WORK
+msgid "Auto"
+msgstr "Auto"
+#: NEEDS WORK
+msgid "Use best available codec"
+msgstr "Utiliser le meilleur codec disponible"
+#: NEEDS WORK
+msgid "Video codec"
+msgstr "Codec vidéo"

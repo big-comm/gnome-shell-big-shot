@@ -55,6 +55,12 @@ msgstr "Gradienti nurk"
 msgid "Border Radius"
 msgstr "Serva raadius"
 #: NEEDS WORK
+msgid "Frames per second"
+msgstr "Kaadreid sekundis"
+#: NEEDS WORK
+msgid "Recording resolution"
+msgstr "Salvestuse eraldusvõime"
+#: NEEDS WORK
 msgid "Select / Move"
 msgstr "Vali / Liiguta"
 #: NEEDS WORK
@@ -109,6 +115,24 @@ msgstr "Tagasi võtta"
 msgid "Redo"
 msgstr "Korda tagasi"
 #: NEEDS WORK
+msgid "Quality"
+msgstr "Kvaliteet"
+#: NEEDS WORK
+msgid "High"
+msgstr "Kõrge"
+#: NEEDS WORK
+msgid "Medium"
+msgstr "Keskmine"
+#: NEEDS WORK
+msgid "Low"
+msgstr "Madal"
+#: NEEDS WORK
+msgid "Recording quality (bitrate)"
+msgstr "Salvestamise kvaliteet (bitikiirus)"
+#: NEEDS WORK
+msgid "Codec"
+msgstr "Koodek"
+#: NEEDS WORK
 msgid "Edit"
 msgstr "Redigeeri"
 #: NEEDS WORK
@@ -117,3 +141,12 @@ msgstr "Kohandatud"
 #: NEEDS WORK
 msgid "No Fill"
 msgstr "Ei täitmist"
+#: NEEDS WORK
+msgid "Auto"
+msgstr "Automaatne"
+#: NEEDS WORK
+msgid "Use best available codec"
+msgstr "Kasutage parimat saadaval olevat koodekit"
+#: NEEDS WORK
+msgid "Video codec"
+msgstr "Videokoodek"

@@ -55,6 +55,12 @@ msgstr "Угол градиента"
 msgid "Border Radius"
 msgstr "Радиус границы"
 #: NEEDS WORK
+msgid "Frames per second"
+msgstr "Кадры в секунду"
+#: NEEDS WORK
+msgid "Recording resolution"
+msgstr "Разрешение записи"
+#: NEEDS WORK
 msgid "Select / Move"
 msgstr "Выбрать / Переместить"
 #: NEEDS WORK
@@ -109,6 +115,24 @@ msgstr "Отменить"
 msgid "Redo"
 msgstr "Повторить"
 #: NEEDS WORK
+msgid "Quality"
+msgstr "Качество"
+#: NEEDS WORK
+msgid "High"
+msgstr "Высокий"
+#: NEEDS WORK
+msgid "Medium"
+msgstr "Средний"
+#: NEEDS WORK
+msgid "Low"
+msgstr "Низкий"
+#: NEEDS WORK
+msgid "Recording quality (bitrate)"
+msgstr "Качество записи (битрейт)"
+#: NEEDS WORK
+msgid "Codec"
+msgstr "Кодек"
+#: NEEDS WORK
 msgid "Edit"
 msgstr "Редактировать"
 #: NEEDS WORK
@@ -117,3 +141,12 @@ msgstr "Пользовательский"
 #: NEEDS WORK
 msgid "No Fill"
 msgstr "Нет заливки"
+#: NEEDS WORK
+msgid "Auto"
+msgstr "Авто"
+#: NEEDS WORK
+msgid "Use best available codec"
+msgstr "Использовать лучший доступный кодек"
+#: NEEDS WORK
+msgid "Video codec"
+msgstr "Видеокодек"

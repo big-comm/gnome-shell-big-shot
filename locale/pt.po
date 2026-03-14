@@ -55,6 +55,12 @@ msgstr "Ângulo do Gradiente"
 msgid "Border Radius"
 msgstr "Raio da Borda"
 #: NEEDS WORK
+msgid "Frames per second"
+msgstr "Quadros por segundo"
+#: NEEDS WORK
+msgid "Recording resolution"
+msgstr "Resolução de gravação"
+#: NEEDS WORK
 msgid "Select / Move"
 msgstr "Selecionar / Mover"
 #: NEEDS WORK
@@ -109,6 +115,24 @@ msgstr "Desfazer"
 msgid "Redo"
 msgstr "Refazer"
 #: NEEDS WORK
+msgid "Quality"
+msgstr "Qualidade"
+#: NEEDS WORK
+msgid "High"
+msgstr "Alto"
+#: NEEDS WORK
+msgid "Medium"
+msgstr "Médio"
+#: NEEDS WORK
+msgid "Low"
+msgstr "Baixo"
+#: NEEDS WORK
+msgid "Recording quality (bitrate)"
+msgstr "Qualidade de gravação (bitrate)"
+#: NEEDS WORK
+msgid "Codec"
+msgstr "Codec"
+#: NEEDS WORK
 msgid "Edit"
 msgstr "Editar"
 #: NEEDS WORK
@@ -117,3 +141,12 @@ msgstr "Personalizado"
 #: NEEDS WORK
 msgid "No Fill"
 msgstr "Sem preenchimento"
+#: NEEDS WORK
+msgid "Auto"
+msgstr "Automático"
+#: NEEDS WORK
+msgid "Use best available codec"
+msgstr "Use o melhor codec disponível"
+#: NEEDS WORK
+msgid "Video codec"
+msgstr "Codec de vídeo"

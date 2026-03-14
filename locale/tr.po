@@ -55,6 +55,12 @@ msgstr "Gradyan Açısı"
 msgid "Border Radius"
 msgstr "Kenar Yarıçapı"
 #: NEEDS WORK
+msgid "Frames per second"
+msgstr "Kare/saniye"
+#: NEEDS WORK
+msgid "Recording resolution"
+msgstr "Kayıt çözünürlüğü"
+#: NEEDS WORK
 msgid "Select / Move"
 msgstr "Seç / Taşı"
 #: NEEDS WORK
@@ -109,6 +115,24 @@ msgstr "Geri Al"
 msgid "Redo"
 msgstr "Yeniden Yap"
 #: NEEDS WORK
+msgid "Quality"
+msgstr "Kalite"
+#: NEEDS WORK
+msgid "High"
+msgstr "Yüksek"
+#: NEEDS WORK
+msgid "Medium"
+msgstr "Orta"
+#: NEEDS WORK
+msgid "Low"
+msgstr "Düşük"
+#: NEEDS WORK
+msgid "Recording quality (bitrate)"
+msgstr "Kayıt kalitesi (bit hızı)"
+#: NEEDS WORK
+msgid "Codec"
+msgstr "Kodek"
+#: NEEDS WORK
 msgid "Edit"
 msgstr "Düzenle"
 #: NEEDS WORK
@@ -117,3 +141,12 @@ msgstr "Özel"
 #: NEEDS WORK
 msgid "No Fill"
 msgstr "Doldurulmadı"
+#: NEEDS WORK
+msgid "Auto"
+msgstr "Otomatik"
+#: NEEDS WORK
+msgid "Use best available codec"
+msgstr "En iyi mevcut kodeği kullanın"
+#: NEEDS WORK
+msgid "Video codec"
+msgstr "Video kodek"

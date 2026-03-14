@@ -55,6 +55,12 @@ msgstr "Gradiens szög"
 msgid "Border Radius"
 msgstr "Sarok sugár"
 #: NEEDS WORK
+msgid "Frames per second"
+msgstr "Képkocka másodpercenként"
+#: NEEDS WORK
+msgid "Recording resolution"
+msgstr "Felvételi felbontás"
+#: NEEDS WORK
 msgid "Select / Move"
 msgstr "Kiválasztás / Mozgatás"
 #: NEEDS WORK
@@ -109,6 +115,24 @@ msgstr "Visszavonás"
 msgid "Redo"
 msgstr "Újra végrehajtás"
 #: NEEDS WORK
+msgid "Quality"
+msgstr "Minőség"
+#: NEEDS WORK
+msgid "High"
+msgstr "Magas"
+#: NEEDS WORK
+msgid "Medium"
+msgstr "Közepes"
+#: NEEDS WORK
+msgid "Low"
+msgstr "Alacsony"
+#: NEEDS WORK
+msgid "Recording quality (bitrate)"
+msgstr "Felvételi minőség (bitráta)"
+#: NEEDS WORK
+msgid "Codec"
+msgstr "Kodek"
+#: NEEDS WORK
 msgid "Edit"
 msgstr "Szerkesztés"
 #: NEEDS WORK
@@ -117,3 +141,12 @@ msgstr "Egyedi"
 #: NEEDS WORK
 msgid "No Fill"
 msgstr "Nincs kitöltés"
+#: NEEDS WORK
+msgid "Auto"
+msgstr "Automatikus"
+#: NEEDS WORK
+msgid "Use best available codec"
+msgstr "Használja a legjobb elérhető kodeket"
+#: NEEDS WORK
+msgid "Video codec"
+msgstr "Videó kodek"

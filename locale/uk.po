@@ -55,6 +55,12 @@ msgstr "Градус градієнта"
 msgid "Border Radius"
 msgstr "Радіус межі"
 #: NEEDS WORK
+msgid "Frames per second"
+msgstr "Кадри на секунду"
+#: NEEDS WORK
+msgid "Recording resolution"
+msgstr "Роздільна здатність запису"
+#: NEEDS WORK
 msgid "Select / Move"
 msgstr "Вибрати / Перемістити"
 #: NEEDS WORK
@@ -109,6 +115,24 @@ msgstr "Відмінити"
 msgid "Redo"
 msgstr "Redo"
 #: NEEDS WORK
+msgid "Quality"
+msgstr "Quality"
+#: NEEDS WORK
+msgid "High"
+msgstr "Високий"
+#: NEEDS WORK
+msgid "Medium"
+msgstr "中等"
+#: NEEDS WORK
+msgid "Low"
+msgstr "Низький"
+#: NEEDS WORK
+msgid "Recording quality (bitrate)"
+msgstr "Якість запису (бітрейт)"
+#: NEEDS WORK
+msgid "Codec"
+msgstr "Kodek"
+#: NEEDS WORK
 msgid "Edit"
 msgstr "Редагувати"
 #: NEEDS WORK
@@ -117,3 +141,12 @@ msgstr "Користувацький"
 #: NEEDS WORK
 msgid "No Fill"
 msgstr "No Fill"
+#: NEEDS WORK
+msgid "Auto"
+msgstr "Авто"
+#: NEEDS WORK
+msgid "Use best available codec"
+msgstr "Використовуйте найкращий доступний кодек"
+#: NEEDS WORK
+msgid "Video codec"
+msgstr "Відеокодек"

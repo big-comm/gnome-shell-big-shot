@@ -55,6 +55,12 @@ msgstr "Uhol gradientu"
 msgid "Border Radius"
 msgstr "Polomer okrajov"
 #: NEEDS WORK
+msgid "Frames per second"
+msgstr "Snímky za sekundu"
+#: NEEDS WORK
+msgid "Recording resolution"
+msgstr "Rozlíšenie nahrávania"
+#: NEEDS WORK
 msgid "Select / Move"
 msgstr "Vybrať / Presunúť"
 #: NEEDS WORK
@@ -109,6 +115,24 @@ msgstr "Zrušiť"
 msgid "Redo"
 msgstr "Znova"
 #: NEEDS WORK
+msgid "Quality"
+msgstr "Kvalita"
+#: NEEDS WORK
+msgid "High"
+msgstr "Vysoký"
+#: NEEDS WORK
+msgid "Medium"
+msgstr "Stredný"
+#: NEEDS WORK
+msgid "Low"
+msgstr "Nízka"
+#: NEEDS WORK
+msgid "Recording quality (bitrate)"
+msgstr "Kvalita nahrávania (bitrate)"
+#: NEEDS WORK
+msgid "Codec"
+msgstr "Kodek"
+#: NEEDS WORK
 msgid "Edit"
 msgstr "Upraviť"
 #: NEEDS WORK
@@ -117,3 +141,12 @@ msgstr "Vlastný"
 #: NEEDS WORK
 msgid "No Fill"
 msgstr "Žiadne vyplnenie"
+#: NEEDS WORK
+msgid "Auto"
+msgstr "Automatický"
+#: NEEDS WORK
+msgid "Use best available codec"
+msgstr "Použite najlepší dostupný kodek"
+#: NEEDS WORK
+msgid "Video codec"
+msgstr "Video kodek"
