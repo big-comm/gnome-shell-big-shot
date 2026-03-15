@@ -720,9 +720,11 @@ export default class BigShotExtension extends Extension {
      */
     async _handleAction(action) {
         const ui = this._screenshotUI;
+        console.log(`[Big Shot] _handleAction('${action}') called`);
 
         try {
             const result = await this._captureAnnotatedBytes();
+            console.log(`[Big Shot] _captureAnnotatedBytes result: ${!!result}`);
             if (!result) {
                 console.error('[Big Shot] Failed to capture screenshot');
                 return;
@@ -1114,6 +1116,7 @@ export default class BigShotExtension extends Extension {
      */
     _showCloudConfigDialog(bytes, existingConfig) {
         this._dismissCloudConfigDialog();
+        console.log('[Big Shot] _showCloudConfigDialog called');
 
         const ui = this._screenshotUI;
 
@@ -1261,6 +1264,7 @@ export default class BigShotExtension extends Extension {
 
         this._cloudConfigDialog = backdrop;
         ui.add_child(backdrop);
+        console.log(`[Big Shot] Cloud dialog added to UI, backdrop visible=${backdrop.visible}, size=${backdrop.width}x${backdrop.height}`);
 
         // Focus the URL field
         GLib.idle_add(GLib.PRIORITY_DEFAULT, () => {
