@@ -921,22 +921,31 @@ export default class BigShotExtension extends Extension {
 
         try {
             const proc = Gio.Subprocess.new(
-                ['curl', '-s', '-o', '/dev/null', '-w', '%{http_code}',
+                ['curl', '-sS', '-o', '/dev/null', '-w', '%{http_code}',
                     '-X', 'PUT',
                     '-H', `Authorization: Basic ${auth}`,
                     '-H', 'Content-Type: image/png',
                     '--data-binary', '@-',
                     uploadUrl],
-                Gio.SubprocessFlags.STDIN_PIPE | Gio.SubprocessFlags.STDOUT_PIPE | Gio.SubprocessFlags.STDERR_SILENCE
+                Gio.SubprocessFlags.STDIN_PIPE | Gio.SubprocessFlags.STDOUT_PIPE | Gio.SubprocessFlags.STDERR_PIPE
             );
 
             const bytesData = bytes.get_data();
             proc.communicate_async(GLib.Bytes.new(bytesData), null, (_p, asyncResult) => {
                 try {
-                    const [, stdout] = proc.communicate_finish(asyncResult);
+                    const [, stdout, stderr] = proc.communicate_finish(asyncResult);
                     const httpCode = new TextDecoder().decode(stdout.get_data()).trim();
+                    const errText = stderr ? new TextDecoder().decode(stderr.get_data()).trim() : '';
+                    const exitOk = proc.get_successful();
+
+                    if (!exitOk || httpCode === '000' || httpCode === '') {
+                        const detail = errText || _('Connection failed');
+                        this._showNotification(_('Nextcloud upload failed'), detail);
+                        console.error(`[Big Shot] Nextcloud curl error: ${detail}`);
+                        return;
+                    }
+
                     if (httpCode === '201' || httpCode === '204') {
-                        const shareUrl = `${config.url.replace(/\/$/, '')}/f/${folder}/${fileName}`;
                         this._showNotification(
                             _('Uploaded to Nextcloud'),
                             fileName);
@@ -1150,6 +1159,24 @@ export default class BigShotExtension extends Extension {
         const folderEntry = makeField(_('Folder (optional)'),
             existingConfig.folder || '/Screenshots', false);
 
+        // TAB navigation between entries
+        const cloudEntries = [urlEntry, userEntry, passEntry, folderEntry];
+        for (let i = 0; i < cloudEntries.length; i++) {
+            cloudEntries[i].get_clutter_text().connect('key-press-event', (_actor, event) => {
+                if (event.get_key_symbol() === Clutter.KEY_Tab) {
+                    const next = cloudEntries[(i + 1) % cloudEntries.length];
+                    next.grab_key_focus();
+                    return Clutter.EVENT_STOP;
+                }
+                if (event.get_key_symbol() === Clutter.KEY_ISO_Left_Tab) {
+                    const prev = cloudEntries[(i - 1 + cloudEntries.length) % cloudEntries.length];
+                    prev.grab_key_focus();
+                    return Clutter.EVENT_STOP;
+                }
+                return Clutter.EVENT_PROPAGATE;
+            });
+        }
+
         // Buttons row
         const btnRow = new St.BoxLayout({
             style: 'spacing: 12px; margin-top: 8px;',
@@ -1313,6 +1340,24 @@ export default class BigShotExtension extends Extension {
             existingConfig.fileField || 'file');
         const responseUrlEntry = makeField(_('Response URL field (JSON path)'),
             existingConfig.responseUrlField || 'url');
+
+        // TAB navigation between entries
+        const shareEntries = [urlEntry, fileFieldEntry, responseUrlEntry];
+        for (let i = 0; i < shareEntries.length; i++) {
+            shareEntries[i].get_clutter_text().connect('key-press-event', (_actor, event) => {
+                if (event.get_key_symbol() === Clutter.KEY_Tab) {
+                    const next = shareEntries[(i + 1) % shareEntries.length];
+                    next.grab_key_focus();
+                    return Clutter.EVENT_STOP;
+                }
+                if (event.get_key_symbol() === Clutter.KEY_ISO_Left_Tab) {
+                    const prev = shareEntries[(i - 1 + shareEntries.length) % shareEntries.length];
+                    prev.grab_key_focus();
+                    return Clutter.EVENT_STOP;
+                }
+                return Clutter.EVENT_PROPAGATE;
+            });
+        }
 
         const btnRow = new St.BoxLayout({
             style: 'spacing: 12px; margin-top: 8px;',
