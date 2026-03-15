@@ -21,6 +21,8 @@ import {
     CensorAction,
     BlurAction,
     TextAction,
+    NumberArrowAction,
+    NumberPointerAction,
 } from './actions.js';
 
 const TOOL_TO_MODE = {
@@ -34,6 +36,9 @@ const TOOL_TO_MODE = {
     'censor': DrawingMode.CENSOR,
     'blur': DrawingMode.BLUR,
     'number': DrawingMode.NUMBER,
+    'number-arrow': DrawingMode.NUMBER_ARROW,
+    'number-pointer': DrawingMode.NUMBER_POINTER,
+    'eraser': DrawingMode.ERASER,
     'select': DrawingMode.SELECT,
 };
 
@@ -196,6 +201,20 @@ export class DrawingOverlay {
 
         // Selection mode: no tool active or select tool → select/move objects
         const isSelectMode = !this._toolbar?.activeTool || this._toolbar.activeTool === 'select';
+
+        // Eraser mode: click on an action to remove it
+        const isEraserMode = this._toolbar?.activeTool === 'eraser';
+        if (isEraserMode) {
+            for (let i = this._actions.length - 1; i >= 0; i--) {
+                if (this._actions[i].containsPoint(ix, iy)) {
+                    this._undoStack.push(this._actions.splice(i, 1)[0]);
+                    this._actor.queue_repaint();
+                    return Clutter.EVENT_STOP;
+                }
+            }
+            return Clutter.EVENT_STOP;
+        }
+
         if (isSelectMode) {
             // Try to find an action under the cursor (top-most first)
             let found = null;
@@ -345,6 +364,23 @@ export class DrawingOverlay {
                     number: this._nextNumber++,
                 }, options);
                 break;
+            case DrawingMode.NUMBER_ARROW:
+                action = createAction(DrawingMode.NUMBER_ARROW, {
+                    start: this._startPoint,
+                    end: [ix, iy],
+                    number: this._nextNumber++,
+                }, options);
+                break;
+            case DrawingMode.NUMBER_POINTER:
+                action = createAction(DrawingMode.NUMBER_POINTER, {
+                    start: this._startPoint,
+                    end: [ix, iy],
+                    number: this._nextNumber++,
+                }, options);
+                break;
+            case DrawingMode.ERASER:
+                // Eraser is handled in _onButtonPress (click-to-remove)
+                break;
         }
 
         if (action) {
@@ -413,6 +449,7 @@ export class DrawingOverlay {
             [Clutter.KEY_8]: 'censor',
             [Clutter.KEY_9]: 'number',
             [Clutter.KEY_b]: 'blur',
+            [Clutter.KEY_e]: 'eraser',
         };
 
         if (!ctrl && !shift && TOOL_KEYS[key]) {
@@ -626,6 +663,16 @@ export class DrawingOverlay {
                     break;
                 case DrawingMode.BLUR:
                     tempAction = createAction(DrawingMode.BLUR, { start: this._startPoint, end }, options);
+                    break;
+                case DrawingMode.NUMBER_ARROW:
+                    tempAction = createAction(DrawingMode.NUMBER_ARROW, {
+                        start: this._startPoint, end, number: this._nextNumber,
+                    }, options);
+                    break;
+                case DrawingMode.NUMBER_POINTER:
+                    tempAction = createAction(DrawingMode.NUMBER_POINTER, {
+                        start: this._startPoint, end, number: this._nextNumber,
+                    }, options);
                     break;
             }
 
