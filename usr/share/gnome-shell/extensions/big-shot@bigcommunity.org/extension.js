@@ -278,11 +278,6 @@ export default class BigShotExtension extends Extension {
         // Revert save screenshot intercept
         this._unpatchSaveScreenshot();
 
-        // Clean up restore panel button
-        if (this._restorePanelBtn) {
-            this._restorePanelBtn.destroy();
-            this._restorePanelBtn = null;
-        }
         // Dismiss any open config dialogs
         this._dismissCloudConfigDialog();
         this._dismissShareConfigDialog();
@@ -1112,9 +1107,11 @@ export default class BigShotExtension extends Extension {
         const dialog = new St.BoxLayout({
             vertical: true,
             style: `background: rgba(36,36,36,0.95); border-radius: 16px;
-                    padding: 24px; min-width: 380px; spacing: 12px;`,
+                    padding: 24px; min-width: 340px; max-width: 400px; spacing: 10px;`,
             x_align: Clutter.ActorAlign.CENTER,
             y_align: Clutter.ActorAlign.CENTER,
+            x_expand: true,
+            y_expand: true,
         });
 
         const title = new St.Label({
@@ -1278,9 +1275,11 @@ export default class BigShotExtension extends Extension {
         const dialog = new St.BoxLayout({
             vertical: true,
             style: `background: rgba(36,36,36,0.95); border-radius: 16px;
-                    padding: 24px; min-width: 380px; spacing: 12px;`,
+                    padding: 24px; min-width: 340px; max-width: 400px; spacing: 10px;`,
             x_align: Clutter.ActorAlign.CENTER,
             y_align: Clutter.ActorAlign.CENTER,
+            x_expand: true,
+            y_expand: true,
         });
 
         const title = new St.Label({
