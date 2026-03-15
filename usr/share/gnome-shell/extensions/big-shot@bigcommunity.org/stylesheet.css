@@ -5,12 +5,18 @@
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
-/* ===== Floating Edit Panel ===== */
+/* ===== Edit Container (single row inside native panel) ===== */
+.big-shot-edit-container {
+    spacing: 4px;
+}
+
+/* Popups that still float (color picker, size picker, etc.) */
 .big-shot-edit-popup {
-    background-color: rgba(30, 30, 30, 0.95);
-    border-radius: 14px;
-    padding: 8px 12px;
-    spacing: 6px;
+    background-color: rgba(30, 30, 30, 0.92);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    padding: 10px 14px;
+    spacing: 4px;
     color: #ffffff;
 }
 
@@ -18,11 +24,20 @@
     spacing: 4px;
 }
 
+/* Floating draggable toolbar */
+.big-shot-edit-floating {
+    background-color: rgba(30, 30, 30, 0.85);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 6px 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
 .big-shot-edit-tool-btn {
-    border-radius: 10px;
-    padding: 6px;
-    min-width: 36px;
-    min-height: 36px;
+    border-radius: 8px;
+    padding: 3px;
+    min-width: 22px;
+    min-height: 22px;
     color: #ffffff;
 }
 
@@ -46,8 +61,8 @@
 
 .big-shot-edit-sep {
     width: 1px;
-    background-color: rgba(255, 255, 255, 0.15);
-    margin: 4px 6px;
+    background-color: rgba(255, 255, 255, 0.12);
+    margin: 2px 4px;
 }
 
 /* ===== Audio Toggle Buttons ===== */
@@ -101,4 +116,13 @@
     border-radius: 6px;
     background-color: white;
     border: 2px solid rgba(0, 0, 0, 0.5);
+}
+
+/* ===== Hidden native panel when editing ===== */
+.big-shot-panel-hidden {
+    opacity: 0;
+    height: 0;
+    margin: 0;
+    padding: 0;
+    /* transition: opacity 200ms ease-out; */
 }

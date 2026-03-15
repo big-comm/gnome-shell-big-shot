@@ -16,17 +16,20 @@ import cairo from 'gi://cairo';
 // =============================================================================
 
 export const DrawingMode = Object.freeze({
-    SELECT:      'SELECT',
-    PEN:         'PEN',
-    ARROW:       'ARROW',
-    LINE:        'LINE',
-    RECT:        'RECT',
-    CIRCLE:      'CIRCLE',
-    TEXT:        'TEXT',
-    HIGHLIGHTER: 'HIGHLIGHTER',
-    CENSOR:      'CENSOR',
-    BLUR: 'BLUR',
-    NUMBER:      'NUMBER',
+    SELECT:         'SELECT',
+    PEN:            'PEN',
+    ARROW:          'ARROW',
+    LINE:           'LINE',
+    RECT:           'RECT',
+    CIRCLE:         'CIRCLE',
+    TEXT:           'TEXT',
+    HIGHLIGHTER:    'HIGHLIGHTER',
+    CENSOR:         'CENSOR',
+    BLUR:           'BLUR',
+    NUMBER:         'NUMBER',
+    NUMBER_ARROW:   'NUMBER_ARROW',
+    NUMBER_POINTER: 'NUMBER_POINTER',
+    ERASER:         'ERASER',
 });
 
 // =============================================================================
@@ -437,11 +440,13 @@ export class HighlighterAction extends StrokeAction {
         if (this.stroke.length < 2) return;
 
         const coords = this.stroke.map(([x, y]) => toWidget(x, y));
+        const [r, g, b] = this.options.primaryColor;
 
         cr.save();
-        // Cairo.Operator.MULTIPLY = 14 (for highlight blending effect)
-        cr.setOperator(14);
-        cr.setSourceRGBA(...this.options.primaryColor);
+        // Semi-transparent OVER — works on both transparent overlay
+        // and image surface (at save time). Gives a consistent
+        // translucent highlight effect in all contexts.
+        cr.setSourceRGBA(r, g, b, 0.45);
         cr.setLineWidth(this.options.size * scale * 2);
         cr.setLineCap(0); // BUTT
 
@@ -452,6 +457,7 @@ export class HighlighterAction extends StrokeAction {
         cr.stroke();
         cr.restore();
     }
+
 }
 
 // =============================================================================
@@ -517,12 +523,12 @@ export class CensorAction extends RectAction {
 
     /**
      * Compute block size from intensity level (1-5).
-     * Higher intensity → smaller blocks → stronger pixelation.
+     * Higher intensity → larger blocks → stronger pixelation.
      */
     _blockSizeForIntensity(scaleFactor) {
         const level = this.options?.intensity || 3;
-        // level 1=16, 2=12, 3=8, 4=5, 5=3
-        const sizes = [16, 12, 8, 5, 3];
+        // level 1=3 (weak), 2=5, 3=8, 4=12, 5=16 (strong)
+        const sizes = [3, 5, 8, 12, 16];
         const base = sizes[Math.max(0, Math.min(level - 1, 4))];
         return Math.max(2, Math.round(base * scaleFactor));
     }
@@ -713,14 +719,6 @@ export class BlurAction extends RectAction {
                 pattern.setFilter(4);
             cr.paint();
             cr.restore();
-
-            // Border
-            cr.save();
-            cr.setSourceRGBA(0.6, 0.7, 1.0, 0.8);
-            cr.setLineWidth(1.5);
-            cr.rectangle(x, y, w, h);
-            cr.stroke();
-            cr.restore();
             return;
         }
 
@@ -741,13 +739,6 @@ export class BlurAction extends RectAction {
             cr.moveTo(x + d, y);
             cr.lineTo(x + d + h, y + h);
         }
-        cr.stroke();
-        cr.restore();
-
-        cr.save();
-        cr.setSourceRGBA(0.6, 0.7, 1.0, 0.8);
-        cr.setLineWidth(1.5);
-        cr.rectangle(x, y, w, h);
         cr.stroke();
         cr.restore();
     }
@@ -1007,6 +998,189 @@ export class NumberStampAction extends DrawingAction {
 }
 
 // =============================================================================
+// NUMBER + ARROW ACTION
+// =============================================================================
+
+export class NumberArrowAction extends DrawingAction {
+    constructor(position, end, number, options) {
+        super();
+        this.position = position; // arrow tip (where it points)
+        this.end = end;           // number badge center
+        this.number = number;
+        this.options = options;
+    }
+
+    draw(cr, toWidget, scale) {
+        const [tipX, tipY] = toWidget(...this.position);
+        const [badgeX, badgeY] = toWidget(...this.end);
+        const r = this.options.size * 2 * scale;
+
+        // Arrow shaft from badge to tip
+        const dx = tipX - badgeX;
+        const dy = tipY - badgeY;
+        const len = Math.sqrt(dx * dx + dy * dy);
+        if (len < 1) return;
+
+        const nx = dx / len;
+        const ny = dy / len;
+
+        // Start from badge edge, end near tip (leave room for arrowhead)
+        const sx = badgeX + nx * r;
+        const sy = badgeY + ny * r;
+        const headLen = Math.max(14 * scale, r * 0.7);
+        const ex = tipX - nx * headLen * 0.3;
+        const ey = tipY - ny * headLen * 0.3;
+
+        cr.setSourceRGBA(...this.options.primaryColor);
+        cr.setLineWidth(Math.max(2, this.options.size * 0.4) * scale);
+        cr.setLineCap(1); // ROUND
+        cr.moveTo(sx, sy);
+        cr.lineTo(ex, ey);
+        cr.stroke();
+
+        // Arrowhead
+        const perpX = -ny;
+        const perpY = nx;
+        const hw = headLen * 0.5;
+        cr.moveTo(tipX, tipY);
+        cr.lineTo(tipX - nx * headLen + perpX * hw, tipY - ny * headLen + perpY * hw);
+        cr.lineTo(tipX - nx * headLen - perpX * hw, tipY - ny * headLen - perpY * hw);
+        cr.closePath();
+        cr.fill();
+
+        // Number badge (circle)
+        cr.setSourceRGBA(...(this.options.fillColor || this.options.primaryColor));
+        cr.arc(badgeX, badgeY, r, 0, 2 * Math.PI);
+        cr.fill();
+
+        // Number text
+        cr.selectFontFace('Sans', 0, 1);
+        cr.setFontSize(r * 1.2);
+        const text = String(this.number);
+        const ext = cr.textExtents(text);
+        const tx = badgeX - ext.width / 2 - ext.xBearing;
+        const ty = badgeY + ext.height / 2;
+        cr.setSourceRGBA(1, 1, 1, 1);
+        cr.moveTo(tx, ty);
+        cr.showText(text);
+    }
+
+    getBounds() {
+        const r = this.options.size * 2 + 5;
+        const [x1, y1] = this.position;
+        const [x2, y2] = this.end;
+        return [
+            Math.min(x1, x2) - r, Math.min(y1, y2) - r,
+            Math.max(x1, x2) + r, Math.max(y1, y2) + r,
+        ];
+    }
+
+    containsPoint(px, py) {
+        const [bx, by] = this.end;
+        const r = this.options.size * 2 + 5;
+        if ((px - bx) ** 2 + (py - by) ** 2 <= r ** 2) return true;
+
+        const [ax, ay] = this.position;
+        return _pointToSegmentDist(px, py, ax, ay, bx, by) < 8;
+    }
+
+    translate(dx, dy) {
+        this.position = [this.position[0] + dx, this.position[1] + dy];
+        this.end = [this.end[0] + dx, this.end[1] + dy];
+    }
+}
+
+// =============================================================================
+// NUMBER + POINTER ACTION
+// =============================================================================
+
+export class NumberPointerAction extends DrawingAction {
+    constructor(position, end, number, options) {
+        super();
+        this.position = position; // pointer dot
+        this.end = end;           // number badge center
+        this.number = number;
+        this.options = options;
+    }
+
+    draw(cr, toWidget, scale) {
+        const [dotX, dotY] = toWidget(...this.position);
+        const [badgeX, badgeY] = toWidget(...this.end);
+        const r = this.options.size * 2 * scale;
+        const dotR = Math.max(3, this.options.size * 0.8) * scale;
+
+        // Line from badge to dot
+        const dx = dotX - badgeX;
+        const dy = dotY - badgeY;
+        const len = Math.sqrt(dx * dx + dy * dy);
+        if (len > 1) {
+            const nx = dx / len;
+            const ny = dy / len;
+            cr.setSourceRGBA(...this.options.primaryColor);
+            cr.setLineWidth(Math.max(1.5, this.options.size * 0.5) * scale);
+            cr.setLineCap(1); // ROUND
+            cr.moveTo(badgeX + nx * r, badgeY + ny * r);
+            cr.lineTo(dotX - nx * dotR, dotY - ny * dotR);
+            cr.stroke();
+        }
+
+        // Pointer dot
+        cr.setSourceRGBA(...this.options.primaryColor);
+        cr.arc(dotX, dotY, dotR, 0, 2 * Math.PI);
+        cr.fill();
+
+        // Number badge
+        cr.setSourceRGBA(...(this.options.fillColor || this.options.primaryColor));
+        cr.arc(badgeX, badgeY, r, 0, 2 * Math.PI);
+        cr.fill();
+
+        // Number text
+        cr.selectFontFace('Sans', 0, 1);
+        cr.setFontSize(r * 1.2);
+        const text = String(this.number);
+        const ext = cr.textExtents(text);
+        const tx = badgeX - ext.width / 2 - ext.xBearing;
+        const ty = badgeY + ext.height / 2;
+        cr.setSourceRGBA(1, 1, 1, 1);
+        cr.moveTo(tx, ty);
+        cr.showText(text);
+    }
+
+    getBounds() {
+        const r = this.options.size * 2 + 5;
+        const [x1, y1] = this.position;
+        const [x2, y2] = this.end;
+        return [
+            Math.min(x1, x2) - r, Math.min(y1, y2) - r,
+            Math.max(x1, x2) + r, Math.max(y1, y2) + r,
+        ];
+    }
+
+    containsPoint(px, py) {
+        const [bx, by] = this.end;
+        const r = this.options.size * 2 + 5;
+        if ((px - bx) ** 2 + (py - by) ** 2 <= r ** 2) return true;
+
+        const [ax, ay] = this.position;
+        return _pointToSegmentDist(px, py, ax, ay, bx, by) < 8;
+    }
+
+    translate(dx, dy) {
+        this.position = [this.position[0] + dx, this.position[1] + dy];
+        this.end = [this.end[0] + dx, this.end[1] + dy];
+    }
+}
+
+/** Distance from point (px,py) to line segment (ax,ay)-(bx,by) */
+function _pointToSegmentDist(px, py, ax, ay, bx, by) {
+    const abx = bx - ax, aby = by - ay;
+    const apx = px - ax, apy = py - ay;
+    const t = Math.max(0, Math.min(1, (apx * abx + apy * aby) / (abx * abx + aby * aby || 1)));
+    const cx = ax + t * abx, cy = ay + t * aby;
+    return Math.sqrt((px - cx) ** 2 + (py - cy) ** 2);
+}
+
+// =============================================================================
 // FACTORY
 // =============================================================================
 
@@ -1035,6 +1209,10 @@ export function createAction(mode, data, options) {
             return new BlurAction(data.start, data.end, false, options);
         case DrawingMode.NUMBER:
             return new NumberStampAction(data.position, data.number, options);
+        case DrawingMode.NUMBER_ARROW:
+            return new NumberArrowAction(data.start, data.end, data.number, options);
+        case DrawingMode.NUMBER_POINTER:
+            return new NumberPointerAction(data.start, data.end, data.number, options);
         default:
             return null;
     }

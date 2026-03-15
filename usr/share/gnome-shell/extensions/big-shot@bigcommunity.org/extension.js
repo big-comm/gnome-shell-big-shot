@@ -13,6 +13,7 @@ import St from 'gi://St';
 import GdkPixbuf from 'gi://GdkPixbuf';
 import cairo from 'gi://cairo';
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
+import * as MessageTray from 'resource:///org/gnome/shell/ui/messageTray.js';
 import { Extension, gettext as _ } from 'resource:///org/gnome/shell/extensions/extension.js';
 import * as Screenshot from 'resource:///org/gnome/shell/ui/screenshot.js';
 
@@ -246,7 +247,6 @@ export default class BigShotExtension extends Extension {
         // Intercept _saveScreenshot to composite annotations onto the image
         this._patchSaveScreenshot();
 
-        console.log('[Big Shot] Extension enabled');
     }
 
     disable() {
@@ -279,7 +279,6 @@ export default class BigShotExtension extends Extension {
         this._screenshotUI = null;
         this._availableConfigs = null;
 
-        console.log('[Big Shot] Extension disabled');
     }
 
     _forceEnableScreencast() {
@@ -311,7 +310,6 @@ export default class BigShotExtension extends Extension {
             }
         }
 
-        console.log('[Big Shot] Screencast button force-enabled');
     }
 
     _revertForceScreencast() {
@@ -344,14 +342,11 @@ export default class BigShotExtension extends Extension {
         const ext = this;
 
         ui._saveScreenshot = async function () {
-            console.log('[Big Shot] _saveScreenshot called');
             const overlay = ext._annotation?._overlay;
             const actions = overlay?._actions;
-            console.log(`[Big Shot] overlay=${!!overlay}, actions=${actions?.length ?? 'null'}`);
 
             // No annotations — use original save
             if (!actions || actions.length === 0) {
-                console.log('[Big Shot] No annotations, using original save');
                 return ext._origSaveScreenshot();
             }
 
@@ -442,9 +437,7 @@ export default class BigShotExtension extends Extension {
                             );
                             if (result) {
                                 workPixbuf = result;
-                                console.log(`[Big Shot] drawReal applied: ${action.constructor.name}`);
                             } else {
-                                console.log(`[Big Shot] drawReal returned null: ${action.constructor.name}`);
                             }
                         } catch (err) {
                             console.error(`[Big Shot] drawReal failed for ${action.constructor.name}: ${err.message}\n${err.stack}`);
@@ -502,7 +495,6 @@ export default class BigShotExtension extends Extension {
             }
         };
 
-        console.log('[Big Shot] _saveScreenshot intercepted for annotation compositing');
     }
 
     /**
@@ -595,6 +587,276 @@ export default class BigShotExtension extends Extension {
         }
     }
 
+    // =========================================================================
+    // ACTION BUTTONS — Copy, Save As
+    // =========================================================================
+
+    /**
+     * Capture current screenshot and composite annotations into PNG bytes.
+     * Returns { bytes: GLib.Bytes, pixbuf: GdkPixbuf.Pixbuf } or null on failure.
+     */
+    async _captureAnnotatedBytes() {
+        const ui = this._screenshotUI;
+        const overlay = this._annotation?._overlay;
+        const actions = overlay?._actions ?? [];
+
+        let texture, geometry, cursorTexture, cursorX, cursorY, cursorScale, bufScale;
+
+        if (ui._selectionButton.checked || ui._screenButton.checked) {
+            const content = ui._stageScreenshot.get_content();
+            if (!content) return null;
+            texture = content.get_texture();
+            geometry = ui._getSelectedGeometry(true);
+            bufScale = ui._scale;
+            cursorTexture = ui._cursor.content?.get_texture();
+            if (!ui._cursor.visible) cursorTexture = null;
+            cursorX = ui._cursor.x * bufScale;
+            cursorY = ui._cursor.y * bufScale;
+            cursorScale = ui._cursorScale;
+        } else if (ui._windowButton.checked) {
+            const window = ui._windowSelectors
+                .flatMap(s => s.windows())
+                .find(win => win.checked);
+            if (!window) return null;
+            const content = window.windowContent;
+            if (!content) return null;
+            texture = content.get_texture();
+            geometry = null;
+            bufScale = window.bufferScale;
+            cursorTexture = window.getCursorTexture()?.get_texture();
+            if (!ui._cursor.visible) cursorTexture = null;
+            cursorX = window.cursorPoint.x * bufScale;
+            cursorY = window.cursorPoint.y * bufScale;
+            cursorScale = ui._cursorScale;
+        }
+
+        if (!texture) return null;
+
+        const [gx, gy, gw, gh] = geometry ?? [0, 0, -1, -1];
+        const stream = Gio.MemoryOutputStream.new_resizable();
+        const pixbuf = await Shell.Screenshot.composite_to_stream(
+            texture, gx, gy, gw, gh, bufScale,
+            cursorTexture ?? null, cursorX ?? 0, cursorY ?? 0, cursorScale ?? 1,
+            stream
+        );
+        stream.close(null);
+
+        if (!pixbuf) return null;
+
+        if (actions.length === 0) {
+            const bytes = stream.steal_as_bytes();
+            return { bytes, pixbuf };
+        }
+
+        const offsetX = gx / bufScale;
+        const offsetY = gy / bufScale;
+        const tmpDir = GLib.get_tmp_dir();
+        const tmpBase = GLib.build_filenamev([tmpDir, `bigshot-base-${Date.now()}.png`]);
+        const tmpAnnotated = GLib.build_filenamev([tmpDir, `bigshot-ann-${Date.now()}.png`]);
+
+        try {
+            const toWidget = (x, y) => [
+                (x - offsetX) * bufScale,
+                (y - offsetY) * bufScale,
+            ];
+            const drawScale = 1.0;
+
+            let workPixbuf = pixbuf;
+            for (const action of actions) {
+                if (typeof action.drawReal === 'function') {
+                    try {
+                        const result = action.drawReal(workPixbuf, GdkPixbuf, GLib, toWidget, drawScale);
+                        if (result) workPixbuf = result;
+                    } catch (err) {
+                        console.error(`[Big Shot] drawReal failed: ${err.message}`);
+                    }
+                }
+            }
+
+            workPixbuf.savev(tmpBase, 'png', [], []);
+            const surface = cairo.ImageSurface.createFromPNG(tmpBase);
+            const cr = new cairo.Context(surface);
+
+            for (const action of actions) {
+                if (typeof action.drawReal !== 'function') {
+                    cr.save();
+                    action.draw(cr, toWidget, drawScale);
+                    cr.restore();
+                }
+            }
+
+            surface.writeToPNG(tmpAnnotated);
+            surface.finish();
+
+            const annotPixbuf = GdkPixbuf.Pixbuf.new_from_file(tmpAnnotated);
+            const bytes = this._pixbufToBytes(annotPixbuf);
+            return { bytes, pixbuf: annotPixbuf };
+        } finally {
+            try { Gio.File.new_for_path(tmpBase).delete(null); } catch (_e) { /* */ }
+            try { Gio.File.new_for_path(tmpAnnotated).delete(null); } catch (_e) { /* */ }
+        }
+    }
+
+    /**
+     * Handle action button clicks from the toolbar.
+     */
+    async _handleAction(action) {
+        const ui = this._screenshotUI;
+
+        try {
+            const result = await this._captureAnnotatedBytes();
+            if (!result) {
+                console.error('[Big Shot] Failed to capture screenshot');
+                return;
+            }
+
+            const { bytes, pixbuf } = result;
+
+            switch (action) {
+            case 'copy': {
+                const clipboard = St.Clipboard.get_default();
+                clipboard.set_content(St.ClipboardType.CLIPBOARD, 'image/png', bytes);
+                global.display.get_sound_player().play_from_theme(
+                    'screen-capture', _('Screenshot copied'), null);
+                ui.close();
+                break;
+            }
+
+            case 'save-as': {
+                // Save to temp file, then open portal file chooser
+                const tmpPath = GLib.build_filenamev([
+                    GLib.get_tmp_dir(), `bigshot-saveas-${Date.now()}.png`]);
+                const tmpFile = Gio.File.new_for_path(tmpPath);
+                const outStream = tmpFile.create(Gio.FileCreateFlags.NONE, null);
+                outStream.write_bytes(bytes, null);
+                outStream.close(null);
+
+                // Also copy to clipboard
+                const clipboard = St.Clipboard.get_default();
+                clipboard.set_content(St.ClipboardType.CLIPBOARD, 'image/png', bytes);
+
+                ui.close();
+
+                // Open file chooser via xdg-desktop-portal
+                this._openSaveDialog(tmpPath, pixbuf);
+                break;
+            }
+
+            }
+        } catch (e) {
+            console.error(`[Big Shot] Action '${action}' failed: ${e.message}\n${e.stack}`);
+        }
+    }
+
+    /**
+     * Open a Save As dialog via xdg-desktop-portal FileChooser.
+     */
+    _openSaveDialog(tmpPath, pixbuf) {
+        try {
+            const time = GLib.DateTime.new_now_local();
+            const suggestedName = _('Screenshot from %s').format(
+                time.format('%Y-%m-%d %H-%M-%S')) + '.png';
+
+            // Use xdg-open with the temp file, or try portal
+            const bus = Gio.DBus.session;
+            bus.call(
+                'org.freedesktop.portal.Desktop',
+                '/org/freedesktop/portal/desktop',
+                'org.freedesktop.portal.FileChooser',
+                'SaveFile',
+                new GLib.Variant('(ssa{sv})', [
+                    '',
+                    _('Save Screenshot'),
+                    {
+                        'current_name': new GLib.Variant('s', suggestedName),
+                        'current_folder': new GLib.Variant('ay',
+                            new TextEncoder().encode(
+                                GLib.get_user_special_dir(GLib.UserDirectory.DIRECTORY_PICTURES) ||
+                                GLib.get_home_dir()
+                            )),
+                        'filters': new GLib.Variant('a(sa(us))', [
+                            ['PNG Images', [
+                                [0, '*.png'],
+                            ]],
+                        ]),
+                    },
+                ]),
+                new GLib.VariantType('(o)'),
+                Gio.DBusCallFlags.NONE,
+                -1,
+                null,
+                (conn, asyncResult) => {
+                    try {
+                        const result = conn.call_finish(asyncResult);
+                        const [requestPath] = result.deepUnpack();
+
+                        // Listen for the Response signal
+                        const subId = bus.signal_subscribe(
+                            'org.freedesktop.portal.Desktop',
+                            'org.freedesktop.portal.Request',
+                            'Response',
+                            requestPath,
+                            null,
+                            Gio.DBusSignalFlags.NO_MATCH_RULE,
+                            (_c, _sender, _path, _iface, _signal, params) => {
+                                bus.signal_unsubscribe(subId);
+                                const [response, results] = params.deepUnpack();
+                                if (response === 0 && results.uris) {
+                                    const uris = results.uris.deepUnpack();
+                                    if (uris.length > 0) {
+                                        const destFile = Gio.File.new_for_uri(uris[0]);
+                                        const srcFile = Gio.File.new_for_path(tmpPath);
+                                        try {
+                                            srcFile.copy(destFile, Gio.FileCopyFlags.OVERWRITE, null, null);
+                                        } catch (err) {
+                                            console.error(`[Big Shot] Save failed: ${err.message}`);
+                                        }
+                                    }
+                                }
+                                // Clean up temp file
+                                try { Gio.File.new_for_path(tmpPath).delete(null); } catch (_e) { /* */ }
+                            }
+                        );
+                    } catch (e) {
+                        console.error(`[Big Shot] Portal SaveFile failed: ${e.message}`);
+                        // Fallback: just open file manager at the temp location
+                        try { Gio.File.new_for_path(tmpPath).delete(null); } catch (_e) { /* */ }
+                    }
+                }
+            );
+        } catch (e) {
+            console.error(`[Big Shot] Save dialog failed: ${e.message}`);
+            try { Gio.File.new_for_path(tmpPath).delete(null); } catch (_e) { /* */ }
+        }
+    }
+
+    /**
+     * Show a desktop notification via GNOME Shell.
+     */
+    _showNotification(title, body) {
+        try {
+            const source = new MessageTray.Source({
+                title: 'Big Shot',
+                iconName: 'camera-photo-symbolic',
+            });
+            Main.messageTray.add(source);
+            const notification = new MessageTray.Notification({
+                source,
+                title,
+                body,
+            });
+            source.addNotification(notification);
+        } catch (e) {
+            // Fallback: show as OSD via Main.osdWindowManager
+            try {
+                const monitor = global.display.get_current_monitor();
+                Main.osdWindowManager.show(monitor, null, `${title}: ${body}`, -1);
+            } catch (_e2) {
+                // Last resort: just console log
+            }
+        }
+    }
+
     _detectPipelines() {
         // Already detected — skip
         if (this._availableConfigs !== null)
@@ -602,7 +864,6 @@ export default class BigShotExtension extends Extension {
 
         // 1. Detect GPU vendor(s) via lspci (same as big-video-converter)
         this._gpuVendors = detectGpuVendors();
-        console.log(`[Big Shot] Detected GPU vendor(s): ${this._gpuVendors.join(', ')}`);
 
         const vendorSet = new Set(this._gpuVendors);
 
@@ -633,11 +894,6 @@ export default class BigShotExtension extends Extension {
 
         if (this._availableConfigs.length === 0) {
             console.warn('[Big Shot] No compatible GStreamer pipeline found!');
-        } else {
-            console.log(`[Big Shot] Pipeline priority (${this._availableConfigs.length} config(s)):`);
-            this._availableConfigs.forEach((c, i) => {
-                console.log(`  [${i}] ${c.id} — ${c.label}`);
-            });
         }
     }
 
@@ -663,6 +919,14 @@ export default class BigShotExtension extends Extension {
                 const isDrawTool = toolId !== null;
                 overlay.setReactive(isDrawTool);
             }
+
+            // Collapse native panel when a drawing tool is active
+            this._setNativePanelCollapsed(toolId !== null);
+        });
+
+        // Wire action buttons (copy, save-as)
+        this._toolbar.onAction((action) => {
+            this._handleAction(action);
         });
 
         // Audio — Desktop + Mic toggle buttons
@@ -690,10 +954,8 @@ export default class BigShotExtension extends Extension {
         const screenshotUI = this._screenshotUI;
         const screencastProxy = screenshotUI._screencastProxy;
         if (!screencastProxy) {
-            console.log('[Big Shot] WARNING: _screencastProxy not found on screenshotUI');
             return;
         }
-        console.log('[Big Shot] Patching screencast proxy methods');
 
         // Save original methods
         this._origScreencast = screencastProxy.ScreencastAsync?.bind(screencastProxy);
@@ -772,7 +1034,6 @@ export default class BigShotExtension extends Extension {
         this._detectPipelines();
 
         if (this._availableConfigs.length === 0) {
-            console.log('[Big Shot] No custom pipelines, using GNOME default');
             return originalMethod(filePath, options);
         }
 
@@ -807,12 +1068,9 @@ export default class BigShotExtension extends Extension {
                 pipeline: new GLib.Variant('s', pipeline),
             };
 
-            console.log(`[Big Shot] Trying pipeline [${i}]: ${config.id} (${config.label})`);
-            console.log(`[Big Shot] Pipeline string: ${pipeline}`);
 
             try {
                 const result = await originalMethod(filePath, pipelineOptions);
-                console.log(`[Big Shot] Pipeline ${config.id} succeeded`);
                 this._indicator?.onPipelineReady();
 
                 // Fix .undefined extension: GNOME creates files with .undefined
@@ -823,7 +1081,6 @@ export default class BigShotExtension extends Extension {
                     const correctExt = `.${config.ext}`;
                     if (!actualPath.endsWith(correctExt)) {
                         const newPath = actualPath.replace(/\.[^.]+$/, correctExt);
-                        console.log(`[Big Shot] Scheduling rename: ${actualPath} → ${newPath}`);
                         this._scheduleFileRename(actualPath, config.ext);
                         return [result[0], newPath];
                     }
@@ -909,14 +1166,12 @@ export default class BigShotExtension extends Extension {
                 /queue/,
                 `queue ! videoscale ! video/x-raw,width=${targetW},height=${targetH}`
             );
-            console.log(`[Big Shot] Downsize ${Math.round(downsize * 100)}%: ${geo.width}x${geo.height} → ${targetW}x${targetH}`);
         }
 
         const audioInput = this._audio?.makeAudioInput();
         const ext = config.ext;
         const muxer = MUXERS[ext];
 
-        console.log(`[Big Shot] _makePipeline: audioInput=${audioInput ? 'YES' : 'NO'}, ext=${ext}`);
 
         if (audioInput) {
             // GStreamer multi-branch pipeline for audio+video:
