@@ -188,7 +188,7 @@ export class PartToolbar extends PartUI {
                 style_class: 'big-shot-edit-tool-btn',
                 toggle_mode: true,
                 can_focus: true,
-                child: new St.Icon({ gicon: this._getIcon(tool.icon), icon_size: 18 }),
+                child: new St.Icon({ gicon: this._getIcon(tool.icon), icon_size: 20 }),
                 accessible_name: tool.label(),
             });
             btn._toolId = tool.id;
@@ -246,7 +246,7 @@ export class PartToolbar extends PartUI {
         sizeBox.add_child(sizeDecBtn);
 
         this._sizeLabel = new St.Label({
-            text: '3',
+            text: '5',
             style: 'color: #ffffff; font-size: 12px; min-width: 20px; text-align: center;',
             y_align: Clutter.ActorAlign.CENTER,
             x_align: Clutter.ActorAlign.CENTER,
@@ -403,29 +403,7 @@ export class PartToolbar extends PartUI {
         this._saveAsButton.connect('leave-event', () => this._hideTooltip());
         this._editContainer.add_child(this._saveAsButton);
 
-        // Cloud upload (Nextcloud WebDAV)
-        this._cloudButton = new St.Button({
-            style_class: 'big-shot-edit-tool-btn',
-            child: new St.Icon({ gicon: this._getIcon('big-shot-cloud-upload-symbolic'), icon_size: 18 }),
-            can_focus: true,
-            accessible_name: _('Upload to Cloud'),
-        });
-        this._cloudButton.connect('clicked', () => this._onCloudClicked());
-        this._cloudButton.connect('enter-event', () => this._showTooltip(this._cloudButton, _('Upload to Cloud (Nextcloud)')));
-        this._cloudButton.connect('leave-event', () => this._hideTooltip());
-        this._editContainer.add_child(this._cloudButton);
 
-        // Share link (upload to custom endpoint)
-        this._shareButton = new St.Button({
-            style_class: 'big-shot-edit-tool-btn',
-            child: new St.Icon({ gicon: this._getIcon('big-shot-share-link-symbolic'), icon_size: 18 }),
-            can_focus: true,
-            accessible_name: _('Share Link'),
-        });
-        this._shareButton.connect('clicked', () => this._onShareClicked());
-        this._shareButton.connect('enter-event', () => this._showTooltip(this._shareButton, _('Upload and share link')));
-        this._shareButton.connect('leave-event', () => this._hideTooltip());
-        this._editContainer.add_child(this._shareButton);
 
         // NOTE: _editContainer is NOT added to a parent yet.
         // It gets inserted into _panel when edit mode is toggled ON.
@@ -767,7 +745,7 @@ export class PartToolbar extends PartUI {
     }
 
     get brushSize() {
-        return parseInt(this._sizeLabel.text) || 3;
+        return parseInt(this._sizeLabel.text) || 5;
     }
 
     get intensity() {
@@ -1042,14 +1020,6 @@ export class PartToolbar extends PartUI {
 
     _onSaveAsClicked() {
         this._actionCallback?.('save-as');
-    }
-
-    _onCloudClicked() {
-        this._actionCallback?.('cloud');
-    }
-
-    _onShareClicked() {
-        this._actionCallback?.('share');
     }
 
     onAction(callback) {
