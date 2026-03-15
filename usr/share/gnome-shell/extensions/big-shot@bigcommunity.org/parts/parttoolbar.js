@@ -113,11 +113,13 @@ export class PartToolbar extends PartUI {
             can_focus: true,
             accessible_name: _('Show screenshot panel'),
         });
+        this._nativePanelHidden = false;
         this._panelToggleBtn.connect('clicked', () => {
-            this.selectTool(null);
+            this._toggleNativePanel();
         });
         this._panelToggleBtn.connect('enter-event', () =>
-            this._showTooltip(this._panelToggleBtn, _('Show screenshot panel')));
+            this._showTooltip(this._panelToggleBtn,
+                this._nativePanelHidden ? _('Show screenshot panel') : _('Hide screenshot panel')));
         this._panelToggleBtn.connect('leave-event', () => this._hideTooltip());
         this._editContainer.add_child(this._panelToggleBtn);
 
@@ -144,8 +146,29 @@ export class PartToolbar extends PartUI {
         // Motion and release: listen on the global stage so drag works
         // even if cursor leaves the container
         this._dragMotionId = this._ui.connect('captured-event', (_actor, event) => {
-            if (!this._dragging) return Clutter.EVENT_PROPAGATE;
             const type = event.type();
+
+            // Ctrl+Scroll anywhere adjusts brush size while editing
+            if (this._editMode && type === Clutter.EventType.SCROLL) {
+                const state = event.get_state();
+                if (state & Clutter.ModifierType.CONTROL_MASK) {
+                    const dir = event.get_scroll_direction();
+                    let sz = this.brushSize;
+                    if (dir === Clutter.ScrollDirection.UP) {
+                        sz = Math.min(sz + 1, 100);
+                    } else if (dir === Clutter.ScrollDirection.DOWN) {
+                        sz = Math.max(sz - 1, 1);
+                    } else if (dir === Clutter.ScrollDirection.SMOOTH) {
+                        const [, dy] = event.get_scroll_delta();
+                        if (dy < 0) sz = Math.min(sz + 1, 100);
+                        else if (dy > 0) sz = Math.max(sz - 1, 1);
+                    }
+                    this._setBrushSize(sz);
+                    return Clutter.EVENT_STOP;
+                }
+            }
+
+            if (!this._dragging) return Clutter.EVENT_PROPAGATE;
             if (type === Clutter.EventType.MOTION) {
                 const [mx, my] = event.get_coords();
                 const dx = mx - this._dragStartX;
@@ -188,7 +211,7 @@ export class PartToolbar extends PartUI {
                 style_class: 'big-shot-edit-tool-btn',
                 toggle_mode: true,
                 can_focus: true,
-                child: new St.Icon({ gicon: this._getIcon(tool.icon), icon_size: 20 }),
+                child: new St.Icon({ gicon: this._getIcon(tool.icon), icon_size: 18 }),
                 accessible_name: tool.label(),
             });
             btn._toolId = tool.id;
@@ -246,7 +269,7 @@ export class PartToolbar extends PartUI {
         sizeBox.add_child(sizeDecBtn);
 
         this._sizeLabel = new St.Label({
-            text: '5',
+            text: '3',
             style: 'color: #ffffff; font-size: 12px; min-width: 20px; text-align: center;',
             y_align: Clutter.ActorAlign.CENTER,
             x_align: Clutter.ActorAlign.CENTER,
@@ -403,8 +426,6 @@ export class PartToolbar extends PartUI {
         this._saveAsButton.connect('leave-event', () => this._hideTooltip());
         this._editContainer.add_child(this._saveAsButton);
 
-
-
         // NOTE: _editContainer is NOT added to a parent yet.
         // It gets inserted into _panel when edit mode is toggled ON.
 
@@ -505,7 +526,7 @@ export class PartToolbar extends PartUI {
         if (this._editContainer.get_parent()) return;
         this._ui.add_child(this._editContainer);
 
-        // Position centered, above the native panel
+        // Read panel position BEFORE hiding it
         const panel = this._ui._panel;
         if (panel) {
             const [px, py] = panel.get_transformed_position();
@@ -516,6 +537,9 @@ export class PartToolbar extends PartUI {
                 py - this._editContainer.get_preferred_height(-1)[1] - 12,
             );
         }
+
+        // Hide native panel after positioning
+        this._setNativePanelVisible(false);
 
         // Fade-in
         this._editContainer.opacity = 0;
@@ -530,6 +554,27 @@ export class PartToolbar extends PartUI {
     _detachEditFromPanel() {
         const parent = this._editContainer.get_parent();
         if (parent) parent.remove_child(this._editContainer);
+        // Restore native panel visibility
+        this._setNativePanelVisible(true);
+    }
+
+    /** Toggle native panel visibility (eye button). */
+    _toggleNativePanel() {
+        this._setNativePanelVisible(this._nativePanelHidden);
+    }
+
+    /** Show or hide the native GNOME screenshot panel. */
+    _setNativePanelVisible(visible) {
+        const panel = this._ui._panel;
+        if (!panel) return;
+        this._nativePanelHidden = !visible;
+        if (visible) {
+            panel.show();
+            this._panelToggleBtn.child.icon_name = 'view-conceal-symbolic';
+        } else {
+            panel.hide();
+            this._panelToggleBtn.child.icon_name = 'view-reveal-symbolic';
+        }
     }
 
     /** Insert video settings at position 0 of the native panel. */
@@ -745,7 +790,7 @@ export class PartToolbar extends PartUI {
     }
 
     get brushSize() {
-        return parseInt(this._sizeLabel.text) || 5;
+        return parseInt(this._sizeLabel.text) || 3;
     }
 
     get intensity() {
