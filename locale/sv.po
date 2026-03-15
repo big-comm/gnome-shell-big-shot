@@ -25,6 +25,12 @@ msgstr "Skärmdumpar"
 msgid "Screenshot from %s"
 msgstr "Skärmdump från %s"
 #: NEEDS WORK
+msgid "Screenshot copied"
+msgstr "Skärmdump kopierad"
+#: NEEDS WORK
+msgid "Save Screenshot"
+msgstr "Spara skärmdump"
+#: NEEDS WORK
 msgid "Drawing canvas"
 msgstr "Ritningsduk"
 #: NEEDS WORK
@@ -94,14 +100,35 @@ msgstr "Sudda"
 msgid "Number"
 msgstr "Nummer"
 #: NEEDS WORK
+msgid "Number with Arrow"
+msgstr "Nummer med pil"
+#: NEEDS WORK
+msgid "Number with Pointer"
+msgstr "Nummer med pekare"
+#: NEEDS WORK
+msgid "Eraser"
+msgstr "Sudden"
+#: NEEDS WORK
+msgid "Show screenshot panel"
+msgstr "Visa skärmdumpspanel"
+#: NEEDS WORK
+msgid "Hide screenshot panel"
+msgstr "Dölj skärmdumpspanel"
+#: NEEDS WORK
 msgid "Color"
 msgstr "Färg"
 #: NEEDS WORK
 msgid "Fill"
 msgstr "Fyll"
 #: NEEDS WORK
+msgid "Decrease Size"
+msgstr "Minska storlek"
+#: NEEDS WORK
 msgid "Brush Size"
 msgstr "Penselstorlek"
+#: NEEDS WORK
+msgid "Increase Size"
+msgstr "Öka storlek"
 #: NEEDS WORK
 msgid "Font"
 msgstr "Typsnitt"
@@ -114,6 +141,12 @@ msgstr "Ångra"
 #: NEEDS WORK
 msgid "Redo"
 msgstr "Gör om"
+#: NEEDS WORK
+msgid "Copy to Clipboard"
+msgstr "Kopiera till urklipp"
+#: NEEDS WORK
+msgid "Save As…"
+msgstr "Spara som…"
 #: NEEDS WORK
 msgid "Quality"
 msgstr "Kvalitet"

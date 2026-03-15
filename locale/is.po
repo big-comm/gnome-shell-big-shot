@@ -25,6 +25,12 @@ msgstr "Skjámyndir"
 msgid "Screenshot from %s"
 msgstr "Skjámynd frá %s"
 #: NEEDS WORK
+msgid "Screenshot copied"
+msgstr "Skjámynd afrituð"
+#: NEEDS WORK
+msgid "Save Screenshot"
+msgstr "Vista skjáskot"
+#: NEEDS WORK
 msgid "Drawing canvas"
 msgstr "Teikniborð"
 #: NEEDS WORK
@@ -94,14 +100,35 @@ msgstr "Ófærð"
 msgid "Number"
 msgstr "Tala"
 #: NEEDS WORK
+msgid "Number with Arrow"
+msgstr "Tala með örrow"
+#: NEEDS WORK
+msgid "Number with Pointer"
+msgstr "Tala með vísitölu"
+#: NEEDS WORK
+msgid "Eraser"
+msgstr "Eyðingartæki"
+#: NEEDS WORK
+msgid "Show screenshot panel"
+msgstr "Sýna skjáskotspjaldið"
+#: NEEDS WORK
+msgid "Hide screenshot panel"
+msgstr "Fela skjásvæðispanel"
+#: NEEDS WORK
 msgid "Color"
 msgstr "Litur"
 #: NEEDS WORK
 msgid "Fill"
 msgstr "Fyllir"
 #: NEEDS WORK
+msgid "Decrease Size"
+msgstr "Minnka stærð"
+#: NEEDS WORK
 msgid "Brush Size"
 msgstr "Bursta stærð"
+#: NEEDS WORK
+msgid "Increase Size"
+msgstr "Auka stærð"
 #: NEEDS WORK
 msgid "Font"
 msgstr "Letur"
@@ -114,6 +141,12 @@ msgstr "Afturkalla"
 #: NEEDS WORK
 msgid "Redo"
 msgstr "Endurtaka"
+#: NEEDS WORK
+msgid "Copy to Clipboard"
+msgstr "Afrita í sk clipboard"
+#: NEEDS WORK
+msgid "Save As…"
+msgstr "Vista sem…"
 #: NEEDS WORK
 msgid "Quality"
 msgstr "Gæði"

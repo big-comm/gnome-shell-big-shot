@@ -25,6 +25,12 @@ msgstr "Screenshots"
 msgid "Screenshot from %s"
 msgstr "Screenshot von %s"
 #: NEEDS WORK
+msgid "Screenshot copied"
+msgstr "Screenshot kopiert"
+#: NEEDS WORK
+msgid "Save Screenshot"
+msgstr "Screenshot speichern"
+#: NEEDS WORK
 msgid "Drawing canvas"
 msgstr "Zeichenfläche"
 #: NEEDS WORK
@@ -94,14 +100,35 @@ msgstr "Unschärfe"
 msgid "Number"
 msgstr "Nummer"
 #: NEEDS WORK
+msgid "Number with Arrow"
+msgstr "Zahl mit Pfeil"
+#: NEEDS WORK
+msgid "Number with Pointer"
+msgstr "Zahl mit Zeiger"
+#: NEEDS WORK
+msgid "Eraser"
+msgstr "Radiergummi"
+#: NEEDS WORK
+msgid "Show screenshot panel"
+msgstr "Screenshot-Bereich anzeigen"
+#: NEEDS WORK
+msgid "Hide screenshot panel"
+msgstr "Screenshot-Bereich ausblenden"
+#: NEEDS WORK
 msgid "Color"
 msgstr "Farbe"
 #: NEEDS WORK
 msgid "Fill"
 msgstr "Füllen"
 #: NEEDS WORK
+msgid "Decrease Size"
+msgstr "Größe verringern"
+#: NEEDS WORK
 msgid "Brush Size"
 msgstr "Pinselgröße"
+#: NEEDS WORK
+msgid "Increase Size"
+msgstr "Größe erhöhen"
 #: NEEDS WORK
 msgid "Font"
 msgstr "Schriftart"
@@ -114,6 +141,12 @@ msgstr "Rückgängig"
 #: NEEDS WORK
 msgid "Redo"
 msgstr "Wiederholen"
+#: NEEDS WORK
+msgid "Copy to Clipboard"
+msgstr "In die Zwischenablage kopieren"
+#: NEEDS WORK
+msgid "Save As…"
+msgstr "Speichern unter…"
 #: NEEDS WORK
 msgid "Quality"
 msgstr "Qualität"

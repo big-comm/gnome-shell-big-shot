@@ -25,6 +25,12 @@ msgstr "צילומי מסך"
 msgid "Screenshot from %s"
 msgstr "צילום מסך מ-%s"
 #: NEEDS WORK
+msgid "Screenshot copied"
+msgstr "צילום מסך הועתק"
+#: NEEDS WORK
+msgid "Save Screenshot"
+msgstr "שמור צילום מסך"
+#: NEEDS WORK
 msgid "Drawing canvas"
 msgstr "קנבס ציור"
 #: NEEDS WORK
@@ -94,14 +100,35 @@ msgstr "טשטוש"
 msgid "Number"
 msgstr "מספר"
 #: NEEDS WORK
+msgid "Number with Arrow"
+msgstr "מספר עם חץ"
+#: NEEDS WORK
+msgid "Number with Pointer"
+msgstr "מספר עם מצביע"
+#: NEEDS WORK
+msgid "Eraser"
+msgstr "מחק"
+#: NEEDS WORK
+msgid "Show screenshot panel"
+msgstr "הצג פאנל צילומי מסך"
+#: NEEDS WORK
+msgid "Hide screenshot panel"
+msgstr "הסתר פאנל צילום מסך"
+#: NEEDS WORK
 msgid "Color"
 msgstr "צבע"
 #: NEEDS WORK
 msgid "Fill"
 msgstr "מלא"
 #: NEEDS WORK
+msgid "Decrease Size"
+msgstr "הקטן גודל"
+#: NEEDS WORK
 msgid "Brush Size"
 msgstr "גודל מברשת"
+#: NEEDS WORK
+msgid "Increase Size"
+msgstr "הגדל גודל"
 #: NEEDS WORK
 msgid "Font"
 msgstr "גופן"
@@ -114,6 +141,12 @@ msgstr "ביטול"
 #: NEEDS WORK
 msgid "Redo"
 msgstr "בצע שוב"
+#: NEEDS WORK
+msgid "Copy to Clipboard"
+msgstr "העתק ללוח שנה"
+#: NEEDS WORK
+msgid "Save As…"
+msgstr "שמור בשם…"
 #: NEEDS WORK
 msgid "Quality"
 msgstr "איכות"

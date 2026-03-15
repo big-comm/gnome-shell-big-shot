@@ -25,6 +25,12 @@ msgstr "Στιγμιότυπα οθόνης"
 msgid "Screenshot from %s"
 msgstr "Στιγμιότυπο οθόνης από %s"
 #: NEEDS WORK
+msgid "Screenshot copied"
+msgstr "Η εικόνα οθόνης αντιγράφηκε"
+#: NEEDS WORK
+msgid "Save Screenshot"
+msgstr "Αποθήκευση Στιγμιότυπου Οθόνης"
+#: NEEDS WORK
 msgid "Drawing canvas"
 msgstr "Καμβάς σχεδίασης"
 #: NEEDS WORK
@@ -94,14 +100,35 @@ msgstr "Θόλωμα"
 msgid "Number"
 msgstr "Αριθμός"
 #: NEEDS WORK
+msgid "Number with Arrow"
+msgstr "Αριθμός με Βέλος"
+#: NEEDS WORK
+msgid "Number with Pointer"
+msgstr "Αριθμός με Δείκτη"
+#: NEEDS WORK
+msgid "Eraser"
+msgstr "Γόμα"
+#: NEEDS WORK
+msgid "Show screenshot panel"
+msgstr "Εμφάνιση πίνακα στιγμιότυπου οθόνης"
+#: NEEDS WORK
+msgid "Hide screenshot panel"
+msgstr "Απόκρυψη πίνακα στιγμιότυπων οθόνης"
+#: NEEDS WORK
 msgid "Color"
 msgstr "Χρώμα"
 #: NEEDS WORK
 msgid "Fill"
 msgstr "Γέμισμα"
 #: NEEDS WORK
+msgid "Decrease Size"
+msgstr "Μείωση Μεγέθους"
+#: NEEDS WORK
 msgid "Brush Size"
 msgstr "Μέγεθος Πινέλου"
+#: NEEDS WORK
+msgid "Increase Size"
+msgstr "Αύξηση Μεγέθους"
 #: NEEDS WORK
 msgid "Font"
 msgstr "Γραμματοσειρά"
@@ -114,6 +141,12 @@ msgstr "Αναίρεση"
 #: NEEDS WORK
 msgid "Redo"
 msgstr "Επαναφορά"
+#: NEEDS WORK
+msgid "Copy to Clipboard"
+msgstr "Αντιγραφή στο Πρόχειρο"
+#: NEEDS WORK
+msgid "Save As…"
+msgstr "Αποθήκευση ως…"
 #: NEEDS WORK
 msgid "Quality"
 msgstr "Ποιότητα"
