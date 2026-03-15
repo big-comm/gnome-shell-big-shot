@@ -678,11 +678,7 @@ export class DrawingOverlay {
 
             if (tempAction) {
                 cr.save();
-                // Use preview rendering for highlighter (semi-transparent on overlay)
-                if (tempAction.drawPreview)
-                    tempAction.drawPreview(cr, toWidget, scale);
-                else
-                    tempAction.draw(cr, toWidget, scale);
+                tempAction.draw(cr, toWidget, scale);
                 cr.restore();
             }
         }

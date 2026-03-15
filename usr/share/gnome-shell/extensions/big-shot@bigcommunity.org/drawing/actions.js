@@ -736,14 +736,6 @@ export class BlurAction extends RectAction {
                 pattern.setFilter(4);
             cr.paint();
             cr.restore();
-
-            // Border
-            cr.save();
-            cr.setSourceRGBA(0.6, 0.7, 1.0, 0.8);
-            cr.setLineWidth(1.5);
-            cr.rectangle(x, y, w, h);
-            cr.stroke();
-            cr.restore();
             return;
         }
 
@@ -764,13 +756,6 @@ export class BlurAction extends RectAction {
             cr.moveTo(x + d, y);
             cr.lineTo(x + d + h, y + h);
         }
-        cr.stroke();
-        cr.restore();
-
-        cr.save();
-        cr.setSourceRGBA(0.6, 0.7, 1.0, 0.8);
-        cr.setLineWidth(1.5);
-        cr.rectangle(x, y, w, h);
         cr.stroke();
         cr.restore();
     }
