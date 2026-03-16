@@ -445,6 +445,31 @@ export class PartToolbar extends PartUI {
         this._saveAsButton.connect('leave-event', () => this._hideTooltip());
         this._editContainer.add_child(this._saveAsButton);
 
+        // Close button — shown only when the native panel is hidden (no orphaned X at top)
+        this._toolbarCloseSep = new St.Widget({
+            style: 'background: rgba(255,255,255,0.15); min-width: 1px; margin: 4px 2px;',
+            y_expand: true,
+            visible: false,
+        });
+        this._editContainer.add_child(this._toolbarCloseSep);
+
+        this._toolbarCloseBtn = new St.Button({
+            style_class: 'big-shot-edit-tool-btn',
+            child: new St.Icon({
+                icon_name: 'window-close-symbolic',
+                icon_size: 16,
+                style: 'color: rgba(255,255,255,0.6);',
+            }),
+            can_focus: true,
+            accessible_name: _('Close'),
+            visible: false,
+        });
+        this._toolbarCloseBtn.connect('clicked', () => this._ui.close());
+        this._toolbarCloseBtn.connect('enter-event', () =>
+            this._showTooltip(this._toolbarCloseBtn, _('Close')));
+        this._toolbarCloseBtn.connect('leave-event', () => this._hideTooltip());
+        this._editContainer.add_child(this._toolbarCloseBtn);
+
         // NOTE: _editContainer is NOT added to a parent yet.
         // It gets inserted into _panel when edit mode is toggled ON.
 
@@ -587,12 +612,22 @@ export class PartToolbar extends PartUI {
         const panel = this._ui._panel;
         if (!panel) return;
         this._nativePanelHidden = !visible;
+        const monitorBin = this._ui._primaryMonitorBin;
         if (visible) {
             panel.show();
             this._panelToggleBtn.child.icon_name = 'view-conceal-symbolic';
+            // Restore the native close button in its original position
+            if (monitorBin) monitorBin.show();
+            if (this._toolbarCloseSep) this._toolbarCloseSep.hide();
+            if (this._toolbarCloseBtn) this._toolbarCloseBtn.hide();
         } else {
             panel.hide();
             this._panelToggleBtn.child.icon_name = 'view-reveal-symbolic';
+            // Hide _primaryMonitorBin so the X doesn't float alone at the top;
+            // expose a close button inside the floating toolbar instead.
+            if (monitorBin) monitorBin.hide();
+            if (this._toolbarCloseSep) this._toolbarCloseSep.show();
+            if (this._toolbarCloseBtn) this._toolbarCloseBtn.show();
         }
     }
 
