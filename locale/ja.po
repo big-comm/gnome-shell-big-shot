@@ -25,6 +25,12 @@ msgstr "スクリーンショット"
 msgid "Screenshot from %s"
 msgstr "%sのスクリーンショット"
 #: NEEDS WORK
+msgid "Screenshot copied"
+msgstr "スクリーンショットがコピーされました"
+#: NEEDS WORK
+msgid "Save Screenshot"
+msgstr "スクリーンショットを保存"
+#: NEEDS WORK
 msgid "Drawing canvas"
 msgstr "描画キャンバス"
 #: NEEDS WORK
@@ -94,14 +100,35 @@ msgstr "ぼかし"
 msgid "Number"
 msgstr "番号"
 #: NEEDS WORK
+msgid "Number with Arrow"
+msgstr "矢印付き番号"
+#: NEEDS WORK
+msgid "Number with Pointer"
+msgstr "ポインタ付きの数値"
+#: NEEDS WORK
+msgid "Eraser"
+msgstr "消しゴム"
+#: NEEDS WORK
+msgid "Show screenshot panel"
+msgstr "スクリーンショットパネルを表示"
+#: NEEDS WORK
+msgid "Hide screenshot panel"
+msgstr "スクリーンショットパネルを非表示にする"
+#: NEEDS WORK
 msgid "Color"
 msgstr "色"
 #: NEEDS WORK
 msgid "Fill"
 msgstr "塗りつぶし"
 #: NEEDS WORK
+msgid "Decrease Size"
+msgstr "サイズを縮小"
+#: NEEDS WORK
 msgid "Brush Size"
 msgstr "ブラシサイズ"
+#: NEEDS WORK
+msgid "Increase Size"
+msgstr "サイズを増やす"
 #: NEEDS WORK
 msgid "Font"
 msgstr "フォント"
@@ -114,6 +141,12 @@ msgstr "元に戻す"
 #: NEEDS WORK
 msgid "Redo"
 msgstr "やり直し"
+#: NEEDS WORK
+msgid "Copy to Clipboard"
+msgstr "クリップボードにコピー"
+#: NEEDS WORK
+msgid "Save As…"
+msgstr "名前を付けて保存…"
 #: NEEDS WORK
 msgid "Quality"
 msgstr "品質"

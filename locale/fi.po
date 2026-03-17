@@ -25,6 +25,12 @@ msgstr "Näyttökuvat"
 msgid "Screenshot from %s"
 msgstr "Näyttökuva %s:stä"
 #: NEEDS WORK
+msgid "Screenshot copied"
+msgstr "Näyttökuva kopioitu"
+#: NEEDS WORK
+msgid "Save Screenshot"
+msgstr "Tallenna kuvakaappaus"
+#: NEEDS WORK
 msgid "Drawing canvas"
 msgstr "Piirtoalusta"
 #: NEEDS WORK
@@ -94,14 +100,35 @@ msgstr "Sume"
 msgid "Number"
 msgstr "Numero"
 #: NEEDS WORK
+msgid "Number with Arrow"
+msgstr "Numero nuolella"
+#: NEEDS WORK
+msgid "Number with Pointer"
+msgstr "Numero osoittimella"
+#: NEEDS WORK
+msgid "Eraser"
+msgstr "Pyyhekumi"
+#: NEEDS WORK
+msgid "Show screenshot panel"
+msgstr "Näytä kuvakaappauspaneeli"
+#: NEEDS WORK
+msgid "Hide screenshot panel"
+msgstr "Piilota kuvakaappauspaneeli"
+#: NEEDS WORK
 msgid "Color"
 msgstr "Väri"
 #: NEEDS WORK
 msgid "Fill"
 msgstr "Täytä"
 #: NEEDS WORK
+msgid "Decrease Size"
+msgstr "Vähennä kokoa"
+#: NEEDS WORK
 msgid "Brush Size"
 msgstr "Harjan koko"
+#: NEEDS WORK
+msgid "Increase Size"
+msgstr "Lisää kokoa"
 #: NEEDS WORK
 msgid "Font"
 msgstr "Fontti"
@@ -114,6 +141,12 @@ msgstr "Kumoa"
 #: NEEDS WORK
 msgid "Redo"
 msgstr "Uudelleen tehdä"
+#: NEEDS WORK
+msgid "Copy to Clipboard"
+msgstr "Kopioi leikepöydälle"
+#: NEEDS WORK
+msgid "Save As…"
+msgstr "Tallenna nimellä…"
 #: NEEDS WORK
 msgid "Quality"
 msgstr "Laatu"

@@ -25,6 +25,12 @@ msgstr "Képernyőképek"
 msgid "Screenshot from %s"
 msgstr "Képernyőkép a(z) %s-ból"
 #: NEEDS WORK
+msgid "Screenshot copied"
+msgstr "Kép másolva"
+#: NEEDS WORK
+msgid "Save Screenshot"
+msgstr "Kép mentése"
+#: NEEDS WORK
 msgid "Drawing canvas"
 msgstr "Rajzoló vászon"
 #: NEEDS WORK
@@ -94,14 +100,35 @@ msgstr "Elmosódás"
 msgid "Number"
 msgstr "Szám"
 #: NEEDS WORK
+msgid "Number with Arrow"
+msgstr "Szám nyíllal"
+#: NEEDS WORK
+msgid "Number with Pointer"
+msgstr "Mutatóval rendelkező szám"
+#: NEEDS WORK
+msgid "Eraser"
+msgstr "Radír"
+#: NEEDS WORK
+msgid "Show screenshot panel"
+msgstr "Képernyőkép panel megjelenítése"
+#: NEEDS WORK
+msgid "Hide screenshot panel"
+msgstr "Képernyőkép panel elrejtése"
+#: NEEDS WORK
 msgid "Color"
 msgstr "Szín"
 #: NEEDS WORK
 msgid "Fill"
 msgstr "Kitöltés"
 #: NEEDS WORK
+msgid "Decrease Size"
+msgstr "Méret csökkentése"
+#: NEEDS WORK
 msgid "Brush Size"
 msgstr "Ecsetméret"
+#: NEEDS WORK
+msgid "Increase Size"
+msgstr "Méret növelése"
 #: NEEDS WORK
 msgid "Font"
 msgstr "Betűtípus"
@@ -114,6 +141,12 @@ msgstr "Visszavonás"
 #: NEEDS WORK
 msgid "Redo"
 msgstr "Újra végrehajtás"
+#: NEEDS WORK
+msgid "Copy to Clipboard"
+msgstr "Másolás a vágólapra"
+#: NEEDS WORK
+msgid "Save As…"
+msgstr "Mentés másként…"
 #: NEEDS WORK
 msgid "Quality"
 msgstr "Minőség"

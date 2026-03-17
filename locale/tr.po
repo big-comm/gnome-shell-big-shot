@@ -25,6 +25,12 @@ msgstr "Ekran Görüntüleri"
 msgid "Screenshot from %s"
 msgstr "%s'den Ekran Görüntüsü"
 #: NEEDS WORK
+msgid "Screenshot copied"
+msgstr "Ekran görüntüsü kopyalandı"
+#: NEEDS WORK
+msgid "Save Screenshot"
+msgstr "Ekran Görüntüsünü Kaydet"
+#: NEEDS WORK
 msgid "Drawing canvas"
 msgstr "Çizim tuvali"
 #: NEEDS WORK
@@ -94,14 +100,35 @@ msgstr "Bulanıklaştırma"
 msgid "Number"
 msgstr "Numara"
 #: NEEDS WORK
+msgid "Number with Arrow"
+msgstr "Ok ile Sayı"
+#: NEEDS WORK
+msgid "Number with Pointer"
+msgstr "Pointer ile Sayı"
+#: NEEDS WORK
+msgid "Eraser"
+msgstr "Silgi"
+#: NEEDS WORK
+msgid "Show screenshot panel"
+msgstr "Ekran görüntüsü panelini göster"
+#: NEEDS WORK
+msgid "Hide screenshot panel"
+msgstr "Ekran görüntüsü panelini gizle"
+#: NEEDS WORK
 msgid "Color"
 msgstr "Renk"
 #: NEEDS WORK
 msgid "Fill"
 msgstr "Doldur"
 #: NEEDS WORK
+msgid "Decrease Size"
+msgstr "Boyut Azalt"
+#: NEEDS WORK
 msgid "Brush Size"
 msgstr "Fırça Boyutu"
+#: NEEDS WORK
+msgid "Increase Size"
+msgstr "Boyutu Artır"
 #: NEEDS WORK
 msgid "Font"
 msgstr "Yazı Tipi"
@@ -114,6 +141,12 @@ msgstr "Geri Al"
 #: NEEDS WORK
 msgid "Redo"
 msgstr "Yeniden Yap"
+#: NEEDS WORK
+msgid "Copy to Clipboard"
+msgstr "Panoza Kopyala"
+#: NEEDS WORK
+msgid "Save As…"
+msgstr "Farklı Kaydet…"
 #: NEEDS WORK
 msgid "Quality"
 msgstr "Kalite"
