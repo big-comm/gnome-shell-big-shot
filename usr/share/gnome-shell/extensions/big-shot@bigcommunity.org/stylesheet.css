@@ -126,3 +126,12 @@
     padding: 0;
     /* transition: opacity 200ms ease-out; */
 }
+
+/* ===== Recording pause indicator ===== */
+.big-shot-paused-icon {
+    color: #f9c440;
+}
+
+.big-shot-paused-timer {
+    color: #f9c440;
+}

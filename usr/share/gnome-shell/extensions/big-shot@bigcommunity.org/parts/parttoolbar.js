@@ -187,20 +187,32 @@ export class PartToolbar extends PartUI {
                 }
             }
 
-            if (!this._dragging) return Clutter.EVENT_PROPAGATE;
+            if (!this._dragging && !this._videoDragging) return Clutter.EVENT_PROPAGATE;
             if (type === Clutter.EventType.MOTION) {
                 const [mx, my] = event.get_coords();
-                const dx = mx - this._dragStartX;
-                const dy = my - this._dragStartY;
-                if (Math.abs(dx) < 4 && Math.abs(dy) < 4)
-                    return Clutter.EVENT_PROPAGATE;
-                this._editContainer.set_position(
-                    mx + this._dragOffsetX,
-                    my + this._dragOffsetY,
-                );
+                if (this._dragging) {
+                    const dx = mx - this._dragStartX;
+                    const dy = my - this._dragStartY;
+                    if (Math.abs(dx) < 4 && Math.abs(dy) < 4)
+                        return Clutter.EVENT_PROPAGATE;
+                    this._editContainer.set_position(
+                        mx + this._dragOffsetX,
+                        my + this._dragOffsetY,
+                    );
+                } else if (this._videoDragging) {
+                    const dx = mx - this._videoDragStartX;
+                    const dy = my - this._videoDragStartY;
+                    if (Math.abs(dx) < 4 && Math.abs(dy) < 4)
+                        return Clutter.EVENT_PROPAGATE;
+                    this._videoContainer.set_position(
+                        mx + this._videoDragOffsetX,
+                        my + this._videoDragOffsetY,
+                    );
+                }
                 return Clutter.EVENT_STOP;
             } else if (type === Clutter.EventType.BUTTON_RELEASE) {
                 this._dragging = false;
+                this._videoDragging = false;
                 return Clutter.EVENT_STOP;
             }
             return Clutter.EVENT_PROPAGATE;
@@ -473,12 +485,69 @@ export class PartToolbar extends PartUI {
         // NOTE: _editContainer is NOT added to a parent yet.
         // It gets inserted into _panel when edit mode is toggled ON.
 
-        // === Video Settings Container (also inserted INTO _panel) ===
+        // === Video Settings Container (floating, like _editContainer) ===
         this._videoContainer = new St.BoxLayout({
             vertical: true,
-            style_class: 'big-shot-edit-container',
+            style_class: 'big-shot-edit-container big-shot-edit-floating',
             reactive: true,
-            x_align: Clutter.ActorAlign.CENTER,
+            style: 'spacing: 8px; padding: 8px 12px;',
+        });
+
+        // Header row (drag handle + label)
+        const videoHeaderRow = new St.BoxLayout({ style: 'spacing: 6px;' });
+
+        this._videoDragHandle = new St.Bin({
+            child: new St.Icon({
+                icon_name: 'open-menu-symbolic',
+                icon_size: 16,
+                style: 'color: rgba(255,255,255,0.5);',
+            }),
+            reactive: true,
+            track_hover: true,
+            style: 'padding: 4px 6px; cursor: grab;',
+        });
+        videoHeaderRow.add_child(this._videoDragHandle);
+
+        videoHeaderRow.add_child(new St.Label({
+            text: _('Video Settings'),
+            style: 'color: rgba(255,255,255,0.7); font-size: 12px; font-weight: bold;',
+            y_align: Clutter.ActorAlign.CENTER,
+            x_expand: true,
+        }));
+
+        this._videoContainer.add_child(videoHeaderRow);
+
+        // Video drag state
+        this._videoDragging = false;
+
+        this._videoDragHandle.connect('button-press-event', (_actor, event) => {
+            if (event.get_button() !== 1) return Clutter.EVENT_PROPAGATE;
+            const [mx, my] = event.get_coords();
+            const [ax, ay] = this._videoContainer.get_transformed_position();
+            this._videoDragging = true;
+            this._videoDragStartX = mx;
+            this._videoDragStartY = my;
+            this._videoDragOffsetX = ax - mx;
+            this._videoDragOffsetY = ay - my;
+            return Clutter.EVENT_STOP;
+        });
+
+        // Opacity hover effects
+        this._videoContainer.opacity = 230;
+        this._videoContainer.connect('enter-event', () => {
+            this._videoContainer.ease({
+                opacity: 255,
+                duration: 150,
+                mode: Clutter.AnimationMode.EASE_OUT_QUAD,
+            });
+        });
+        this._videoContainer.connect('leave-event', () => {
+            if (this._videoDragging) return;
+            this._videoContainer.ease({
+                opacity: 230,
+                duration: 300,
+                mode: Clutter.AnimationMode.EASE_OUT_QUAD,
+            });
         });
 
         // Row 1: Quality label + buttons
@@ -532,6 +601,14 @@ export class PartToolbar extends PartUI {
             can_focus: true,
             child: new St.Icon({ icon_name: 'document-edit-symbolic', icon_size: 16 }),
             accessible_name: _('Edit'),
+        });
+        this._editButton.track_hover = true;
+        this._editButton.connect('notify::hover', () => {
+            if (this._editButton.hover)
+                this._showTooltip(this._editButton,
+                    this._isCastMode ? _('Video Settings') : _('Edit Screenshot'));
+            else
+                this._hideTooltip();
         });
         this._editButton.connect('notify::checked', () => {
             this._editMode = this._editButton.checked;
@@ -631,12 +708,32 @@ export class PartToolbar extends PartUI {
         }
     }
 
-    /** Insert video settings at position 0 of the native panel. */
+    /** Add video settings as floating actor above the native panel. */
     _attachVideoToPanel() {
-        const panel = this._ui._panel;
-        if (!panel || this._videoContainer.get_parent()) return;
+        if (this._videoContainer.get_parent()) return;
         this._populateVideoCodecs();
-        panel.insert_child_at_index(this._videoContainer, 0);
+        this._ui.add_child(this._videoContainer);
+
+        // Position above the native panel, centered
+        const panel = this._ui._panel;
+        if (panel) {
+            const [px, py] = panel.get_transformed_position();
+            const pw = panel.width;
+            const cw = this._videoContainer.get_preferred_width(-1)[1] || 300;
+            const ch = this._videoContainer.get_preferred_height(-1)[1] || 80;
+            this._videoContainer.set_position(
+                px + (pw - cw) / 2,
+                py - ch - 12,
+            );
+        }
+
+        // Fade-in
+        this._videoContainer.opacity = 0;
+        this._videoContainer.ease({
+            opacity: 230,
+            duration: 200,
+            mode: Clutter.AnimationMode.EASE_OUT_QUAD,
+        });
     }
 
     /** Remove video settings from the native panel. */
@@ -1107,7 +1204,7 @@ export class PartToolbar extends PartUI {
         }
     }
 
-    // Video settings panel is now embedded in _panel via _attachVideoToPanel().
+    // Video settings panel is now a floating modal, matching the edit toolbar behavior.
 
     _onUndo() { }
     _onRedo() { }
@@ -1173,6 +1270,7 @@ export class PartToolbar extends PartUI {
             style: 'background: rgba(0,0,0,0.85); color: #ffffff; padding: 4px 8px; border-radius: 4px; font-size: 11px;',
         });
         this._ui.add_child(this._tooltip);
+        this._ui.set_child_above_sibling(this._tooltip, null);
 
         GLib.idle_add(GLib.PRIORITY_DEFAULT, () => {
             if (!this._tooltip) return GLib.SOURCE_REMOVE;

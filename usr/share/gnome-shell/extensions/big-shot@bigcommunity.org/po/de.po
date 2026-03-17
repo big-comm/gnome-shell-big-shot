@@ -5,9 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: big-shot 1.0\n"
-"Report-Msgid-Bugs-To: https://github.com/BigCommunity/gnome-shell-big-shot/"
-"issues\n"
-"POT-Creation-Date: 2026-03-15 10:09-0300\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-03-17 13:04-0300\n"
 "PO-Revision-Date: 2024-01-01 00:00+0000\n"
 "Last-Translator: BigCommunity <dev@bigcommunity.org>\n"
 "Language-Team: German\n"
@@ -16,114 +15,42 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: extension.js:486 extension.js:499
+#: extension.js:490 extension.js:503
 msgid "Screenshot taken"
 msgstr ""
 
-#: extension.js:542
+#: extension.js:545
 msgid "Screenshots"
 msgstr ""
 
-#: extension.js:552 extension.js:833
+#: extension.js:555 extension.js:774
 #, javascript-format
 msgid "Screenshot from %s"
 msgstr ""
 
-#: extension.js:736
+#: extension.js:737
 msgid "Screenshot copied"
 msgstr ""
 
-#: extension.js:845
+#: extension.js:786
 msgid "Save Screenshot"
 msgstr ""
 
-#: extension.js:941
-msgid "Uploaded to Nextcloud"
-msgstr ""
+#: extension.js:1442 extension.js:1448 extension.js:1462
+msgid "Recording complete"
+msgstr "Aufnahme abgeschlossen"
 
-#: extension.js:946 extension.js:952 extension.js:957
-msgid "Nextcloud upload failed"
-msgstr ""
+#: extension.js:1443
+msgid "Paused segments merged successfully"
+msgstr "Pausierte Segmente erfolgreich zusammengeführt"
 
-#: extension.js:1021
-msgid "Link copied to clipboard"
-msgstr ""
+#: extension.js:1449
+msgid "Segment merge failed — individual files kept"
+msgstr "Zusammenführung fehlgeschlagen — Einzeldateien beibehalten"
 
-#: extension.js:1026
-msgid "Upload complete"
-msgstr ""
-
-#: extension.js:1027
-msgid "Could not extract share URL"
-msgstr ""
-
-#: extension.js:1032 extension.js:1039
-msgid "Upload failed"
-msgstr ""
-
-#: extension.js:1118
-msgid "Cloud Settings (Nextcloud)"
-msgstr ""
-
-#: extension.js:1147
-msgid "URL"
-msgstr ""
-
-#: extension.js:1148
-msgid "Username"
-msgstr ""
-
-#: extension.js:1149
-msgid "Password"
-msgstr ""
-
-#: extension.js:1150
-msgid "Folder (optional)"
-msgstr ""
-
-#: extension.js:1160 extension.js:1323
-msgid "Cancel"
-msgstr ""
-
-#: extension.js:1168 extension.js:1331
-msgid "Save & Upload"
-msgstr ""
-
-#: extension.js:1179
-msgid "Fill all required fields"
-msgstr ""
-
-#: extension.js:1209 extension.js:1373
-msgid "Reset"
-msgstr ""
-
-#: extension.js:1225
-msgid "Cloud config removed"
-msgstr ""
-
-#: extension.js:1286
-msgid "Share Settings"
-msgstr ""
-
-#: extension.js:1311
-msgid "Upload URL"
-msgstr ""
-
-#: extension.js:1312
-msgid "File field name"
-msgstr ""
-
-#: extension.js:1314
-msgid "Response URL field (JSON path)"
-msgstr ""
-
-#: extension.js:1341
-msgid "URL is required"
-msgstr ""
-
-#: extension.js:1388
-msgid "Share config removed"
-msgstr ""
+#: extension.js:1463
+msgid "ffmpeg not found — individual segment files kept"
+msgstr "ffmpeg nicht gefunden — Einzeldateien beibehalten"
 
 #: parts/partaudio.js:96 parts/partaudio.js:153
 #, fuzzy
@@ -215,138 +142,131 @@ msgstr ""
 msgid "Eraser"
 msgstr ""
 
-#: parts/parttoolbar.js:114 parts/parttoolbar.js:120
+#: parts/parttoolbar.js:114 parts/parttoolbar.js:122
 msgid "Show screenshot panel"
 msgstr ""
 
-#: parts/parttoolbar.js:213 parts/parttoolbar.js:216
+#: parts/parttoolbar.js:122
+msgid "Hide screenshot panel"
+msgstr ""
+
+#: parts/parttoolbar.js:267 parts/parttoolbar.js:270
 #, fuzzy
 msgid "Color"
 msgstr "Füllfarbe"
 
-#: parts/parttoolbar.js:228 parts/parttoolbar.js:231
+#: parts/parttoolbar.js:282 parts/parttoolbar.js:285
 #, fuzzy
 msgid "Fill"
 msgstr "Keine Füllung"
 
-#: parts/parttoolbar.js:241
+#: parts/parttoolbar.js:295
 #, fuzzy
 msgid "Decrease Size"
 msgstr "Pinselgröße"
 
-#: parts/parttoolbar.js:258
+#: parts/parttoolbar.js:312
 msgid "Brush Size"
 msgstr "Pinselgröße"
 
-#: parts/parttoolbar.js:282
+#: parts/parttoolbar.js:336
 #, fuzzy
 msgid "Increase Size"
 msgstr "Pinselgröße"
 
-#: parts/parttoolbar.js:301 parts/parttoolbar.js:305
+#: parts/parttoolbar.js:355 parts/parttoolbar.js:359
 msgid "Font"
 msgstr ""
 
-#: parts/parttoolbar.js:328 parts/parttoolbar.js:348 parts/parttoolbar.js:790
-#: parts/parttoolbar.js:810
+#: parts/parttoolbar.js:382 parts/parttoolbar.js:402 parts/parttoolbar.js:964
+#: parts/parttoolbar.js:984
 msgid "Intensity"
 msgstr ""
 
-#: parts/parttoolbar.js:360 parts/parttoolbar.js:363
+#: parts/parttoolbar.js:414 parts/parttoolbar.js:417
 msgid "Undo"
 msgstr "Rückgängig"
 
-#: parts/parttoolbar.js:372 parts/parttoolbar.js:375
+#: parts/parttoolbar.js:426 parts/parttoolbar.js:429
 msgid "Redo"
 msgstr "Wiederherstellen"
 
-#: parts/parttoolbar.js:387 parts/parttoolbar.js:390
+#: parts/parttoolbar.js:441 parts/parttoolbar.js:444
 msgid "Copy to Clipboard"
 msgstr ""
 
-#: parts/parttoolbar.js:399 parts/parttoolbar.js:402
+#: parts/parttoolbar.js:453 parts/parttoolbar.js:456
 msgid "Save As…"
 msgstr ""
 
-#: parts/parttoolbar.js:411
-msgid "Upload to Cloud"
+#: parts/parttoolbar.js:476 parts/parttoolbar.js:481
+msgid "Close"
 msgstr ""
 
-#: parts/parttoolbar.js:414
-msgid "Upload to Cloud (Nextcloud)"
-msgstr ""
+#: parts/parttoolbar.js:512 parts/parttoolbar.js:609
+msgid "Video Settings"
+msgstr "Videoeinstellungen"
 
-#: parts/parttoolbar.js:423
-msgid "Share Link"
-msgstr ""
-
-#: parts/parttoolbar.js:426
-msgid "Upload and share link"
-msgstr ""
-
-#: parts/parttoolbar.js:444
+#: parts/parttoolbar.js:556
 msgid "Quality"
 msgstr ""
 
-#: parts/parttoolbar.js:450
+#: parts/parttoolbar.js:562
 msgid "High"
 msgstr ""
 
-#: parts/parttoolbar.js:451
+#: parts/parttoolbar.js:563
 msgid "Medium"
 msgstr ""
 
-#: parts/parttoolbar.js:452
+#: parts/parttoolbar.js:564
 msgid "Low"
 msgstr ""
 
-#: parts/parttoolbar.js:464
+#: parts/parttoolbar.js:576
 msgid "Recording quality (bitrate)"
 msgstr ""
 
-#: parts/parttoolbar.js:474
+#: parts/parttoolbar.js:586
 msgid "Codec"
 msgstr ""
 
-#: parts/parttoolbar.js:491
+#: parts/parttoolbar.js:603
 msgid "Edit"
 msgstr ""
 
-#: parts/parttoolbar.js:654
+#: parts/parttoolbar.js:609
+msgid "Edit Screenshot"
+msgstr "Screenshot bearbeiten"
+
+#: parts/parttoolbar.js:828
 msgid "Custom"
 msgstr ""
 
-#: parts/parttoolbar.js:893
+#: parts/parttoolbar.js:1067
 msgid "No Fill"
 msgstr "Keine Füllung"
 
-#: parts/parttoolbar.js:999
+#: parts/parttoolbar.js:1173
 msgid "Auto"
 msgstr ""
 
-#: parts/parttoolbar.js:1003
+#: parts/parttoolbar.js:1177
 msgid "Use best available codec"
 msgstr ""
 
-#: parts/parttoolbar.js:1019
+#: parts/parttoolbar.js:1193
 msgid "Video codec"
 msgstr ""
 
-#: drawing/overlay.js:74
-msgid "Drawing canvas"
-msgstr ""
+#~ msgid "Text…"
+#~ msgstr "Text…"
 
-#: drawing/overlay.js:495
-msgid "Text…"
-msgstr "Text…"
+#~ msgid "Annotation text"
+#~ msgstr "Anmerkungstext"
 
-#: drawing/overlay.js:498
-msgid "Annotation text"
-msgstr "Anmerkungstext"
-
-#: drawing/overlay.js:510
-msgid "Confirm"
-msgstr "Bestätigen"
+#~ msgid "Confirm"
+#~ msgstr "Bestätigen"
 
 #~ msgid "Background"
 #~ msgstr "Hintergrund"

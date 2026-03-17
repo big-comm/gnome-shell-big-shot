@@ -217,6 +217,11 @@ export default class BigShotExtension extends Extension {
         this._availableConfigs = null; // null = not yet detected (lazy)
         this._currentConfigIndex = 0;
 
+        // Pause/resume recording state
+        this._recordingState = 'idle'; // 'idle' | 'recording' | 'paused'
+        this._recordingContext = null;
+        this._stopWatcherId = 0;
+
         const screenshotUI = Main.screenshotUI;
         if (!screenshotUI) {
             console.error('[Big Shot] ScreenshotUI not found');
@@ -250,6 +255,14 @@ export default class BigShotExtension extends Extension {
     }
 
     disable() {
+        // Clean up pause/resume state
+        this._recordingState = 'idle';
+        this._recordingContext = null;
+        if (this._stopWatcherId) {
+            GLib.source_remove(this._stopWatcherId);
+            this._stopWatcherId = 0;
+        }
+
         // Clean up pending rename timer
         if (this._renameTimerId) {
             GLib.source_remove(this._renameTimerId);
@@ -985,8 +998,21 @@ export default class BigShotExtension extends Extension {
         // lock-screen disable/enable cycles.
         this._origOpen = screenshotUI.open.bind(screenshotUI);
         screenshotUI.open = function (mode) {
-            // QuickStop: if recording and user re-opens the UI,
+            // QuickStop: if recording (or paused) and user re-opens the UI,
             // stop the ongoing recording instead of opening.
+            if (ext._recordingState === 'paused') {
+                // Resume the screencast process first so it can finalize the file
+                ext._signalScreencastProcess('CONT');
+                // Let GNOME stop the recording normally
+                const recorder = Main.screenshotUI?._recorder;
+                if (recorder?.is_recording?.()) {
+                    try { recorder.close(); } catch (_e) { /* */ }
+                }
+                ext._onFinalStop();
+                Main.screenshotUI?.close();
+                return Promise.resolve();
+            }
+
             const recorder = Main.screenshotUI?._recorder;
             if (recorder?.is_recording?.()) {
                 try {
@@ -995,7 +1021,7 @@ export default class BigShotExtension extends Extension {
                 } catch (e) {
                     console.error(`[Big Shot] Quick stop error: ${e.message}`);
                 }
-                return;
+                return Promise.resolve();
             }
 
             if (mode === undefined) mode = 0; // UIMode.SCREENSHOT
@@ -1073,19 +1099,43 @@ export default class BigShotExtension extends Extension {
                 const result = await originalMethod(filePath, pipelineOptions);
                 this._indicator?.onPipelineReady();
 
+                // Save recording context for pause/resume
+                this._recordingState = 'recording';
+                this._recordingContext = {
+                    config,
+                };
+
                 // Fix .undefined extension: GNOME creates files with .undefined
                 // for custom pipelines. Schedule rename after recording stops
                 // and fix the return path so notifications use correct extension.
+                let correctedPath = result?.[1] ?? filePath;
                 if (result && result[0] && typeof result[1] === 'string') {
                     const actualPath = result[1];
                     const correctExt = `.${config.ext}`;
                     if (!actualPath.endsWith(correctExt)) {
-                        const newPath = actualPath.replace(/\.[^.]+$/, correctExt);
+                        correctedPath = actualPath.replace(/\.[^.]+$/, correctExt);
                         this._scheduleFileRename(actualPath, config.ext);
-                        return [result[0], newPath];
                     }
                 }
-                return result;
+                this._currentSegmentPath = correctedPath;
+
+                // Start watching for final stop
+                this._watchForFinalStop();
+
+                // Notify indicator
+                console.log('[Big Shot] About to call onRecordingStarted, indicator exists:', !!this._indicator);
+                try {
+                    this._indicator?.onRecordingStarted();
+                    console.log('[Big Shot] onRecordingStarted called successfully');
+                } catch (indErr) {
+                    console.error('[Big Shot] onRecordingStarted ERROR:', indErr.message, indErr.stack);
+                }
+
+                // Return result with corrected file extension so GNOME
+                // notifications point to the .mp4/.webm file, not .undefined
+                return (result && result[0])
+                    ? [result[0], correctedPath]
+                    : result;
             } catch (e) {
                 console.warn(`[Big Shot] Pipeline ${config.id} failed: ${e.message}`);
                 // Continue to next config
@@ -1096,6 +1146,125 @@ export default class BigShotExtension extends Extension {
         console.warn('[Big Shot] All pipelines failed, falling back to GNOME default');
         this._indicator?.onPipelineReady();
         return originalMethod(filePath, options);
+    }
+
+    // =========================================================================
+    // PAUSE / RESUME RECORDING
+    // =========================================================================
+
+    /**
+     * Find the PID of the gnome-shell-screencast subprocess.
+     * Returns the PID as a number, or 0 if not found.
+     */
+    _findScreencastPid() {
+        try {
+            const proc = Gio.Subprocess.new(
+                ['pgrep', '-f', 'org.gnome.Shell.Screencast'],
+                Gio.SubprocessFlags.STDOUT_PIPE | Gio.SubprocessFlags.STDERR_SILENCE
+            );
+            const [, stdout] = proc.communicate_utf8(null, null);
+            const pid = parseInt((stdout || '').trim().split('\n')[0], 10);
+            return isNaN(pid) ? 0 : pid;
+        } catch (_e) {
+            return 0;
+        }
+    }
+
+    /**
+     * Send a POSIX signal to the screencast process.
+     */
+    _signalScreencastProcess(signal) {
+        const pid = this._findScreencastPid();
+        if (!pid) {
+            console.warn('[Big Shot] Screencast process not found for signal');
+            return false;
+        }
+        try {
+            const proc = Gio.Subprocess.new(
+                ['kill', `-${signal}`, String(pid)],
+                Gio.SubprocessFlags.STDOUT_SILENCE | Gio.SubprocessFlags.STDERR_SILENCE
+            );
+            proc.wait(null);
+            return proc.get_successful();
+        } catch (e) {
+            console.error(`[Big Shot] Failed to signal process: ${e.message}`);
+            return false;
+        }
+    }
+
+    /**
+     * Pause the current recording by sending SIGSTOP to the screencast
+     * subprocess. The GStreamer pipeline freezes and no new frames are
+     * captured, but GNOME Shell continues to think recording is active.
+     */
+    pauseRecording() {
+        if (this._recordingState !== 'recording') return;
+
+        if (this._signalScreencastProcess('STOP')) {
+            this._recordingState = 'paused';
+            this._indicator?.onPaused();
+            console.log('[Big Shot] Recording paused (SIGSTOP)');
+        }
+    }
+
+    /**
+     * Resume recording by sending SIGCONT to the screencast subprocess.
+     */
+    resumeRecording() {
+        if (this._recordingState !== 'paused') return;
+
+        if (this._signalScreencastProcess('CONT')) {
+            this._recordingState = 'recording';
+            this._indicator?.onResumed();
+            console.log('[Big Shot] Recording resumed (SIGCONT)');
+        }
+    }
+
+    /**
+     * Toggle pause/resume — called by the indicator panel button.
+     */
+    togglePauseRecording() {
+        if (this._recordingState === 'recording') {
+            this.pauseRecording();
+        } else if (this._recordingState === 'paused') {
+            this.resumeRecording();
+        }
+    }
+
+    /**
+     * Watch for the final stop (user-initiated).
+     * When the user stops recording, we make sure to resume first if paused.
+     */
+    _watchForFinalStop() {
+        if (this._stopWatcherId) {
+            GLib.source_remove(this._stopWatcherId);
+            this._stopWatcherId = 0;
+        }
+
+        this._stopWatcherId = GLib.timeout_add(GLib.PRIORITY_DEFAULT, 500, () => {
+            // If paused, keep watching — the user may resume or the QuickStop
+            // handler will SIGCONT before stopping.
+            if (this._recordingState === 'paused')
+                return GLib.SOURCE_CONTINUE;
+
+            if (this._screenshotUI?._screencastInProgress)
+                return GLib.SOURCE_CONTINUE;
+
+            this._stopWatcherId = 0;
+            this._onFinalStop();
+            return GLib.SOURCE_REMOVE;
+        });
+    }
+
+    /**
+     * Handle the final recording stop — clean up indicator.
+     */
+    _onFinalStop() {
+        if (this._recordingState === 'idle') return;
+
+        this._recordingState = 'idle';
+        this._indicator?.onRecordingStopped();
+        this._recordingContext = null;
     }
 
     /**
