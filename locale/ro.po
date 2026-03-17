@@ -25,6 +25,12 @@ msgstr "Capturi de ecran"
 msgid "Screenshot from %s"
 msgstr "Captură de ecran din %s"
 #: NEEDS WORK
+msgid "Screenshot copied"
+msgstr "Captură de ecran copiată"
+#: NEEDS WORK
+msgid "Save Screenshot"
+msgstr "Salvează captură de ecran"
+#: NEEDS WORK
 msgid "Drawing canvas"
 msgstr "Canvas de desenare"
 #: NEEDS WORK
@@ -94,14 +100,35 @@ msgstr "Estompare"
 msgid "Number"
 msgstr "Număr"
 #: NEEDS WORK
+msgid "Number with Arrow"
+msgstr "Număr cu Săgeată"
+#: NEEDS WORK
+msgid "Number with Pointer"
+msgstr "Număr cu Punctator"
+#: NEEDS WORK
+msgid "Eraser"
+msgstr "Ștergător"
+#: NEEDS WORK
+msgid "Show screenshot panel"
+msgstr "Afișează panoul de captură de ecran"
+#: NEEDS WORK
+msgid "Hide screenshot panel"
+msgstr "Ascunde panoul de captură de ecran"
+#: NEEDS WORK
 msgid "Color"
 msgstr "Culoare"
 #: NEEDS WORK
 msgid "Fill"
 msgstr "Umple"
 #: NEEDS WORK
+msgid "Decrease Size"
+msgstr "Diminuează dimensiunea"
+#: NEEDS WORK
 msgid "Brush Size"
 msgstr "Dimensiune Pensulă"
+#: NEEDS WORK
+msgid "Increase Size"
+msgstr "Crește Dimensiunea"
 #: NEEDS WORK
 msgid "Font"
 msgstr "Font"
@@ -114,6 +141,15 @@ msgstr "Anulează"
 #: NEEDS WORK
 msgid "Redo"
 msgstr "Refă"
+#: NEEDS WORK
+msgid "Copy to Clipboard"
+msgstr "Copiază în clipboard"
+#: NEEDS WORK
+msgid "Save As…"
+msgstr "Salvează ca…"
+#: NEEDS WORK
+msgid "Close"
+msgstr "Închide"
 #: NEEDS WORK
 msgid "Quality"
 msgstr "Calitate"

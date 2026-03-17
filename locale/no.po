@@ -25,6 +25,12 @@ msgstr "Skjermbilder"
 msgid "Screenshot from %s"
 msgstr "Skjermbilde fra %s"
 #: NEEDS WORK
+msgid "Screenshot copied"
+msgstr "Skjermbilde kopiert"
+#: NEEDS WORK
+msgid "Save Screenshot"
+msgstr "Lagre skjermbilde"
+#: NEEDS WORK
 msgid "Drawing canvas"
 msgstr "Tegning lerret"
 #: NEEDS WORK
@@ -94,14 +100,35 @@ msgstr "Usynliggjøring"
 msgid "Number"
 msgstr "Nummer"
 #: NEEDS WORK
+msgid "Number with Arrow"
+msgstr "Tall med pil"
+#: NEEDS WORK
+msgid "Number with Pointer"
+msgstr "Nummer med peker"
+#: NEEDS WORK
+msgid "Eraser"
+msgstr "Viskelær"
+#: NEEDS WORK
+msgid "Show screenshot panel"
+msgstr "Vis skjermbildepanel"
+#: NEEDS WORK
+msgid "Hide screenshot panel"
+msgstr "Skjul skjermbildepanel"
+#: NEEDS WORK
 msgid "Color"
 msgstr "Farge"
 #: NEEDS WORK
 msgid "Fill"
 msgstr "Fyll"
 #: NEEDS WORK
+msgid "Decrease Size"
+msgstr "Reduser størrelse"
+#: NEEDS WORK
 msgid "Brush Size"
 msgstr "Penselstørrelse"
+#: NEEDS WORK
+msgid "Increase Size"
+msgstr "Øk størrelse"
 #: NEEDS WORK
 msgid "Font"
 msgstr "Skrift"
@@ -114,6 +141,15 @@ msgstr "Angre"
 #: NEEDS WORK
 msgid "Redo"
 msgstr "Gjør om"
+#: NEEDS WORK
+msgid "Copy to Clipboard"
+msgstr "Kopier til utklippstavle"
+#: NEEDS WORK
+msgid "Save As…"
+msgstr "Lagre som…"
+#: NEEDS WORK
+msgid "Close"
+msgstr "Lukk"
 #: NEEDS WORK
 msgid "Quality"
 msgstr "Kvalitet"

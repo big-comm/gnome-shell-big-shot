@@ -25,6 +25,12 @@ msgstr "Snímky obrazovky"
 msgid "Screenshot from %s"
 msgstr "Snímek obrazovky z %s"
 #: NEEDS WORK
+msgid "Screenshot copied"
+msgstr "Snímek obrazovky zkopírován"
+#: NEEDS WORK
+msgid "Save Screenshot"
+msgstr "Uložit snímek obrazovky"
+#: NEEDS WORK
 msgid "Drawing canvas"
 msgstr "Kreslicí plátno"
 #: NEEDS WORK
@@ -94,14 +100,35 @@ msgstr "Rozostření"
 msgid "Number"
 msgstr "Číslo"
 #: NEEDS WORK
+msgid "Number with Arrow"
+msgstr "Číslo se šipkou"
+#: NEEDS WORK
+msgid "Number with Pointer"
+msgstr "Číslo s ukazatelem"
+#: NEEDS WORK
+msgid "Eraser"
+msgstr "Guma"
+#: NEEDS WORK
+msgid "Show screenshot panel"
+msgstr "Zobrazit panel snímků obrazovky"
+#: NEEDS WORK
+msgid "Hide screenshot panel"
+msgstr "Skrýt panel pro snímky obrazovky"
+#: NEEDS WORK
 msgid "Color"
 msgstr "Barva"
 #: NEEDS WORK
 msgid "Fill"
 msgstr "Vyplnit"
 #: NEEDS WORK
+msgid "Decrease Size"
+msgstr "Zmenšit velikost"
+#: NEEDS WORK
 msgid "Brush Size"
 msgstr "Velikost štětce"
+#: NEEDS WORK
+msgid "Increase Size"
+msgstr "Zvětšit velikost"
 #: NEEDS WORK
 msgid "Font"
 msgstr "Písmo"
@@ -114,6 +141,15 @@ msgstr "Zpět"
 #: NEEDS WORK
 msgid "Redo"
 msgstr "Znovu provést"
+#: NEEDS WORK
+msgid "Copy to Clipboard"
+msgstr "Kopírovat do schránky"
+#: NEEDS WORK
+msgid "Save As…"
+msgstr "Uložit jako…"
+#: NEEDS WORK
+msgid "Close"
+msgstr "Zavřít"
 #: NEEDS WORK
 msgid "Quality"
 msgstr "Kvalita"

@@ -25,6 +25,12 @@ msgstr "截图"
 msgid "Screenshot from %s"
 msgstr "来自 %s 的截图"
 #: NEEDS WORK
+msgid "Screenshot copied"
+msgstr "截图已复制"
+#: NEEDS WORK
+msgid "Save Screenshot"
+msgstr "保存截图"
+#: NEEDS WORK
 msgid "Drawing canvas"
 msgstr "绘图画布"
 #: NEEDS WORK
@@ -94,14 +100,35 @@ msgstr "模糊"
 msgid "Number"
 msgstr "数字"
 #: NEEDS WORK
+msgid "Number with Arrow"
+msgstr "带箭头的数字"
+#: NEEDS WORK
+msgid "Number with Pointer"
+msgstr "带指针的数字"
+#: NEEDS WORK
+msgid "Eraser"
+msgstr "橡皮擦"
+#: NEEDS WORK
+msgid "Show screenshot panel"
+msgstr "显示截图面板"
+#: NEEDS WORK
+msgid "Hide screenshot panel"
+msgstr "隐藏截图面板"
+#: NEEDS WORK
 msgid "Color"
 msgstr "颜色"
 #: NEEDS WORK
 msgid "Fill"
 msgstr "填充"
 #: NEEDS WORK
+msgid "Decrease Size"
+msgstr "减小尺寸"
+#: NEEDS WORK
 msgid "Brush Size"
 msgstr "画笔大小"
+#: NEEDS WORK
+msgid "Increase Size"
+msgstr "增大尺寸"
 #: NEEDS WORK
 msgid "Font"
 msgstr "字体"
@@ -114,6 +141,15 @@ msgstr "撤销"
 #: NEEDS WORK
 msgid "Redo"
 msgstr "重做"
+#: NEEDS WORK
+msgid "Copy to Clipboard"
+msgstr "复制到剪贴板"
+#: NEEDS WORK
+msgid "Save As…"
+msgstr "另存为…"
+#: NEEDS WORK
+msgid "Close"
+msgstr "关闭"
 #: NEEDS WORK
 msgid "Quality"
 msgstr "质量"

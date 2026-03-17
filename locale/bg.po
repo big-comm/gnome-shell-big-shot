@@ -25,6 +25,12 @@ msgstr "Снимки на екрана"
 msgid "Screenshot from %s"
 msgstr "Скриншот от %s"
 #: NEEDS WORK
+msgid "Screenshot copied"
+msgstr "Скриншотът е копиран"
+#: NEEDS WORK
+msgid "Save Screenshot"
+msgstr "Запази екранна снимка"
+#: NEEDS WORK
 msgid "Drawing canvas"
 msgstr "Рисувателна платформа"
 #: NEEDS WORK
@@ -94,14 +100,35 @@ msgstr "Замъгляване"
 msgid "Number"
 msgstr "Номер"
 #: NEEDS WORK
+msgid "Number with Arrow"
+msgstr "Число с стрелка"
+#: NEEDS WORK
+msgid "Number with Pointer"
+msgstr "Число с указател."
+#: NEEDS WORK
+msgid "Eraser"
+msgstr "Гумка"
+#: NEEDS WORK
+msgid "Show screenshot panel"
+msgstr "Покажи панела за екранна снимка"
+#: NEEDS WORK
+msgid "Hide screenshot panel"
+msgstr "Скрий панела за екранни снимки"
+#: NEEDS WORK
 msgid "Color"
 msgstr "Цвят"
 #: NEEDS WORK
 msgid "Fill"
 msgstr "Запълване"
 #: NEEDS WORK
+msgid "Decrease Size"
+msgstr "Намали размер"
+#: NEEDS WORK
 msgid "Brush Size"
 msgstr "Размер на четката"
+#: NEEDS WORK
+msgid "Increase Size"
+msgstr "Увеличи размер"
 #: NEEDS WORK
 msgid "Font"
 msgstr "Шрифт"
@@ -114,6 +141,15 @@ msgstr "Отмяна"
 #: NEEDS WORK
 msgid "Redo"
 msgstr "Повтори"
+#: NEEDS WORK
+msgid "Copy to Clipboard"
+msgstr "Копирай в клипборда"
+#: NEEDS WORK
+msgid "Save As…"
+msgstr "Запази като…"
+#: NEEDS WORK
+msgid "Close"
+msgstr "Затвори"
 #: NEEDS WORK
 msgid "Quality"
 msgstr "Качество"

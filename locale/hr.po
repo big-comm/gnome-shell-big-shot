@@ -25,6 +25,12 @@ msgstr "Snimke zaslona"
 msgid "Screenshot from %s"
 msgstr "Snimka zaslona iz %s"
 #: NEEDS WORK
+msgid "Screenshot copied"
+msgstr "Snimka zaslona kopirana"
+#: NEEDS WORK
+msgid "Save Screenshot"
+msgstr "Spremi snimku zaslona"
+#: NEEDS WORK
 msgid "Drawing canvas"
 msgstr "Platno za crtanje"
 #: NEEDS WORK
@@ -94,14 +100,35 @@ msgstr "Zamućenje"
 msgid "Number"
 msgstr "Broj"
 #: NEEDS WORK
+msgid "Number with Arrow"
+msgstr "Broj s strelicom"
+#: NEEDS WORK
+msgid "Number with Pointer"
+msgstr "Broj s pokazivačem"
+#: NEEDS WORK
+msgid "Eraser"
+msgstr "Gumica"
+#: NEEDS WORK
+msgid "Show screenshot panel"
+msgstr "Prikaži panel za snimku zaslona"
+#: NEEDS WORK
+msgid "Hide screenshot panel"
+msgstr "Sakrij panel za snimke zaslona"
+#: NEEDS WORK
 msgid "Color"
 msgstr "Boja"
 #: NEEDS WORK
 msgid "Fill"
 msgstr "Ispuni"
 #: NEEDS WORK
+msgid "Decrease Size"
+msgstr "Smanji veličinu"
+#: NEEDS WORK
 msgid "Brush Size"
 msgstr "Veličina četkice"
+#: NEEDS WORK
+msgid "Increase Size"
+msgstr "Povećaj veličinu"
 #: NEEDS WORK
 msgid "Font"
 msgstr "Font"
@@ -114,6 +141,15 @@ msgstr "Poništi"
 #: NEEDS WORK
 msgid "Redo"
 msgstr "Ponovi"
+#: NEEDS WORK
+msgid "Copy to Clipboard"
+msgstr "Kopiraj u međuspremnik"
+#: NEEDS WORK
+msgid "Save As…"
+msgstr "Spremi kao…"
+#: NEEDS WORK
+msgid "Close"
+msgstr "Zatvori"
 #: NEEDS WORK
 msgid "Quality"
 msgstr "Kvaliteta"

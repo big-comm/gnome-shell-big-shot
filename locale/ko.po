@@ -25,6 +25,12 @@ msgstr "스크린샷"
 msgid "Screenshot from %s"
 msgstr "%s의 스크린샷"
 #: NEEDS WORK
+msgid "Screenshot copied"
+msgstr "스크린샷이 복사되었습니다."
+#: NEEDS WORK
+msgid "Save Screenshot"
+msgstr "스크린샷 저장"
+#: NEEDS WORK
 msgid "Drawing canvas"
 msgstr "드로잉 캔버스"
 #: NEEDS WORK
@@ -94,14 +100,35 @@ msgstr "블러"
 msgid "Number"
 msgstr "번호"
 #: NEEDS WORK
+msgid "Number with Arrow"
+msgstr "화살표가 있는 숫자"
+#: NEEDS WORK
+msgid "Number with Pointer"
+msgstr "포인터가 있는 숫자"
+#: NEEDS WORK
+msgid "Eraser"
+msgstr "지우개"
+#: NEEDS WORK
+msgid "Show screenshot panel"
+msgstr "스크린샷 패널 표시"
+#: NEEDS WORK
+msgid "Hide screenshot panel"
+msgstr "스크린샷 패널 숨기기"
+#: NEEDS WORK
 msgid "Color"
 msgstr "색상"
 #: NEEDS WORK
 msgid "Fill"
 msgstr "채우기"
 #: NEEDS WORK
+msgid "Decrease Size"
+msgstr "크기 줄이기"
+#: NEEDS WORK
 msgid "Brush Size"
 msgstr "브러시 크기"
+#: NEEDS WORK
+msgid "Increase Size"
+msgstr "크기 늘리기"
 #: NEEDS WORK
 msgid "Font"
 msgstr "글꼴"
@@ -114,6 +141,15 @@ msgstr "실행 취소"
 #: NEEDS WORK
 msgid "Redo"
 msgstr "다시 실행"
+#: NEEDS WORK
+msgid "Copy to Clipboard"
+msgstr "클립보드에 복사"
+#: NEEDS WORK
+msgid "Save As…"
+msgstr "다른 이름으로 저장…"
+#: NEEDS WORK
+msgid "Close"
+msgstr "닫기"
 #: NEEDS WORK
 msgid "Quality"
 msgstr "품질"

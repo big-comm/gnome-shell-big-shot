@@ -25,6 +25,12 @@ msgstr "Screenshots"
 msgid "Screenshot from %s"
 msgstr "Скріншот з %s"
 #: NEEDS WORK
+msgid "Screenshot copied"
+msgstr "Скріншот скопійовано"
+#: NEEDS WORK
+msgid "Save Screenshot"
+msgstr "Зберегти знімок екрану"
+#: NEEDS WORK
 msgid "Drawing canvas"
 msgstr "Робоча область для малювання"
 #: NEEDS WORK
@@ -94,14 +100,35 @@ msgstr "Flou"
 msgid "Number"
 msgstr "Номер"
 #: NEEDS WORK
+msgid "Number with Arrow"
+msgstr "Число зі стрілкою"
+#: NEEDS WORK
+msgid "Number with Pointer"
+msgstr "Число з вказівником"
+#: NEEDS WORK
+msgid "Eraser"
+msgstr "Rubber"
+#: NEEDS WORK
+msgid "Show screenshot panel"
+msgstr "Показати панель скріншотів"
+#: NEEDS WORK
+msgid "Hide screenshot panel"
+msgstr "Сховати панель скріншотів"
+#: NEEDS WORK
 msgid "Color"
 msgstr "Colour"
 #: NEEDS WORK
 msgid "Fill"
 msgstr "Заповнити"
 #: NEEDS WORK
+msgid "Decrease Size"
+msgstr "Reduce Size"
+#: NEEDS WORK
 msgid "Brush Size"
 msgstr "Розмір пензля"
+#: NEEDS WORK
+msgid "Increase Size"
+msgstr "Збільшити розмір"
 #: NEEDS WORK
 msgid "Font"
 msgstr "Шрифт"
@@ -114,6 +141,15 @@ msgstr "Відмінити"
 #: NEEDS WORK
 msgid "Redo"
 msgstr "Redo"
+#: NEEDS WORK
+msgid "Copy to Clipboard"
+msgstr "Копіювати в буфер обміну"
+#: NEEDS WORK
+msgid "Save As…"
+msgstr "Зберегти як…"
+#: NEEDS WORK
+msgid "Close"
+msgstr "Закрити"
 #: NEEDS WORK
 msgid "Quality"
 msgstr "Quality"

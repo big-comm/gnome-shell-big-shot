@@ -25,6 +25,12 @@ msgstr "Schermafbeeldingen"
 msgid "Screenshot from %s"
 msgstr "Screenshot van %s"
 #: NEEDS WORK
+msgid "Screenshot copied"
+msgstr "Screenshot gekopieerd"
+#: NEEDS WORK
+msgid "Save Screenshot"
+msgstr "Screenshot opslaan"
+#: NEEDS WORK
 msgid "Drawing canvas"
 msgstr "Tekent canvas"
 #: NEEDS WORK
@@ -94,14 +100,35 @@ msgstr "Vervagen"
 msgid "Number"
 msgstr "Nummer"
 #: NEEDS WORK
+msgid "Number with Arrow"
+msgstr "Nummer met Pijl"
+#: NEEDS WORK
+msgid "Number with Pointer"
+msgstr "Nummer met Pointer"
+#: NEEDS WORK
+msgid "Eraser"
+msgstr "Gum"
+#: NEEDS WORK
+msgid "Show screenshot panel"
+msgstr "Toon screenshot-paneel"
+#: NEEDS WORK
+msgid "Hide screenshot panel"
+msgstr "Verberg screenshotpaneel"
+#: NEEDS WORK
 msgid "Color"
 msgstr "Kleur"
 #: NEEDS WORK
 msgid "Fill"
 msgstr "Vullen"
 #: NEEDS WORK
+msgid "Decrease Size"
+msgstr "Grootte Verkleinen"
+#: NEEDS WORK
 msgid "Brush Size"
 msgstr "Borstelgrootte"
+#: NEEDS WORK
+msgid "Increase Size"
+msgstr "Vergroot grootte"
 #: NEEDS WORK
 msgid "Font"
 msgstr "Lettertype"
@@ -114,6 +141,15 @@ msgstr "Ongedaan maken"
 #: NEEDS WORK
 msgid "Redo"
 msgstr "Opnieuw"
+#: NEEDS WORK
+msgid "Copy to Clipboard"
+msgstr "Kopiëren naar klembord"
+#: NEEDS WORK
+msgid "Save As…"
+msgstr "Opslaan als…"
+#: NEEDS WORK
+msgid "Close"
+msgstr "Sluiten"
 #: NEEDS WORK
 msgid "Quality"
 msgstr "Kwaliteit"

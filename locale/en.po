@@ -24,6 +24,12 @@ msgstr "Screenshots"
 msgid "Screenshot from %s"
 msgstr "Screenshot from %s"
 
+msgid "Screenshot copied"
+msgstr "Screenshot copied"
+
+msgid "Save Screenshot"
+msgstr "Save Screenshot"
+
 msgid "Drawing canvas"
 msgstr "Drawing canvas"
 
@@ -93,14 +99,35 @@ msgstr "Blur"
 msgid "Number"
 msgstr "Number"
 
+msgid "Number with Arrow"
+msgstr "Number with Arrow"
+
+msgid "Number with Pointer"
+msgstr "Number with Pointer"
+
+msgid "Eraser"
+msgstr "Eraser"
+
+msgid "Show screenshot panel"
+msgstr "Show screenshot panel"
+
+msgid "Hide screenshot panel"
+msgstr "Hide screenshot panel"
+
 msgid "Color"
 msgstr "Color"
 
 msgid "Fill"
 msgstr "Fill"
 
+msgid "Decrease Size"
+msgstr "Decrease Size"
+
 msgid "Brush Size"
 msgstr "Brush Size"
+
+msgid "Increase Size"
+msgstr "Increase Size"
 
 msgid "Font"
 msgstr "Font"
@@ -113,6 +140,15 @@ msgstr "Undo"
 
 msgid "Redo"
 msgstr "Redo"
+
+msgid "Copy to Clipboard"
+msgstr "Copy to Clipboard"
+
+msgid "Save As…"
+msgstr "Save As…"
+
+msgid "Close"
+msgstr "Close"
 
 msgid "Quality"
 msgstr "Quality"

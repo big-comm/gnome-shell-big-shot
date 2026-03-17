@@ -25,6 +25,12 @@ msgstr "Capturas de tela"
 msgid "Screenshot from %s"
 msgstr "Captura de tela de %s"
 #: NEEDS WORK
+msgid "Screenshot copied"
+msgstr "Captura de tela copiada"
+#: NEEDS WORK
+msgid "Save Screenshot"
+msgstr "Salvar Captura de Tela"
+#: NEEDS WORK
 msgid "Drawing canvas"
 msgstr "Tela de desenho"
 #: NEEDS WORK
@@ -94,14 +100,35 @@ msgstr "Desfoque"
 msgid "Number"
 msgstr "Número"
 #: NEEDS WORK
+msgid "Number with Arrow"
+msgstr "Número com Seta"
+#: NEEDS WORK
+msgid "Number with Pointer"
+msgstr "Número com Ponteiro"
+#: NEEDS WORK
+msgid "Eraser"
+msgstr "Borracha"
+#: NEEDS WORK
+msgid "Show screenshot panel"
+msgstr "Mostrar painel de captura de tela"
+#: NEEDS WORK
+msgid "Hide screenshot panel"
+msgstr "Ocultar painel de captura de tela"
+#: NEEDS WORK
 msgid "Color"
 msgstr "Cor"
 #: NEEDS WORK
 msgid "Fill"
 msgstr "Preencher"
 #: NEEDS WORK
+msgid "Decrease Size"
+msgstr "Diminuir Tamanho"
+#: NEEDS WORK
 msgid "Brush Size"
 msgstr "Tamanho do Pincel"
+#: NEEDS WORK
+msgid "Increase Size"
+msgstr "Aumentar Tamanho"
 #: NEEDS WORK
 msgid "Font"
 msgstr "Fonte"
@@ -114,6 +141,15 @@ msgstr "Desfazer"
 #: NEEDS WORK
 msgid "Redo"
 msgstr "Refazer"
+#: NEEDS WORK
+msgid "Copy to Clipboard"
+msgstr "Copiar para a área de transferência"
+#: NEEDS WORK
+msgid "Save As…"
+msgstr "Salvar como…"
+#: NEEDS WORK
+msgid "Close"
+msgstr "Fechar"
 #: NEEDS WORK
 msgid "Quality"
 msgstr "Qualidade"

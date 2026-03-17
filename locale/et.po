@@ -25,6 +25,12 @@ msgstr "Kuvapildid"
 msgid "Screenshot from %s"
 msgstr "Kuvakaader %s-st"
 #: NEEDS WORK
+msgid "Screenshot copied"
+msgstr "Kuvakepitud koopia"
+#: NEEDS WORK
+msgid "Save Screenshot"
+msgstr "Salvesta ekraanipilt"
+#: NEEDS WORK
 msgid "Drawing canvas"
 msgstr "Joonistuslina"
 #: NEEDS WORK
@@ -94,14 +100,35 @@ msgstr "Hägu"
 msgid "Number"
 msgstr "Number"
 #: NEEDS WORK
+msgid "Number with Arrow"
+msgstr "Number koos noolega"
+#: NEEDS WORK
+msgid "Number with Pointer"
+msgstr "Number koos näidikuga"
+#: NEEDS WORK
+msgid "Eraser"
+msgstr "Kustutaja"
+#: NEEDS WORK
+msgid "Show screenshot panel"
+msgstr "Kuva ekraanipiltide paneel"
+#: NEEDS WORK
+msgid "Hide screenshot panel"
+msgstr "Peida ekraanipildi paneel"
+#: NEEDS WORK
 msgid "Color"
 msgstr "Värv"
 #: NEEDS WORK
 msgid "Fill"
 msgstr "Täida"
 #: NEEDS WORK
+msgid "Decrease Size"
+msgstr "Vähenda suurust"
+#: NEEDS WORK
 msgid "Brush Size"
 msgstr "Harja suurus"
+#: NEEDS WORK
+msgid "Increase Size"
+msgstr "Suurenda suurust"
 #: NEEDS WORK
 msgid "Font"
 msgstr "Font"
@@ -114,6 +141,15 @@ msgstr "Tagasi võtta"
 #: NEEDS WORK
 msgid "Redo"
 msgstr "Korda tagasi"
+#: NEEDS WORK
+msgid "Copy to Clipboard"
+msgstr "Kopeeri lõikelauale"
+#: NEEDS WORK
+msgid "Save As…"
+msgstr "Salvesta nimega…"
+#: NEEDS WORK
+msgid "Close"
+msgstr "Sulge"
 #: NEEDS WORK
 msgid "Quality"
 msgstr "Kvaliteet"

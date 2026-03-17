@@ -23,6 +23,12 @@ msgstr  ""
 msgid   "Screenshot from %s"
 msgstr  ""
 
+msgid   "Screenshot copied"
+msgstr  ""
+
+msgid   "Save Screenshot"
+msgstr  ""
+
 msgid   "Drawing canvas"
 msgstr  ""
 
@@ -92,13 +98,34 @@ msgstr  ""
 msgid   "Number"
 msgstr  ""
 
+msgid   "Number with Arrow"
+msgstr  ""
+
+msgid   "Number with Pointer"
+msgstr  ""
+
+msgid   "Eraser"
+msgstr  ""
+
+msgid   "Show screenshot panel"
+msgstr  ""
+
+msgid   "Hide screenshot panel"
+msgstr  ""
+
 msgid   "Color"
 msgstr  ""
 
 msgid   "Fill"
 msgstr  ""
 
+msgid   "Decrease Size"
+msgstr  ""
+
 msgid   "Brush Size"
+msgstr  ""
+
+msgid   "Increase Size"
 msgstr  ""
 
 msgid   "Font"
@@ -111,6 +138,15 @@ msgid   "Undo"
 msgstr  ""
 
 msgid   "Redo"
+msgstr  ""
+
+msgid   "Copy to Clipboard"
+msgstr  ""
+
+msgid   "Save As…"
+msgstr  ""
+
+msgid   "Close"
 msgstr  ""
 
 msgid   "Quality"
