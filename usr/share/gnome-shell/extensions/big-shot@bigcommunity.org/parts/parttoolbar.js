@@ -592,6 +592,66 @@ export class PartToolbar extends PartUI {
         this._videoContainer.add_child(codecBox);
         this._codecButtons = new Map();
 
+        // Row 3: Webcam toggle
+        const webcamBox = new St.BoxLayout({ vertical: false, style: 'spacing: 8px;' });
+        webcamBox.add_child(new St.Label({
+            text: _('Webcam'),
+            style: 'color: rgba(255,255,255,0.6); font-size: 12px; min-width: 50px;',
+            y_align: Clutter.ActorAlign.CENTER,
+        }));
+        this._webcamToggle = new St.Button({
+            style_class: 'screenshot-ui-show-pointer-button',
+            toggle_mode: true,
+            can_focus: true,
+            label: _('Off'),
+        });
+        this._webcamToggle.checked = false;
+        this._webcamToggle.connect('notify::checked', () => {
+            const on = this._webcamToggle.checked;
+            this._webcamToggle.label = on ? _('On') : _('Off');
+            this._maskRow.visible = on;
+            this._webcamToggledCallback?.(on);
+        });
+        webcamBox.add_child(this._webcamToggle);
+        this._videoContainer.add_child(webcamBox);
+
+        // Row 4: Mask selection (visible only when webcam is on)
+        this._maskRow = new St.BoxLayout({ vertical: false, style: 'spacing: 8px;' });
+        this._maskRow.visible = false;
+        this._maskRow.add_child(new St.Label({
+            text: _('Mask'),
+            style: 'color: rgba(255,255,255,0.6); font-size: 12px; min-width: 50px;',
+            y_align: Clutter.ActorAlign.CENTER,
+        }));
+        this._maskButtonsRow = new St.BoxLayout({ style: 'spacing: 4px;' });
+        this._maskButtons = new Map();
+        this._selectedMaskId = 'circle';
+
+        const maskOptions = [
+            { id: 'none', label: _('None') },
+            { id: 'circle', label: _('Circle') },
+            { id: 'ellipse', label: _('Oval') },
+            { id: 'soft-circle', label: _('Soft') },
+            { id: 'spotlight', label: _('Spot') },
+            { id: 'ornate-frame', label: _('Ornate') },
+            { id: 'concentric-rings', label: _('Rings') },
+        ];
+        for (const m of maskOptions) {
+            const btn = new St.Button({
+                style_class: 'screenshot-ui-show-pointer-button',
+                toggle_mode: true,
+                can_focus: true,
+                label: m.label,
+            });
+            btn.checked = (m.id === this._selectedMaskId);
+            const mid = m.id;
+            btn.connect('clicked', () => this._onMaskClicked(mid));
+            this._maskButtonsRow.add_child(btn);
+            this._maskButtons.set(m.id, btn);
+        }
+        this._maskRow.add_child(this._maskButtonsRow);
+        this._videoContainer.add_child(this._maskRow);
+
         // NOTE: _videoContainer is NOT added to a parent yet.
 
         // === Edit toggle button — in _showPointerButtonContainer ===
@@ -1142,12 +1202,32 @@ export class PartToolbar extends PartUI {
     // Video settings getters
     get videoQuality() { return this._videoQuality; }
     get selectedPipelineId() { return this._selectedPipelineId; }
+    get webcamEnabled() { return this._webcamToggle?.checked ?? false; }
+    get webcamMaskId() { return this._selectedMaskId; }
 
     _onQualityClicked(qualityId) {
         this._videoQuality = qualityId;
         for (const [id, btn] of this._qualityButtons) {
             btn.checked = (id === qualityId);
         }
+    }
+
+    _onMaskClicked(maskId) {
+        this._selectedMaskId = maskId;
+        for (const [id, btn] of this._maskButtons) {
+            btn.checked = (id === maskId);
+        }
+        this._maskChangedCallback?.(maskId);
+    }
+
+    /** Register callback for webcam toggle changes. */
+    onWebcamToggled(callback) {
+        this._webcamToggledCallback = callback;
+    }
+
+    /** Register callback for mask selection changes. */
+    onMaskChanged(callback) {
+        this._maskChangedCallback = callback;
     }
 
     _populateVideoCodecs() {

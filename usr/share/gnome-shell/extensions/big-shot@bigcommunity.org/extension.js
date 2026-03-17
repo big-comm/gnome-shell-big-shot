@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
-export const APP_VERSION = '0.4.0';
+export const APP_VERSION = '0.5.0';
 
 import GLib from 'gi://GLib';
 import Gio from 'gi://Gio';
@@ -26,6 +26,7 @@ import { PartFramerate } from './parts/partframerate.js';
 import { PartDownsize } from './parts/partdownsize.js';
 import { PartIndicator } from './parts/partindicator.js';
 import { PartQuickStop } from './parts/partquickstop.js';
+import { PartWebcam } from './parts/partwebcam.js';
 
 // =============================================================================
 // GPU DETECTION (following big-video-converter pattern)
@@ -261,6 +262,12 @@ export default class BigShotExtension extends Extension {
         if (this._stopWatcherId) {
             GLib.source_remove(this._stopWatcherId);
             this._stopWatcherId = 0;
+        }
+
+        // Clean up webcam UI visibility listener
+        if (this._webcamUIVisId) {
+            this._screenshotUI?.disconnect(this._webcamUIVisId);
+            this._webcamUIVisId = 0;
         }
 
         // Clean up pending rename timer
@@ -961,6 +968,41 @@ export default class BigShotExtension extends Extension {
         // Quick Stop
         this._quickstop = new PartQuickStop(ui, ext);
         this._parts.push(this._quickstop);
+
+        // Webcam overlay
+        this._webcam = new PartWebcam(ui, ext);
+        this._parts.push(this._webcam);
+
+        // Wire webcam toggle from toolbar
+        this._toolbar.onWebcamToggled((enabled) => {
+            this._webcam.enabled = enabled;
+            if (enabled)
+                this._webcam.startPreview();
+            else
+                this._webcam.stopPreview();
+        });
+
+        // Wire mask selection from toolbar
+        this._toolbar.onMaskChanged((maskId) => {
+            this._webcam.maskId = maskId;
+        });
+
+        // Stop webcam preview when UI closes without active recording
+        // Re-start preview when UI opens if webcam is still enabled
+        // Reparent webcam overlay between screenshotUI (preview) and TopChrome (recording)
+        this._webcamUIVisId = ui.connect('notify::visible', () => {
+            console.log(`[Big Shot Webcam] notify::visible=${ui.visible} state=${this._recordingState} enabled=${this._webcam?.enabled}`);
+            if (ui.visible && this._webcam.enabled && this._recordingState === 'idle') {
+                this._webcam.reparentForPreview();
+                this._webcam.startPreview();
+            } else if (!ui.visible && this._recordingState === 'idle') {
+                this._webcam?.stopPreview();
+            } else if (!ui.visible && this._recordingState !== 'idle') {
+                // Recording started, UI hiding — move webcam to TopChrome
+                console.log('[Big Shot Webcam] reparenting for recording');
+                this._webcam?.reparentForRecording();
+            }
+        });
     }
 
     _patchScreencast() {
@@ -1037,6 +1079,18 @@ export default class BigShotExtension extends Extension {
             }
             return ext._origOpen.call(this, mode);
         };
+
+        // Patch _startScreencast so we can mark recording state BEFORE
+        // the UI calls close(true), allowing the notify::visible handler
+        // to reparent the webcam overlay instead of destroying it.
+        this._origStartScreencast = screenshotUI._startScreencast?.bind(screenshotUI);
+        if (this._origStartScreencast) {
+            screenshotUI._startScreencast = function (...args) {
+                console.log('[Big Shot Webcam] _startScreencast patch: setting starting');
+                ext._recordingState = 'starting';
+                return ext._origStartScreencast(...args);
+            };
+        }
     }
 
     _unpatchScreencast() {
@@ -1049,10 +1103,13 @@ export default class BigShotExtension extends Extension {
             screencastProxy.ScreencastAreaAsync = this._origScreencastArea;
         if (this._origOpen)
             this._screenshotUI.open = this._origOpen;
+        if (this._origStartScreencast)
+            this._screenshotUI._startScreencast = this._origStartScreencast;
 
         this._origScreencast = null;
         this._origScreencastArea = null;
         this._origOpen = null;
+        this._origStartScreencast = null;
     }
 
     async _screencastCommonAsync(filePath, options, originalMethod) {
@@ -1094,6 +1151,10 @@ export default class BigShotExtension extends Extension {
                 pipeline: new GLib.Variant('s', pipeline),
             };
 
+            // Mark recording as starting BEFORE await so that
+            // the notify::visible handler can reparent the webcam overlay
+            // instead of stopping it when the UI hides.
+            this._recordingState = 'starting';
 
             try {
                 const result = await originalMethod(filePath, pipelineOptions);
@@ -1264,6 +1325,7 @@ export default class BigShotExtension extends Extension {
 
         this._recordingState = 'idle';
         this._indicator?.onRecordingStopped();
+        this._webcam?.stopPreview();
         this._recordingContext = null;
     }
 
