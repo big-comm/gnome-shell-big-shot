@@ -81,6 +81,8 @@ export class PartToolbar extends PartUI {
         this._editContainer = new St.BoxLayout({
             style_class: 'big-shot-edit-row big-shot-edit-floating',
             reactive: true,
+            // Prevent BinLayout (screenshotUI) from stretching height
+            y_align: Clutter.ActorAlign.START,
         });
 
         // Drag handle — visible grippy area for dragging
@@ -99,7 +101,7 @@ export class PartToolbar extends PartUI {
         // Toggle native panel visibility — separator + button
         const panelSep = new St.Widget({
             style: 'background: rgba(255,255,255,0.15); min-width: 1px; margin: 4px 2px;',
-            y_expand: true,
+            y_align: Clutter.ActorAlign.FILL,
         });
         this._editContainer.add_child(panelSep);
 
@@ -460,7 +462,7 @@ export class PartToolbar extends PartUI {
         // Close button — shown only when the native panel is hidden (no orphaned X at top)
         this._toolbarCloseSep = new St.Widget({
             style: 'background: rgba(255,255,255,0.15); min-width: 1px; margin: 4px 2px;',
-            y_expand: true,
+            y_align: Clutter.ActorAlign.FILL,
             visible: false,
         });
         this._editContainer.add_child(this._toolbarCloseSep);
@@ -491,6 +493,8 @@ export class PartToolbar extends PartUI {
             style_class: 'big-shot-edit-container big-shot-edit-floating',
             reactive: true,
             style: 'spacing: 8px; padding: 8px 12px;',
+            // Prevent BinLayout (screenshotUI) from stretching height
+            y_align: Clutter.ActorAlign.START,
         });
 
         // Header row (drag handle + label)
@@ -684,34 +688,20 @@ export class PartToolbar extends PartUI {
         if (this._editContainer.get_parent()) return;
         this._ui.add_child(this._editContainer);
 
-        // Capture panel position while it's still inside monitorBin
+        // Position editContainer above the native panel
         const panel = this._ui._panel;
         if (panel) {
             const [px, py] = panel.get_transformed_position();
-            this._panelSavedPos = { x: px, y: py, w: panel.width };
-
-            // Center editContainer on the primary monitor, above panel
-            const monitor = global.display.get_primary_monitor();
-            const monRect = global.display.get_monitor_geometry(monitor);
+            const pw = panel.width;
             const cw = this._editContainer.get_preferred_width(-1)[1] || 600;
             const ch = this._editContainer.get_preferred_height(-1)[1] || 40;
             this._editContainer.set_position(
-                monRect.x + (monRect.width - cw) / 2,
+                px + (pw - cw) / 2,
                 py - ch - 12,
             );
-
-            // Reparent panel from monitorBin to screenshotUI directly
-            // so it can be shown/hidden without the full-screen monitorBin
-            this._liftPanelFromMonitorBin();
         }
 
-        // Hide panel and monitorBin (panel is now direct child of UI)
-        this._ui._panel.hide();
-        this._ui._primaryMonitorBin.hide();
-        this._nativePanelHidden = true;
-        this._panelToggleBtn.child.icon_name = 'view-reveal-symbolic';
-        if (this._toolbarCloseSep) this._toolbarCloseSep.show();
-        if (this._toolbarCloseBtn) this._toolbarCloseBtn.show();
+        this._setNativePanelVisible(false);
 
         // Fade-in
         this._editContainer.opacity = 0;
@@ -726,65 +716,12 @@ export class PartToolbar extends PartUI {
     _detachEditFromPanel() {
         const parent = this._editContainer.get_parent();
         if (parent) parent.remove_child(this._editContainer);
-
-        // Restore panel to monitorBin before showing everything
-        this._dropPanelBackToMonitorBin();
         this._setNativePanelVisible(true);
-    }
-
-    /** Move _panel from _primaryMonitorBin to screenshotUI. */
-    _liftPanelFromMonitorBin() {
-        const panel = this._ui._panel;
-        const monitorBin = this._ui._primaryMonitorBin;
-        if (!panel || !monitorBin) return;
-        if (panel.get_parent() === this._ui) return; // already lifted
-
-        if (panel.get_parent() === monitorBin)
-            monitorBin.remove_child(panel);
-        this._ui.add_child(panel);
-        if (this._panelSavedPos)
-            panel.set_position(this._panelSavedPos.x, this._panelSavedPos.y);
-        this._panelLifted = true;
-    }
-
-    /** Return _panel to _primaryMonitorBin (original home). */
-    _dropPanelBackToMonitorBin() {
-        if (!this._panelLifted) return;
-        const panel = this._ui._panel;
-        const monitorBin = this._ui._primaryMonitorBin;
-        if (!panel || !monitorBin) return;
-
-        if (panel.get_parent() === this._ui)
-            this._ui.remove_child(panel);
-        if (!panel.get_parent())
-            monitorBin.add_child(panel);
-        this._panelLifted = false;
     }
 
     /** Toggle native panel visibility (eye button). */
     _toggleNativePanel() {
-        const panel = this._ui._panel;
-        if (!panel) return;
-
-        if (this._editMode && this._panelLifted) {
-            // Panel is a direct child of UI — just show/hide it
-            if (this._nativePanelHidden) {
-                panel.show();
-                this._nativePanelHidden = false;
-                this._panelToggleBtn.child.icon_name = 'view-conceal-symbolic';
-                if (this._toolbarCloseSep) this._toolbarCloseSep.hide();
-                if (this._toolbarCloseBtn) this._toolbarCloseBtn.hide();
-            } else {
-                panel.hide();
-                this._nativePanelHidden = true;
-                this._panelToggleBtn.child.icon_name = 'view-reveal-symbolic';
-                if (this._toolbarCloseSep) this._toolbarCloseSep.show();
-                if (this._toolbarCloseBtn) this._toolbarCloseBtn.show();
-            }
-        } else {
-        // Normal mode — show/hide with monitorBin
-            this._setNativePanelVisible(this._nativePanelHidden);
-        }
+        this._setNativePanelVisible(this._nativePanelHidden);
     }
 
     /** Show or hide the native GNOME screenshot panel. */
@@ -796,15 +733,12 @@ export class PartToolbar extends PartUI {
         if (visible) {
             panel.show();
             this._panelToggleBtn.child.icon_name = 'view-conceal-symbolic';
-            // Restore the native close button in its original position
             if (monitorBin) monitorBin.show();
             if (this._toolbarCloseSep) this._toolbarCloseSep.hide();
             if (this._toolbarCloseBtn) this._toolbarCloseBtn.hide();
         } else {
             panel.hide();
             this._panelToggleBtn.child.icon_name = 'view-reveal-symbolic';
-            // Hide _primaryMonitorBin so the X doesn't float alone at the top;
-            // expose a close button inside the floating toolbar instead.
             if (monitorBin) monitorBin.hide();
             if (this._toolbarCloseSep) this._toolbarCloseSep.show();
             if (this._toolbarCloseBtn) this._toolbarCloseBtn.show();
