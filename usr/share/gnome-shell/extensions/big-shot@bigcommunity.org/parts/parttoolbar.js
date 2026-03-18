@@ -592,30 +592,7 @@ export class PartToolbar extends PartUI {
         this._videoContainer.add_child(codecBox);
         this._codecButtons = new Map();
 
-        // Row 3: Webcam toggle
-        const webcamBox = new St.BoxLayout({ vertical: false, style: 'spacing: 8px;' });
-        webcamBox.add_child(new St.Label({
-            text: _('Webcam'),
-            style: 'color: rgba(255,255,255,0.6); font-size: 12px; min-width: 50px;',
-            y_align: Clutter.ActorAlign.CENTER,
-        }));
-        this._webcamToggle = new St.Button({
-            style_class: 'screenshot-ui-show-pointer-button',
-            toggle_mode: true,
-            can_focus: true,
-            label: _('Off'),
-        });
-        this._webcamToggle.checked = false;
-        this._webcamToggle.connect('notify::checked', () => {
-            const on = this._webcamToggle.checked;
-            this._webcamToggle.label = on ? _('On') : _('Off');
-            this._maskRow.visible = on;
-            this._webcamToggledCallback?.(on);
-        });
-        webcamBox.add_child(this._webcamToggle);
-        this._videoContainer.add_child(webcamBox);
-
-        // Row 4: Mask selection (visible only when webcam is on)
+        // Row 3: Mask selection (visible only when webcam is on)
         this._maskRow = new St.BoxLayout({ vertical: false, style: 'spacing: 8px;' });
         this._maskRow.visible = false;
         this._maskRow.add_child(new St.Label({
@@ -707,20 +684,34 @@ export class PartToolbar extends PartUI {
         if (this._editContainer.get_parent()) return;
         this._ui.add_child(this._editContainer);
 
-        // Read panel position BEFORE hiding it
+        // Capture panel position while it's still inside monitorBin
         const panel = this._ui._panel;
         if (panel) {
             const [px, py] = panel.get_transformed_position();
-            const pw = panel.width;
+            this._panelSavedPos = { x: px, y: py, w: panel.width };
+
+            // Center editContainer on the primary monitor, above panel
+            const monitor = global.display.get_primary_monitor();
+            const monRect = global.display.get_monitor_geometry(monitor);
             const cw = this._editContainer.get_preferred_width(-1)[1] || 600;
+            const ch = this._editContainer.get_preferred_height(-1)[1] || 40;
             this._editContainer.set_position(
-                px + (pw - cw) / 2,
-                py - this._editContainer.get_preferred_height(-1)[1] - 12,
+                monRect.x + (monRect.width - cw) / 2,
+                py - ch - 12,
             );
+
+            // Reparent panel from monitorBin to screenshotUI directly
+            // so it can be shown/hidden without the full-screen monitorBin
+            this._liftPanelFromMonitorBin();
         }
 
-        // Hide native panel after positioning
-        this._setNativePanelVisible(false);
+        // Hide panel and monitorBin (panel is now direct child of UI)
+        this._ui._panel.hide();
+        this._ui._primaryMonitorBin.hide();
+        this._nativePanelHidden = true;
+        this._panelToggleBtn.child.icon_name = 'view-reveal-symbolic';
+        if (this._toolbarCloseSep) this._toolbarCloseSep.show();
+        if (this._toolbarCloseBtn) this._toolbarCloseBtn.show();
 
         // Fade-in
         this._editContainer.opacity = 0;
@@ -735,13 +726,65 @@ export class PartToolbar extends PartUI {
     _detachEditFromPanel() {
         const parent = this._editContainer.get_parent();
         if (parent) parent.remove_child(this._editContainer);
-        // Restore native panel visibility
+
+        // Restore panel to monitorBin before showing everything
+        this._dropPanelBackToMonitorBin();
         this._setNativePanelVisible(true);
+    }
+
+    /** Move _panel from _primaryMonitorBin to screenshotUI. */
+    _liftPanelFromMonitorBin() {
+        const panel = this._ui._panel;
+        const monitorBin = this._ui._primaryMonitorBin;
+        if (!panel || !monitorBin) return;
+        if (panel.get_parent() === this._ui) return; // already lifted
+
+        if (panel.get_parent() === monitorBin)
+            monitorBin.remove_child(panel);
+        this._ui.add_child(panel);
+        if (this._panelSavedPos)
+            panel.set_position(this._panelSavedPos.x, this._panelSavedPos.y);
+        this._panelLifted = true;
+    }
+
+    /** Return _panel to _primaryMonitorBin (original home). */
+    _dropPanelBackToMonitorBin() {
+        if (!this._panelLifted) return;
+        const panel = this._ui._panel;
+        const monitorBin = this._ui._primaryMonitorBin;
+        if (!panel || !monitorBin) return;
+
+        if (panel.get_parent() === this._ui)
+            this._ui.remove_child(panel);
+        if (!panel.get_parent())
+            monitorBin.add_child(panel);
+        this._panelLifted = false;
     }
 
     /** Toggle native panel visibility (eye button). */
     _toggleNativePanel() {
-        this._setNativePanelVisible(this._nativePanelHidden);
+        const panel = this._ui._panel;
+        if (!panel) return;
+
+        if (this._editMode && this._panelLifted) {
+            // Panel is a direct child of UI — just show/hide it
+            if (this._nativePanelHidden) {
+                panel.show();
+                this._nativePanelHidden = false;
+                this._panelToggleBtn.child.icon_name = 'view-conceal-symbolic';
+                if (this._toolbarCloseSep) this._toolbarCloseSep.hide();
+                if (this._toolbarCloseBtn) this._toolbarCloseBtn.hide();
+            } else {
+                panel.hide();
+                this._nativePanelHidden = true;
+                this._panelToggleBtn.child.icon_name = 'view-reveal-symbolic';
+                if (this._toolbarCloseSep) this._toolbarCloseSep.show();
+                if (this._toolbarCloseBtn) this._toolbarCloseBtn.show();
+            }
+        } else {
+        // Normal mode — show/hide with monitorBin
+            this._setNativePanelVisible(this._nativePanelHidden);
+        }
     }
 
     /** Show or hide the native GNOME screenshot panel. */
@@ -774,18 +817,22 @@ export class PartToolbar extends PartUI {
         this._populateVideoCodecs();
         this._ui.add_child(this._videoContainer);
 
-        // Position above the native panel, centered
+        // Center above the native panel on the primary monitor
         const panel = this._ui._panel;
-        if (panel) {
-            const [px, py] = panel.get_transformed_position();
-            const pw = panel.width;
-            const cw = this._videoContainer.get_preferred_width(-1)[1] || 300;
-            const ch = this._videoContainer.get_preferred_height(-1)[1] || 80;
-            this._videoContainer.set_position(
-                px + (pw - cw) / 2,
-                py - ch - 12,
-            );
+        const monitor = global.display.get_primary_monitor();
+        const monRect = global.display.get_monitor_geometry(monitor);
+        const cw = this._videoContainer.get_preferred_width(-1)[1] || 300;
+        const ch = this._videoContainer.get_preferred_height(-1)[1] || 80;
+
+        let cy = monRect.y + monRect.height - ch - 24; // near bottom
+        if (panel && panel.visible) {
+            const [, py] = panel.get_transformed_position();
+            cy = py - ch - 12;
         }
+        this._videoContainer.set_position(
+            monRect.x + (monRect.width - cw) / 2,
+            cy,
+        );
 
         // Fade-in
         this._videoContainer.opacity = 0;
@@ -1202,7 +1249,6 @@ export class PartToolbar extends PartUI {
     // Video settings getters
     get videoQuality() { return this._videoQuality; }
     get selectedPipelineId() { return this._selectedPipelineId; }
-    get webcamEnabled() { return this._webcamToggle?.checked ?? false; }
     get webcamMaskId() { return this._selectedMaskId; }
 
     _onQualityClicked(qualityId) {
@@ -1218,11 +1264,6 @@ export class PartToolbar extends PartUI {
             btn.checked = (id === maskId);
         }
         this._maskChangedCallback?.(maskId);
-    }
-
-    /** Register callback for webcam toggle changes. */
-    onWebcamToggled(callback) {
-        this._webcamToggledCallback = callback;
     }
 
     /** Register callback for mask selection changes. */

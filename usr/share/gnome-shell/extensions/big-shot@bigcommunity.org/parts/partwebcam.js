@@ -12,10 +12,14 @@
 import Clutter from 'gi://Clutter';
 import Cogl from 'gi://Cogl';
 import GLib from 'gi://GLib';
+import Gio from 'gi://Gio';
 import St from 'gi://St';
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
+import * as Screenshot from 'resource:///org/gnome/shell/ui/screenshot.js';
+import { gettext as _ } from 'resource:///org/gnome/shell/extensions/extension.js';
 
 import { PartUI } from './partbase.js';
+import { IconLabelButton, PixelConstraint } from './partaudio.js';
 
 let Gst = null;
 let _GstApp = null;
@@ -66,6 +70,54 @@ export class PartWebcam extends PartUI {
         // Saved position
         this._savedX = 80;
         this._savedY = 80;
+
+        this._createButton();
+    }
+
+    // =========================================================================
+    // Bottom bar button
+    // =========================================================================
+
+    _createButton() {
+        const typeContainer = this._ui._typeButtonContainer;
+        if (!typeContainer)
+            return;
+
+        this._webcamButton = new IconLabelButton(
+            new Gio.ThemedIcon({ name: 'camera-web-symbolic' }),
+            _('Webcam'),
+            {
+                constraints: new PixelConstraint(),
+                style_class: 'screenshot-ui-type-button',
+                toggle_mode: true,
+                reactive: false,
+            }
+        );
+        this._webcamButton.visible = false;
+
+        this._webcamButton.connect('notify::checked', () => {
+            this.enabled = this._webcamButton.checked;
+            if (this._enabled)
+                this.startPreview();
+            else
+                this.stopPreview();
+            this._webcamToggledCallback?.(this._enabled);
+        });
+
+        typeContainer.add_child(this._webcamButton);
+
+        // Tooltip
+        this._webcamTooltip = new Screenshot.Tooltip(this._webcamButton, {
+            text: _('Webcam Overlay'),
+            style_class: 'screenshot-ui-tooltip',
+            visible: false,
+        });
+        this._ui.add_child(this._webcamTooltip);
+    }
+
+    /** Register callback for external listeners (e.g. mask row visibility). */
+    onWebcamToggled(callback) {
+        this._webcamToggledCallback = callback;
     }
 
     get enabled() { return this._enabled; }
@@ -102,6 +154,12 @@ export class PartWebcam extends PartUI {
     }
 
     _onModeChanged(isCast) {
+        // Show/hide bottom bar button based on screencast mode
+        if (this._webcamButton) {
+            this._webcamButton.visible = isCast;
+            this._webcamButton.reactive = isCast;
+        }
+
         // Don't stop webcam if recording — _finishClosing() resets mode
         // to screenshot, but we need the webcam to persist during recording.
         if (!isCast && (!this._ext || this._ext._recordingState === 'idle'))
@@ -197,7 +255,6 @@ export class PartWebcam extends PartUI {
             return;
         this._savedX = this._container.x;
         this._savedY = this._container.y;
-        console.log(`[Big Shot Webcam] reparentForRecording pos=${this._savedX},${this._savedY} pipeline=${!!this._pipeline}`);
         this._ui.remove_child(this._container);
         Main.layoutManager.addTopChrome(this._container, {
             affectsInputRegion: true,
@@ -205,7 +262,6 @@ export class PartWebcam extends PartUI {
         });
         this._container.set_position(this._savedX, this._savedY);
         this._overlayParent = 'chrome';
-        console.log(`[Big Shot Webcam] reparented to chrome, visible=${this._container.visible} mapped=${this._container.mapped}`);
     }
 
     /** Move the overlay back to the screenshotUI (for preview). */
@@ -766,6 +822,20 @@ export class PartWebcam extends PartUI {
 
     destroy() {
         this.stopPreview();
+
+        if (this._webcamTooltip) {
+            const p = this._webcamTooltip.get_parent();
+            if (p) p.remove_child(this._webcamTooltip);
+            this._webcamTooltip.destroy();
+            this._webcamTooltip = null;
+        }
+        if (this._webcamButton) {
+            const p = this._webcamButton.get_parent();
+            if (p) p.remove_child(this._webcamButton);
+            this._webcamButton.destroy();
+            this._webcamButton = null;
+        }
+
         super.destroy();
     }
 }

@@ -940,8 +940,8 @@ export default class BigShotExtension extends Extension {
                 overlay.setReactive(isDrawTool);
             }
 
-            // Collapse native panel when a drawing tool is active
-            this._setNativePanelCollapsed(toolId !== null);
+            // Panel visibility is controlled by the eye button in the
+            // edit toolbar; do not override the user's choice here.
         });
 
         // Wire action buttons (copy, save-as)
@@ -973,13 +973,10 @@ export default class BigShotExtension extends Extension {
         this._webcam = new PartWebcam(ui, ext);
         this._parts.push(this._webcam);
 
-        // Wire webcam toggle from toolbar
-        this._toolbar.onWebcamToggled((enabled) => {
-            this._webcam.enabled = enabled;
-            if (enabled)
-                this._webcam.startPreview();
-            else
-                this._webcam.stopPreview();
+        // Wire webcam toggle (bottom bar button) to mask row visibility
+        this._webcam.onWebcamToggled((enabled) => {
+            if (this._toolbar._maskRow)
+                this._toolbar._maskRow.visible = enabled;
         });
 
         // Wire mask selection from toolbar
@@ -991,7 +988,6 @@ export default class BigShotExtension extends Extension {
         // Re-start preview when UI opens if webcam is still enabled
         // Reparent webcam overlay between screenshotUI (preview) and TopChrome (recording)
         this._webcamUIVisId = ui.connect('notify::visible', () => {
-            console.log(`[Big Shot Webcam] notify::visible=${ui.visible} state=${this._recordingState} enabled=${this._webcam?.enabled}`);
             if (ui.visible && this._webcam.enabled && this._recordingState === 'idle') {
                 this._webcam.reparentForPreview();
                 this._webcam.startPreview();
@@ -999,7 +995,6 @@ export default class BigShotExtension extends Extension {
                 this._webcam?.stopPreview();
             } else if (!ui.visible && this._recordingState !== 'idle') {
                 // Recording started, UI hiding — move webcam to TopChrome
-                console.log('[Big Shot Webcam] reparenting for recording');
                 this._webcam?.reparentForRecording();
             }
         });
@@ -1086,7 +1081,6 @@ export default class BigShotExtension extends Extension {
         this._origStartScreencast = screenshotUI._startScreencast?.bind(screenshotUI);
         if (this._origStartScreencast) {
             screenshotUI._startScreencast = function (...args) {
-                console.log('[Big Shot Webcam] _startScreencast patch: setting starting');
                 ext._recordingState = 'starting';
                 return ext._origStartScreencast(...args);
             };

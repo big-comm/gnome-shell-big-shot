@@ -26,7 +26,7 @@ import { PartUI } from './partbase.js';
  * A Clutter constraint to snap allocation to pixel boundaries.
  * Resolves sub-pixel positioning on some displays.
  */
-const PixelConstraint = GObject.registerClass(
+export const PixelConstraint = GObject.registerClass(
     class PixelConstraint extends Clutter.Constraint {
         vfunc_update_allocation(_actor, allocation) {
             allocation.x1 = Math.ceil(allocation.x1);
@@ -40,7 +40,7 @@ const PixelConstraint = GObject.registerClass(
  * Icon+Label button matching the native GNOME screenshot UI style.
  * Uses Gio.FileIcon for custom SVG icons from the extension.
  */
-const IconLabelButton = GObject.registerClass(
+export const IconLabelButton = GObject.registerClass(
     class IconLabelButton extends St.Button {
         _init(icon, label, params) {
             super._init(params);
