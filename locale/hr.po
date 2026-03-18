@@ -61,6 +61,12 @@ msgstr "Kutna nagib"
 msgid "Border Radius"
 msgstr "Radius obruba"
 #: NEEDS WORK
+msgid "Webcam"
+msgstr "Web kamera"
+#: NEEDS WORK
+msgid "Webcam Overlay"
+msgstr "Overlay za web kameru"
+#: NEEDS WORK
 msgid "Frames per second"
 msgstr "Okviri po sekundi"
 #: NEEDS WORK
@@ -148,6 +154,12 @@ msgstr "Kopiraj u međuspremnik"
 msgid "Save As…"
 msgstr "Spremi kao…"
 #: NEEDS WORK
+msgid "Close"
+msgstr "Zatvori"
+#: NEEDS WORK
+msgid "Video Settings"
+msgstr "Postavke videa"
+#: NEEDS WORK
 msgid "Quality"
 msgstr "Kvaliteta"
 #: NEEDS WORK
@@ -166,8 +178,32 @@ msgstr "Kvaliteta snimanja (bitrate)"
 msgid "Codec"
 msgstr "Kodek"
 #: NEEDS WORK
+msgid "Mask"
+msgstr "Maska"
+#: NEEDS WORK
+msgid "None"
+msgstr "Nema."
+#: NEEDS WORK
+msgid "Circle"
+msgstr "Krug"
+#: NEEDS WORK
+msgid "Soft"
+msgstr "Mekano"
+#: NEEDS WORK
+msgid "Spot"
+msgstr "Mjesto"
+#: NEEDS WORK
+msgid "Ornate"
+msgstr "Ukrasni"
+#: NEEDS WORK
+msgid "Rings"
+msgstr "Prstenovi"
+#: NEEDS WORK
 msgid "Edit"
 msgstr "Uredi"
+#: NEEDS WORK
+msgid "Edit Screenshot"
+msgstr "Uredi snimku zaslona"
 #: NEEDS WORK
 msgid "Custom"
 msgstr "Prilagođeno"

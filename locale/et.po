@@ -61,6 +61,12 @@ msgstr "Gradienti nurk"
 msgid "Border Radius"
 msgstr "Serva raadius"
 #: NEEDS WORK
+msgid "Webcam"
+msgstr "Veebikaamera"
+#: NEEDS WORK
+msgid "Webcam Overlay"
+msgstr "Veebikaamera kattekiht"
+#: NEEDS WORK
 msgid "Frames per second"
 msgstr "Kaadreid sekundis"
 #: NEEDS WORK
@@ -148,6 +154,12 @@ msgstr "Kopeeri lõikelauale"
 msgid "Save As…"
 msgstr "Salvesta nimega…"
 #: NEEDS WORK
+msgid "Close"
+msgstr "Sulge"
+#: NEEDS WORK
+msgid "Video Settings"
+msgstr "Video seaded"
+#: NEEDS WORK
 msgid "Quality"
 msgstr "Kvaliteet"
 #: NEEDS WORK
@@ -166,8 +178,32 @@ msgstr "Salvestamise kvaliteet (bitikiirus)"
 msgid "Codec"
 msgstr "Koodek"
 #: NEEDS WORK
+msgid "Mask"
+msgstr "Mask"
+#: NEEDS WORK
+msgid "None"
+msgstr "None"
+#: NEEDS WORK
+msgid "Circle"
+msgstr "Ring"
+#: NEEDS WORK
+msgid "Soft"
+msgstr "Pehme"
+#: NEEDS WORK
+msgid "Spot"
+msgstr "Koht"
+#: NEEDS WORK
+msgid "Ornate"
+msgstr "Dekoratiivne"
+#: NEEDS WORK
+msgid "Rings"
+msgstr "Rõngad"
+#: NEEDS WORK
 msgid "Edit"
 msgstr "Redigeeri"
+#: NEEDS WORK
+msgid "Edit Screenshot"
+msgstr "Muuda ekraanipilti"
 #: NEEDS WORK
 msgid "Custom"
 msgstr "Kohandatud"

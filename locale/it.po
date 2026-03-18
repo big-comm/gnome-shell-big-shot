@@ -61,6 +61,12 @@ msgstr "Angolo di Gradiente"
 msgid "Border Radius"
 msgstr "Raggio del bordo"
 #: NEEDS WORK
+msgid "Webcam"
+msgstr "Webcam"
+#: NEEDS WORK
+msgid "Webcam Overlay"
+msgstr "Sovrapposizione Webcam"
+#: NEEDS WORK
 msgid "Frames per second"
 msgstr "Frame al secondo"
 #: NEEDS WORK
@@ -148,6 +154,12 @@ msgstr "Copia negli appunti"
 msgid "Save As…"
 msgstr "Salva con nome…"
 #: NEEDS WORK
+msgid "Close"
+msgstr "Chiudi"
+#: NEEDS WORK
+msgid "Video Settings"
+msgstr "Impostazioni video"
+#: NEEDS WORK
 msgid "Quality"
 msgstr "Qualità"
 #: NEEDS WORK
@@ -166,8 +178,32 @@ msgstr "Qualità di registrazione (bitrate)"
 msgid "Codec"
 msgstr "Codec"
 #: NEEDS WORK
+msgid "Mask"
+msgstr "Maschera"
+#: NEEDS WORK
+msgid "None"
+msgstr "None"
+#: NEEDS WORK
+msgid "Circle"
+msgstr "Cerchio"
+#: NEEDS WORK
+msgid "Soft"
+msgstr "Morbido"
+#: NEEDS WORK
+msgid "Spot"
+msgstr "Punto"
+#: NEEDS WORK
+msgid "Ornate"
+msgstr "Ornato"
+#: NEEDS WORK
+msgid "Rings"
+msgstr "Anelli"
+#: NEEDS WORK
 msgid "Edit"
 msgstr "Modifica"
+#: NEEDS WORK
+msgid "Edit Screenshot"
+msgstr "Modifica Screenshot"
 #: NEEDS WORK
 msgid "Custom"
 msgstr "Personalizzato"

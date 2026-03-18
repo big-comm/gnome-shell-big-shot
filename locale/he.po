@@ -61,6 +61,12 @@ msgstr "זווית גרדיאנט"
 msgid "Border Radius"
 msgstr "רדיוס גבול"
 #: NEEDS WORK
+msgid "Webcam"
+msgstr "מצלמת רשת"
+#: NEEDS WORK
+msgid "Webcam Overlay"
+msgstr "שכבת מצלמת רשת"
+#: NEEDS WORK
 msgid "Frames per second"
 msgstr "פריימים לשנייה"
 #: NEEDS WORK
@@ -148,6 +154,12 @@ msgstr "העתק ללוח שנה"
 msgid "Save As…"
 msgstr "שמור בשם…"
 #: NEEDS WORK
+msgid "Close"
+msgstr "סגור"
+#: NEEDS WORK
+msgid "Video Settings"
+msgstr "הגדרות וידאו"
+#: NEEDS WORK
 msgid "Quality"
 msgstr "איכות"
 #: NEEDS WORK
@@ -166,8 +178,32 @@ msgstr "איכות הקלטה (קצב סיביות)"
 msgid "Codec"
 msgstr "קודקוד"
 #: NEEDS WORK
+msgid "Mask"
+msgstr "מסכה"
+#: NEEDS WORK
+msgid "None"
+msgstr "None"
+#: NEEDS WORK
+msgid "Circle"
+msgstr "מעגל"
+#: NEEDS WORK
+msgid "Soft"
+msgstr "רך"
+#: NEEDS WORK
+msgid "Spot"
+msgstr "כתם"
+#: NEEDS WORK
+msgid "Ornate"
+msgstr "מעוטר"
+#: NEEDS WORK
+msgid "Rings"
+msgstr "טבעות"
+#: NEEDS WORK
 msgid "Edit"
 msgstr "ערוך"
+#: NEEDS WORK
+msgid "Edit Screenshot"
+msgstr "ערוך צילום מסך"
 #: NEEDS WORK
 msgid "Custom"
 msgstr "מותאם אישית"

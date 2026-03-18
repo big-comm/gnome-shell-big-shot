@@ -61,6 +61,12 @@ msgstr "Úhel gradientu"
 msgid "Border Radius"
 msgstr "Poloměr okraje"
 #: NEEDS WORK
+msgid "Webcam"
+msgstr "Webkamera"
+#: NEEDS WORK
+msgid "Webcam Overlay"
+msgstr "Překryv webkamery"
+#: NEEDS WORK
 msgid "Frames per second"
 msgstr "Snímky za sekundu"
 #: NEEDS WORK
@@ -148,6 +154,12 @@ msgstr "Kopírovat do schránky"
 msgid "Save As…"
 msgstr "Uložit jako…"
 #: NEEDS WORK
+msgid "Close"
+msgstr "Zavřít"
+#: NEEDS WORK
+msgid "Video Settings"
+msgstr "Nastavení videa"
+#: NEEDS WORK
 msgid "Quality"
 msgstr "Kvalita"
 #: NEEDS WORK
@@ -166,8 +178,32 @@ msgstr "Kvalita záznamu (bitrate)"
 msgid "Codec"
 msgstr "Kodek"
 #: NEEDS WORK
+msgid "Mask"
+msgstr "Maska"
+#: NEEDS WORK
+msgid "None"
+msgstr "None"
+#: NEEDS WORK
+msgid "Circle"
+msgstr "Kruh"
+#: NEEDS WORK
+msgid "Soft"
+msgstr "Měkký"
+#: NEEDS WORK
+msgid "Spot"
+msgstr "Místo"
+#: NEEDS WORK
+msgid "Ornate"
+msgstr "Ozdobený"
+#: NEEDS WORK
+msgid "Rings"
+msgstr "Kruhy"
+#: NEEDS WORK
 msgid "Edit"
 msgstr "Upravit"
+#: NEEDS WORK
+msgid "Edit Screenshot"
+msgstr "Upravit snímek obrazovky"
 #: NEEDS WORK
 msgid "Custom"
 msgstr "Vlastní"

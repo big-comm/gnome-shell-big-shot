@@ -60,6 +60,12 @@ msgstr "Gradient Angle"
 msgid "Border Radius"
 msgstr "Border Radius"
 
+msgid "Webcam"
+msgstr "Webcam"
+
+msgid "Webcam Overlay"
+msgstr "Webcam Overlay"
+
 msgid "Frames per second"
 msgstr "Frames per second"
 
@@ -147,6 +153,12 @@ msgstr "Copy to Clipboard"
 msgid "Save As…"
 msgstr "Save As…"
 
+msgid "Close"
+msgstr "Close"
+
+msgid "Video Settings"
+msgstr "Video Settings"
+
 msgid "Quality"
 msgstr "Quality"
 
@@ -165,8 +177,32 @@ msgstr "Recording quality (bitrate)"
 msgid "Codec"
 msgstr "Codec"
 
+msgid "Mask"
+msgstr "Mask"
+
+msgid "None"
+msgstr "None"
+
+msgid "Circle"
+msgstr "Circle"
+
+msgid "Soft"
+msgstr "Soft"
+
+msgid "Spot"
+msgstr "Spot"
+
+msgid "Ornate"
+msgstr "Ornate"
+
+msgid "Rings"
+msgstr "Rings"
+
 msgid "Edit"
 msgstr "Edit"
+
+msgid "Edit Screenshot"
+msgstr "Edit Screenshot"
 
 msgid "Custom"
 msgstr "Custom"

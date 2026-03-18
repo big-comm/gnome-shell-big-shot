@@ -61,6 +61,12 @@ msgstr "Ángulo de degradado"
 msgid "Border Radius"
 msgstr "Radio de borde"
 #: NEEDS WORK
+msgid "Webcam"
+msgstr "Cámara web"
+#: NEEDS WORK
+msgid "Webcam Overlay"
+msgstr "Superposición de cámara web"
+#: NEEDS WORK
 msgid "Frames per second"
 msgstr "Cuadros por segundo"
 #: NEEDS WORK
@@ -148,6 +154,12 @@ msgstr "Copiar al portapapeles"
 msgid "Save As…"
 msgstr "Guardar como…"
 #: NEEDS WORK
+msgid "Close"
+msgstr "Cerrar"
+#: NEEDS WORK
+msgid "Video Settings"
+msgstr "Configuración de video"
+#: NEEDS WORK
 msgid "Quality"
 msgstr "Calidad"
 #: NEEDS WORK
@@ -166,8 +178,32 @@ msgstr "Calidad de grabación (bitrate)"
 msgid "Codec"
 msgstr "Códec"
 #: NEEDS WORK
+msgid "Mask"
+msgstr "Máscara"
+#: NEEDS WORK
+msgid "None"
+msgstr "None"
+#: NEEDS WORK
+msgid "Circle"
+msgstr "Círculo"
+#: NEEDS WORK
+msgid "Soft"
+msgstr "Suave"
+#: NEEDS WORK
+msgid "Spot"
+msgstr "Punto"
+#: NEEDS WORK
+msgid "Ornate"
+msgstr "Ornado"
+#: NEEDS WORK
+msgid "Rings"
+msgstr "Anillos"
+#: NEEDS WORK
 msgid "Edit"
 msgstr "Editar"
+#: NEEDS WORK
+msgid "Edit Screenshot"
+msgstr "Editar captura de pantalla"
 #: NEEDS WORK
 msgid "Custom"
 msgstr "Personalizado"

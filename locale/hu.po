@@ -61,6 +61,12 @@ msgstr "Gradiens szög"
 msgid "Border Radius"
 msgstr "Sarok sugár"
 #: NEEDS WORK
+msgid "Webcam"
+msgstr "Webkamera"
+#: NEEDS WORK
+msgid "Webcam Overlay"
+msgstr "Webkamera átfedés"
+#: NEEDS WORK
 msgid "Frames per second"
 msgstr "Képkocka másodpercenként"
 #: NEEDS WORK
@@ -148,6 +154,12 @@ msgstr "Másolás a vágólapra"
 msgid "Save As…"
 msgstr "Mentés másként…"
 #: NEEDS WORK
+msgid "Close"
+msgstr "Bezárás"
+#: NEEDS WORK
+msgid "Video Settings"
+msgstr "Videóbeállítások"
+#: NEEDS WORK
 msgid "Quality"
 msgstr "Minőség"
 #: NEEDS WORK
@@ -166,8 +178,32 @@ msgstr "Felvételi minőség (bitráta)"
 msgid "Codec"
 msgstr "Kodek"
 #: NEEDS WORK
+msgid "Mask"
+msgstr "Maszk"
+#: NEEDS WORK
+msgid "None"
+msgstr "None"
+#: NEEDS WORK
+msgid "Circle"
+msgstr "Kör"
+#: NEEDS WORK
+msgid "Soft"
+msgstr "Szoftver"
+#: NEEDS WORK
+msgid "Spot"
+msgstr "Helyszín"
+#: NEEDS WORK
+msgid "Ornate"
+msgstr "díszes"
+#: NEEDS WORK
+msgid "Rings"
+msgstr "Gyűrűk"
+#: NEEDS WORK
 msgid "Edit"
 msgstr "Szerkesztés"
+#: NEEDS WORK
+msgid "Edit Screenshot"
+msgstr "Kép szerkesztése"
 #: NEEDS WORK
 msgid "Custom"
 msgstr "Egyedi"

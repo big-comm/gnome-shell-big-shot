@@ -61,6 +61,12 @@ msgstr "Угол градиента"
 msgid "Border Radius"
 msgstr "Радиус границы"
 #: NEEDS WORK
+msgid "Webcam"
+msgstr "Вебкамера"
+#: NEEDS WORK
+msgid "Webcam Overlay"
+msgstr "Накладка для веб-камеры"
+#: NEEDS WORK
 msgid "Frames per second"
 msgstr "Кадры в секунду"
 #: NEEDS WORK
@@ -148,6 +154,12 @@ msgstr "Скопировать в буфер обмена"
 msgid "Save As…"
 msgstr "Сохранить как…"
 #: NEEDS WORK
+msgid "Close"
+msgstr "Закрыть"
+#: NEEDS WORK
+msgid "Video Settings"
+msgstr "Настройки видео"
+#: NEEDS WORK
 msgid "Quality"
 msgstr "Качество"
 #: NEEDS WORK
@@ -166,8 +178,32 @@ msgstr "Качество записи (битрейт)"
 msgid "Codec"
 msgstr "Кодек"
 #: NEEDS WORK
+msgid "Mask"
+msgstr "Маска"
+#: NEEDS WORK
+msgid "None"
+msgstr "None"
+#: NEEDS WORK
+msgid "Circle"
+msgstr "Круг"
+#: NEEDS WORK
+msgid "Soft"
+msgstr "Мягкий"
+#: NEEDS WORK
+msgid "Spot"
+msgstr "Место"
+#: NEEDS WORK
+msgid "Ornate"
+msgstr "Оформленный"
+#: NEEDS WORK
+msgid "Rings"
+msgstr "Кольца"
+#: NEEDS WORK
 msgid "Edit"
 msgstr "Редактировать"
+#: NEEDS WORK
+msgid "Edit Screenshot"
+msgstr "Редактировать скриншот"
 #: NEEDS WORK
 msgid "Custom"
 msgstr "Пользовательский"

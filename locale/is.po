@@ -61,6 +61,12 @@ msgstr "Litsvæðisvinkill"
 msgid "Border Radius"
 msgstr "Mörkurrúm"
 #: NEEDS WORK
+msgid "Webcam"
+msgstr "Vefmyndavél"
+#: NEEDS WORK
+msgid "Webcam Overlay"
+msgstr "Vefmyndavél yfirlag"
+#: NEEDS WORK
 msgid "Frames per second"
 msgstr "Rammar á sekúndu"
 #: NEEDS WORK
@@ -148,6 +154,12 @@ msgstr "Afrita í sk clipboard"
 msgid "Save As…"
 msgstr "Vista sem…"
 #: NEEDS WORK
+msgid "Close"
+msgstr "Lokaðu"
+#: NEEDS WORK
+msgid "Video Settings"
+msgstr "Videóstillingar"
+#: NEEDS WORK
 msgid "Quality"
 msgstr "Gæði"
 #: NEEDS WORK
@@ -166,8 +178,32 @@ msgstr "Upptökugæði (bitrate)"
 msgid "Codec"
 msgstr "Kóði"
 #: NEEDS WORK
+msgid "Mask"
+msgstr "Gríma"
+#: NEEDS WORK
+msgid "None"
+msgstr "None"
+#: NEEDS WORK
+msgid "Circle"
+msgstr "Hringur"
+#: NEEDS WORK
+msgid "Soft"
+msgstr "Mjúkur"
+#: NEEDS WORK
+msgid "Spot"
+msgstr "Staður"
+#: NEEDS WORK
+msgid "Ornate"
+msgstr "Skrúðgagn"
+#: NEEDS WORK
+msgid "Rings"
+msgstr "Hringir"
+#: NEEDS WORK
 msgid "Edit"
 msgstr "Breyta"
+#: NEEDS WORK
+msgid "Edit Screenshot"
+msgstr "Breyta skjáskot"
 #: NEEDS WORK
 msgid "Custom"
 msgstr "Sérsniðið"

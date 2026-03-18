@@ -59,6 +59,12 @@ msgstr  ""
 msgid   "Border Radius"
 msgstr  ""
 
+msgid   "Webcam"
+msgstr  ""
+
+msgid   "Webcam Overlay"
+msgstr  ""
+
 msgid   "Frames per second"
 msgstr  ""
 
@@ -146,6 +152,12 @@ msgstr  ""
 msgid   "Save As…"
 msgstr  ""
 
+msgid   "Close"
+msgstr  ""
+
+msgid   "Video Settings"
+msgstr  ""
+
 msgid   "Quality"
 msgstr  ""
 
@@ -164,7 +176,31 @@ msgstr  ""
 msgid   "Codec"
 msgstr  ""
 
+msgid   "Mask"
+msgstr  ""
+
+msgid   "None"
+msgstr  ""
+
+msgid   "Circle"
+msgstr  ""
+
+msgid   "Soft"
+msgstr  ""
+
+msgid   "Spot"
+msgstr  ""
+
+msgid   "Ornate"
+msgstr  ""
+
+msgid   "Rings"
+msgstr  ""
+
 msgid   "Edit"
+msgstr  ""
+
+msgid   "Edit Screenshot"
 msgstr  ""
 
 msgid   "Custom"

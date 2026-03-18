@@ -61,6 +61,12 @@ msgstr "Gradiënthoek"
 msgid "Border Radius"
 msgstr "Randradius"
 #: NEEDS WORK
+msgid "Webcam"
+msgstr "Webcam"
+#: NEEDS WORK
+msgid "Webcam Overlay"
+msgstr "Webcam-overlay"
+#: NEEDS WORK
 msgid "Frames per second"
 msgstr "Frames per seconde"
 #: NEEDS WORK
@@ -148,6 +154,12 @@ msgstr "Kopiëren naar klembord"
 msgid "Save As…"
 msgstr "Opslaan als…"
 #: NEEDS WORK
+msgid "Close"
+msgstr "Sluiten"
+#: NEEDS WORK
+msgid "Video Settings"
+msgstr "Videoinstellingen"
+#: NEEDS WORK
 msgid "Quality"
 msgstr "Kwaliteit"
 #: NEEDS WORK
@@ -166,8 +178,32 @@ msgstr "Opnamekwaliteit (bitrate)"
 msgid "Codec"
 msgstr "Codec"
 #: NEEDS WORK
+msgid "Mask"
+msgstr "Mask"
+#: NEEDS WORK
+msgid "None"
+msgstr "None"
+#: NEEDS WORK
+msgid "Circle"
+msgstr "Cirkel"
+#: NEEDS WORK
+msgid "Soft"
+msgstr "Zacht"
+#: NEEDS WORK
+msgid "Spot"
+msgstr "Vlek"
+#: NEEDS WORK
+msgid "Ornate"
+msgstr "Versierd"
+#: NEEDS WORK
+msgid "Rings"
+msgstr "Ringen"
+#: NEEDS WORK
 msgid "Edit"
 msgstr "Bewerken"
+#: NEEDS WORK
+msgid "Edit Screenshot"
+msgstr "Bewerk Screenshot"
 #: NEEDS WORK
 msgid "Custom"
 msgstr "Aangepast"

@@ -61,6 +61,12 @@ msgstr "Градус градієнта"
 msgid "Border Radius"
 msgstr "Радіус межі"
 #: NEEDS WORK
+msgid "Webcam"
+msgstr "Вебкамера"
+#: NEEDS WORK
+msgid "Webcam Overlay"
+msgstr "Webcam Overlay"
+#: NEEDS WORK
 msgid "Frames per second"
 msgstr "Кадри на секунду"
 #: NEEDS WORK
@@ -148,6 +154,12 @@ msgstr "Копіювати в буфер обміну"
 msgid "Save As…"
 msgstr "Зберегти як…"
 #: NEEDS WORK
+msgid "Close"
+msgstr "Закрити"
+#: NEEDS WORK
+msgid "Video Settings"
+msgstr "Відео налаштування"
+#: NEEDS WORK
 msgid "Quality"
 msgstr "Quality"
 #: NEEDS WORK
@@ -166,8 +178,32 @@ msgstr "Якість запису (бітрейт)"
 msgid "Codec"
 msgstr "Kodek"
 #: NEEDS WORK
+msgid "Mask"
+msgstr "Маска"
+#: NEEDS WORK
+msgid "None"
+msgstr "None"
+#: NEEDS WORK
+msgid "Circle"
+msgstr "Окружність"
+#: NEEDS WORK
+msgid "Soft"
+msgstr "М'який"
+#: NEEDS WORK
+msgid "Spot"
+msgstr "Місце"
+#: NEEDS WORK
+msgid "Ornate"
+msgstr "Ornate"
+#: NEEDS WORK
+msgid "Rings"
+msgstr "Кільця"
+#: NEEDS WORK
 msgid "Edit"
 msgstr "Редагувати"
+#: NEEDS WORK
+msgid "Edit Screenshot"
+msgstr "Редагувати знімок екрану"
 #: NEEDS WORK
 msgid "Custom"
 msgstr "Користувацький"

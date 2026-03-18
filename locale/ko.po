@@ -61,6 +61,12 @@ msgstr "그라디언트 각도"
 msgid "Border Radius"
 msgstr "테두리 반경"
 #: NEEDS WORK
+msgid "Webcam"
+msgstr "웹캠"
+#: NEEDS WORK
+msgid "Webcam Overlay"
+msgstr "웹캠 오버레이"
+#: NEEDS WORK
 msgid "Frames per second"
 msgstr "초당 프레임"
 #: NEEDS WORK
@@ -148,6 +154,12 @@ msgstr "클립보드에 복사"
 msgid "Save As…"
 msgstr "다른 이름으로 저장…"
 #: NEEDS WORK
+msgid "Close"
+msgstr "닫기"
+#: NEEDS WORK
+msgid "Video Settings"
+msgstr "비디오 설정"
+#: NEEDS WORK
 msgid "Quality"
 msgstr "품질"
 #: NEEDS WORK
@@ -166,8 +178,32 @@ msgstr "녹음 품질 (비트 전송률)"
 msgid "Codec"
 msgstr "코덱"
 #: NEEDS WORK
+msgid "Mask"
+msgstr "마스크"
+#: NEEDS WORK
+msgid "None"
+msgstr "None"
+#: NEEDS WORK
+msgid "Circle"
+msgstr "원형"
+#: NEEDS WORK
+msgid "Soft"
+msgstr "소프트"
+#: NEEDS WORK
+msgid "Spot"
+msgstr "스팟"
+#: NEEDS WORK
+msgid "Ornate"
+msgstr "화려한"
+#: NEEDS WORK
+msgid "Rings"
+msgstr "링스"
+#: NEEDS WORK
 msgid "Edit"
 msgstr "편집"
+#: NEEDS WORK
+msgid "Edit Screenshot"
+msgstr "스크린샷 편집"
 #: NEEDS WORK
 msgid "Custom"
 msgstr "사용자 정의"

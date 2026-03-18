@@ -61,6 +61,12 @@ msgstr "Gradyan Açısı"
 msgid "Border Radius"
 msgstr "Kenar Yarıçapı"
 #: NEEDS WORK
+msgid "Webcam"
+msgstr "Webcam"
+#: NEEDS WORK
+msgid "Webcam Overlay"
+msgstr "Webcam Üst Katmanı"
+#: NEEDS WORK
 msgid "Frames per second"
 msgstr "Kare/saniye"
 #: NEEDS WORK
@@ -148,6 +154,12 @@ msgstr "Panoza Kopyala"
 msgid "Save As…"
 msgstr "Farklı Kaydet…"
 #: NEEDS WORK
+msgid "Close"
+msgstr "Kapat"
+#: NEEDS WORK
+msgid "Video Settings"
+msgstr "Video Ayarları"
+#: NEEDS WORK
 msgid "Quality"
 msgstr "Kalite"
 #: NEEDS WORK
@@ -166,8 +178,32 @@ msgstr "Kayıt kalitesi (bit hızı)"
 msgid "Codec"
 msgstr "Kodek"
 #: NEEDS WORK
+msgid "Mask"
+msgstr "Maske"
+#: NEEDS WORK
+msgid "None"
+msgstr "None"
+#: NEEDS WORK
+msgid "Circle"
+msgstr "Daire"
+#: NEEDS WORK
+msgid "Soft"
+msgstr "Yumuşak"
+#: NEEDS WORK
+msgid "Spot"
+msgstr "Nokta"
+#: NEEDS WORK
+msgid "Ornate"
+msgstr "Süslü"
+#: NEEDS WORK
+msgid "Rings"
+msgstr "Halkalar"
+#: NEEDS WORK
 msgid "Edit"
 msgstr "Düzenle"
+#: NEEDS WORK
+msgid "Edit Screenshot"
+msgstr "Ekran Görüntüsünü Düzenle"
 #: NEEDS WORK
 msgid "Custom"
 msgstr "Özel"

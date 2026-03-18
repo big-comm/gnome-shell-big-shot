@@ -61,6 +61,12 @@ msgstr "Gradientvinkel"
 msgid "Border Radius"
 msgstr "Gränsradie"
 #: NEEDS WORK
+msgid "Webcam"
+msgstr "Webbkamera"
+#: NEEDS WORK
+msgid "Webcam Overlay"
+msgstr "Webbkamerafilter"
+#: NEEDS WORK
 msgid "Frames per second"
 msgstr "Ramar per sekund"
 #: NEEDS WORK
@@ -148,6 +154,12 @@ msgstr "Kopiera till urklipp"
 msgid "Save As…"
 msgstr "Spara som…"
 #: NEEDS WORK
+msgid "Close"
+msgstr "Stäng"
+#: NEEDS WORK
+msgid "Video Settings"
+msgstr "Videoinställningar"
+#: NEEDS WORK
 msgid "Quality"
 msgstr "Kvalitet"
 #: NEEDS WORK
@@ -166,8 +178,32 @@ msgstr "Inspelningskvalitet (bitrate)"
 msgid "Codec"
 msgstr "Kodek"
 #: NEEDS WORK
+msgid "Mask"
+msgstr "Maskera"
+#: NEEDS WORK
+msgid "None"
+msgstr "Inga strängar att översätta."
+#: NEEDS WORK
+msgid "Circle"
+msgstr "Cirkel"
+#: NEEDS WORK
+msgid "Soft"
+msgstr "Mjukvara"
+#: NEEDS WORK
+msgid "Spot"
+msgstr "Fläck"
+#: NEEDS WORK
+msgid "Ornate"
+msgstr "Utsmyckad"
+#: NEEDS WORK
+msgid "Rings"
+msgstr "Ringar"
+#: NEEDS WORK
 msgid "Edit"
 msgstr "Redigera"
+#: NEEDS WORK
+msgid "Edit Screenshot"
+msgstr "Redigera skärmdump"
 #: NEEDS WORK
 msgid "Custom"
 msgstr "Anpassad"

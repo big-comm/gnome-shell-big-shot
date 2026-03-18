@@ -61,6 +61,12 @@ msgstr "Unghiul Gradientului"
 msgid "Border Radius"
 msgstr "Raza de margine"
 #: NEEDS WORK
+msgid "Webcam"
+msgstr "Cameră web"
+#: NEEDS WORK
+msgid "Webcam Overlay"
+msgstr "Suprapunere Webcam"
+#: NEEDS WORK
 msgid "Frames per second"
 msgstr "Cadre pe secundă"
 #: NEEDS WORK
@@ -148,6 +154,12 @@ msgstr "Copiază în clipboard"
 msgid "Save As…"
 msgstr "Salvează ca…"
 #: NEEDS WORK
+msgid "Close"
+msgstr "Închide"
+#: NEEDS WORK
+msgid "Video Settings"
+msgstr "Setări video"
+#: NEEDS WORK
 msgid "Quality"
 msgstr "Calitate"
 #: NEEDS WORK
@@ -166,8 +178,32 @@ msgstr "Calitate înregistrare (bitrate)"
 msgid "Codec"
 msgstr "Codec"
 #: NEEDS WORK
+msgid "Mask"
+msgstr "Masca"
+#: NEEDS WORK
+msgid "None"
+msgstr "None"
+#: NEEDS WORK
+msgid "Circle"
+msgstr "Cerc"
+#: NEEDS WORK
+msgid "Soft"
+msgstr "Software"
+#: NEEDS WORK
+msgid "Spot"
+msgstr "Punct de interes"
+#: NEEDS WORK
+msgid "Ornate"
+msgstr "Ornat"
+#: NEEDS WORK
+msgid "Rings"
+msgstr "Inele"
+#: NEEDS WORK
 msgid "Edit"
 msgstr "Edita"
+#: NEEDS WORK
+msgid "Edit Screenshot"
+msgstr "Editează Captură de Ecran"
 #: NEEDS WORK
 msgid "Custom"
 msgstr "Personalizat"

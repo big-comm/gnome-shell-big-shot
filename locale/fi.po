@@ -61,6 +61,12 @@ msgstr "Gradientin kulma"
 msgid "Border Radius"
 msgstr "Reunakulma"
 #: NEEDS WORK
+msgid "Webcam"
+msgstr "Webkamera"
+#: NEEDS WORK
+msgid "Webcam Overlay"
+msgstr "Webcam-yhteensopivuus"
+#: NEEDS WORK
 msgid "Frames per second"
 msgstr "Kuvakehyksiä sekunnissa"
 #: NEEDS WORK
@@ -148,6 +154,12 @@ msgstr "Kopioi leikepöydälle"
 msgid "Save As…"
 msgstr "Tallenna nimellä…"
 #: NEEDS WORK
+msgid "Close"
+msgstr "Sulje"
+#: NEEDS WORK
+msgid "Video Settings"
+msgstr "Videon asetukset"
+#: NEEDS WORK
 msgid "Quality"
 msgstr "Laatu"
 #: NEEDS WORK
@@ -166,8 +178,32 @@ msgstr "Tallennuslaatu (bitrate)"
 msgid "Codec"
 msgstr "Koodekki"
 #: NEEDS WORK
+msgid "Mask"
+msgstr "Maski"
+#: NEEDS WORK
+msgid "None"
+msgstr "None"
+#: NEEDS WORK
+msgid "Circle"
+msgstr "Ympyrä"
+#: NEEDS WORK
+msgid "Soft"
+msgstr "Pehmeä"
+#: NEEDS WORK
+msgid "Spot"
+msgstr "Spot"
+#: NEEDS WORK
+msgid "Ornate"
+msgstr "Yksityiskohtainen"
+#: NEEDS WORK
+msgid "Rings"
+msgstr "Renkaat"
+#: NEEDS WORK
 msgid "Edit"
 msgstr "Muokkaa"
+#: NEEDS WORK
+msgid "Edit Screenshot"
+msgstr "Muokkaa näyttökuvaa"
 #: NEEDS WORK
 msgid "Custom"
 msgstr "Mukautettu"
