@@ -2,7 +2,7 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the gnome-shell-big-shot package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-# 
+#
 #, fuzzy
 msgid ""
 msgstr ""
@@ -15,210 +15,276 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: attranslate\n"
+
 #: NEEDS WORK
 msgid "Screenshot taken"
-msgstr "Capture d'écran effectuée"
+msgstr "Capture d’écran prise"
+
 #: NEEDS WORK
 msgid "Screenshots"
-msgstr "Captures d'écran"
+msgstr "Captures d’écran"
+
 #: NEEDS WORK
 msgid "Screenshot from %s"
-msgstr "Capture d'écran de %s"
+msgstr "Capture d’écran de %s"
+
 #: NEEDS WORK
 msgid "Screenshot copied"
-msgstr "Capture d'écran copiée"
+msgstr "Capture d’écran copiée"
+
 #: NEEDS WORK
 msgid "Save Screenshot"
-msgstr "Enregistrer la capture d'écran"
+msgstr "Enregistrer la capture d’écran"
+
 #: NEEDS WORK
 msgid "Drawing canvas"
 msgstr "Toile de dessin"
+
 #: NEEDS WORK
 msgid "Text…"
 msgstr "Texte…"
+
 #: NEEDS WORK
 msgid "Annotation text"
-msgstr "Texte d'annotation"
+msgstr "Texte d’annotation"
+
 #: NEEDS WORK
 msgid "Confirm"
 msgstr "Confirmer"
+
 #: NEEDS WORK
 msgid "Desktop"
 msgstr "Bureau"
+
 #: NEEDS WORK
 msgid "Mic"
 msgstr "Micro"
+
 #: NEEDS WORK
 msgid "Record Desktop Audio"
-msgstr "Enregistrer l'audio du bureau"
+msgstr "Enregistrer l’audio du bureau"
+
 #: NEEDS WORK
 msgid "Record Microphone"
 msgstr "Enregistrer le microphone"
+
 #: NEEDS WORK
 msgid "Gradient Angle"
-msgstr "Angle de dégradé"
+msgstr "Angle du dégradé"
+
 #: NEEDS WORK
 msgid "Border Radius"
 msgstr "Rayon de bordure"
+
 #: NEEDS WORK
 msgid "Webcam"
 msgstr "Webcam"
+
 #: NEEDS WORK
 msgid "Webcam Overlay"
-msgstr "Superposition de webcam"
+msgstr "Superposition Webcam"
+
 #: NEEDS WORK
 msgid "Frames per second"
 msgstr "Images par seconde"
+
 #: NEEDS WORK
 msgid "Recording resolution"
 msgstr "Résolution d'enregistrement"
+
 #: NEEDS WORK
 msgid "Select / Move"
 msgstr "Sélectionner / Déplacer"
+
 #: NEEDS WORK
 msgid "Pen"
 msgstr "Stylo"
+
 #: NEEDS WORK
 msgid "Arrow"
 msgstr "Flèche"
+
 #: NEEDS WORK
 msgid "Line"
 msgstr "Ligne"
+
 #: NEEDS WORK
 msgid "Rectangle"
 msgstr "Rectangle"
+
 #: NEEDS WORK
 msgid "Oval"
-msgstr "Ovale"
+msgstr "Oval"
+
 #: NEEDS WORK
 msgid "Text"
 msgstr "Texte"
+
 #: NEEDS WORK
 msgid "Highlighter"
 msgstr "Surligneur"
+
 #: NEEDS WORK
 msgid "Censor"
-msgstr "Censeur"
+msgstr "Censure"
+
 #: NEEDS WORK
 msgid "Blur"
 msgstr "Flou"
+
 #: NEEDS WORK
 msgid "Number"
-msgstr "Numéro"
+msgstr "Nombre"
+
 #: NEEDS WORK
 msgid "Number with Arrow"
 msgstr "Nombre avec flèche"
+
 #: NEEDS WORK
 msgid "Number with Pointer"
 msgstr "Nombre avec pointeur"
+
 #: NEEDS WORK
 msgid "Eraser"
 msgstr "Gomme"
+
 #: NEEDS WORK
 msgid "Show screenshot panel"
-msgstr "Afficher le panneau de capture d'écran"
+msgstr "Afficher le panneau de capture d’écran"
+
 #: NEEDS WORK
 msgid "Hide screenshot panel"
-msgstr "Masquer le panneau de capture d'écran"
+msgstr "Masquer le panneau de capture d’écran"
+
 #: NEEDS WORK
 msgid "Color"
 msgstr "Couleur"
+
 #: NEEDS WORK
 msgid "Fill"
-msgstr "Remplir"
+msgstr "Remplissage"
+
 #: NEEDS WORK
 msgid "Decrease Size"
 msgstr "Réduire la taille"
+
 #: NEEDS WORK
 msgid "Brush Size"
 msgstr "Taille du pinceau"
+
 #: NEEDS WORK
 msgid "Increase Size"
 msgstr "Augmenter la taille"
+
 #: NEEDS WORK
 msgid "Font"
 msgstr "Police"
+
 #: NEEDS WORK
 msgid "Intensity"
 msgstr "Intensité"
+
 #: NEEDS WORK
 msgid "Undo"
 msgstr "Annuler"
+
 #: NEEDS WORK
 msgid "Redo"
-msgstr "Refaire"
+msgstr "Rétablir"
+
 #: NEEDS WORK
 msgid "Copy to Clipboard"
 msgstr "Copier dans le presse-papiers"
+
 #: NEEDS WORK
 msgid "Save As…"
 msgstr "Enregistrer sous…"
+
 #: NEEDS WORK
 msgid "Close"
 msgstr "Fermer"
+
 #: NEEDS WORK
 msgid "Video Settings"
 msgstr "Paramètres vidéo"
+
 #: NEEDS WORK
 msgid "Quality"
 msgstr "Qualité"
+
 #: NEEDS WORK
 msgid "High"
-msgstr "Élevé"
+msgstr "Élevée"
+
 #: NEEDS WORK
 msgid "Medium"
-msgstr "Moyen"
+msgstr "Moyenne"
+
 #: NEEDS WORK
 msgid "Low"
 msgstr "Faible"
+
 #: NEEDS WORK
 msgid "Recording quality (bitrate)"
-msgstr "Qualité d'enregistrement (débit binaire)"
+msgstr "Qualité d’enregistrement (débit binaire)"
+
 #: NEEDS WORK
 msgid "Codec"
 msgstr "Codec"
+
 #: NEEDS WORK
 msgid "Mask"
 msgstr "Masque"
+
 #: NEEDS WORK
 msgid "None"
-msgstr "Aucune"
+msgstr "None"
+
 #: NEEDS WORK
 msgid "Circle"
-msgstr "Cercle"
+msgstr "Circle"
+
 #: NEEDS WORK
 msgid "Soft"
-msgstr "Doux"
+msgstr "Soft"
+
 #: NEEDS WORK
 msgid "Spot"
-msgstr "Repérer"
+msgstr "Spot"
+
 #: NEEDS WORK
 msgid "Ornate"
-msgstr "Orné"
-#: NEEDS WORK
-msgid "Rings"
-msgstr "Anneaux"
+msgstr "Ornate"
+
+
 #: NEEDS WORK
 msgid "Size"
 msgstr "Taille"
+
 #: NEEDS WORK
 msgid "Edit"
 msgstr "Modifier"
+
 #: NEEDS WORK
 msgid "Edit Screenshot"
-msgstr "Modifier la capture d'écran"
+msgstr "Modifier la capture d’écran"
+
 #: NEEDS WORK
 msgid "Custom"
 msgstr "Personnalisé"
+
 #: NEEDS WORK
 msgid "No Fill"
-msgstr "Aucun remplissage"
+msgstr "Pas de remplissage"
+
 #: NEEDS WORK
 msgid "Auto"
 msgstr "Auto"
+
 #: NEEDS WORK
 msgid "Use best available codec"
 msgstr "Utiliser le meilleur codec disponible"
+
 #: NEEDS WORK
 msgid "Video codec"
 msgstr "Codec vidéo"

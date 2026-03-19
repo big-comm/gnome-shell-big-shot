@@ -609,13 +609,13 @@ export class PartToolbar extends PartUI {
         this._selectedMaskId = 'circle';
 
         const maskOptions = [
-            { id: 'none', label: _('None') },
-            { id: 'circle', label: _('Circle') },
-            { id: 'ellipse', label: _('Oval') },
-            { id: 'soft-circle', label: _('Soft') },
-            { id: 'spotlight', label: _('Spot') },
-            { id: 'ornate-frame', label: _('Ornate') },
-            { id: 'checker', label: _('Checker') },
+            { id: 'none', label: 'None' },
+            { id: 'circle', label: 'Circle' },
+            { id: 'ellipse', label: 'Oval' },
+            { id: 'soft-circle', label: 'Soft' },
+            { id: 'spotlight', label: 'Spot' },
+            { id: 'ornate-frame', label: 'Ornate' },
+            { id: 'checker', label: 'Checker' },
         ];
         for (const m of maskOptions) {
             const btn = new St.Button({
