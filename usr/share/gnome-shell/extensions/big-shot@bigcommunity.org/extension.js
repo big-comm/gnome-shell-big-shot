@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
-export const APP_VERSION = '0.6.0';
+export const APP_VERSION = '26.3.19';
 
 import GLib from 'gi://GLib';
 import Gio from 'gi://Gio';

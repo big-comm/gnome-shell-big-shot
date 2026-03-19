@@ -615,7 +615,7 @@ export class PartToolbar extends PartUI {
             { id: 'soft-circle', label: _('Soft') },
             { id: 'spotlight', label: _('Spot') },
             { id: 'ornate-frame', label: _('Ornate') },
-            { id: 'concentric-rings', label: _('Rings') },
+            { id: 'checker', label: _('Checker') },
         ];
         for (const m of maskOptions) {
             const btn = new St.Button({

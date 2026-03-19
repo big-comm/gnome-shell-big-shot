@@ -3,7 +3,7 @@
  *
  * Displays a draggable webcam preview on screen using GStreamer + Clutter,
  * captured by the screencast compositor pipeline.
- * All mask effects (circle, oval, soft, vignette, ornate, rings) are
+ * All mask effects (circle, oval, soft, vignette, ornate, checker) are
  * implemented as pixel-level alpha/colour operations — no external SVGs.
  *
  * SPDX-License-Identifier: GPL-2.0-or-later
@@ -39,7 +39,7 @@ const BUILTIN_MASKS = [
     { id: 'soft-circle',      label: 'Soft' },
     { id: 'spotlight',        label: 'Spot' },
     { id: 'ornate-frame',     label: 'Ornate' },
-    { id: 'concentric-rings', label: 'Rings' },
+    { id: 'checker',           label: 'Checker' },
 ];
 
 export class PartWebcam extends PartUI {
@@ -339,8 +339,8 @@ export class PartWebcam extends PartUI {
         case 'ornate-frame':
             this._maskOrnate(data, w, h);
             return;
-        case 'concentric-rings':
-            this._maskRings(data, w, h);
+        case 'checker':
+            this._maskChecker(data, w, h);
             return;
         }
     }
@@ -484,18 +484,26 @@ export class PartWebcam extends PartUI {
         const cy = h / 2;
         const r = Math.min(w, h) / 2;
 
-        // BigCommunity gradient stops (angular gradient around the circle)
-        // Blue #3B82F6 → Purple #8B5CF6 → Pink #EC4899
-        const stops = [
-            { angle: 0,     r: 59,  g: 130, b: 246 },  // blue
-            { angle: 0.5,   r: 139, g: 92,  b: 246 },  // purple
-            { angle: 1.0,   r: 236, g: 72,  b: 153 },  // pink
+        // Border ring (normalised to radius)
+        const innerR = 0.91;
+        const outerR = 1.0;
+        const aa = 0.012;
+
+        // Circular gradient stops (seamless loop around the circle):
+        //  Left=Blue, Top=Purple, Right=Pink, Bottom=Purple, back to Blue
+        // Angle normalised [0,1): 0=left, 0.25=top, 0.5=right, 0.75=bottom
+        const gStops = [
+            { a: 0.00, r: 59,  g: 130, b: 246 },  // blue  (left)
+            { a: 0.25, r: 139, g: 92,  b: 246 },  // purple (top)
+            { a: 0.50, r: 236, g: 72,  b: 153 },  // pink  (right)
+            { a: 0.75, r: 139, g: 92,  b: 246 },  // purple (bottom)
+            { a: 1.00, r: 59,  g: 130, b: 246 },  // blue  (left, wrap)
         ];
 
         for (let y = 0; y < h; y++) {
             const dy = (y - cy) / r;
             const dy2 = dy * dy;
-            if (dy2 > 1.05) {
+            if (dy2 > (outerR + aa) * (outerR + aa)) {
                 for (let x = 0; x < w; x++)
                     data[(y * w + x) * 4 + 3] = 0;
                 continue;
@@ -504,52 +512,64 @@ export class PartWebcam extends PartUI {
                 const dx = (x - cx) / r;
                 const d2 = dx * dx + dy2;
                 const idx = (y * w + x) * 4;
-                if (d2 > 1.0) {
+                const d = Math.sqrt(d2);
+
+                if (d > outerR + aa) {
                     data[idx + 3] = 0;
-                } else {
-                    const d = Math.sqrt(d2);
-                    if (d > 0.82) {
-                        // Border zone — angular gradient
-                        const angle = (Math.atan2(y - cy, x - cx) / Math.PI + 1) / 2;
-                        // Interpolate gradient colour based on angle
-                        let cR, cG, cB;
-                        if (angle < 0.5) {
-                            const t = angle / 0.5;
-                            cR = Math.round(stops[0].r * (1 - t) + stops[1].r * t);
-                            cG = Math.round(stops[0].g * (1 - t) + stops[1].g * t);
-                            cB = Math.round(stops[0].b * (1 - t) + stops[1].b * t);
-                        } else {
-                            const t = (angle - 0.5) / 0.5;
-                            cR = Math.round(stops[1].r * (1 - t) + stops[2].r * t);
-                            cG = Math.round(stops[1].g * (1 - t) + stops[2].g * t);
-                            cB = Math.round(stops[1].b * (1 - t) + stops[2].b * t);
+                } else if (d > innerR - aa) {
+                    // Angular position [0,1)
+                    const angle = (Math.atan2(y - cy, x - cx) / Math.PI + 1) / 2;
+
+                    // Find surrounding gradient stops and interpolate
+                    let cR, cG, cB;
+                    for (let i = 0; i < gStops.length - 1; i++) {
+                        if (angle >= gStops[i].a && angle <= gStops[i + 1].a) {
+                            const span = gStops[i + 1].a - gStops[i].a;
+                            const t = (angle - gStops[i].a) / span;
+                            cR = gStops[i].r * (1 - t) + gStops[i + 1].r * t;
+                            cG = gStops[i].g * (1 - t) + gStops[i + 1].g * t;
+                            cB = gStops[i].b * (1 - t) + gStops[i + 1].b * t;
+                            break;
                         }
-                        const blend = Math.min(1.0, (d - 0.82) / 0.08);
-                        data[idx]     = Math.round(data[idx]     * (1 - blend) + cR * blend);
-                        data[idx + 1] = Math.round(data[idx + 1] * (1 - blend) + cG * blend);
-                        data[idx + 2] = Math.round(data[idx + 2] * (1 - blend) + cB * blend);
-                        // Smooth alpha at outer edge
-                        if (d > 0.96)
-                            data[idx + 3] = Math.round(255 * ((1.0 - d) / 0.04));
                     }
+
+                    // Blend factor: 0 = webcam, 1 = gradient
+                    let blend = 1.0;
+                    if (d < innerR)
+                        blend = (d - (innerR - aa)) / aa;
+
+                    // Outer edge alpha
+                    let alpha = 255;
+                    if (d > outerR)
+                        alpha = Math.round(255 * Math.max(0, (outerR + aa - d) / aa));
+
+                    data[idx]     = Math.round(data[idx]     * (1 - blend) + cR * blend);
+                    data[idx + 1] = Math.round(data[idx + 1] * (1 - blend) + cG * blend);
+                    data[idx + 2] = Math.round(data[idx + 2] * (1 - blend) + cB * blend);
+                    data[idx + 3] = Math.min(data[idx + 3], alpha);
                 }
+                // else: inside inner circle — keep webcam pixels unchanged
             }
         }
     }
 
-    /** Concentric rings: circle with semi-transparent ring bands. */
-    _maskRings(data, w, h) {
+    /** Checker: radial checkerboard sunburst border around the webcam circle. */
+    _maskChecker(data, w, h) {
         const cx = w / 2;
         const cy = h / 2;
         const r = Math.min(w, h) / 2;
-        // Ring positions (normalised to radius)
-        const rings = [0.35, 0.55, 0.75, 0.92];
-        const rw = 0.03;  // ring half-width
+
+        const innerR = 0.78;     // webcam circle edge
+        const outerR = 1.0;
+        const numRings = 4;
+        const ringW = (outerR - innerR) / numRings;
+        const numSectors = 28;   // angular divisions
+        const aa = 0.01;         // anti-alias at outer boundary
 
         for (let y = 0; y < h; y++) {
             const dy = (y - cy) / r;
             const dy2 = dy * dy;
-            if (dy2 > 1.05) {
+            if (dy2 > (outerR + aa) * (outerR + aa)) {
                 for (let x = 0; x < w; x++)
                     data[(y * w + x) * 4 + 3] = 0;
                 continue;
@@ -558,24 +578,33 @@ export class PartWebcam extends PartUI {
                 const dx = (x - cx) / r;
                 const d2 = dx * dx + dy2;
                 const idx = (y * w + x) * 4;
-                if (d2 > 1.0) {
+                const d = Math.sqrt(d2);
+
+                if (d > outerR + aa) {
                     data[idx + 3] = 0;
-                } else {
-                    const d = Math.sqrt(d2);
-                    // Soft outer edge
-                    if (d > 0.96)
-                        data[idx + 3] = Math.round(data[idx + 3] * ((1 - d) / 0.04));
-                    // Draw ring overlays (semi-transparent white)
-                    for (const rp of rings) {
-                        const dist = Math.abs(d - rp);
-                        if (dist < rw) {
-                            const intensity = 0.45 * (1 - dist / rw);
-                            data[idx]     = Math.min(255, Math.round(data[idx]     + (255 - data[idx])     * intensity));
-                            data[idx + 1] = Math.min(255, Math.round(data[idx + 1] + (255 - data[idx + 1]) * intensity));
-                            data[idx + 2] = Math.min(255, Math.round(data[idx + 2] + (255 - data[idx + 2]) * intensity));
-                        }
+                } else if (d > innerR) {
+                    // Checkerboard border zone
+                    const ringIdx = Math.min(numRings - 1, Math.floor((d - innerR) / ringW));
+                    const angle = (Math.atan2(y - cy, x - cx) + Math.PI) / (2 * Math.PI);
+                    const sectorIdx = Math.floor(angle * numSectors);
+                    const isBlack = (ringIdx + sectorIdx) % 2 === 0;
+
+                    if (isBlack) {
+                        // Dark cell: fully transparent
+                        data[idx + 3] = 0;
+                    } else {
+                        // Light cell: slightly dimmed webcam pixels
+                        const dim = 0.75;
+                        data[idx]     = Math.round(data[idx]     * dim);
+                        data[idx + 1] = Math.round(data[idx + 1] * dim);
+                        data[idx + 2] = Math.round(data[idx + 2] * dim);
                     }
+
+                    // Outer edge alpha fade
+                    if (d > outerR)
+                        data[idx + 3] = Math.round(data[idx + 3] * Math.max(0, (outerR + aa - d) / aa));
                 }
+                // else: inside inner circle — keep webcam pixels
             }
         }
     }
@@ -818,20 +847,27 @@ export class PartWebcam extends PartUI {
         this._updateContainerLayout();
 
         // Phase 2: Start rendering pipeline with correct dimensions
-        this._startRenderPipeline(device, targetW, targetH);
+        this._startRenderPipeline(device, targetW, targetH, nw, nh);
         return GLib.SOURCE_REMOVE;
     }
 
-    _startRenderPipeline(device, w, h) {
+    _startRenderPipeline(device, w, h, nativeW, nativeH) {
         try {
             const srcElement = device === 'pipewire'
                 ? 'pipewiresrc !'
                 : `v4l2src device=${device} !`;
 
+            // Lock source to the probed native resolution so that
+            // videoscale always receives the expected aspect ratio
+            // instead of a different v4l2 mode negotiated by GStreamer.
+            const nativeCaps = (nativeW && nativeH)
+                ? `video/x-raw,width=${nativeW},height=${nativeH} !`
+                : '';
+
             const pipelineStr = [
                 srcElement,
                 'videoflip method=horizontal-flip !',
-                'videoconvert ! videoscale !',
+                `videoconvert ! ${nativeCaps} videoscale !`,
                 `video/x-raw,format=RGBA,width=${w},height=${h} !`,
                 'appsink name=sink max-buffers=1 drop=true sync=false',
             ].join(' ');
