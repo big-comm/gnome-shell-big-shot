@@ -1098,6 +1098,7 @@ export class PartWebcam extends PartUI {
                         texture, null
                     );
                     this._webcamActor.set_content(content);
+                    this._webcamActor.queue_repaint();
                 }
             } finally {
                 buffer.unmap(mapInfo);

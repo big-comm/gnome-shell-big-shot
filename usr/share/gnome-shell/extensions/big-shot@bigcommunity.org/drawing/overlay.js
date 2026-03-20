@@ -52,6 +52,7 @@ export class DrawingOverlay {
         this._startPoint = null;
         this._isDrawing = false;
         this._nextNumber = 1;
+        this._lastNumberTool = null;
 
         // Selection / move state
         this._selectedAction = null;
@@ -59,6 +60,19 @@ export class DrawingOverlay {
         this._dragStart = null;
 
         this._buildOverlay();
+    }
+
+    // Reset number count when switching tool or starting new area
+    resetNumberingIfNeeded() {
+        const tool = this._toolbar?.activeTool;
+        if (tool === 'number' || tool === 'number-arrow' || tool === 'number-pointer') {
+            if (this._lastNumberTool !== tool) {
+                this._nextNumber = 1;
+                this._lastNumberTool = tool;
+            }
+        } else {
+            this._lastNumberTool = null;
+        }
     }
 
     _buildOverlay() {
@@ -195,6 +209,8 @@ export class DrawingOverlay {
     // =========================================================================
 
     _onButtonPress(event) {
+        // Reset numbering if needed when user switches tool
+        this.resetNumberingIfNeeded();
         const [x, y] = event.get_coords();
         const [ix, iy] = this._toImageCoords(x, y);
         const now = GLib.get_monotonic_time();
@@ -216,6 +232,9 @@ export class DrawingOverlay {
         }
 
         if (isSelectMode) {
+            // Reset numbering when starting a new area (deseleciona tudo)
+            this._nextNumber = 1;
+            this._lastNumberTool = null;
             // Try to find an action under the cursor (top-most first)
             let found = null;
             for (let i = this._actions.length - 1; i >= 0; i--) {
@@ -626,6 +645,7 @@ export class DrawingOverlay {
         // Draw all committed actions
         for (const action of this._actions) {
             cr.save();
+            cr.newPath();
             action.draw(cr, toWidget, scale);
             cr.restore();
         }
@@ -678,6 +698,7 @@ export class DrawingOverlay {
 
             if (tempAction) {
                 cr.save();
+                cr.newPath();
                 tempAction.draw(cr, toWidget, scale);
                 cr.restore();
             }

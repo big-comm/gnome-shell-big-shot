@@ -1058,36 +1058,12 @@ export default class BigShotExtension extends Extension {
         // lock-screen disable/enable cycles.
         this._origOpen = screenshotUI.open.bind(screenshotUI);
         screenshotUI.open = function (mode) {
-            // QuickStop: if recording (or paused) and user re-opens the UI,
-            // stop the ongoing recording instead of opening.
-            if (ext._recordingState === 'paused') {
-                // Resume the screencast process first so it can finalize the file
-                ext._signalScreencastProcess('CONT');
-                // Let GNOME stop the recording normally
-                const recorder = Main.screenshotUI?._recorder;
-                if (recorder?.is_recording?.()) {
-                    try { recorder.close(); } catch (_e) { /* */ }
-                }
-                ext._onFinalStop();
-                Main.screenshotUI?.close();
-                return Promise.resolve();
-            }
-
-            const recorder = Main.screenshotUI?._recorder;
-            if (recorder?.is_recording?.()) {
-                try {
-                    recorder.close();
-                    Main.screenshotUI?.close();
-                } catch (e) {
-                    console.error(`[Big Shot] Quick stop error: ${e.message}`);
-                }
-                return Promise.resolve();
-            }
-
             if (mode === undefined) mode = 0; // UIMode.SCREENSHOT
+
             // Allow screenshot while recording: GNOME blocks open() when
             // _screencastInProgress is true. We temporarily clear the flag
             // so screenshot mode (UIMode.SCREENSHOT=0) can open during recording.
+            // Stopping the recording is done via the panel indicator button.
             if (this._screencastInProgress && mode !== 1) { // 1 = UIMode.SCREENCAST
                 const saved = this._screencastInProgress;
                 this._screencastInProgress = false;
@@ -1307,6 +1283,23 @@ export default class BigShotExtension extends Extension {
         } else if (this._recordingState === 'paused') {
             this.resumeRecording();
         }
+    }
+
+    /**
+     * Stop recording — called by the indicator stop button.
+     */
+    stopRecording() {
+        if (this._recordingState === 'idle') return;
+
+        // If paused, resume first so the screencast process can finalize the file
+        if (this._recordingState === 'paused')
+            this._signalScreencastProcess('CONT');
+
+        const recorder = this._screenshotUI?._recorder;
+        if (recorder?.is_recording?.()) {
+            try { recorder.close(); } catch (_e) { /* ignore */ }
+        }
+        this._onFinalStop();
     }
 
     /**

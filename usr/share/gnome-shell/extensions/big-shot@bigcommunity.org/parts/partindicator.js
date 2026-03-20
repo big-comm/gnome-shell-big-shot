@@ -112,10 +112,23 @@ export class PartIndicator extends PartUI {
         });
         box.add_child(this._icon);
 
+        this._stopIcon = new St.Icon({
+            icon_name: 'media-playback-stop-symbolic',
+            style_class: 'system-status-icon',
+            icon_size: 16,
+        });
+        box.add_child(this._stopIcon);
+
         this._panelButton.add_child(box);
 
-        this._panelButton.connect('button-press-event', () => {
-            this._onPauseClicked();
+        this._panelButton.connect('button-press-event', (_actor, event) => {
+            if (event.get_button() === 3) {
+                // Right-click → stop recording
+                this._onStopClicked();
+            } else {
+                // Left-click → pause/resume
+                this._onPauseClicked();
+            }
             return Clutter.EVENT_STOP;
         });
 
@@ -141,6 +154,7 @@ export class PartIndicator extends PartUI {
             this._panelButton = null;
         }
         this._icon = null;
+        this._stopIcon = null;
         this._timerLabel = null;
     }
 
@@ -162,6 +176,10 @@ export class PartIndicator extends PartUI {
 
     _onPauseClicked() {
         this._ext?.togglePauseRecording();
+    }
+
+    _onStopClicked() {
+        this._ext?.stopRecording();
     }
 
     _startTimer() {
