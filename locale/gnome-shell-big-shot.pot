@@ -14,31 +14,10 @@ msgstr  "Project-Id-Version: gnome-shell-big-shot\n"
         "Content-Type: text/plain; charset=UTF-8\n"
         "Content-Transfer-Encoding: 8bit\n"
 
-msgid   "Screenshot taken"
+msgid   "Webcam"
 msgstr  ""
 
-msgid   "Screenshots"
-msgstr  ""
-
-msgid   "Screenshot from %s"
-msgstr  ""
-
-msgid   "Screenshot copied"
-msgstr  ""
-
-msgid   "Save Screenshot"
-msgstr  ""
-
-msgid   "Drawing canvas"
-msgstr  ""
-
-msgid   "Text…"
-msgstr  ""
-
-msgid   "Annotation text"
-msgstr  ""
-
-msgid   "Confirm"
+msgid   "Webcam Overlay"
 msgstr  ""
 
 msgid   "Desktop"
@@ -53,22 +32,7 @@ msgstr  ""
 msgid   "Record Microphone"
 msgstr  ""
 
-msgid   "Gradient Angle"
-msgstr  ""
-
-msgid   "Border Radius"
-msgstr  ""
-
-msgid   "Webcam"
-msgstr  ""
-
-msgid   "Webcam Overlay"
-msgstr  ""
-
 msgid   "Frames per second"
-msgstr  ""
-
-msgid   "Recording resolution"
 msgstr  ""
 
 msgid   "Select / Move"
@@ -204,4 +168,40 @@ msgid   "Use best available codec"
 msgstr  ""
 
 msgid   "Video codec"
+msgstr  ""
+
+msgid   "Gradient Angle"
+msgstr  ""
+
+msgid   "Border Radius"
+msgstr  ""
+
+msgid   "Recording resolution"
+msgstr  ""
+
+msgid   "Screenshot taken"
+msgstr  ""
+
+msgid   "Screenshots"
+msgstr  ""
+
+msgid   "Screenshot from %s"
+msgstr  ""
+
+msgid   "Screenshot copied"
+msgstr  ""
+
+msgid   "Save Screenshot"
+msgstr  ""
+
+msgid   "Drawing canvas"
+msgstr  ""
+
+msgid   "Text…"
+msgstr  ""
+
+msgid   "Annotation text"
+msgstr  ""
+
+msgid   "Confirm"
 msgstr  ""

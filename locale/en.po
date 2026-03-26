@@ -15,32 +15,11 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "Screenshot taken"
-msgstr "Screenshot taken"
+msgid "Webcam"
+msgstr "Webcam"
 
-msgid "Screenshots"
-msgstr "Screenshots"
-
-msgid "Screenshot from %s"
-msgstr "Screenshot from %s"
-
-msgid "Screenshot copied"
-msgstr "Screenshot copied"
-
-msgid "Save Screenshot"
-msgstr "Save Screenshot"
-
-msgid "Drawing canvas"
-msgstr "Drawing canvas"
-
-msgid "Text…"
-msgstr "Text…"
-
-msgid "Annotation text"
-msgstr "Annotation text"
-
-msgid "Confirm"
-msgstr "Confirm"
+msgid "Webcam Overlay"
+msgstr "Webcam Overlay"
 
 msgid "Desktop"
 msgstr "Desktop"
@@ -54,23 +33,8 @@ msgstr "Record Desktop Audio"
 msgid "Record Microphone"
 msgstr "Record Microphone"
 
-msgid "Gradient Angle"
-msgstr "Gradient Angle"
-
-msgid "Border Radius"
-msgstr "Border Radius"
-
-msgid "Webcam"
-msgstr "Webcam"
-
-msgid "Webcam Overlay"
-msgstr "Webcam Overlay"
-
 msgid "Frames per second"
 msgstr "Frames per second"
-
-msgid "Recording resolution"
-msgstr "Recording resolution"
 
 msgid "Select / Move"
 msgstr "Select / Move"
@@ -206,3 +170,39 @@ msgstr "Use best available codec"
 
 msgid "Video codec"
 msgstr "Video codec"
+
+msgid "Gradient Angle"
+msgstr "Gradient Angle"
+
+msgid "Border Radius"
+msgstr "Border Radius"
+
+msgid "Recording resolution"
+msgstr "Recording resolution"
+
+msgid "Screenshot taken"
+msgstr "Screenshot taken"
+
+msgid "Screenshots"
+msgstr "Screenshots"
+
+msgid "Screenshot from %s"
+msgstr "Screenshot from %s"
+
+msgid "Screenshot copied"
+msgstr "Screenshot copied"
+
+msgid "Save Screenshot"
+msgstr "Save Screenshot"
+
+msgid "Drawing canvas"
+msgstr "Drawing canvas"
+
+msgid "Text…"
+msgstr "Text…"
+
+msgid "Annotation text"
+msgstr "Annotation text"
+
+msgid "Confirm"
+msgstr "Confirm"
