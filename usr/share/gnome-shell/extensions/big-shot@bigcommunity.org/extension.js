@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
-export const APP_VERSION = '26.5.0';
+export const APP_VERSION = '26.5.1';
 
 import GLib from 'gi://GLib';
 import Gio from 'gi://Gio';
@@ -245,28 +245,64 @@ export default class BigShotExtension extends Extension {
 
         this._screenshotUI = screenshotUI;
 
+        // Detect Shell version once for version-conditional code paths.
+        this._shellVersion = this._detectShellVersion();
+        console.log(`[Big Shot] Enabling on GNOME Shell ${this._shellVersion ?? 'unknown'}`);
+
         // Initialize translations (must be before _createParts so _() works)
         this.initTranslations();
 
         // NOTE: Pipeline detection moved to lazy — runs on first screencast attempt
         // to avoid blocking enable() with synchronous subprocess calls.
 
-        // Create all parts (modules)
-        this._createParts();
-
-        // Monkey-patch screencast proxy
-        this._patchScreencast();
+        // Each patch is wrapped so a future API change in one area doesn't
+        // prevent the rest of the extension from loading. Better partial
+        // functionality than a fully broken extension.
+        this._safeStep('createParts', () => this._createParts());
+        this._safeStep('patchScreencast', () => this._patchScreencast());
 
         // Force-enable the screencast (video) button.
         // GNOME 49 has a bug where Gst.init_check(null) crashes the native
         // screencast service, hiding the cast button even when GStreamer
         // encoders are available. Since Big Shot provides its own pipelines,
         // force the button visible so users can switch to video mode.
-        this._forceEnableScreencast();
+        this._safeStep('forceEnableScreencast', () => this._forceEnableScreencast());
 
         // Intercept _saveScreenshot to composite annotations onto the image
-        this._patchSaveScreenshot();
+        this._safeStep('patchSaveScreenshot', () => this._patchSaveScreenshot());
+    }
 
+    /**
+     * Run an enable-time step and log (without throwing) on failure.
+     * Keeps the extension partially functional when a single GNOME API
+     * changes between releases.
+     */
+    _safeStep(label, fn) {
+        try {
+            fn();
+        } catch (e) {
+            console.error(`[Big Shot] step "${label}" failed: ${e.message}\n${e.stack}`);
+        }
+    }
+
+    /**
+     * Detect the running GNOME Shell major version. Returns a number or null.
+     * Used to gate version-specific code paths instead of relying on
+     * presence/absence of internal properties (which is also done as
+     * a secondary defence in helpers like _stopActiveRecording).
+     */
+    _detectShellVersion() {
+        try {
+            // imports.misc.config exists across all supported GNOME versions
+            // and exposes PACKAGE_VERSION as a string like "50.1".
+            const cfg = globalThis.imports?.misc?.config;
+            const ver = cfg?.PACKAGE_VERSION;
+            if (typeof ver === 'string') {
+                const major = parseInt(ver.split('.')[0], 10);
+                return Number.isFinite(major) ? major : null;
+            }
+        } catch (_e) { /* */ }
+        return null;
     }
 
     disable() {
@@ -280,7 +316,7 @@ export default class BigShotExtension extends Extension {
 
         // Clean up webcam UI visibility listener
         if (this._webcamUIVisId) {
-            this._screenshotUI?.disconnect(this._webcamUIVisId);
+            try { this._screenshotUI?.disconnect(this._webcamUIVisId); } catch (_e) { /* */ }
             this._webcamUIVisId = 0;
         }
 
@@ -301,18 +337,14 @@ export default class BigShotExtension extends Extension {
         }
         this._parts = [];
 
-        // Revert monkey-patches
-        this._unpatchScreencast();
-
-        // Revert force-enabled screencast button
-        this._revertForceScreencast();
-
-        // Revert save screenshot intercept
-        this._unpatchSaveScreenshot();
+        // Revert monkey-patches — each isolated so one failure doesn't
+        // leave the others in a half-patched state.
+        this._safeStep('unpatchScreencast', () => this._unpatchScreencast());
+        this._safeStep('revertForceScreencast', () => this._revertForceScreencast());
+        this._safeStep('unpatchSaveScreenshot', () => this._unpatchSaveScreenshot());
 
         this._screenshotUI = null;
         this._availableConfigs = null;
-
     }
 
     _forceEnableScreencast() {
@@ -1055,37 +1087,45 @@ export default class BigShotExtension extends Extension {
 
     _patchScreencast() {
         const screenshotUI = this._screenshotUI;
+        if (!screenshotUI) return;
+
         const screencastProxy = screenshotUI._screencastProxy;
-        if (!screencastProxy) {
-            return;
-        }
-
-        // Save original methods
-        this._origScreencast = screencastProxy.ScreencastAsync?.bind(screencastProxy);
-        this._origScreencastArea = screencastProxy.ScreencastAreaAsync?.bind(screencastProxy);
-
         const ext = this;
 
-        // Patch ScreencastAsync
-        if (this._origScreencast) {
-            screencastProxy.ScreencastAsync = function (filePath, options) {
-                return ext._screencastCommonAsync(filePath, options, ext._origScreencast);
-            };
-        }
+        // Save original methods (proxy methods only exist if the proxy
+        // exists; if a future Shell removes the proxy entirely we just
+        // skip the pipeline injection silently).
+        if (screencastProxy) {
+            this._origScreencast = screencastProxy.ScreencastAsync?.bind(screencastProxy);
+            this._origScreencastArea = screencastProxy.ScreencastAreaAsync?.bind(screencastProxy);
 
-        // Patch ScreencastAreaAsync
-        if (this._origScreencastArea) {
-            screencastProxy.ScreencastAreaAsync = function (x, y, width, height, filePath, options) {
-                return ext._screencastCommonAsync(filePath, options, (fp, opts) => {
-                    return ext._origScreencastArea(x, y, width, height, fp, opts);
-                });
-            };
+            // Patch ScreencastAsync
+            if (this._origScreencast) {
+                screencastProxy.ScreencastAsync = function (filePath, options) {
+                    return ext._screencastCommonAsync(filePath, options, ext._origScreencast);
+                };
+            }
+
+            // Patch ScreencastAreaAsync
+            if (this._origScreencastArea) {
+                screencastProxy.ScreencastAreaAsync = function (x, y, width, height, filePath, options) {
+                    return ext._screencastCommonAsync(filePath, options, (fp, opts) => {
+                        return ext._origScreencastArea(x, y, width, height, fp, opts);
+                    });
+                };
+            }
+        } else {
+            console.warn('[Big Shot] _screencastProxy not found — custom pipelines disabled');
         }
 
         // Single open() patch: combines QuickStop (stop recording on
         // re-open) and allow-screenshot-while-recording logic.
         // Having a single save/restore avoids stale closure chains after
         // lock-screen disable/enable cycles.
+        if (typeof screenshotUI.open !== 'function') {
+            console.warn('[Big Shot] screenshotUI.open missing — Quick Stop disabled');
+            return;
+        }
         this._origOpen = screenshotUI.open.bind(screenshotUI);
         screenshotUI.open = function (mode) {
             // QuickStop: if recording (or paused) and user re-opens the UI,
@@ -1094,19 +1134,15 @@ export default class BigShotExtension extends Extension {
                 // Resume the screencast process first so it can finalize the file
                 ext._signalScreencastProcess('CONT');
                 // Let GNOME stop the recording normally
-                const recorder = Main.screenshotUI?._recorder;
-                if (recorder?.is_recording?.()) {
-                    try { recorder.close(); } catch (_e) { /* */ }
-                }
+                ext._stopActiveRecording();
                 ext._onFinalStop();
                 Main.screenshotUI?.close();
                 return Promise.resolve();
             }
 
-            const recorder = Main.screenshotUI?._recorder;
-            if (recorder?.is_recording?.()) {
+            if (ext._isRecordingActive()) {
                 try {
-                    recorder.close();
+                    ext._stopActiveRecording();
                     Main.screenshotUI?.close();
                 } catch (e) {
                     console.error(`[Big Shot] Quick stop error: ${e.message}`);
@@ -1141,17 +1177,20 @@ export default class BigShotExtension extends Extension {
     }
 
     _unpatchScreencast() {
-        const screencastProxy = this._screenshotUI?._screencastProxy;
-        if (!screencastProxy) return;
+        const ui = this._screenshotUI;
+        const screencastProxy = ui?._screencastProxy;
 
-        if (this._origScreencast)
-            screencastProxy.ScreencastAsync = this._origScreencast;
-        if (this._origScreencastArea)
-            screencastProxy.ScreencastAreaAsync = this._origScreencastArea;
-        if (this._origOpen)
-            this._screenshotUI.open = this._origOpen;
-        if (this._origStartScreencast)
-            this._screenshotUI._startScreencast = this._origStartScreencast;
+        if (screencastProxy) {
+            if (this._origScreencast)
+                screencastProxy.ScreencastAsync = this._origScreencast;
+            if (this._origScreencastArea)
+                screencastProxy.ScreencastAreaAsync = this._origScreencastArea;
+        }
+
+        if (ui && this._origOpen)
+            ui.open = this._origOpen;
+        if (ui && this._origStartScreencast)
+            ui._startScreencast = this._origStartScreencast;
 
         this._origScreencast = null;
         this._origScreencastArea = null;
@@ -1254,6 +1293,61 @@ export default class BigShotExtension extends Extension {
         console.warn('[Big Shot] All pipelines failed, falling back to GNOME default');
         this._indicator?.onPipelineReady();
         return originalMethod(filePath, options);
+    }
+
+    // =========================================================================
+    // RECORDING STATE — version-agnostic helpers
+    // =========================================================================
+
+    /**
+     * Whether a screencast is currently active.
+     * Works across GNOME versions: prefers the public state flag, falls back
+     * to the legacy Shell.Recorder when the flag is absent.
+     */
+    _isRecordingActive() {
+        const ui = this._screenshotUI ?? Main.screenshotUI;
+        if (!ui) return false;
+        if (ui._screencastInProgress) return true;
+        // GNOME ≤ 49 fallback
+        const recorder = ui._recorder;
+        if (recorder && typeof recorder.is_recording === 'function') {
+            try { return recorder.is_recording(); } catch (_e) { /* */ }
+        }
+        return false;
+    }
+
+    /**
+     * Stop the active screencast, choosing the best available API.
+     * GNOME 50 removed Shell.Recorder.close() and introduced the public
+     * stopScreencast() method on ScreenshotUI; older versions still expose
+     * the recorder. Try both, swallow errors so the UI can always close.
+     */
+    _stopActiveRecording() {
+        const ui = this._screenshotUI ?? Main.screenshotUI;
+        if (!ui) return;
+
+        // Preferred: GNOME 50+ public API
+        if (typeof ui.stopScreencast === 'function') {
+            try { ui.stopScreencast(); return; } catch (e) {
+                console.warn(`[Big Shot] stopScreencast failed: ${e.message}`);
+            }
+        }
+
+        // Legacy: GNOME ≤ 49 internal recorder
+        const recorder = ui._recorder;
+        if (recorder && typeof recorder.close === 'function') {
+            try { recorder.close(); return; } catch (e) {
+                console.warn(`[Big Shot] recorder.close failed: ${e.message}`);
+            }
+        }
+
+        // Last resort: ask the screencast service directly
+        const proxy = ui._screencastProxy;
+        if (proxy && typeof proxy.StopScreencastAsync === 'function') {
+            try { proxy.StopScreencastAsync(); } catch (e) {
+                console.warn(`[Big Shot] StopScreencastAsync failed: ${e.message}`);
+            }
+        }
     }
 
     // =========================================================================
