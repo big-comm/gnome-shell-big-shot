@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+  <!-- OCR: Image-to-Text icon (bold, clear at 16x16) -->
+  <!-- Left: image frame with mountain -->
+  <rect x="0.5" y="1" width="7" height="8.5" rx="0.6" fill="none" stroke="#ffffff" stroke-width="1.4"/>
+  <polyline points="1.5,7.5 3.2,4.5 4.5,6 6,3.5 7,7.5" fill="none" stroke="#ffffff" stroke-width="1.2" stroke-linejoin="round"/>
+  <!-- Right: text document -->
+  <rect x="8" y="4.5" width="7.5" height="11" rx="0.6" fill="none" stroke="#ffffff" stroke-width="1.4"/>
+  <line x1="9.5" y1="7.5" x2="14" y2="7.5" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round"/>
+  <line x1="9.5" y1="9.5" x2="14" y2="9.5" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round"/>
+  <line x1="9.5" y1="11.5" x2="13" y2="11.5" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round"/>
+  <!-- TXT label -->
+  <text x="10.5" y="14.5" font-size="2.5" font-weight="bold" fill="#ffffff" font-family="sans-serif">TXT</text>
+  <!-- Curved arrow -->
+  <path d="M3,10.5 C3,13 5.5,14 7.5,12.5" fill="none" stroke="#ffffff" stroke-width="1.1" stroke-linecap="round"/>
+  <polygon points="6.5,11.5 8,12.5 6.8,13.7" fill="#ffffff"/>
+</svg>

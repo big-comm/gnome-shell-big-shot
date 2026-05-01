@@ -763,6 +763,103 @@ export default class BigShotExtension extends Extension {
         }
     }
 
+    // =========================================================================
+    // OCR — Optical Character Recognition via Tesseract
+    // =========================================================================
+
+    /**
+     * Check if Tesseract OCR is installed on the system.
+     * @returns {boolean}
+     */
+    _checkTesseractAvailable() {
+        try {
+            const proc = Gio.Subprocess.new(
+                ['tesseract', '--version'],
+                Gio.SubprocessFlags.STDOUT_PIPE | Gio.SubprocessFlags.STDERR_PIPE
+            );
+            proc.wait(null);
+            return proc.get_successful();
+        } catch {
+            return false;
+        }
+    }
+
+    /**
+     * Get list of installed Tesseract language packs.
+     * @returns {string[]} e.g. ['eng', 'por', 'spa']
+     */
+    _getTesseractLanguages() {
+        try {
+            const proc = Gio.Subprocess.new(
+                ['tesseract', '--list-langs'],
+                Gio.SubprocessFlags.STDOUT_PIPE | Gio.SubprocessFlags.STDERR_PIPE
+            );
+            const [, stdout, stderr] = proc.communicate_utf8(null, null);
+            // Tesseract outputs to stderr on some versions, stdout on others
+            const output = (stdout || '') + (stderr || '');
+            const lines = output.trim().split('\n');
+            // First line is usually header like "List of available languages"
+            // Filter to only lang codes (short strings without spaces)
+            return lines.filter(l => l.trim().length > 0 && l.trim().length < 20 && !l.includes(' ')).map(l => l.trim());
+        } catch {
+            return [];
+        }
+    }
+
+    /**
+     * Detect system locale and map to Tesseract language code.
+     * @returns {string} Tesseract language string e.g. 'por+eng+spa'
+     */
+    _getOcrDefaultLang() {
+        // Map system locale to Tesseract lang codes
+        const LOCALE_MAP = {
+            'pt': 'por', 'en': 'eng', 'es': 'spa', 'fr': 'fra',
+            'de': 'deu', 'it': 'ita', 'ja': 'jpn', 'ko': 'kor',
+            'zh': 'chi_sim', 'ru': 'rus', 'ar': 'ara', 'hi': 'hin',
+            'nl': 'nld', 'pl': 'pol',
+        };
+
+        // Get system locale (e.g. "pt_BR.UTF-8" -> "pt")
+        const locale = GLib.getenv('LANG') || 'en_US.UTF-8';
+        const langCode = locale.split('_')[0].toLowerCase();
+        const sysLang = LOCALE_MAP[langCode] || 'eng';
+
+        // Build default: system lang + por + eng + spa (deduped)
+        const defaults = [sysLang, 'por', 'eng', 'spa'];
+        const available = this._getTesseractLanguages();
+        const filtered = [...new Set(defaults)].filter(l => available.includes(l));
+
+        return filtered.length > 0 ? filtered.join('+') : 'eng';
+    }
+
+    /**
+     * Run Tesseract OCR on an image file asynchronously.
+     * @param {string} imagePath - Path to PNG file
+     * @param {string} lang - Tesseract language string e.g. 'por+eng'
+     * @returns {Promise<string>} extracted text
+     */
+    async _runOCR(imagePath, lang) {
+        const proc = Gio.Subprocess.new(
+            ['tesseract', imagePath, 'stdout', '-l', lang],
+            Gio.SubprocessFlags.STDOUT_PIPE | Gio.SubprocessFlags.STDERR_PIPE
+        );
+
+        return new Promise((resolve, reject) => {
+            proc.communicate_utf8_async(null, null, (source, asyncResult) => {
+                try {
+                    const [, stdout, stderr] = source.communicate_utf8_finish(asyncResult);
+                    if (source.get_successful()) {
+                        resolve((stdout || '').trim());
+                    } else {
+                        reject(new Error(stderr || 'Tesseract failed'));
+                    }
+                } catch (e) {
+                    reject(e);
+                }
+            });
+        });
+    }
+
     /**
      * Handle action button clicks from the toolbar.
      */
@@ -805,6 +902,56 @@ export default class BigShotExtension extends Extension {
 
                 // Open file chooser via xdg-desktop-portal
                 this._openSaveDialog(tmpPath, pixbuf);
+                break;
+            }
+
+            case 'ocr': {
+                // Check if Tesseract is available
+                if (!this._checkTesseractAvailable()) {
+                    this._toolbar?.showInlineMessage(
+                        _('Tesseract not found. Install: sudo pacman -S tesseract tesseract-data-por'));
+                    return;
+                }
+
+                // Determine language
+                const selectedLang = this._toolbar?.ocrLanguage;
+                const lang = selectedLang || this._getOcrDefaultLang();
+
+                // Show processing message
+                this._toolbar?.showInlineMessage(_('Extracting text...'));
+
+                // Save screenshot to temp file for Tesseract
+                const tmpOcrPath = GLib.build_filenamev([
+                    GLib.get_tmp_dir(), `bigshot-ocr-${Date.now()}.png`]);
+
+                try {
+                    const tmpOcrFile = Gio.File.new_for_path(tmpOcrPath);
+                    const ocrStream = tmpOcrFile.create(Gio.FileCreateFlags.NONE, null);
+                    ocrStream.write_bytes(bytes, null);
+                    ocrStream.close(null);
+
+                    const text = await this._runOCR(tmpOcrPath, lang);
+
+                    if (text && text.length > 0) {
+                        // Copy extracted text to clipboard
+                        const clipboard = St.Clipboard.get_default();
+                        clipboard.set_text(St.ClipboardType.CLIPBOARD, text);
+
+                        this._toolbar?.showInlineMessage(
+                            _('Text copied to clipboard! (%d chars)').format(text.length));
+
+                        console.log(`[Big Shot] OCR extracted ${text.length} chars (lang=${lang})`);
+                    } else {
+                        this._toolbar?.showInlineMessage(
+                            _('No text found in selection'));
+                    }
+                } catch (e) {
+                    console.error(`[Big Shot] OCR failed: ${e.message}`);
+                    this._toolbar?.showInlineMessage(
+                        _('OCR failed: %s').format(e.message));
+                } finally {
+                    try { Gio.File.new_for_path(tmpOcrPath).delete(null); } catch (_e) { /* */ }
+                }
                 break;
             }
 
@@ -990,10 +1137,20 @@ export default class BigShotExtension extends Extension {
             // edit toolbar; do not override the user's choice here.
         });
 
-        // Wire action buttons (copy, save-as)
+        // Wire action buttons (copy, save-as, ocr)
         this._toolbar.onAction((action) => {
             this._handleAction(action);
         });
+
+        // Detect Tesseract and populate OCR languages
+        try {
+            if (this._checkTesseractAvailable()) {
+                const langs = this._getTesseractLanguages();
+                this._toolbar.setOcrLanguages(langs);
+            }
+        } catch (e) {
+            console.log(`[Big Shot] Tesseract detection skipped: ${e.message}`);
+        }
 
         // Audio — Desktop + Mic toggle buttons
         this._audio = new PartAudio(ui, ext);

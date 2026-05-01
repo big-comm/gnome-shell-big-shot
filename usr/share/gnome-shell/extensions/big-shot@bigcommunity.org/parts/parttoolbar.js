@@ -42,6 +42,7 @@ const SCREENSHOT_TOOLS = [
     { id: 'highlight', icon: 'big-shot-highlight-symbolic', label: () => _('Highlighter') },
     { id: 'censor', icon: 'big-shot-censor-symbolic', label: () => _('Censor') },
     { id: 'blur', icon: 'big-shot-blur-symbolic', label: () => _('Blur') },
+    { id: 'invert', icon: 'big-shot-invert-symbolic', label: () => _('Invert Colors') },
     { id: 'number', icon: 'big-shot-number-symbolic', label: () => _('Number') },
     { id: 'number-arrow', icon: 'big-shot-number-arrow-symbolic', label: () => _('Number with Arrow') },
     { id: 'number-pointer', icon: 'big-shot-number-pointer-symbolic', label: () => _('Number with Pointer') },
@@ -458,6 +459,38 @@ export class PartToolbar extends PartUI {
         this._saveAsButton.connect('enter-event', () => this._showTooltip(this._saveAsButton, _('Save As…')));
         this._saveAsButton.connect('leave-event', () => this._hideTooltip());
         this._editContainer.add_child(this._saveAsButton);
+
+        // OCR — Extract text from screenshot
+        this._ocrButton = new St.Button({
+            style_class: 'big-shot-edit-tool-btn',
+            child: new St.Icon({ icon_name: 'big-shot-ocr-symbolic', icon_size: 18 }),
+            can_focus: true,
+            accessible_name: _('Extract Text (OCR)'),
+        });
+        this._ocrButton.connect('clicked', () => this._onOcrClicked());
+        this._ocrButton.connect('enter-event', () => this._showTooltip(this._ocrButton, _('Extract Text (OCR)')));
+        this._ocrButton.connect('leave-event', () => this._hideTooltip());
+        this._editContainer.add_child(this._ocrButton);
+
+        // OCR language selector button (gear icon next to OCR)
+        this._ocrLangButton = new St.Button({
+            style_class: 'big-shot-edit-tool-btn',
+            child: new St.Label({
+                text: 'OCR ▾',
+                style: 'color: #ffffff; font-size: 10px;',
+                y_align: Clutter.ActorAlign.CENTER,
+            }),
+            can_focus: true,
+            accessible_name: _('OCR Language'),
+        });
+        this._ocrLangButton.connect('clicked', () => this._showOcrLangPopup());
+        this._ocrLangButton.connect('enter-event', () => this._showTooltip(this._ocrLangButton, _('Select OCR Language')));
+        this._ocrLangButton.connect('leave-event', () => this._hideTooltip());
+        this._editContainer.add_child(this._ocrLangButton);
+
+        // OCR language state — default: system locale + por+eng+spa
+        this._ocrSelectedLangs = null; // null = use auto-detect
+        this._ocrLangLabel = this._ocrLangButton.child;
 
         // Close button — shown only when the native panel is hidden (no orphaned X at top)
         this._toolbarCloseSep = new St.Widget({
@@ -1510,6 +1543,156 @@ export class PartToolbar extends PartUI {
         this._actionCallback = callback;
     }
 
+    /** @returns {string|null} selected OCR language string (e.g. 'por+eng') or null for auto */
+    get ocrLanguage() { return this._ocrSelectedLangs; }
+
+    _onOcrClicked() {
+        this._actionCallback?.('ocr');
+    }
+
+    /**
+     * Set OCR languages available (called by extension after detecting Tesseract).
+     * @param {string[]} langs - e.g. ['por', 'eng', 'spa', 'deu']
+     */
+    setOcrLanguages(langs) {
+        this._ocrAvailableLangs = langs;
+    }
+
+    _showOcrLangPopup() {
+        this._closeOcrLangPopup();
+        this._closeColorPopup();
+        this._closeSizePopup();
+
+        const langs = this._ocrAvailableLangs;
+        if (!langs || langs.length === 0) {
+            this.showInlineMessage(_('Tesseract not found. Install: sudo pacman -S tesseract tesseract-data-por'));
+            return;
+        }
+
+        this._ocrLangPopup = new St.BoxLayout({
+            style_class: 'big-shot-edit-popup',
+            vertical: true,
+            reactive: true,
+            style: 'padding: 4px;',
+        });
+
+        // Title
+        const titleLabel = new St.Label({
+            text: _('OCR Languages'),
+            style: 'color: rgba(255,255,255,0.7); font-size: 11px; margin-bottom: 4px;',
+            x_align: Clutter.ActorAlign.CENTER,
+        });
+        this._ocrLangPopup.add_child(titleLabel);
+
+        // Auto button
+        const autoBtn = new St.Button({
+            style_class: 'big-shot-edit-tool-btn',
+            can_focus: true,
+            x_expand: true,
+            child: new St.Label({
+                text: _('Auto (system)'),
+                style: 'color: #ffffff; font-size: 12px;',
+                x_align: Clutter.ActorAlign.START,
+                x_expand: true,
+            }),
+        });
+        if (this._ocrSelectedLangs === null)
+            autoBtn.add_style_pseudo_class('checked');
+        autoBtn.connect('clicked', () => {
+            this._ocrSelectedLangs = null;
+            this._ocrLangLabel.text = 'OCR ▾';
+            this._closeOcrLangPopup();
+        });
+        this._ocrLangPopup.add_child(autoBtn);
+
+        // Scrollable list of available languages
+        const scrollView = new St.ScrollView({
+            style: 'max-height: 250px; min-width: 160px;',
+            hscrollbar_policy: St.PolicyType.NEVER,
+            vscrollbar_policy: St.PolicyType.AUTOMATIC,
+        });
+
+        const listBox = new St.BoxLayout({ vertical: true, style: 'spacing: 2px;' });
+
+        // Friendly names for common languages
+        const LANG_NAMES = {
+            'por': 'Português', 'eng': 'English', 'spa': 'Español',
+            'fra': 'Français', 'deu': 'Deutsch', 'ita': 'Italiano',
+            'jpn': 'Japanese', 'kor': 'Korean', 'chi_sim': 'Chinese (Simplified)',
+            'chi_tra': 'Chinese (Traditional)', 'rus': 'Russian', 'ara': 'Arabic',
+            'hin': 'Hindi', 'nld': 'Dutch', 'pol': 'Polish',
+        };
+
+        for (const lang of langs) {
+            if (lang === 'osd') continue; // skip orientation/script detection
+            const displayName = LANG_NAMES[lang] || lang;
+            const isSelected = this._ocrSelectedLangs === lang;
+
+            const btn = new St.Button({
+                style_class: 'big-shot-edit-tool-btn',
+                can_focus: true,
+                x_expand: true,
+                child: new St.Label({
+                    text: `${displayName} (${lang})`,
+                    style: 'color: #ffffff; font-size: 12px;',
+                    x_align: Clutter.ActorAlign.START,
+                    x_expand: true,
+                }),
+            });
+            if (isSelected)
+                btn.add_style_pseudo_class('checked');
+
+            const langId = lang;
+            btn.connect('clicked', () => {
+                this._ocrSelectedLangs = langId;
+                this._ocrLangLabel.text = `${langId} ▾`;
+                this._closeOcrLangPopup();
+            });
+            listBox.add_child(btn);
+        }
+
+        scrollView.set_child(listBox);
+        this._ocrLangPopup.add_child(scrollView);
+
+        this._ui.add_child(this._ocrLangPopup);
+
+        GLib.idle_add(GLib.PRIORITY_DEFAULT, () => {
+            if (!this._ocrLangPopup) return GLib.SOURCE_REMOVE;
+            const [bx, by] = this._ocrLangButton.get_transformed_position();
+            const monitor = global.display.get_current_monitor();
+            const geo = global.display.get_monitor_geometry(monitor);
+            let cpx = bx;
+            let cpy = by - this._ocrLangPopup.height - 8;
+            cpx = Math.max(geo.x, Math.min(cpx, geo.x + geo.width - this._ocrLangPopup.width));
+            cpy = Math.max(geo.y, cpy);
+            this._ocrLangPopup.set_position(cpx, cpy);
+            return GLib.SOURCE_REMOVE;
+        });
+
+        this._ocrLangPopupTimeoutId = GLib.timeout_add(GLib.PRIORITY_DEFAULT, 100, () => {
+            this._ocrLangPopupTimeoutId = 0;
+            if (this._destroyed) return GLib.SOURCE_REMOVE;
+            this._ocrLangPopupClickId = global.stage.connect('button-press-event', () => {
+                this._closeOcrLangPopup();
+                return Clutter.EVENT_PROPAGATE;
+            });
+            return GLib.SOURCE_REMOVE;
+        });
+    }
+
+    _closeOcrLangPopup() {
+        if (this._ocrLangPopupTimeoutId) {
+            GLib.source_remove(this._ocrLangPopupTimeoutId);
+            this._ocrLangPopupTimeoutId = 0;
+        }
+        if (this._ocrLangPopupClickId) {
+            global.stage.disconnect(this._ocrLangPopupClickId);
+            this._ocrLangPopupClickId = null;
+        }
+        this._ocrLangPopup?.destroy();
+        this._ocrLangPopup = null;
+    }
+
     /**
      * Show a brief inline status message on the toolbar.
      */
@@ -1621,6 +1804,7 @@ export class PartToolbar extends PartUI {
         this._closeSizePopup();
         this._closeFontPopup();
         this._closeIntensityPopup();
+        this._closeOcrLangPopup();
         this._hideTooltip();
         this._clearInlineMessage();
 
