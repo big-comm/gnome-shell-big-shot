@@ -14,10 +14,34 @@ msgstr  "Project-Id-Version: gnome-shell-big-shot\n"
         "Content-Type: text/plain; charset=UTF-8\n"
         "Content-Transfer-Encoding: 8bit\n"
 
-msgid   "Webcam"
+msgid   "Drawing canvas"
 msgstr  ""
 
-msgid   "Webcam Overlay"
+msgid   "Text…"
+msgstr  ""
+
+msgid   "Annotation text"
+msgstr  ""
+
+msgid   "Confirm"
+msgstr  ""
+
+msgid   "Screenshot taken"
+msgstr  ""
+
+msgid   "Screenshots"
+msgstr  ""
+
+msgid   "Screenshot from %s"
+msgstr  ""
+
+msgid   "Screenshot copied"
+msgstr  ""
+
+msgid   "Save Screenshot"
+msgstr  ""
+
+msgid   "Recording resolution"
 msgstr  ""
 
 msgid   "Desktop"
@@ -32,7 +56,10 @@ msgstr  ""
 msgid   "Record Microphone"
 msgstr  ""
 
-msgid   "Frames per second"
+msgid   "Webcam"
+msgstr  ""
+
+msgid   "Webcam Overlay"
 msgstr  ""
 
 msgid   "Select / Move"
@@ -176,32 +203,5 @@ msgstr  ""
 msgid   "Border Radius"
 msgstr  ""
 
-msgid   "Recording resolution"
-msgstr  ""
-
-msgid   "Screenshot taken"
-msgstr  ""
-
-msgid   "Screenshots"
-msgstr  ""
-
-msgid   "Screenshot from %s"
-msgstr  ""
-
-msgid   "Screenshot copied"
-msgstr  ""
-
-msgid   "Save Screenshot"
-msgstr  ""
-
-msgid   "Drawing canvas"
-msgstr  ""
-
-msgid   "Text…"
-msgstr  ""
-
-msgid   "Annotation text"
-msgstr  ""
-
-msgid   "Confirm"
+msgid   "Frames per second"
 msgstr  ""
