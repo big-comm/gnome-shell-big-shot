@@ -2,7 +2,7 @@
     "name": "Big Shot",
     "description": "Enhanced screenshot annotation and screencast recording for GNOME Shell",
     "uuid": "big-shot@bigcommunity.org",
-    "shell-version": ["46", "47", "48", "49"],
+    "shell-version": ["46", "47", "48", "49", "50"],
     "version": 260318,
     "url": "https://github.com/big-comm/gnome-shell-big-shot",
     "gettext-domain": "big-shot@bigcommunity.org"
