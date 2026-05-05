@@ -489,7 +489,7 @@ export class PartToolbar extends PartUI {
         this._editContainer.add_child(this._ocrLangButton);
 
         // OCR language state — default: system locale + por+eng+spa
-        this._ocrSelectedLangs = null; // null = use auto-detect
+        this._ocrSelectedLang = null; // null = use auto-detect
         this._ocrLangLabel = this._ocrLangButton.child;
 
         // Close button — shown only when the native panel is hidden (no orphaned X at top)
@@ -1544,7 +1544,7 @@ export class PartToolbar extends PartUI {
     }
 
     /** @returns {string|null} selected OCR language string (e.g. 'por+eng') or null for auto */
-    get ocrLanguage() { return this._ocrSelectedLangs; }
+    get ocrLanguage() { return this._ocrSelectedLang; }
 
     _onOcrClicked() {
         this._actionCallback?.('ocr');
@@ -1596,10 +1596,10 @@ export class PartToolbar extends PartUI {
                 x_expand: true,
             }),
         });
-        if (this._ocrSelectedLangs === null)
+        if (this._ocrSelectedLang === null)
             autoBtn.add_style_pseudo_class('checked');
         autoBtn.connect('clicked', () => {
-            this._ocrSelectedLangs = null;
+            this._ocrSelectedLang = null;
             this._ocrLangLabel.text = 'OCR ▾';
             this._closeOcrLangPopup();
         });
@@ -1626,7 +1626,7 @@ export class PartToolbar extends PartUI {
         for (const lang of langs) {
             if (lang === 'osd') continue; // skip orientation/script detection
             const displayName = LANG_NAMES[lang] || lang;
-            const isSelected = this._ocrSelectedLangs === lang;
+            const isSelected = this._ocrSelectedLang === lang;
 
             const btn = new St.Button({
                 style_class: 'big-shot-edit-tool-btn',
@@ -1644,7 +1644,7 @@ export class PartToolbar extends PartUI {
 
             const langId = lang;
             btn.connect('clicked', () => {
-                this._ocrSelectedLangs = langId;
+                this._ocrSelectedLang = langId;
                 this._ocrLangLabel.text = `${langId} ▾`;
                 this._closeOcrLangPopup();
             });

@@ -20,6 +20,7 @@ import * as Screenshot from 'resource:///org/gnome/shell/ui/screenshot.js';
 // Parts
 import { PartToolbar } from './parts/parttoolbar.js';
 import { PartAnnotation } from './parts/partannotation.js';
+import { PartMagnifier } from './parts/partmagnifier.js';
 
 import { PartAudio } from './parts/partaudio.js';
 import { PartFramerate } from './parts/partframerate.js';
@@ -769,15 +770,15 @@ export default class BigShotExtension extends Extension {
 
     /**
      * Check if Tesseract OCR is installed on the system.
-     * @returns {boolean}
+     * @returns {Promise<boolean>}
      */
-    _checkTesseractAvailable() {
+    async _checkTesseractAvailable() {
         try {
             const proc = Gio.Subprocess.new(
                 ['tesseract', '--version'],
                 Gio.SubprocessFlags.STDOUT_PIPE | Gio.SubprocessFlags.STDERR_PIPE
             );
-            proc.wait(null);
+            await proc.communicate_utf8_async(null, null);
             return proc.get_successful();
         } catch {
             return false;
@@ -786,21 +787,20 @@ export default class BigShotExtension extends Extension {
 
     /**
      * Get list of installed Tesseract language packs.
-     * @returns {string[]} e.g. ['eng', 'por', 'spa']
+     * @returns {Promise<string[]>} e.g. ['eng', 'por', 'spa']
      */
-    _getTesseractLanguages() {
+    async _getTesseractLanguages() {
         try {
             const proc = Gio.Subprocess.new(
                 ['tesseract', '--list-langs'],
                 Gio.SubprocessFlags.STDOUT_PIPE | Gio.SubprocessFlags.STDERR_PIPE
             );
-            const [, stdout, stderr] = proc.communicate_utf8(null, null);
+            const [, stdout, stderr] = await proc.communicate_utf8_async(null, null);
             // Tesseract outputs to stderr on some versions, stdout on others
             const output = (stdout || '') + (stderr || '');
             const lines = output.trim().split('\n');
-            // First line is usually header like "List of available languages"
-            // Filter to only lang codes (short strings without spaces)
-            return lines.filter(l => l.trim().length > 0 && l.trim().length < 20 && !l.includes(' ')).map(l => l.trim());
+            // First line is always a header — skip it explicitly
+            return lines.slice(1).map(l => l.trim()).filter(l => l.length > 0);
         } catch {
             return [];
         }
@@ -907,9 +907,9 @@ export default class BigShotExtension extends Extension {
 
             case 'ocr': {
                 // Check if Tesseract is available
-                if (!this._checkTesseractAvailable()) {
+                if (!await this._checkTesseractAvailable()) {
                     this._toolbar?.showInlineMessage(
-                        _('Tesseract not found. Install: sudo pacman -S tesseract tesseract-data-por'));
+                        _('Tesseract not found. Please install the \u2018tesseract\u2019 package for your distribution.'));
                     return;
                 }
 
@@ -1122,6 +1122,10 @@ export default class BigShotExtension extends Extension {
         this._annotation = new PartAnnotation(ui, ext);
         this._parts.push(this._annotation);
 
+        // Magnifier — zoom pop-up on shift key
+        this._magnifier = new PartMagnifier(ui, ext);
+        this._parts.push(this._magnifier);
+
         // Wire toolbar tool changes to overlay reactivity
         this._toolbar.onToolChanged((toolId) => {
             // Toggle drawing overlay reactivity: only capture events when
@@ -1142,15 +1146,15 @@ export default class BigShotExtension extends Extension {
             this._handleAction(action);
         });
 
-        // Detect Tesseract and populate OCR languages
-        try {
-            if (this._checkTesseractAvailable()) {
-                const langs = this._getTesseractLanguages();
+        // Detect Tesseract and populate OCR languages (async — won't block UI)
+        this._checkTesseractAvailable().then(available => {
+            if (!available) return;
+            this._getTesseractLanguages().then(langs => {
                 this._toolbar.setOcrLanguages(langs);
-            }
-        } catch (e) {
+            }).catch(() => {});
+        }).catch(e => {
             console.log(`[Big Shot] Tesseract detection skipped: ${e.message}`);
-        }
+        });
 
         // Audio — Desktop + Mic toggle buttons
         this._audio = new PartAudio(ui, ext);

@@ -10,7 +10,6 @@
 import Pango from 'gi://Pango';
 import PangoCairo from 'gi://PangoCairo';
 import cairo from 'gi://cairo';
-import Gdk from 'gi://Gdk';
 import GdkPixbuf from 'gi://GdkPixbuf';
 import GLib from 'gi://GLib';
 
@@ -944,20 +943,8 @@ export class InvertAction extends RectAction {
      * or falls back to a visual overlay during drag.
      */
     draw(cr, toWidget, _scale) {
-        // If we have a real inversion pixbuf, draw it
-        if (this._invertedPixbuf) {
-            const baseX = Math.min(this.start[0], this.end[0]);
-            const baseY = Math.min(this.start[1], this.end[1]);
-            const [wx, wy] = toWidget(baseX, baseY);
-
-            cr.save();
-            Gdk.cairo_set_source_pixbuf(cr, this._invertedPixbuf, wx, wy);
-            cr.paint();
-            cr.restore();
-            return;
-        }
-
-        // Fallback: visual overlay during drag (cyan/magenta tint)
+        // Visual overlay during drag (cyan/magenta tint)
+        // Real inversion happens in drawReal() at save time.
         let [x1, y1] = toWidget(...this.start);
         let [x2, y2] = toWidget(...this.end);
 
@@ -986,56 +973,6 @@ export class InvertAction extends RectAction {
         }
         cr.stroke();
         cr.restore();
-    }
-
-    /**
-     * Generate real inversion preview from screenshot pixel data.
-     * Creates a new GdkPixbuf with perfectly inverted pixels.
-     */
-    generatePreview(pixbuf, bufScale) {
-        const regionX = Math.min(this.start[0], this.end[0]);
-        const regionY = Math.min(this.start[1], this.end[1]);
-        const regionW = Math.abs(this.end[0] - this.start[0]);
-        const regionH = Math.abs(this.end[1] - this.start[1]);
-
-        const imgW = pixbuf.get_width();
-        const imgH = pixbuf.get_height();
-
-        const x = Math.round(Math.max(0, Math.min(regionX * bufScale, imgW - 1)));
-        const y = Math.round(Math.max(0, Math.min(regionY * bufScale, imgH - 1)));
-        const w = Math.round(Math.min(regionW * bufScale, imgW - x));
-        const h = Math.round(Math.min(regionH * bufScale, imgH - y));
-
-        if (w < 2 || h < 2) return;
-
-        // Extract just the sub-region for performance
-        const subPixbuf = pixbuf.new_subpixbuf(x, y, w, h);
-        
-        const bytes = subPixbuf.read_pixel_bytes();
-        const data = bytes.get_data();
-        const rowstride = subPixbuf.get_rowstride();
-        const nChannels = subPixbuf.get_n_channels();
-
-        // Make a mutable copy of the region's pixel data
-        const arr = new Uint8Array(data.length);
-        for (let i = 0; i < data.length; i++) arr[i] = data[i];
-
-        // Invert RGB channels
-        for (let py = 0; py < h; py++) {
-            for (let px = 0; px < w; px++) {
-                const off = py * rowstride + px * nChannels;
-                arr[off]     = 255 - arr[off];     // R
-                arr[off + 1] = 255 - arr[off + 1]; // G
-                arr[off + 2] = 255 - arr[off + 2]; // B
-            }
-        }
-
-        const newBytes = GLib.Bytes.new(arr);
-        this._invertedPixbuf = GdkPixbuf.Pixbuf.new_from_bytes(
-            newBytes, subPixbuf.get_colorspace(),
-            subPixbuf.get_has_alpha(), subPixbuf.get_bits_per_sample(),
-            w, h, rowstride
-        );
     }
 
     /**
