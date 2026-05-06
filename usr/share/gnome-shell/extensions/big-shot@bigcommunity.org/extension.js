@@ -255,21 +255,31 @@ export default class BigShotExtension extends Extension {
         // NOTE: Pipeline detection moved to lazy — runs on first screencast attempt
         // to avoid blocking enable() with synchronous subprocess calls.
 
-        // Each patch is wrapped so a future API change in one area doesn't
-        // prevent the rest of the extension from loading. Better partial
-        // functionality than a fully broken extension.
-        this._safeStep('createParts', () => this._createParts());
-        this._safeStep('patchScreencast', () => this._patchScreencast());
+        // Defer the heavy UI/patch work to an idle callback so the shell startup
+        // (and other extensions like Dash to Dock) can finish first. Without this,
+        // _createParts() builds dozens of St widgets synchronously and visibly
+        // delays the dock from replacing the default GNOME dash on login.
+        this._enableDeferredId = GLib.idle_add(GLib.PRIORITY_LOW, () => {
+            this._enableDeferredId = 0;
 
-        // Force-enable the screencast (video) button.
-        // GNOME 49 has a bug where Gst.init_check(null) crashes the native
-        // screencast service, hiding the cast button even when GStreamer
-        // encoders are available. Since Big Shot provides its own pipelines,
-        // force the button visible so users can switch to video mode.
-        this._safeStep('forceEnableScreencast', () => this._forceEnableScreencast());
+            // Each patch is wrapped so a future API change in one area doesn't
+            // prevent the rest of the extension from loading. Better partial
+            // functionality than a fully broken extension.
+            this._safeStep('createParts', () => this._createParts());
+            this._safeStep('patchScreencast', () => this._patchScreencast());
 
-        // Intercept _saveScreenshot to composite annotations onto the image
-        this._safeStep('patchSaveScreenshot', () => this._patchSaveScreenshot());
+            // Force-enable the screencast (video) button.
+            // GNOME 49 has a bug where Gst.init_check(null) crashes the native
+            // screencast service, hiding the cast button even when GStreamer
+            // encoders are available. Since Big Shot provides its own pipelines,
+            // force the button visible so users can switch to video mode.
+            this._safeStep('forceEnableScreencast', () => this._forceEnableScreencast());
+
+            // Intercept _saveScreenshot to composite annotations onto the image
+            this._safeStep('patchSaveScreenshot', () => this._patchSaveScreenshot());
+
+            return GLib.SOURCE_REMOVE;
+        });
     }
 
     /**
@@ -306,6 +316,14 @@ export default class BigShotExtension extends Extension {
     }
 
     disable() {
+        // Cancel deferred enable if it hasn't fired yet (extension disabled
+        // before the idle callback ran). Without this, the parts/patches would
+        // be created against a screenshotUI we no longer track.
+        if (this._enableDeferredId) {
+            GLib.source_remove(this._enableDeferredId);
+            this._enableDeferredId = 0;
+        }
+
         // Clean up pause/resume state
         this._recordingState = 'idle';
         this._recordingContext = null;
