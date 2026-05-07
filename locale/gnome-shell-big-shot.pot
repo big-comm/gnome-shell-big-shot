@@ -92,6 +92,9 @@ msgstr  ""
 msgid   "Blur"
 msgstr  ""
 
+msgid   "Invert Colors"
+msgstr  ""
+
 msgid   "Number"
 msgstr  ""
 

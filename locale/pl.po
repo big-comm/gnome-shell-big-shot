@@ -15,6 +15,18 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: attranslate\n"
+#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/drawing/overlay.js:74
+msgid "Drawing canvas"
+msgstr "Płótno rysunkowe"
+#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/drawing/overlay.js:495
+msgid "Text…"
+msgstr "Tekst…"
+#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/drawing/overlay.js:498
+msgid "Annotation text"
+msgstr "Tekst adnotacji"
+#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/drawing/overlay.js:510
+msgid "Confirm"
+msgstr "Potwierdź"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:493
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:506
 msgid "Screenshot taken"
@@ -33,18 +45,9 @@ msgstr "Zrzut ekranu skopiowany"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:789
 msgid "Save Screenshot"
 msgstr "Zapisz zrzut ekranu"
-#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/drawing/overlay.js:74
-msgid "Drawing canvas"
-msgstr "Płótno rysunkowe"
-#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/drawing/overlay.js:495
-msgid "Text…"
-msgstr "Tekst…"
-#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/drawing/overlay.js:498
-msgid "Annotation text"
-msgstr "Tekst adnotacji"
-#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/drawing/overlay.js:510
-msgid "Confirm"
-msgstr "Potwierdź"
+#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partdownsize.js:18
+msgid "Recording resolution"
+msgstr "Rozdzielczość nagrywania"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partaudio.js:96
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partaudio.js:153
 msgid "Desktop"
@@ -59,24 +62,12 @@ msgstr "Nagrywaj dźwięk pulpitu"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partaudio.js:163
 msgid "Record Microphone"
 msgstr "Nagrywanie mikrofonu"
-#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partgradient.js:92
-msgid "Gradient Angle"
-msgstr "Kąt gradientu"
-#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partgradient.js:105
-msgid "Border Radius"
-msgstr "Promień obramowania"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partwebcam.js:88
 msgid "Webcam"
 msgstr "Kamera internetowa"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partwebcam.js:113
 msgid "Webcam Overlay"
 msgstr "Nakładka z kamery internetowej"
-#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partframerate.js:18
-msgid "Frames per second"
-msgstr "Klatek na sekundę"
-#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partdownsize.js:18
-msgid "Recording resolution"
-msgstr "Rozdzielczość nagrywania"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:35
 msgid "Select / Move"
 msgstr "Wybierz / Przenieś"
@@ -108,6 +99,9 @@ msgstr "Cenzura"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:44
 msgid "Blur"
 msgstr "Rozmycie"
+#: NEEDS WORK
+msgid "Invert Colors"
+msgstr "Odwróć kolory"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:45
 msgid "Number"
 msgstr "Numer"
@@ -225,3 +219,12 @@ msgstr "Użyj najlepszego dostępnego kodeka"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:1297
 msgid "Video codec"
 msgstr "Kodek wideo"
+#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partgradient.js:92
+msgid "Gradient Angle"
+msgstr "Kąt gradientu"
+#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partgradient.js:105
+msgid "Border Radius"
+msgstr "Promień obramowania"
+#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partframerate.js:18
+msgid "Frames per second"
+msgstr "Klatek na sekundę"

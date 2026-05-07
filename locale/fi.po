@@ -15,6 +15,18 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: attranslate\n"
+#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/drawing/overlay.js:74
+msgid "Drawing canvas"
+msgstr "Piirtoalusta"
+#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/drawing/overlay.js:495
+msgid "Text…"
+msgstr "Teksti…"
+#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/drawing/overlay.js:498
+msgid "Annotation text"
+msgstr "Kommenttiteksti"
+#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/drawing/overlay.js:510
+msgid "Confirm"
+msgstr "Vahvista"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:493
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:506
 msgid "Screenshot taken"
@@ -33,18 +45,9 @@ msgstr "Kuvakaappaus kopioitu"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:789
 msgid "Save Screenshot"
 msgstr "Tallenna kuvakaappaus"
-#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/drawing/overlay.js:74
-msgid "Drawing canvas"
-msgstr "Piirtoalusta"
-#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/drawing/overlay.js:495
-msgid "Text…"
-msgstr "Teksti…"
-#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/drawing/overlay.js:498
-msgid "Annotation text"
-msgstr "Kommenttiteksti"
-#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/drawing/overlay.js:510
-msgid "Confirm"
-msgstr "Vahvista"
+#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partdownsize.js:18
+msgid "Recording resolution"
+msgstr "Tallennusresoluutio"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partaudio.js:96
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partaudio.js:153
 msgid "Desktop"
@@ -59,24 +62,12 @@ msgstr "Tallenna työpöydän ääni"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partaudio.js:163
 msgid "Record Microphone"
 msgstr "Tallenna mikrofoni"
-#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partgradient.js:92
-msgid "Gradient Angle"
-msgstr "Liukuvärin kulma"
-#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partgradient.js:105
-msgid "Border Radius"
-msgstr "Reunakulma"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partwebcam.js:88
 msgid "Webcam"
 msgstr "Webkamera"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partwebcam.js:113
 msgid "Webcam Overlay"
 msgstr "Verkkokameran peittokuva"
-#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partframerate.js:18
-msgid "Frames per second"
-msgstr "Kuvakehyksiä sekunnissa"
-#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partdownsize.js:18
-msgid "Recording resolution"
-msgstr "Tallennusresoluutio"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:35
 msgid "Select / Move"
 msgstr "Valitse / Siirrä"
@@ -108,6 +99,9 @@ msgstr "Sensuuri"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:44
 msgid "Blur"
 msgstr "Sume"
+#: NEEDS WORK
+msgid "Invert Colors"
+msgstr "Värit käänteiset"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:45
 msgid "Number"
 msgstr "Numero"
@@ -225,3 +219,12 @@ msgstr "Käytä parasta saatavilla olevaa koodekkia"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:1297
 msgid "Video codec"
 msgstr "Videokoodekki"
+#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partgradient.js:92
+msgid "Gradient Angle"
+msgstr "Liukuvärin kulma"
+#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partgradient.js:105
+msgid "Border Radius"
+msgstr "Reunakulma"
+#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partframerate.js:18
+msgid "Frames per second"
+msgstr "Kuvakehyksiä sekunnissa"

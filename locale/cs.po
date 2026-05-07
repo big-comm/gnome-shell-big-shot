@@ -15,6 +15,18 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: attranslate\n"
+#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/drawing/overlay.js:74
+msgid "Drawing canvas"
+msgstr "Kreslicí plátno"
+#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/drawing/overlay.js:495
+msgid "Text…"
+msgstr "Text…"
+#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/drawing/overlay.js:498
+msgid "Annotation text"
+msgstr "Text poznámky"
+#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/drawing/overlay.js:510
+msgid "Confirm"
+msgstr "Potvrdit"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:493
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:506
 msgid "Screenshot taken"
@@ -33,18 +45,9 @@ msgstr "Snímek obrazovky zkopírován"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:789
 msgid "Save Screenshot"
 msgstr "Uložit snímek obrazovky"
-#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/drawing/overlay.js:74
-msgid "Drawing canvas"
-msgstr "Kreslicí plátno"
-#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/drawing/overlay.js:495
-msgid "Text…"
-msgstr "Text…"
-#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/drawing/overlay.js:498
-msgid "Annotation text"
-msgstr "Text poznámky"
-#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/drawing/overlay.js:510
-msgid "Confirm"
-msgstr "Potvrdit"
+#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partdownsize.js:18
+msgid "Recording resolution"
+msgstr "Rozlišení nahrávání"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partaudio.js:96
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partaudio.js:153
 msgid "Desktop"
@@ -59,24 +62,12 @@ msgstr "Nahrávat zvuk z plochy"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partaudio.js:163
 msgid "Record Microphone"
 msgstr "Nahrávat mikrofon"
-#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partgradient.js:92
-msgid "Gradient Angle"
-msgstr "Úhel přechodu"
-#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partgradient.js:105
-msgid "Border Radius"
-msgstr "Poloměr okraje"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partwebcam.js:88
 msgid "Webcam"
 msgstr "Webkamera"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partwebcam.js:113
 msgid "Webcam Overlay"
 msgstr "Překryv webkamery"
-#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partframerate.js:18
-msgid "Frames per second"
-msgstr "Snímky za sekundu"
-#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partdownsize.js:18
-msgid "Recording resolution"
-msgstr "Rozlišení nahrávání"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:35
 msgid "Select / Move"
 msgstr "Vybrat / Přesunout"
@@ -108,6 +99,9 @@ msgstr "Cenzurovat"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:44
 msgid "Blur"
 msgstr "Rozostření"
+#: NEEDS WORK
+msgid "Invert Colors"
+msgstr "Invertovat barvy"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:45
 msgid "Number"
 msgstr "Číslo"
@@ -225,3 +219,12 @@ msgstr "Použijte nejlepší dostupný kodek"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:1297
 msgid "Video codec"
 msgstr "Video kodek"
+#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partgradient.js:92
+msgid "Gradient Angle"
+msgstr "Úhel přechodu"
+#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partgradient.js:105
+msgid "Border Radius"
+msgstr "Poloměr okraje"
+#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partframerate.js:18
+msgid "Frames per second"
+msgstr "Snímky za sekundu"

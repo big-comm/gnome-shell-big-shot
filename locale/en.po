@@ -93,6 +93,9 @@ msgstr "Censor"
 msgid "Blur"
 msgstr "Blur"
 
+msgid "Invert Colors"
+msgstr "Invert Colors"
+
 msgid "Number"
 msgstr "Number"
 
