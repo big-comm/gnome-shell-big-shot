@@ -20,6 +20,7 @@ import * as Screenshot from 'resource:///org/gnome/shell/ui/screenshot.js';
 // Parts
 import { PartToolbar } from './parts/parttoolbar.js';
 import { PartAnnotation } from './parts/partannotation.js';
+import { PartMagnifier } from './parts/partmagnifier.js';
 
 import { PartAudio } from './parts/partaudio.js';
 import { PartFramerate } from './parts/partframerate.js';
@@ -974,6 +975,10 @@ export default class BigShotExtension extends Extension {
         // Annotation — connects toolbar to drawing overlay
         this._annotation = new PartAnnotation(ui, ext);
         this._parts.push(this._annotation);
+
+        // Magnifier — zoom pop-up on shift key
+        this._magnifier = new PartMagnifier(ui, ext);
+        this._parts.push(this._magnifier);
 
         // Wire toolbar tool changes to overlay reactivity
         this._toolbar.onToolChanged((toolId) => {
