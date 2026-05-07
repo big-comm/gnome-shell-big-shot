@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
-export const APP_VERSION = '26.6.0';
+export const APP_VERSION = '26.6.1';
 
 // Top-level imports are intentionally minimal. Anything imported here runs
 // synchronously inside GNOME's serial extension load loop and delays every
@@ -25,6 +25,7 @@ let cairo = null;
 let MessageTray = null;
 let PartToolbar = null;
 let PartAnnotation = null;
+let PartMagnifier = null;
 let PartAudio = null;
 let PartFramerate = null;
 let PartDownsize = null;
@@ -59,7 +60,7 @@ const heavyDepsReady = (async () => {
     const [
         gioMod, shellMod, stMod, pixbufMod, cairoMod,
         msgTrayMod,
-        toolbarMod, annotationMod, audioMod, framerateMod,
+        toolbarMod, annotationMod, magnifierMod, audioMod, framerateMod,
         downsizeMod, indicatorMod, quickstopMod, webcamMod,
     ] = await Promise.all([
         import('gi://Gio'),
@@ -70,6 +71,7 @@ const heavyDepsReady = (async () => {
         import('resource:///org/gnome/shell/ui/messageTray.js'),
         import('./parts/parttoolbar.js'),
         import('./parts/partannotation.js'),
+        import('./parts/partmagnifier.js'),
         import('./parts/partaudio.js'),
         import('./parts/partframerate.js'),
         import('./parts/partdownsize.js'),
@@ -86,6 +88,7 @@ const heavyDepsReady = (async () => {
     MessageTray = msgTrayMod;
     PartToolbar = toolbarMod.PartToolbar;
     PartAnnotation = annotationMod.PartAnnotation;
+    PartMagnifier = magnifierMod.PartMagnifier;
     PartAudio = audioMod.PartAudio;
     PartFramerate = framerateMod.PartFramerate;
     PartDownsize = downsizeMod.PartDownsize;
@@ -1082,6 +1085,10 @@ export default class BigShotExtension extends Extension {
         this._annotation = new PartAnnotation(ui, ext);
         this._parts.push(this._annotation);
 
+        // Magnifier — zoom pop-up on shift key
+        this._magnifier = new PartMagnifier(ui, ext);
+        this._parts.push(this._magnifier);
+
         // Wire toolbar tool changes to overlay reactivity
         this._toolbar.onToolChanged((toolId) => {
             // Toggle drawing overlay reactivity: only capture events when
@@ -1274,12 +1281,128 @@ export default class BigShotExtension extends Extension {
         // Patch _startScreencast so we can mark recording state BEFORE
         // the UI calls close(true), allowing the notify::visible handler
         // to reparent the webcam overlay instead of destroying it.
+        // Also: native _startScreencast doesn't handle window mode; intercept
+        // when _windowButton is checked and convert to ScreencastAreaAsync
+        // using the window's screen rect.
         this._origStartScreencast = screenshotUI._startScreencast?.bind(screenshotUI);
         if (this._origStartScreencast) {
             screenshotUI._startScreencast = function (...args) {
                 ext._recordingState = 'starting';
+                if (this._windowButton?.checked) {
+                    return ext._startWindowScreencast(this);
+                }
                 return ext._origStartScreencast(...args);
             };
+        }
+
+        // Native sets _windowButton.reactive = false in two places when
+        // entering screencast mode:
+        //   1. _onCastButtonToggled (toggle handler)
+        //   2. _syncWindowButtonSensitivity (called from open/refresh paths)
+        // Patch both so the window button stays usable during screencast.
+        this._origSyncWindowButtonSensitivity =
+            screenshotUI._syncWindowButtonSensitivity?.bind(screenshotUI);
+        if (this._origSyncWindowButtonSensitivity) {
+            screenshotUI._syncWindowButtonSensitivity = function () {
+                const windows =
+                    this._windowSelectors.flatMap(selector => selector.windows());
+                this._windowButton.reactive =
+                    Main.sessionMode.hasWindows && windows.length > 0;
+            };
+        }
+
+        // Native connects _onCastButtonToggled via .bind() at construction
+        // time, so monkey-patching the method has no effect on the live
+        // signal handler. Instead, connect our own notify::checked listener
+        // that runs after the native one and reverts reactive=false — but
+        // only when there are actually windows to record (matches the
+        // disabled state shown in screenshot mode when no windows exist).
+        const castButton = screenshotUI._castButton;
+        if (castButton) {
+            const refreshWindowReactive = () => {
+                if (!castButton.checked) return;
+                screenshotUI._syncWindowButtonSensitivity?.();
+            };
+            this._castButtonReactivityId = castButton.connect(
+                'notify::checked', refreshWindowReactive);
+            refreshWindowReactive();
+        }
+    }
+
+    /**
+     * Start a screencast of the currently selected window by converting it
+     * to a ScreencastAreaAsync call with the window's screen rect.
+     * Native GNOME 50 _startScreencast bails out when window mode is active
+     * (TODO comment in shell source), so we provide the implementation here.
+     */
+    async _startWindowScreencast(ui) {
+        const item = ui._windowSelectors
+            ?.flatMap(s => s.windows())
+            ?.find(win => win.checked);
+        if (!item) {
+            this._recordingState = 'idle';
+            return;
+        }
+
+        // UIWindowSelectorWindow exposes boundingBox = window.get_frame_rect()
+        // (logical screen coordinates), set at construction. The MetaWindow
+        // itself isn't kept as a property by GNOME 50.
+        const rect = item.boundingBox;
+        if (!rect || rect.width <= 0 || rect.height <= 0) {
+            console.warn('[Big Shot] Window screencast: invalid bounding box');
+            this._recordingState = 'idle';
+            return;
+        }
+        const proxy = ui._screencastProxy;
+        if (!proxy || typeof proxy.ScreencastAreaAsync !== 'function') {
+            console.warn('[Big Shot] Window screencast: proxy unavailable');
+            this._recordingState = 'idle';
+            return;
+        }
+
+        const drawCursor = ui._cursor?.visible ?? true;
+        // Match native filename layout exactly so gnome-shell-screencast
+        // expands %d/%t and places the file in ~/Videos/Screencasts.
+        const filePath = GLib.build_filenamev([
+            _('Screencasts'),
+            _('Screencast From %d %t'),
+        ]);
+        const options = { 'draw-cursor': new GLib.Variant('b', drawCursor) };
+
+        // Set in-progress BEFORE the async call so the indicator picks it up
+        // (mirrors native _startScreencast).
+        if (typeof ui._setScreencastInProgress === 'function')
+            ui._setScreencastInProgress(true);
+        else
+            ui._screencastInProgress = true;
+        ui._screencastStarting = true;
+
+        // Close the UI immediately so the fade-out doesn't get recorded.
+        try { ui.close(true); } catch (_e) { /* */ }
+
+        try {
+            const [success, path] = await proxy.ScreencastAreaAsync(
+                rect.x, rect.y, rect.width, rect.height, filePath, options
+            );
+            if (success) {
+                ui._screencastPath = path;
+            } else {
+                this._recordingState = 'idle';
+                if (typeof ui._setScreencastInProgress === 'function')
+                    ui._setScreencastInProgress(false);
+                else
+                    ui._screencastInProgress = false;
+                console.warn('[Big Shot] Window screencast: service returned failure');
+            }
+        } catch (e) {
+            this._recordingState = 'idle';
+            if (typeof ui._setScreencastInProgress === 'function')
+                ui._setScreencastInProgress(false);
+            else
+                ui._screencastInProgress = false;
+            console.error(`[Big Shot] Window screencast error: ${e.message}`);
+        } finally {
+            delete ui._screencastStarting;
         }
     }
 
@@ -1298,11 +1421,18 @@ export default class BigShotExtension extends Extension {
             ui.open = this._origOpen;
         if (ui && this._origStartScreencast)
             ui._startScreencast = this._origStartScreencast;
+        if (ui && this._origSyncWindowButtonSensitivity)
+            ui._syncWindowButtonSensitivity = this._origSyncWindowButtonSensitivity;
+        if (ui && this._castButtonReactivityId && ui._castButton) {
+            try { ui._castButton.disconnect(this._castButtonReactivityId); } catch (_e) { /* */ }
+        }
 
         this._origScreencast = null;
         this._origScreencastArea = null;
         this._origOpen = null;
         this._origStartScreencast = null;
+        this._origSyncWindowButtonSensitivity = null;
+        this._castButtonReactivityId = 0;
     }
 
     async _screencastCommonAsync(filePath, options, originalMethod) {
