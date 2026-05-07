@@ -10,6 +10,8 @@
 import Pango from 'gi://Pango';
 import PangoCairo from 'gi://PangoCairo';
 import cairo from 'gi://cairo';
+import GdkPixbuf from 'gi://GdkPixbuf';
+import GLib from 'gi://GLib';
 
 // =============================================================================
 // DRAWING MODES
@@ -30,6 +32,7 @@ export const DrawingMode = Object.freeze({
     NUMBER_ARROW:   'NUMBER_ARROW',
     NUMBER_POINTER: 'NUMBER_POINTER',
     ERASER:         'ERASER',
+    INVERT:         'INVERT',
 });
 
 // =============================================================================
@@ -931,6 +934,96 @@ export class BlurAction extends RectAction {
 }
 
 // =============================================================================
+// INVERT — Invert colors of a rectangular region
+// =============================================================================
+
+export class InvertAction extends RectAction {
+    /**
+     * Preview draw — uses the cached inverted pixbuf for real preview,
+     * or falls back to a visual overlay during drag.
+     */
+    draw(cr, toWidget, _scale) {
+        // Visual overlay during drag (cyan/magenta tint)
+        // Real inversion happens in drawReal() at save time.
+        let [x1, y1] = toWidget(...this.start);
+        let [x2, y2] = toWidget(...this.end);
+
+        const x = Math.min(x1, x2);
+        const y = Math.min(y1, y2);
+        const w = Math.abs(x2 - x1);
+        const h = Math.abs(y2 - y1);
+
+        if (w < 1 || h < 1) return;
+
+        cr.save();
+        // Semi-transparent inverted-look overlay
+        cr.rectangle(x, y, w, h);
+        cr.setSourceRGBA(1.0, 1.0, 1.0, 0.5);
+        cr.fillPreserve();
+        cr.clip();
+
+        // Diagonal lines to indicate "invert" effect during drag
+        cr.setSourceRGBA(0.0, 0.0, 0.0, 0.3);
+        cr.setLineWidth(1.0);
+        const spacing = 6;
+        const maxDim = w + h;
+        for (let d = -maxDim; d < maxDim; d += spacing) {
+            cr.moveTo(x + d, y);
+            cr.lineTo(x + d + h, y + h);
+        }
+        cr.stroke();
+        cr.restore();
+    }
+
+    /**
+     * Apply real color inversion on GdkPixbuf at save time.
+     * For each pixel in the region: R' = 255 - R, G' = 255 - G, B' = 255 - B.
+     * Alpha channel is preserved.
+     */
+    drawReal(pixbuf, GdkPixbuf, GLib, toWidget, _scale) {
+        let [x1, y1] = toWidget(...this.start);
+        let [x2, y2] = toWidget(...this.end);
+
+        const imgW = pixbuf.get_width();
+        const imgH = pixbuf.get_height();
+
+        const x = Math.round(Math.max(0, Math.min(Math.min(x1, x2), imgW - 1)));
+        const y = Math.round(Math.max(0, Math.min(Math.min(y1, y2), imgH - 1)));
+        const w = Math.round(Math.min(Math.abs(x2 - x1), imgW - x));
+        const h = Math.round(Math.min(Math.abs(y2 - y1), imgH - y));
+
+        if (w < 2 || h < 2) return pixbuf;
+
+        const byteData = pixbuf.read_pixel_bytes();
+        const data = byteData.get_data();
+        const rowstride = pixbuf.get_rowstride();
+        const nChannels = pixbuf.get_n_channels();
+
+        // Make a mutable copy of all pixel data
+        const arr = new Uint8Array(data.length);
+        for (let i = 0; i < data.length; i++) arr[i] = data[i];
+
+        // Invert RGB channels in the selected region
+        for (let py = y; py < y + h && py < imgH; py++) {
+            for (let px = x; px < x + w && px < imgW; px++) {
+                const off = py * rowstride + px * nChannels;
+                arr[off]     = 255 - arr[off];     // R
+                arr[off + 1] = 255 - arr[off + 1]; // G
+                arr[off + 2] = 255 - arr[off + 2]; // B
+                // Alpha (arr[off + 3]) is preserved
+            }
+        }
+
+        const newBytes = GLib.Bytes.new(arr);
+        return GdkPixbuf.Pixbuf.new_from_bytes(
+            newBytes, pixbuf.get_colorspace(),
+            pixbuf.get_has_alpha(), pixbuf.get_bits_per_sample(),
+            imgW, imgH, rowstride
+        );
+    }
+}
+
+// =============================================================================
 // NUMBER STAMP
 // =============================================================================
 
@@ -1207,6 +1300,8 @@ export function createAction(mode, data, options) {
             return new CensorAction(data.start, data.end, false, options);
         case DrawingMode.BLUR:
             return new BlurAction(data.start, data.end, false, options);
+        case DrawingMode.INVERT:
+            return new InvertAction(data.start, data.end, false, options);
         case DrawingMode.NUMBER:
             return new NumberStampAction(data.position, data.number, options);
         case DrawingMode.NUMBER_ARROW:
