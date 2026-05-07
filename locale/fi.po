@@ -45,6 +45,12 @@ msgstr "Kuvakaappaus kopioitu"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:789
 msgid "Save Screenshot"
 msgstr "Tallenna kuvakaappaus"
+#: NEEDS WORK
+msgid "Screencasts"
+msgstr "Näytön tallenteet"
+#: NEEDS WORK
+msgid "Screencast From %d %t"
+msgstr "Näytön tallennus %d %t"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partdownsize.js:18
 msgid "Recording resolution"
 msgstr "Tallennusresoluutio"

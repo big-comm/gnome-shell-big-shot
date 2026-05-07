@@ -45,6 +45,12 @@ msgstr "Ekraanipilt kopeeritud"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:789
 msgid "Save Screenshot"
 msgstr "Salvesta ekraanipilt"
+#: NEEDS WORK
+msgid "Screencasts"
+msgstr "Ekraanisalvestused"
+#: NEEDS WORK
+msgid "Screencast From %d %t"
+msgstr "Screencast alates %d %t"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partdownsize.js:18
 msgid "Recording resolution"
 msgstr "Salvestuse eraldusvõime"

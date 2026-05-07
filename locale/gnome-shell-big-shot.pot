@@ -41,6 +41,12 @@ msgstr  ""
 msgid   "Save Screenshot"
 msgstr  ""
 
+msgid   "Screencasts"
+msgstr  ""
+
+msgid   "Screencast From %d %t"
+msgstr  ""
+
 msgid   "Recording resolution"
 msgstr  ""
 

@@ -45,6 +45,12 @@ msgstr "Screenshot gekopieerd"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:789
 msgid "Save Screenshot"
 msgstr "Screenshot opslaan"
+#: NEEDS WORK
+msgid "Screencasts"
+msgstr "Screencasts"
+#: NEEDS WORK
+msgid "Screencast From %d %t"
+msgstr "Screencast Van %d %t"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partdownsize.js:18
 msgid "Recording resolution"
 msgstr "Opname-resolutie"

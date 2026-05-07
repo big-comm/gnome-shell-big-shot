@@ -45,6 +45,12 @@ msgstr "スクリーンショットをコピーしました"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:789
 msgid "Save Screenshot"
 msgstr "スクリーンショットを保存"
+#: NEEDS WORK
+msgid "Screencasts"
+msgstr "スクリーンキャスト"
+#: NEEDS WORK
+msgid "Screencast From %d %t"
+msgstr "%d %t からのスクリーンキャスト"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partdownsize.js:18
 msgid "Recording resolution"
 msgstr "録画解像度"

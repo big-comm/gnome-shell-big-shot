@@ -45,6 +45,12 @@ msgstr "스크린샷이 복사되었습니다"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:789
 msgid "Save Screenshot"
 msgstr "스크린샷 저장"
+#: NEEDS WORK
+msgid "Screencasts"
+msgstr "스크린캐스트"
+#: NEEDS WORK
+msgid "Screencast From %d %t"
+msgstr "%d %t에서 스크린캐스트"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partdownsize.js:18
 msgid "Recording resolution"
 msgstr "녹화 해상도"

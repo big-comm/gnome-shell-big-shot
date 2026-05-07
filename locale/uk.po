@@ -45,6 +45,12 @@ msgstr "Знімок екрана скопійовано"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:789
 msgid "Save Screenshot"
 msgstr "Зберегти знімок екрана"
+#: NEEDS WORK
+msgid "Screencasts"
+msgstr "Screencasts"
+#: NEEDS WORK
+msgid "Screencast From %d %t"
+msgstr "Запис екрану з %d %t"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partdownsize.js:18
 msgid "Recording resolution"
 msgstr "Роздільна здатність запису"

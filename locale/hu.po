@@ -45,6 +45,12 @@ msgstr "Képernyőkép másolva"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:789
 msgid "Save Screenshot"
 msgstr "Képernyőkép mentése"
+#: NEEDS WORK
+msgid "Screencasts"
+msgstr "Képernyőfelvételek"
+#: NEEDS WORK
+msgid "Screencast From %d %t"
+msgstr "Képernyőfelvétel %d %t-tól"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partdownsize.js:18
 msgid "Recording resolution"
 msgstr "Felvételi felbontás"

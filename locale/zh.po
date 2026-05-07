@@ -45,6 +45,12 @@ msgstr "截图已复制"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:789
 msgid "Save Screenshot"
 msgstr "保存截图"
+#: NEEDS WORK
+msgid "Screencasts"
+msgstr "屏幕录像"
+#: NEEDS WORK
+msgid "Screencast From %d %t"
+msgstr "从 %d %t 的屏幕录像"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partdownsize.js:18
 msgid "Recording resolution"
 msgstr "录制分辨率"

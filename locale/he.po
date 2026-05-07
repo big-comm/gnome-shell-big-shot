@@ -45,6 +45,12 @@ msgstr "צילום מסך הועתק"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:789
 msgid "Save Screenshot"
 msgstr "שמור צילום מסך"
+#: NEEDS WORK
+msgid "Screencasts"
+msgstr "הקלטות מסך"
+#: NEEDS WORK
+msgid "Screencast From %d %t"
+msgstr "הקלטת מסך מ-%d %t"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partdownsize.js:18
 msgid "Recording resolution"
 msgstr "רזולוציית הקלטה"

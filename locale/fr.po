@@ -43,6 +43,12 @@ msgstr "Capture d’écran copiée"
 msgid "Save Screenshot"
 msgstr "Enregistrer la capture d’écran"
 #: NEEDS WORK
+msgid "Screencasts"
+msgstr "Captures d'écran"
+#: NEEDS WORK
+msgid "Screencast From %d %t"
+msgstr "Screencast de %d %t"
+#: NEEDS WORK
 msgid "Recording resolution"
 msgstr "Résolution d'enregistrement"
 #: NEEDS WORK

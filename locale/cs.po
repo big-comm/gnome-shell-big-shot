@@ -45,6 +45,12 @@ msgstr "Snímek obrazovky zkopírován"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:789
 msgid "Save Screenshot"
 msgstr "Uložit snímek obrazovky"
+#: NEEDS WORK
+msgid "Screencasts"
+msgstr "Screencasty"
+#: NEEDS WORK
+msgid "Screencast From %d %t"
+msgstr "Snímek obrazovky z %d %t"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partdownsize.js:18
 msgid "Recording resolution"
 msgstr "Rozlišení nahrávání"

@@ -45,6 +45,12 @@ msgstr "Captura de pantalla copiada"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:789
 msgid "Save Screenshot"
 msgstr "Guardar captura de pantalla"
+#: NEEDS WORK
+msgid "Screencasts"
+msgstr "Grabaciones de pantalla"
+#: NEEDS WORK
+msgid "Screencast From %d %t"
+msgstr "Grabación de pantalla desde %d %t"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partdownsize.js:18
 msgid "Recording resolution"
 msgstr "Resolución de grabación"
