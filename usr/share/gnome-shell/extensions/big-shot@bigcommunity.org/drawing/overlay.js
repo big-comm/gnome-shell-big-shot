@@ -20,6 +20,7 @@ import {
     createAction,
     CensorAction,
     BlurAction,
+    InvertAction,
     TextAction,
     NumberStampAction,
     NumberArrowAction,
@@ -36,6 +37,7 @@ const TOOL_TO_MODE = {
     'highlight': DrawingMode.HIGHLIGHTER,
     'censor': DrawingMode.CENSOR,
     'blur': DrawingMode.BLUR,
+    'invert': DrawingMode.INVERT,
     'number': DrawingMode.NUMBER,
     'number-arrow': DrawingMode.NUMBER_ARROW,
     'number-pointer': DrawingMode.NUMBER_POINTER,
@@ -362,6 +364,11 @@ export class DrawingOverlay {
                     start: this._startPoint, end: [ix, iy]
                 }, options);
                 break;
+            case DrawingMode.INVERT:
+                action = createAction(DrawingMode.INVERT, {
+                    start: this._startPoint, end: [ix, iy]
+                }, options);
+                break;
             case DrawingMode.TEXT:
                 // Show text entry popover instead of hardcoded text
                 this._showTextPopover(this._startPoint, options);
@@ -409,7 +416,7 @@ export class DrawingOverlay {
             this._undoStack = []; // Clear redo stack on new action
 
             // Generate real preview for effect actions (censor/blur)
-            if (action instanceof CensorAction || action instanceof BlurAction) {
+            if (action instanceof CensorAction || action instanceof BlurAction || action instanceof InvertAction) {
                 this._generateEffectPreview(action).catch(e =>
                     console.error(`[Big Shot] Preview generation failed: ${e.message}`)
                 );
@@ -470,6 +477,7 @@ export class DrawingOverlay {
             [Clutter.KEY_8]: 'censor',
             [Clutter.KEY_9]: 'number',
             [Clutter.KEY_b]: 'blur',
+            [Clutter.KEY_i]: 'invert',
             [Clutter.KEY_e]: 'eraser',
         };
 
@@ -685,6 +693,9 @@ export class DrawingOverlay {
                     break;
                 case DrawingMode.BLUR:
                     tempAction = createAction(DrawingMode.BLUR, { start: this._startPoint, end }, options);
+                    break;
+                case DrawingMode.INVERT:
+                    tempAction = createAction(DrawingMode.INVERT, { start: this._startPoint, end }, options);
                     break;
                 case DrawingMode.NUMBER_ARROW:
                     tempAction = createAction(DrawingMode.NUMBER_ARROW, {

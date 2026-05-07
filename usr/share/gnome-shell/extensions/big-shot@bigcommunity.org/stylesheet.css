@@ -144,3 +144,20 @@
     background-color: rgba(0, 0, 0, 0.3);
     border: 2px solid rgba(255, 255, 255, 0.2);
 }
+
+/* ===== Magnifier / Zoom Lens ===== */
+.big-shot-magnifier-lens {
+    /* Visual is drawn via Cairo mask; the class is a hook for theme overrides. */
+}
+
+.big-shot-magnifier-crosshair {
+    background-color: rgba(255, 50, 50, 0.7);
+}
+
+.big-shot-magnifier-zoom-label {
+    background-color: rgba(0, 0, 0, 0.7);
+    color: #ffffff;
+    font-size: 11px;
+    padding: 2px 6px;
+    border-radius: 4px;
+}

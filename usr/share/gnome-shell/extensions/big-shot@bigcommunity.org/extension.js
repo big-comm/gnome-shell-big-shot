@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
-export const APP_VERSION = '26.5.1';
+export const APP_VERSION = '26.6.0';
 
 // Top-level imports are intentionally minimal. Anything imported here runs
 // synchronously inside GNOME's serial extension load loop and delays every
