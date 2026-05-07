@@ -6,27 +6,93 @@
 
 export const APP_VERSION = '26.5.1';
 
+// Top-level imports are intentionally minimal. Anything imported here runs
+// synchronously inside GNOME's serial extension load loop and delays every
+// other extension's enable() — including Dash to Dock, which in turn lets
+// the vanilla GNOME dash flash on cold-boot login. Heavy modules (Gio,
+// Shell, St, GdkPixbuf, cairo, MessageTray, all parts/*) are loaded inside
+// the `heavyDepsReady` IIFE below, after `startup-complete`, so they don't
+// block the cold-boot path.
 import GLib from 'gi://GLib';
-import Gio from 'gi://Gio';
-import Shell from 'gi://Shell';
-import St from 'gi://St';
-import GdkPixbuf from 'gi://GdkPixbuf';
-import cairo from 'gi://cairo';
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
-import * as MessageTray from 'resource:///org/gnome/shell/ui/messageTray.js';
 import { Extension, gettext as _ } from 'resource:///org/gnome/shell/extensions/extension.js';
-import * as Screenshot from 'resource:///org/gnome/shell/ui/screenshot.js';
 
-// Parts
-import { PartToolbar } from './parts/parttoolbar.js';
-import { PartAnnotation } from './parts/partannotation.js';
+let Gio = null;
+let Shell = null;
+let St = null;
+let GdkPixbuf = null;
+let cairo = null;
+let MessageTray = null;
+let PartToolbar = null;
+let PartAnnotation = null;
+let PartAudio = null;
+let PartFramerate = null;
+let PartDownsize = null;
+let PartIndicator = null;
+let PartQuickStop = null;
+let PartWebcam = null;
 
-import { PartAudio } from './parts/partaudio.js';
-import { PartFramerate } from './parts/partframerate.js';
-import { PartDownsize } from './parts/partdownsize.js';
-import { PartIndicator } from './parts/partindicator.js';
-import { PartQuickStop } from './parts/partquickstop.js';
-import { PartWebcam } from './parts/partwebcam.js';
+/**
+ * Deferred load of every heavy dependency.
+ *
+ * Order matters for cold-boot perf:
+ *   1. Module evaluation finishes immediately (only 3 cheap imports above).
+ *   2. GNOME's serial loader moves on to the next extension without delay.
+ *   3. Dash to Dock's enable() runs and hides the vanilla dash before the
+ *      compositor has a chance to paint a frame with it visible.
+ *   4. After `startup-complete`, this IIFE pulls in the heavy modules in
+ *      parallel — `import()` yields between modules so the main loop stays
+ *      responsive.
+ *
+ * Methods that use these references must `await heavyDepsReady` first.
+ */
+const heavyDepsReady = (async () => {
+    if (Main.layoutManager._startingUp) {
+        await new Promise(resolve => {
+            const id = Main.layoutManager.connect('startup-complete', () => {
+                Main.layoutManager.disconnect(id);
+                resolve();
+            });
+        });
+    }
+
+    const [
+        gioMod, shellMod, stMod, pixbufMod, cairoMod,
+        msgTrayMod,
+        toolbarMod, annotationMod, audioMod, framerateMod,
+        downsizeMod, indicatorMod, quickstopMod, webcamMod,
+    ] = await Promise.all([
+        import('gi://Gio'),
+        import('gi://Shell'),
+        import('gi://St'),
+        import('gi://GdkPixbuf'),
+        import('gi://cairo'),
+        import('resource:///org/gnome/shell/ui/messageTray.js'),
+        import('./parts/parttoolbar.js'),
+        import('./parts/partannotation.js'),
+        import('./parts/partaudio.js'),
+        import('./parts/partframerate.js'),
+        import('./parts/partdownsize.js'),
+        import('./parts/partindicator.js'),
+        import('./parts/partquickstop.js'),
+        import('./parts/partwebcam.js'),
+    ]);
+
+    Gio = gioMod.default;
+    Shell = shellMod.default;
+    St = stMod.default;
+    GdkPixbuf = pixbufMod.default;
+    cairo = cairoMod.default;
+    MessageTray = msgTrayMod;
+    PartToolbar = toolbarMod.PartToolbar;
+    PartAnnotation = annotationMod.PartAnnotation;
+    PartAudio = audioMod.PartAudio;
+    PartFramerate = framerateMod.PartFramerate;
+    PartDownsize = downsizeMod.PartDownsize;
+    PartIndicator = indicatorMod.PartIndicator;
+    PartQuickStop = quickstopMod.PartQuickStop;
+    PartWebcam = webcamMod.PartWebcam;
+})();
 
 // =============================================================================
 // GPU DETECTION (following big-video-converter pattern)
@@ -255,31 +321,51 @@ export default class BigShotExtension extends Extension {
         // NOTE: Pipeline detection moved to lazy — runs on first screencast attempt
         // to avoid blocking enable() with synchronous subprocess calls.
 
-        // Defer the heavy UI/patch work to an idle callback so the shell startup
-        // (and other extensions like Dash to Dock) can finish first. Without this,
-        // _createParts() builds dozens of St widgets synchronously and visibly
-        // delays the dock from replacing the default GNOME dash on login.
+        // Defer the heavy UI/patch work until the shell finishes startup, so
+        // other extensions (Dash to Dock in particular) can replace the default
+        // dash before our synchronous widget construction runs.
+        this._scheduleDeferredEnable();
+    }
+
+    _scheduleDeferredEnable() {
+        // `heavyDepsReady` already waits for `startup-complete` internally,
+        // so we don't need to gate on it again here. Just schedule a low-
+        // priority idle that awaits the lazy import chain and then runs the
+        // patches/parts. Keeping enable() returning fast (synchronous, no
+        // await) is what lets every later extension's enable() run promptly.
         this._enableDeferredId = GLib.idle_add(GLib.PRIORITY_LOW, () => {
             this._enableDeferredId = 0;
-
-            // Each patch is wrapped so a future API change in one area doesn't
-            // prevent the rest of the extension from loading. Better partial
-            // functionality than a fully broken extension.
-            this._safeStep('createParts', () => this._createParts());
-            this._safeStep('patchScreencast', () => this._patchScreencast());
-
-            // Force-enable the screencast (video) button.
-            // GNOME 49 has a bug where Gst.init_check(null) crashes the native
-            // screencast service, hiding the cast button even when GStreamer
-            // encoders are available. Since Big Shot provides its own pipelines,
-            // force the button visible so users can switch to video mode.
-            this._safeStep('forceEnableScreencast', () => this._forceEnableScreencast());
-
-            // Intercept _saveScreenshot to composite annotations onto the image
-            this._safeStep('patchSaveScreenshot', () => this._patchSaveScreenshot());
-
+            this._runDeferredEnable();
             return GLib.SOURCE_REMOVE;
         });
+    }
+
+    async _runDeferredEnable() {
+        try {
+            await heavyDepsReady;
+        } catch (e) {
+            console.error(`[Big Shot] Failed to load deps: ${e.message}\n${e.stack}`);
+            return;
+        }
+
+        // disable() may have run while we were awaiting; bail out if so.
+        if (!this._screenshotUI) return;
+
+        // Each patch is wrapped so a future API change in one area doesn't
+        // prevent the rest of the extension from loading. Better partial
+        // functionality than a fully broken extension.
+        this._safeStep('createParts', () => this._createParts());
+        this._safeStep('patchScreencast', () => this._patchScreencast());
+
+        // Force-enable the screencast (video) button.
+        // GNOME 49 has a bug where Gst.init_check(null) crashes the native
+        // screencast service, hiding the cast button even when GStreamer
+        // encoders are available. Since Big Shot provides its own pipelines,
+        // force the button visible so users can switch to video mode.
+        this._safeStep('forceEnableScreencast', () => this._forceEnableScreencast());
+
+        // Intercept _saveScreenshot to composite annotations onto the image
+        this._safeStep('patchSaveScreenshot', () => this._patchSaveScreenshot());
     }
 
     /**
@@ -318,7 +404,10 @@ export default class BigShotExtension extends Extension {
     disable() {
         // Cancel deferred enable if it hasn't fired yet (extension disabled
         // before the idle callback ran). Without this, the parts/patches would
-        // be created against a screenshotUI we no longer track.
+        // be created against a screenshotUI we no longer track. The async
+        // path inside _runDeferredEnable also bails out if _screenshotUI was
+        // cleared, so racing disable() against the heavyDepsReady await is
+        // safe.
         if (this._enableDeferredId) {
             GLib.source_remove(this._enableDeferredId);
             this._enableDeferredId = 0;

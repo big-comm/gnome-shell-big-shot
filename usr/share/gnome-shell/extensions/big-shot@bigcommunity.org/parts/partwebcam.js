@@ -21,14 +21,21 @@ import { gettext as _ } from 'resource:///org/gnome/shell/extensions/extension.j
 import { PartUI } from './partbase.js';
 import { IconLabelButton, PixelConstraint } from './partaudio.js';
 
+// Top-level await would block this module's evaluation, which in turn delays
+// every extension that loads after big-shot (dash-to-dock among them) and
+// causes the vanilla GNOME dash to flash on cold-boot login. Kick the imports
+// off in the background instead and let consumers `await gstReady` on demand.
 let Gst = null;
 let _GstApp = null;
-try {
-    Gst = (await import('gi://Gst?version=1.0')).default;
-    _GstApp = (await import('gi://GstApp?version=1.0')).default;
-} catch {
-    // GStreamer not available
-}
+const gstReady = (async () => {
+    try {
+        Gst = (await import('gi://Gst?version=1.0')).default;
+        _GstApp = (await import('gi://GstApp?version=1.0')).default;
+        return true;
+    } catch {
+        return false;
+    }
+})();
 
 const WEBCAM_DEFAULT_WIDTH = 320;
 
@@ -197,7 +204,9 @@ export class PartWebcam extends PartUI {
     // Preview lifecycle
     // =========================================================================
 
-    startPreview() {
+    async startPreview() {
+        if (!Gst)
+            await gstReady;
         if (!this._enabled || !Gst || this._pipeline || !this._isCastMode)
             return;
 
@@ -313,8 +322,9 @@ export class PartWebcam extends PartUI {
         this._savedX = this._container.x;
         this._savedY = this._container.y;
         this._ui.remove_child(this._container);
+        // GNOME 50 removed `affectsInputRegion` — passing it throws and
+        // aborts the reparent, breaking drag during recording.
         Main.layoutManager.addTopChrome(this._container, {
-            affectsInputRegion: true,
             trackFullscreen: false,
         });
         this._container.set_position(this._savedX, this._savedY);
