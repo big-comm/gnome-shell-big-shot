@@ -1,0 +1,230 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: big-shot 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: ro\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: attranslate\n"
+
+msgid "Annotation text"
+msgstr "Text de adnotare"
+
+msgid "Arrow"
+msgstr "Săgeată"
+
+msgid "Auto"
+msgstr "Automat"
+
+msgid "Blur"
+msgstr "Estompare"
+
+msgid "Border Radius"
+msgstr "Raza de margine"
+
+msgid "Brush Size"
+msgstr "Dimensiune Pensulă"
+
+msgid "Camera"
+msgstr "Cameră"
+
+msgid "Censor"
+msgstr "Cenzură"
+
+msgid "Checker"
+msgstr "Checker"
+
+msgid "Circle"
+msgstr "Circle"
+
+msgid "Close"
+msgstr "Închide"
+
+msgid "Codec"
+msgstr "Codec"
+
+msgid "Color"
+msgstr "Culoare"
+
+msgid "Confirm"
+msgstr "Confirmare"
+
+msgid "Copy to Clipboard"
+msgstr "Copiază în clipboard"
+
+msgid "Custom"
+msgstr "Personalizat"
+
+msgid "Decrease Size"
+msgstr "Diminuează dimensiunea"
+
+msgid "Desktop"
+msgstr "Desktop"
+
+msgid "Drawing canvas"
+msgstr "Canvas de desenare"
+
+msgid "Edit"
+msgstr "Edita"
+
+msgid "Edit Screenshot"
+msgstr "Editează captura de ecran"
+
+msgid "Eraser"
+msgstr "Ștergător"
+
+msgid "Fill"
+msgstr "Umple"
+
+msgid "Font"
+msgstr "Font"
+
+msgid "Frames per second"
+msgstr "Cadre pe secundă"
+
+msgid "Gradient Angle"
+msgstr "Unghi gradient"
+
+msgid "Hide screenshot panel"
+msgstr "Ascunde panoul de capturi"
+
+msgid "High"
+msgstr "Ridicat"
+
+msgid "Highlighter"
+msgstr "Marcator"
+
+msgid "Increase Size"
+msgstr "Crește dimensiunea"
+
+msgid "Intensity"
+msgstr "Intensitate"
+
+msgid "Line"
+msgstr "Linie"
+
+msgid "Low"
+msgstr "Scăzut"
+
+msgid "Mask"
+msgstr "Mască"
+
+msgid "Medium"
+msgstr "Mediu"
+
+msgid "Mic"
+msgstr "Microfon"
+
+msgid "Neon"
+msgstr "Neon"
+
+msgid "No Fill"
+msgstr "Fără umplere"
+
+msgid "None"
+msgstr "None"
+
+msgid "Number"
+msgstr "Număr"
+
+msgid "Number with Arrow"
+msgstr "Număr cu Săgeată"
+
+msgid "Number with Pointer"
+msgstr "Număr cu Punctator"
+
+msgid "Ornate"
+msgstr "Ornate"
+
+msgid "Oval"
+msgstr "Oval"
+
+msgid "Pen"
+msgstr "Pix"
+
+msgid "Quality"
+msgstr "Calitate"
+
+msgid "Record Desktop Audio"
+msgstr "Înregistrează audio desktop"
+
+msgid "Record Microphone"
+msgstr "Înregistrare microfon"
+
+msgid "Recording quality (bitrate)"
+msgstr "Calitatea înregistrării (bitrate)"
+
+msgid "Recording resolution"
+msgstr "Rezoluția înregistrării"
+
+msgid "Rectangle"
+msgstr "Dreptunghi"
+
+msgid "Redo"
+msgstr "Refă"
+
+msgid "Save As…"
+msgstr "Salvează ca…"
+
+msgid "Save Screenshot"
+msgstr "Salvează captura de ecran"
+
+msgid "Screenshot copied"
+msgstr "Captură de ecran copiată"
+
+msgid "Screenshot from %s"
+msgstr "Captură de ecran de la %s"
+
+msgid "Screenshot taken"
+msgstr "Captură de ecran realizată"
+
+msgid "Screenshots"
+msgstr "Capturi de ecran"
+
+msgid "Select / Move"
+msgstr "Selectați / Mutare"
+
+msgid "Show screenshot panel"
+msgstr "Afișează panoul de capturi"
+
+msgid "Size"
+msgstr "Dimensiune"
+
+msgid "Soft"
+msgstr "Soft"
+
+msgid "Spot"
+msgstr "Spot"
+
+msgid "Text"
+msgstr "Text"
+
+msgid "Text…"
+msgstr "Text…"
+
+msgid "Undo"
+msgstr "Anulează"
+
+msgid "Use best available codec"
+msgstr "Utilizați cel mai bun codec disponibil"
+
+msgid "Video Settings"
+msgstr "Setări video"
+
+msgid "Video codec"
+msgstr "Codec video"
+
+msgid "Webcam"
+msgstr "Cameră web"
+
+msgid "Webcam Overlay"
+msgstr "Suprapunere webcam"
+
+#. TRANSLATORS: Recording filename template.
+#. %d expands to YYYY-MM-DD (date), %t expands to HH-MM-SS (time).
+#. Both placeholders MUST stay literally in the translation.
+msgid "BigShot from %d %t"
+msgstr "BigShot din %d %t"

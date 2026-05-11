@@ -1,0 +1,230 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: big-shot 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: et\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: attranslate\n"
+
+msgid "Annotation text"
+msgstr "Märkustekst"
+
+msgid "Arrow"
+msgstr "Noole"
+
+msgid "Auto"
+msgstr "Automaatne"
+
+msgid "Blur"
+msgstr "Hägu"
+
+msgid "Border Radius"
+msgstr "Serva raadius"
+
+msgid "Brush Size"
+msgstr "Harja suurus"
+
+msgid "Camera"
+msgstr "Kaamera"
+
+msgid "Censor"
+msgstr "Tsenseeri"
+
+msgid "Checker"
+msgstr "Checker"
+
+msgid "Circle"
+msgstr "Circle"
+
+msgid "Close"
+msgstr "Sulge"
+
+msgid "Codec"
+msgstr "Koodek"
+
+msgid "Color"
+msgstr "Värv"
+
+msgid "Confirm"
+msgstr "Kinnita"
+
+msgid "Copy to Clipboard"
+msgstr "Kopeeri lõikelauale"
+
+msgid "Custom"
+msgstr "Kohandatud"
+
+msgid "Decrease Size"
+msgstr "Vähenda suurust"
+
+msgid "Desktop"
+msgstr "Töölaua"
+
+msgid "Drawing canvas"
+msgstr "Joonistuslina"
+
+msgid "Edit"
+msgstr "Redigeeri"
+
+msgid "Edit Screenshot"
+msgstr "Muuda ekraanipilti"
+
+msgid "Eraser"
+msgstr "Kustutaja"
+
+msgid "Fill"
+msgstr "Täida"
+
+msgid "Font"
+msgstr "Font"
+
+msgid "Frames per second"
+msgstr "Kaadreid sekundis"
+
+msgid "Gradient Angle"
+msgstr "Gradendi nurk"
+
+msgid "Hide screenshot panel"
+msgstr "Peida ekraanipiltide paneel"
+
+msgid "High"
+msgstr "Kõrge"
+
+msgid "Highlighter"
+msgstr "Markija"
+
+msgid "Increase Size"
+msgstr "Suurenda suurust"
+
+msgid "Intensity"
+msgstr "Intensiivsus"
+
+msgid "Line"
+msgstr "Rida"
+
+msgid "Low"
+msgstr "Madal"
+
+msgid "Mask"
+msgstr "Mask"
+
+msgid "Medium"
+msgstr "Keskmine"
+
+msgid "Mic"
+msgstr "Mikrofon"
+
+msgid "Neon"
+msgstr "Neon"
+
+msgid "No Fill"
+msgstr "Täitmist pole"
+
+msgid "None"
+msgstr "None"
+
+msgid "Number"
+msgstr "Number"
+
+msgid "Number with Arrow"
+msgstr "Arvuga noolega"
+
+msgid "Number with Pointer"
+msgstr "Number koos näidikuga"
+
+msgid "Ornate"
+msgstr "Ornate"
+
+msgid "Oval"
+msgstr "Oval"
+
+msgid "Pen"
+msgstr "Pliiats"
+
+msgid "Quality"
+msgstr "Kvaliteet"
+
+msgid "Record Desktop Audio"
+msgstr "Salvesta töölaua heli"
+
+msgid "Record Microphone"
+msgstr "Salvesta mikrofon"
+
+msgid "Recording quality (bitrate)"
+msgstr "Salvestuse kvaliteet (bitikiirus)"
+
+msgid "Recording resolution"
+msgstr "Salvestuse eraldusvõime"
+
+msgid "Rectangle"
+msgstr "Ristkülik"
+
+msgid "Redo"
+msgstr "Tee uuesti"
+
+msgid "Save As…"
+msgstr "Salvesta nimega…"
+
+msgid "Save Screenshot"
+msgstr "Salvesta ekraanipilt"
+
+msgid "Screenshot copied"
+msgstr "Ekraanipilt kopeeritud"
+
+msgid "Screenshot from %s"
+msgstr "Ekraanipilt %s"
+
+msgid "Screenshot taken"
+msgstr "Ekraanipilt tehtud"
+
+msgid "Screenshots"
+msgstr "Ekraanipildid"
+
+msgid "Select / Move"
+msgstr "Vali / Liiguta"
+
+msgid "Show screenshot panel"
+msgstr "Näita ekraanipiltide paneeli"
+
+msgid "Size"
+msgstr "Suurus"
+
+msgid "Soft"
+msgstr "Soft"
+
+msgid "Spot"
+msgstr "Spot"
+
+msgid "Text"
+msgstr "Tekst"
+
+msgid "Text…"
+msgstr "Tekst…"
+
+msgid "Undo"
+msgstr "Tagasi võtta"
+
+msgid "Use best available codec"
+msgstr "Kasutage parimat saadaval olevat koodekit"
+
+msgid "Video Settings"
+msgstr "Video seaded"
+
+msgid "Video codec"
+msgstr "Videokoodek"
+
+msgid "Webcam"
+msgstr "Veebikaamera"
+
+msgid "Webcam Overlay"
+msgstr "Veebikaamera ülekatte"
+
+#. TRANSLATORS: Recording filename template.
+#. %d expands to YYYY-MM-DD (date), %t expands to HH-MM-SS (time).
+#. Both placeholders MUST stay literally in the translation.
+msgid "BigShot from %d %t"
+msgstr "BigShot kuupäeval %d %t"

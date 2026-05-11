@@ -1,0 +1,230 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: big-shot 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: sv\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: attranslate\n"
+
+msgid "Annotation text"
+msgstr "Anteckningstext"
+
+msgid "Arrow"
+msgstr "Pil"
+
+msgid "Auto"
+msgstr "Automatisk"
+
+msgid "Blur"
+msgstr "Sudda"
+
+msgid "Border Radius"
+msgstr "Gränsradie"
+
+msgid "Brush Size"
+msgstr "Penselstorlek"
+
+msgid "Camera"
+msgstr "Kamera"
+
+msgid "Censor"
+msgstr "Censur"
+
+msgid "Checker"
+msgstr "Checker"
+
+msgid "Circle"
+msgstr "Circle"
+
+msgid "Close"
+msgstr "Stäng"
+
+msgid "Codec"
+msgstr "Kodek"
+
+msgid "Color"
+msgstr "Färg"
+
+msgid "Confirm"
+msgstr "Bekräfta"
+
+msgid "Copy to Clipboard"
+msgstr "Kopiera till urklipp"
+
+msgid "Custom"
+msgstr "Anpassad"
+
+msgid "Decrease Size"
+msgstr "Minska storlek"
+
+msgid "Desktop"
+msgstr "Skrivbord"
+
+msgid "Drawing canvas"
+msgstr "Ritningsduk"
+
+msgid "Edit"
+msgstr "Redigera"
+
+msgid "Edit Screenshot"
+msgstr "Redigera skärmdump"
+
+msgid "Eraser"
+msgstr "Sudden"
+
+msgid "Fill"
+msgstr "Fyll"
+
+msgid "Font"
+msgstr "Typsnitt"
+
+msgid "Frames per second"
+msgstr "Ramar per sekund"
+
+msgid "Gradient Angle"
+msgstr "Gradientvinkel"
+
+msgid "Hide screenshot panel"
+msgstr "Dölj skärmbildspanel"
+
+msgid "High"
+msgstr "Hög"
+
+msgid "Highlighter"
+msgstr "Marker"
+
+msgid "Increase Size"
+msgstr "Öka storlek"
+
+msgid "Intensity"
+msgstr "Intensitet"
+
+msgid "Line"
+msgstr "Rad"
+
+msgid "Low"
+msgstr "Låg"
+
+msgid "Mask"
+msgstr "Mask"
+
+msgid "Medium"
+msgstr "Medel"
+
+msgid "Mic"
+msgstr "Mikrofon"
+
+msgid "Neon"
+msgstr "Neon"
+
+msgid "No Fill"
+msgstr "Ingen fyllning"
+
+msgid "None"
+msgstr "None"
+
+msgid "Number"
+msgstr "Nummer"
+
+msgid "Number with Arrow"
+msgstr "Nummer med pil"
+
+msgid "Number with Pointer"
+msgstr "Nummer med pekare"
+
+msgid "Ornate"
+msgstr "Ornate"
+
+msgid "Oval"
+msgstr "Oval"
+
+msgid "Pen"
+msgstr "Penna"
+
+msgid "Quality"
+msgstr "Kvalitet"
+
+msgid "Record Desktop Audio"
+msgstr "Spela in skrivbords-ljud"
+
+msgid "Record Microphone"
+msgstr "Spela in mikrofon"
+
+msgid "Recording quality (bitrate)"
+msgstr "Inspelningskvalitet (bitrate)"
+
+msgid "Recording resolution"
+msgstr "Inspelningsupplösning"
+
+msgid "Rectangle"
+msgstr "Rektangel"
+
+msgid "Redo"
+msgstr "Gör om"
+
+msgid "Save As…"
+msgstr "Spara som…"
+
+msgid "Save Screenshot"
+msgstr "Spara skärmbild"
+
+msgid "Screenshot copied"
+msgstr "Skärmbild kopierad"
+
+msgid "Screenshot from %s"
+msgstr "Skärmbild från %s"
+
+msgid "Screenshot taken"
+msgstr "Skärmbild tagen"
+
+msgid "Screenshots"
+msgstr "Skärmbilder"
+
+msgid "Select / Move"
+msgstr "Välj / Flytta"
+
+msgid "Show screenshot panel"
+msgstr "Visa skärmbildspanel"
+
+msgid "Size"
+msgstr "Storlek"
+
+msgid "Soft"
+msgstr "Soft"
+
+msgid "Spot"
+msgstr "Spot"
+
+msgid "Text"
+msgstr "Text"
+
+msgid "Text…"
+msgstr "Text…"
+
+msgid "Undo"
+msgstr "Ångra"
+
+msgid "Use best available codec"
+msgstr "Använd bästa tillgängliga codec"
+
+msgid "Video Settings"
+msgstr "Videoinställningar"
+
+msgid "Video codec"
+msgstr "Videokodare"
+
+msgid "Webcam"
+msgstr "Webbkamera"
+
+msgid "Webcam Overlay"
+msgstr "Webbkameralager"
+
+#. TRANSLATORS: Recording filename template.
+#. %d expands to YYYY-MM-DD (date), %t expands to HH-MM-SS (time).
+#. Both placeholders MUST stay literally in the translation.
+msgid "BigShot from %d %t"
+msgstr "BigShot från %d %t"

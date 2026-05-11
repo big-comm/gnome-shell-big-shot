@@ -1,0 +1,230 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: big-shot 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: tr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: attranslate\n"
+
+msgid "Annotation text"
+msgstr "Açıklama metni"
+
+msgid "Arrow"
+msgstr "Okçular"
+
+msgid "Auto"
+msgstr "Otomatik"
+
+msgid "Blur"
+msgstr "Bulanıklaştırma"
+
+msgid "Border Radius"
+msgstr "Kenar Yarıçapı"
+
+msgid "Brush Size"
+msgstr "Fırça Boyutu"
+
+msgid "Camera"
+msgstr "Kamera"
+
+msgid "Censor"
+msgstr "Sansürle"
+
+msgid "Checker"
+msgstr "Checker"
+
+msgid "Circle"
+msgstr "Circle"
+
+msgid "Close"
+msgstr "Kapat"
+
+msgid "Codec"
+msgstr "Kodek"
+
+msgid "Color"
+msgstr "Renk"
+
+msgid "Confirm"
+msgstr "Onayla"
+
+msgid "Copy to Clipboard"
+msgstr "Panoza Kopyala"
+
+msgid "Custom"
+msgstr "Özel"
+
+msgid "Decrease Size"
+msgstr "Boyut Azalt"
+
+msgid "Desktop"
+msgstr "Masaüstü"
+
+msgid "Drawing canvas"
+msgstr "Çizim tuvali"
+
+msgid "Edit"
+msgstr "Düzenle"
+
+msgid "Edit Screenshot"
+msgstr "Ekran Görüntüsünü Düzenle"
+
+msgid "Eraser"
+msgstr "Silgi"
+
+msgid "Fill"
+msgstr "Doldur"
+
+msgid "Font"
+msgstr "Yazı Tipi"
+
+msgid "Frames per second"
+msgstr "Kare/saniye"
+
+msgid "Gradient Angle"
+msgstr "Gradyan Açısı"
+
+msgid "Hide screenshot panel"
+msgstr "Ekran görüntüsü panelini gizle"
+
+msgid "High"
+msgstr "Yüksek"
+
+msgid "Highlighter"
+msgstr "Vurgulayıcı"
+
+msgid "Increase Size"
+msgstr "Boyutu Artır"
+
+msgid "Intensity"
+msgstr "Yoğunluk"
+
+msgid "Line"
+msgstr "Satır"
+
+msgid "Low"
+msgstr "Düşük"
+
+msgid "Mask"
+msgstr "Maske"
+
+msgid "Medium"
+msgstr "Orta"
+
+msgid "Mic"
+msgstr "Mikrofon"
+
+msgid "Neon"
+msgstr "Neon"
+
+msgid "No Fill"
+msgstr "Doldurma Yok"
+
+msgid "None"
+msgstr "None"
+
+msgid "Number"
+msgstr "Numara"
+
+msgid "Number with Arrow"
+msgstr "Ok ile Sayı"
+
+msgid "Number with Pointer"
+msgstr "Pointer ile Sayı"
+
+msgid "Ornate"
+msgstr "Ornate"
+
+msgid "Oval"
+msgstr "Oval"
+
+msgid "Pen"
+msgstr "Kalem"
+
+msgid "Quality"
+msgstr "Kalite"
+
+msgid "Record Desktop Audio"
+msgstr "Masaüstü Sesini Kaydet"
+
+msgid "Record Microphone"
+msgstr "Mikrofonu Kaydet"
+
+msgid "Recording quality (bitrate)"
+msgstr "Kayıt kalitesi (bit hızı)"
+
+msgid "Recording resolution"
+msgstr "Kayıt çözünürlüğü"
+
+msgid "Rectangle"
+msgstr "Dikdörtgen"
+
+msgid "Redo"
+msgstr "Yinele"
+
+msgid "Save As…"
+msgstr "Farklı Kaydet…"
+
+msgid "Save Screenshot"
+msgstr "Ekran Görüntüsünü Kaydet"
+
+msgid "Screenshot copied"
+msgstr "Ekran görüntüsü kopyalandı"
+
+msgid "Screenshot from %s"
+msgstr "%s ekran görüntüsü"
+
+msgid "Screenshot taken"
+msgstr "Ekran görüntüsü alındı"
+
+msgid "Screenshots"
+msgstr "Ekran görüntüleri"
+
+msgid "Select / Move"
+msgstr "Seç / Taşı"
+
+msgid "Show screenshot panel"
+msgstr "Ekran görüntüsü panelini göster"
+
+msgid "Size"
+msgstr "Boyut"
+
+msgid "Soft"
+msgstr "Soft"
+
+msgid "Spot"
+msgstr "Spot"
+
+msgid "Text"
+msgstr "Metin"
+
+msgid "Text…"
+msgstr "Metin…"
+
+msgid "Undo"
+msgstr "Geri Al"
+
+msgid "Use best available codec"
+msgstr "En iyi mevcut kodeği kullanın"
+
+msgid "Video Settings"
+msgstr "Video Ayarları"
+
+msgid "Video codec"
+msgstr "Video kodek"
+
+msgid "Webcam"
+msgstr "Webcam"
+
+msgid "Webcam Overlay"
+msgstr "Webcam Üstü"
+
+#. TRANSLATORS: Recording filename template.
+#. %d expands to YYYY-MM-DD (date), %t expands to HH-MM-SS (time).
+#. Both placeholders MUST stay literally in the translation.
+msgid "BigShot from %d %t"
+msgstr "BigShot %d %t"

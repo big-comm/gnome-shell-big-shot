@@ -1,0 +1,230 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: big-shot 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: cs\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: attranslate\n"
+
+msgid "Annotation text"
+msgstr "Text poznámky"
+
+msgid "Arrow"
+msgstr "Šipka"
+
+msgid "Auto"
+msgstr "Automaticky"
+
+msgid "Blur"
+msgstr "Rozostření"
+
+msgid "Border Radius"
+msgstr "Poloměr okraje"
+
+msgid "Brush Size"
+msgstr "Velikost štětce"
+
+msgid "Camera"
+msgstr "Kamera"
+
+msgid "Censor"
+msgstr "Cenzurovat"
+
+msgid "Checker"
+msgstr "Checker"
+
+msgid "Circle"
+msgstr "Circle"
+
+msgid "Close"
+msgstr "Zavřít"
+
+msgid "Codec"
+msgstr "Kodek"
+
+msgid "Color"
+msgstr "Barva"
+
+msgid "Confirm"
+msgstr "Potvrdit"
+
+msgid "Copy to Clipboard"
+msgstr "Kopírovat do schránky"
+
+msgid "Custom"
+msgstr "Vlastní"
+
+msgid "Decrease Size"
+msgstr "Zmenšit velikost"
+
+msgid "Desktop"
+msgstr "Plocha"
+
+msgid "Drawing canvas"
+msgstr "Kreslicí plátno"
+
+msgid "Edit"
+msgstr "Upravit"
+
+msgid "Edit Screenshot"
+msgstr "Upravit screenshot"
+
+msgid "Eraser"
+msgstr "Guma"
+
+msgid "Fill"
+msgstr "Vyplnit"
+
+msgid "Font"
+msgstr "Písmo"
+
+msgid "Frames per second"
+msgstr "Snímky za sekundu"
+
+msgid "Gradient Angle"
+msgstr "Úhel přechodu"
+
+msgid "Hide screenshot panel"
+msgstr "Skrýt panel snímků obrazovky"
+
+msgid "High"
+msgstr "Vysoká"
+
+msgid "Highlighter"
+msgstr "Zvýrazňovač"
+
+msgid "Increase Size"
+msgstr "Zvětšit velikost"
+
+msgid "Intensity"
+msgstr "Intenzita"
+
+msgid "Line"
+msgstr "Čára"
+
+msgid "Low"
+msgstr "Nízká"
+
+msgid "Mask"
+msgstr "Maska"
+
+msgid "Medium"
+msgstr "Střední"
+
+msgid "Mic"
+msgstr "Mikrofon"
+
+msgid "Neon"
+msgstr "Neon"
+
+msgid "No Fill"
+msgstr "Bez výplně"
+
+msgid "None"
+msgstr "None"
+
+msgid "Number"
+msgstr "Číslo"
+
+msgid "Number with Arrow"
+msgstr "Číslo se šipkou"
+
+msgid "Number with Pointer"
+msgstr "Číslo s ukazatelem"
+
+msgid "Ornate"
+msgstr "Ornate"
+
+msgid "Oval"
+msgstr "Oval"
+
+msgid "Pen"
+msgstr "Pero"
+
+msgid "Quality"
+msgstr "Kvalita"
+
+msgid "Record Desktop Audio"
+msgstr "Nahrávat zvuk z plochy"
+
+msgid "Record Microphone"
+msgstr "Nahrávat mikrofon"
+
+msgid "Recording quality (bitrate)"
+msgstr "Kvalita nahrávání (bitrate)"
+
+msgid "Recording resolution"
+msgstr "Rozlišení nahrávání"
+
+msgid "Rectangle"
+msgstr "Obdélník"
+
+msgid "Redo"
+msgstr "Znovu"
+
+msgid "Save As…"
+msgstr "Uložit jako…"
+
+msgid "Save Screenshot"
+msgstr "Uložit snímek obrazovky"
+
+msgid "Screenshot copied"
+msgstr "Snímek obrazovky zkopírován"
+
+msgid "Screenshot from %s"
+msgstr "Snímek obrazovky z %s"
+
+msgid "Screenshot taken"
+msgstr "Snímek obrazovky pořízen"
+
+msgid "Screenshots"
+msgstr "Snímky obrazovky"
+
+msgid "Select / Move"
+msgstr "Vybrat / Přesunout"
+
+msgid "Show screenshot panel"
+msgstr "Zobrazit panel snímků obrazovky"
+
+msgid "Size"
+msgstr "Velikost"
+
+msgid "Soft"
+msgstr "Soft"
+
+msgid "Spot"
+msgstr "Spot"
+
+msgid "Text"
+msgstr "Text"
+
+msgid "Text…"
+msgstr "Text…"
+
+msgid "Undo"
+msgstr "Zpět"
+
+msgid "Use best available codec"
+msgstr "Použijte nejlepší dostupný kodek"
+
+msgid "Video Settings"
+msgstr "Nastavení videa"
+
+msgid "Video codec"
+msgstr "Video kodek"
+
+msgid "Webcam"
+msgstr "Webkamera"
+
+msgid "Webcam Overlay"
+msgstr "Překryv webkamery"
+
+#. TRANSLATORS: Recording filename template.
+#. %d expands to YYYY-MM-DD (date), %t expands to HH-MM-SS (time).
+#. Both placeholders MUST stay literally in the translation.
+msgid "BigShot from %d %t"
+msgstr "BigShot z %d %t"

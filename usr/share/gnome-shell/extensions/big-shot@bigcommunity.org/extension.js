@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
-export const APP_VERSION = '26.6.1';
+export const APP_VERSION = '26.7.0';
 
 // Top-level imports are intentionally minimal. Anything imported here runs
 // synchronously inside GNOME's serial extension load loop and delays every
@@ -268,6 +268,48 @@ function checkElement(name) {
  */
 function checkPipeline(config) {
     return config.elements.every(el => checkElement(el));
+}
+
+/**
+ * Recording output folder under XDG_VIDEOS_DIR (always literal, never
+ * translated, so the path is the same in every locale).
+ */
+const BIGSHOT_VIDEO_FOLDER = 'BigShot';
+
+/**
+ * Build the relative file template the screencast service receives. The
+ * service expands %d → YYYY-MM-DD and %t → HH-MM-SS server-side, so the
+ * placeholders MUST survive translation literally.
+ *
+ * We ignore the path GNOME passes ('Screencasts/Screencast From %d %t')
+ * and emit our own so:
+ *  - the folder is always ~/Videos/BigShot/ (locale-independent),
+ *  - the filename starts with "BigShot" instead of "Screencast",
+ *  - the "from" word follows the active GNOME locale via the extension's
+ *    own gettext domain (so we don't depend on the upstream gnome-shell
+ *    translation, which on several locales translates "%d %t" to "%s"
+ *    and breaks the service's token expansion).
+ */
+function buildBigShotRecordingPath() {
+    return GLib.build_filenamev([
+        BIGSHOT_VIDEO_FOLDER,
+        _('BigShot from %d %t'),
+    ]);
+}
+
+/**
+ * Make sure ~/Videos/BigShot/ exists before the screencast service tries
+ * to write to it. The service does not auto-create the target directory.
+ */
+function ensureRecordingFolder() {
+    try {
+        const videoDir = GLib.get_user_special_dir(GLib.UserDirectory.DIRECTORY_VIDEOS)
+            ?? GLib.get_home_dir();
+        const target = GLib.build_filenamev([videoDir, BIGSHOT_VIDEO_FOLDER]);
+        GLib.mkdir_with_parents(target, 0o755);
+    } catch (e) {
+        console.warn(`[Big Shot] Could not create recording folder: ${e.message}`);
+    }
 }
 
 /**
@@ -1242,33 +1284,35 @@ export default class BigShotExtension extends Extension {
         }
         this._origOpen = screenshotUI.open.bind(screenshotUI);
         screenshotUI.open = function (mode) {
-            // QuickStop: if recording (or paused) and user re-opens the UI,
-            // stop the ongoing recording instead of opening.
-            if (ext._recordingState === 'paused') {
-                // Resume the screencast process first so it can finalize the file
-                ext._signalScreencastProcess('CONT');
-                // Let GNOME stop the recording normally
-                ext._stopActiveRecording();
-                ext._onFinalStop();
-                Main.screenshotUI?.close();
-                return Promise.resolve();
-            }
+            if (mode === undefined) mode = 0; // UIMode.SCREENSHOT default
 
-            if (ext._isRecordingActive()) {
-                try {
+            // QuickStop only when user re-opens in SCREENCAST mode while
+            // a recording is in progress. Opening in SCREENSHOT mode (e.g.
+            // PrintScreen) must NOT stop the recording — the user wants to
+            // grab a quick screenshot/edit while the recording continues.
+            if (mode === 1 /* UIMode.SCREENCAST */) {
+                if (ext._recordingState === 'paused') {
+                    ext._signalScreencastProcess('CONT');
                     ext._stopActiveRecording();
+                    ext._onFinalStop();
                     Main.screenshotUI?.close();
-                } catch (e) {
-                    console.error(`[Big Shot] Quick stop error: ${e.message}`);
+                    return Promise.resolve();
                 }
-                return Promise.resolve();
+                if (ext._isRecordingActive()) {
+                    try {
+                        ext._stopActiveRecording();
+                        Main.screenshotUI?.close();
+                    } catch (e) {
+                        console.error(`[Big Shot] Quick stop error: ${e.message}`);
+                    }
+                    return Promise.resolve();
+                }
             }
 
-            if (mode === undefined) mode = 0; // UIMode.SCREENSHOT
-            // Allow screenshot while recording: GNOME blocks open() when
-            // _screencastInProgress is true. We temporarily clear the flag
-            // so screenshot mode (UIMode.SCREENSHOT=0) can open during recording.
-            if (this._screencastInProgress && mode !== 1) { // 1 = UIMode.SCREENCAST
+            // Allow screenshot UI while recording: GNOME blocks open() when
+            // _screencastInProgress is true. Temporarily clear the flag so
+            // screenshot mode (UIMode.SCREENSHOT=0) can open during recording.
+            if (this._screencastInProgress && mode !== 1) {
                 const saved = this._screencastInProgress;
                 this._screencastInProgress = false;
                 const result = ext._origOpen.call(this, mode);
@@ -1360,13 +1404,21 @@ export default class BigShotExtension extends Extension {
             return;
         }
 
+        // Round to even pixels. H.264 (and most HW encoders) require even
+        // width/height; an odd rect makes the videocrop produce a stream
+        // the encoder can't accept cleanly, which the user sees as dropped
+        // / repeated frames at the edge.
+        const x = rect.x & ~1;
+        const y = rect.y & ~1;
+        const width = Math.max(2, rect.width & ~1);
+        const height = Math.max(2, rect.height & ~1);
+
         const drawCursor = ui._cursor?.visible ?? true;
-        // Match native filename layout exactly so gnome-shell-screencast
-        // expands %d/%t and places the file in ~/Videos/Screencasts.
-        const filePath = GLib.build_filenamev([
-            _('Screencasts'),
-            _('Screencast From %d %t'),
-        ]);
+        // Save under ~/Videos/BigShot/ so window and full-screen recordings
+        // land in the same place. The screencast service resolves this
+        // relative to XDG_VIDEOS_DIR and expands %d/%t.
+        const filePath = buildBigShotRecordingPath();
+        ensureRecordingFolder();
         const options = { 'draw-cursor': new GLib.Variant('b', drawCursor) };
 
         // Set in-progress BEFORE the async call so the indicator picks it up
@@ -1382,7 +1434,7 @@ export default class BigShotExtension extends Extension {
 
         try {
             const [success, path] = await proxy.ScreencastAreaAsync(
-                rect.x, rect.y, rect.width, rect.height, filePath, options
+                x, y, width, height, filePath, options
             );
             if (success) {
                 ui._screencastPath = path;
@@ -1438,6 +1490,11 @@ export default class BigShotExtension extends Extension {
     async _screencastCommonAsync(filePath, options, originalMethod) {
         // Lazy pipeline detection on first use (avoids blocking enable())
         this._detectPipelines();
+
+        // Force every recording (full-screen and area) into ~/Videos/BigShot/
+        // with the localized "BigShot from %d %t" filename.
+        filePath = buildBigShotRecordingPath();
+        ensureRecordingFolder();
 
         if (this._availableConfigs.length === 0) {
             return originalMethod(filePath, options);

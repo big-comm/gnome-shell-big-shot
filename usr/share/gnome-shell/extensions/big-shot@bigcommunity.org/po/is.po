@@ -1,0 +1,230 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: big-shot 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: is\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: attranslate\n"
+
+msgid "Annotation text"
+msgstr "Skýringartexti"
+
+msgid "Arrow"
+msgstr "Örvar"
+
+msgid "Auto"
+msgstr "Sjálfvirkt"
+
+msgid "Blur"
+msgstr "Ófærð"
+
+msgid "Border Radius"
+msgstr "Mörkurrúm"
+
+msgid "Brush Size"
+msgstr "Bursta stærð"
+
+msgid "Camera"
+msgstr "Myndavél"
+
+msgid "Censor"
+msgstr "Ritskoða"
+
+msgid "Checker"
+msgstr "Checker"
+
+msgid "Circle"
+msgstr "Circle"
+
+msgid "Close"
+msgstr "Lokaðu"
+
+msgid "Codec"
+msgstr "Kóði"
+
+msgid "Color"
+msgstr "Litur"
+
+msgid "Confirm"
+msgstr "Staðfesta"
+
+msgid "Copy to Clipboard"
+msgstr "Afrita í sk clipboard"
+
+msgid "Custom"
+msgstr "Sérsniðið"
+
+msgid "Decrease Size"
+msgstr "Minnka stærð"
+
+msgid "Desktop"
+msgstr "Skjáborð"
+
+msgid "Drawing canvas"
+msgstr "Teikniborð"
+
+msgid "Edit"
+msgstr "Breyta"
+
+msgid "Edit Screenshot"
+msgstr "Breyta skjáskotinu"
+
+msgid "Eraser"
+msgstr "Eyðingartæki"
+
+msgid "Fill"
+msgstr "Fylla"
+
+msgid "Font"
+msgstr "Letur"
+
+msgid "Frames per second"
+msgstr "Rammar á sekúndu"
+
+msgid "Gradient Angle"
+msgstr "Litaþrepahorn"
+
+msgid "Hide screenshot panel"
+msgstr "Fela skjámyndarspjaldið"
+
+msgid "High"
+msgstr "Há"
+
+msgid "Highlighter"
+msgstr "Merki"
+
+msgid "Increase Size"
+msgstr "Auka stærð"
+
+msgid "Intensity"
+msgstr "Þéttleiki"
+
+msgid "Line"
+msgstr "Lína"
+
+msgid "Low"
+msgstr "Lágur"
+
+msgid "Mask"
+msgstr "Gríma"
+
+msgid "Medium"
+msgstr "Miðlungs"
+
+msgid "Mic"
+msgstr "Míkrófón"
+
+msgid "Neon"
+msgstr "Neon"
+
+msgid "No Fill"
+msgstr "Engin fylling"
+
+msgid "None"
+msgstr "None"
+
+msgid "Number"
+msgstr "Tala"
+
+msgid "Number with Arrow"
+msgstr "Tala með örrow"
+
+msgid "Number with Pointer"
+msgstr "Tala með vísitölu"
+
+msgid "Ornate"
+msgstr "Ornate"
+
+msgid "Oval"
+msgstr "Oval"
+
+msgid "Pen"
+msgstr "Penna"
+
+msgid "Quality"
+msgstr "Gæði"
+
+msgid "Record Desktop Audio"
+msgstr "Taka upp hljóð af skjáborði"
+
+msgid "Record Microphone"
+msgstr "Skráðu hljóðnema"
+
+msgid "Recording quality (bitrate)"
+msgstr "Upptökugæði (bitahraði)"
+
+msgid "Recording resolution"
+msgstr "Upplausn fyrir upptöku"
+
+msgid "Rectangle"
+msgstr "Réttangli"
+
+msgid "Redo"
+msgstr "Endurtaka"
+
+msgid "Save As…"
+msgstr "Vista sem…"
+
+msgid "Save Screenshot"
+msgstr "Vista skjámynd"
+
+msgid "Screenshot copied"
+msgstr "Skjámynd afrituð"
+
+msgid "Screenshot from %s"
+msgstr "Skjámynd frá %s"
+
+msgid "Screenshot taken"
+msgstr "Skjámynd tekin"
+
+msgid "Screenshots"
+msgstr "Skjámyndir"
+
+msgid "Select / Move"
+msgstr "Velja / Hreyfa"
+
+msgid "Show screenshot panel"
+msgstr "Sýna skjámyndarspjaldið"
+
+msgid "Size"
+msgstr "Stærð"
+
+msgid "Soft"
+msgstr "Soft"
+
+msgid "Spot"
+msgstr "Spot"
+
+msgid "Text"
+msgstr "Text"
+
+msgid "Text…"
+msgstr "Text…"
+
+msgid "Undo"
+msgstr "Afturkalla"
+
+msgid "Use best available codec"
+msgstr "Notaðu besta tiltæka kóðara"
+
+msgid "Video Settings"
+msgstr "Videóstillingar"
+
+msgid "Video codec"
+msgstr "Vöruvíddarkóðari"
+
+msgid "Webcam"
+msgstr "Vefmyndavél"
+
+msgid "Webcam Overlay"
+msgstr "Vefmyndavélarlag"
+
+#. TRANSLATORS: Recording filename template.
+#. %d expands to YYYY-MM-DD (date), %t expands to HH-MM-SS (time).
+#. Both placeholders MUST stay literally in the translation.
+msgid "BigShot from %d %t"
+msgstr "BigShot frá %d %t"

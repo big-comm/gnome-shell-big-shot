@@ -1,0 +1,230 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: big-shot 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: he\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: attranslate\n"
+
+msgid "Annotation text"
+msgstr "טקסט הערה"
+
+msgid "Arrow"
+msgstr "חץ"
+
+msgid "Auto"
+msgstr "אוטומטי"
+
+msgid "Blur"
+msgstr "טשטוש"
+
+msgid "Border Radius"
+msgstr "רדיוס גבול"
+
+msgid "Brush Size"
+msgstr "גודל מברשת"
+
+msgid "Camera"
+msgstr "מצלמה"
+
+msgid "Censor"
+msgstr "צנזור"
+
+msgid "Checker"
+msgstr "Checker"
+
+msgid "Circle"
+msgstr "Circle"
+
+msgid "Close"
+msgstr "סגור"
+
+msgid "Codec"
+msgstr "קודק"
+
+msgid "Color"
+msgstr "צבע"
+
+msgid "Confirm"
+msgstr "אשר"
+
+msgid "Copy to Clipboard"
+msgstr "העתק ללוח שנה"
+
+msgid "Custom"
+msgstr "מותאם אישית"
+
+msgid "Decrease Size"
+msgstr "הקטן גודל"
+
+msgid "Desktop"
+msgstr "שולחן עבודה"
+
+msgid "Drawing canvas"
+msgstr "קנבס ציור"
+
+msgid "Edit"
+msgstr "ערוך"
+
+msgid "Edit Screenshot"
+msgstr "ערוך צילום מסך"
+
+msgid "Eraser"
+msgstr "מחק"
+
+msgid "Fill"
+msgstr "מלא"
+
+msgid "Font"
+msgstr "גופן"
+
+msgid "Frames per second"
+msgstr "פריימים לשנייה"
+
+msgid "Gradient Angle"
+msgstr "זווית גרדיאנט"
+
+msgid "Hide screenshot panel"
+msgstr "הסתר לוח צילומי מסך"
+
+msgid "High"
+msgstr "גבוה"
+
+msgid "Highlighter"
+msgstr "סמן"
+
+msgid "Increase Size"
+msgstr "הגדל גודל"
+
+msgid "Intensity"
+msgstr "עוצמה"
+
+msgid "Line"
+msgstr "שורה"
+
+msgid "Low"
+msgstr "נמוך"
+
+msgid "Mask"
+msgstr "מסכה"
+
+msgid "Medium"
+msgstr "בינוני"
+
+msgid "Mic"
+msgstr "מיקרופון"
+
+msgid "Neon"
+msgstr "Neon"
+
+msgid "No Fill"
+msgstr "ללא מילוי"
+
+msgid "None"
+msgstr "None"
+
+msgid "Number"
+msgstr "מספר"
+
+msgid "Number with Arrow"
+msgstr "מספר עם חץ"
+
+msgid "Number with Pointer"
+msgstr "מספר עם מצביע"
+
+msgid "Ornate"
+msgstr "Ornate"
+
+msgid "Oval"
+msgstr "Oval"
+
+msgid "Pen"
+msgstr "עט"
+
+msgid "Quality"
+msgstr "איכות"
+
+msgid "Record Desktop Audio"
+msgstr "הקלט שמע שולחן עבודה"
+
+msgid "Record Microphone"
+msgstr "הקלט מיקרופון"
+
+msgid "Recording quality (bitrate)"
+msgstr "איכות ההקלטה (קצב ביטים)"
+
+msgid "Recording resolution"
+msgstr "רזולוציית הקלטה"
+
+msgid "Rectangle"
+msgstr "מלבן"
+
+msgid "Redo"
+msgstr "בטל פעולה חוזרת"
+
+msgid "Save As…"
+msgstr "שמור בשם…"
+
+msgid "Save Screenshot"
+msgstr "שמור צילום מסך"
+
+msgid "Screenshot copied"
+msgstr "צילום מסך הועתק"
+
+msgid "Screenshot from %s"
+msgstr "צילום מסך מ־%s"
+
+msgid "Screenshot taken"
+msgstr "צילום מסך נלקח"
+
+msgid "Screenshots"
+msgstr "צילומי מסך"
+
+msgid "Select / Move"
+msgstr "בחר / העבר"
+
+msgid "Show screenshot panel"
+msgstr "הצג לוח צילומי מסך"
+
+msgid "Size"
+msgstr "גודל"
+
+msgid "Soft"
+msgstr "Soft"
+
+msgid "Spot"
+msgstr "Spot"
+
+msgid "Text"
+msgstr "טקסט"
+
+msgid "Text…"
+msgstr "טקסט…"
+
+msgid "Undo"
+msgstr "ביטול"
+
+msgid "Use best available codec"
+msgstr "השתמש בקודק הטוב ביותר הזמין"
+
+msgid "Video Settings"
+msgstr "הגדרות וידאו"
+
+msgid "Video codec"
+msgstr "קודקוד וידאו"
+
+msgid "Webcam"
+msgstr "מצלמת רשת"
+
+msgid "Webcam Overlay"
+msgstr "שכבת מצלמת רשת"
+
+#. TRANSLATORS: Recording filename template.
+#. %d expands to YYYY-MM-DD (date), %t expands to HH-MM-SS (time).
+#. Both placeholders MUST stay literally in the translation.
+msgid "BigShot from %d %t"
+msgstr "BigShot מ־%d %t"

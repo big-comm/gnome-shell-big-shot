@@ -1,0 +1,230 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: big-shot 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: bg\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: attranslate\n"
+
+msgid "Annotation text"
+msgstr "Текст на анотацията"
+
+msgid "Arrow"
+msgstr "Стрелка"
+
+msgid "Auto"
+msgstr "Авто"
+
+msgid "Blur"
+msgstr "Замъгляване"
+
+msgid "Border Radius"
+msgstr "Радиус на границата"
+
+msgid "Brush Size"
+msgstr "Размер на четката"
+
+msgid "Camera"
+msgstr "Камера"
+
+msgid "Censor"
+msgstr "Цензуриране"
+
+msgid "Checker"
+msgstr "Checker"
+
+msgid "Circle"
+msgstr "Circle"
+
+msgid "Close"
+msgstr "Затвори"
+
+msgid "Codec"
+msgstr "Кодек"
+
+msgid "Color"
+msgstr "Цвят"
+
+msgid "Confirm"
+msgstr "Потвърдете"
+
+msgid "Copy to Clipboard"
+msgstr "Копирай в клипборда"
+
+msgid "Custom"
+msgstr "Персонализиран"
+
+msgid "Decrease Size"
+msgstr "Намали размер"
+
+msgid "Desktop"
+msgstr "Десктоп"
+
+msgid "Drawing canvas"
+msgstr "Рисувателна платформа"
+
+msgid "Edit"
+msgstr "Редактиране"
+
+msgid "Edit Screenshot"
+msgstr "Редактирай екранна снимка"
+
+msgid "Eraser"
+msgstr "Гумка"
+
+msgid "Fill"
+msgstr "Запълване"
+
+msgid "Font"
+msgstr "Шрифт"
+
+msgid "Frames per second"
+msgstr "Кадри в секунда"
+
+msgid "Gradient Angle"
+msgstr "Ъгъл на градиента"
+
+msgid "Hide screenshot panel"
+msgstr "Скрий панела за екранни снимки"
+
+msgid "High"
+msgstr "Високо"
+
+msgid "Highlighter"
+msgstr "Маркер"
+
+msgid "Increase Size"
+msgstr "Увеличи размер"
+
+msgid "Intensity"
+msgstr "Интензивност"
+
+msgid "Line"
+msgstr "Ред."
+
+msgid "Low"
+msgstr "Нисък"
+
+msgid "Mask"
+msgstr "Маска"
+
+msgid "Medium"
+msgstr "Средно"
+
+msgid "Mic"
+msgstr "Микрофон"
+
+msgid "Neon"
+msgstr "Neon"
+
+msgid "No Fill"
+msgstr "Без запълване"
+
+msgid "None"
+msgstr "None"
+
+msgid "Number"
+msgstr "Номер"
+
+msgid "Number with Arrow"
+msgstr "Число с стрелка"
+
+msgid "Number with Pointer"
+msgstr "Число с указател."
+
+msgid "Ornate"
+msgstr "Ornate"
+
+msgid "Oval"
+msgstr "Oval"
+
+msgid "Pen"
+msgstr "Писалка"
+
+msgid "Quality"
+msgstr "Качество"
+
+msgid "Record Desktop Audio"
+msgstr "Запис на звука от работния плот"
+
+msgid "Record Microphone"
+msgstr "Запис на микрофон"
+
+msgid "Recording quality (bitrate)"
+msgstr "Качество на записа (битрейт)"
+
+msgid "Recording resolution"
+msgstr "Разделителна способност на записа"
+
+msgid "Rectangle"
+msgstr "Правоъгълник"
+
+msgid "Redo"
+msgstr "Направи отново"
+
+msgid "Save As…"
+msgstr "Запази като…"
+
+msgid "Save Screenshot"
+msgstr "Запази екранната снимка"
+
+msgid "Screenshot copied"
+msgstr "Екранната снимка е копирана"
+
+msgid "Screenshot from %s"
+msgstr "Екранна снимка от %s"
+
+msgid "Screenshot taken"
+msgstr "Екранна снимка направена"
+
+msgid "Screenshots"
+msgstr "Екранни снимки"
+
+msgid "Select / Move"
+msgstr "Избор / Преместване"
+
+msgid "Show screenshot panel"
+msgstr "Покажи панела за екранни снимки"
+
+msgid "Size"
+msgstr "Размер"
+
+msgid "Soft"
+msgstr "Soft"
+
+msgid "Spot"
+msgstr "Spot"
+
+msgid "Text"
+msgstr "Текст"
+
+msgid "Text…"
+msgstr "Текст…"
+
+msgid "Undo"
+msgstr "Отмяна"
+
+msgid "Use best available codec"
+msgstr "Използвайте най-добрия наличен кодек"
+
+msgid "Video Settings"
+msgstr "Настройки на видеото"
+
+msgid "Video codec"
+msgstr "Видео кодек"
+
+msgid "Webcam"
+msgstr "Уебкамера"
+
+msgid "Webcam Overlay"
+msgstr "Наслагване на уебкамера"
+
+#. TRANSLATORS: Recording filename template.
+#. %d expands to YYYY-MM-DD (date), %t expands to HH-MM-SS (time).
+#. Both placeholders MUST stay literally in the translation.
+msgid "BigShot from %d %t"
+msgstr "BigShot от %d %t"

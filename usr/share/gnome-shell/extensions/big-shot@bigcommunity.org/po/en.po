@@ -55,15 +55,12 @@ msgstr "Screenshot copied"
 msgid "Save Screenshot"
 msgstr "Save Screenshot"
 
-#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:1367
-#, fuzzy
-msgid "Screencasts"
-msgstr "Screenshots"
-
-#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:1368
-#, fuzzy
-msgid "Screencast From %d %t"
-msgstr "Screenshot from %s"
+#. TRANSLATORS: Recording filename template.
+#. %d expands to YYYY-MM-DD (date), %t expands to HH-MM-SS (time).
+#. Both placeholders MUST stay literally in the translation.
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:292
+msgid "BigShot from %d %t"
+msgstr "BigShot from %d %t"
 
 #: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partaudio.js:97
 #: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partaudio.js:159
