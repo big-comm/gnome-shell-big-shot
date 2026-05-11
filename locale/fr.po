@@ -28,6 +28,9 @@ msgstr "Texte d’annotation"
 msgid "Confirm"
 msgstr "Confirmer"
 #: NEEDS WORK
+msgid "BigShot from %d %t"
+msgstr "BigShot de %d %t"
+#: NEEDS WORK
 msgid "Screenshot taken"
 msgstr "Capture d’écran prise"
 #: NEEDS WORK
@@ -42,12 +45,6 @@ msgstr "Capture d’écran copiée"
 #: NEEDS WORK
 msgid "Save Screenshot"
 msgstr "Enregistrer la capture d’écran"
-#: NEEDS WORK
-msgid "Screencasts"
-msgstr "Captures d'écran"
-#: NEEDS WORK
-msgid "Screencast From %d %t"
-msgstr "Screencast de %d %t"
 #: NEEDS WORK
 msgid "Recording resolution"
 msgstr "Résolution d'enregistrement"

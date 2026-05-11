@@ -26,6 +26,9 @@ msgstr  ""
 msgid   "Confirm"
 msgstr  ""
 
+msgid   "BigShot from %d %t"
+msgstr  ""
+
 msgid   "Screenshot taken"
 msgstr  ""
 
@@ -39,12 +42,6 @@ msgid   "Screenshot copied"
 msgstr  ""
 
 msgid   "Save Screenshot"
-msgstr  ""
-
-msgid   "Screencasts"
-msgstr  ""
-
-msgid   "Screencast From %d %t"
 msgstr  ""
 
 msgid   "Recording resolution"

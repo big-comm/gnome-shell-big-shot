@@ -27,6 +27,9 @@ msgstr "Megjegyzés szövege"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/drawing/overlay.js:510
 msgid "Confirm"
 msgstr "Megerősít"
+#: NEEDS WORK
+msgid "BigShot from %d %t"
+msgstr "BigShot a %d %t-tól"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:493
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:506
 msgid "Screenshot taken"
@@ -45,12 +48,6 @@ msgstr "Képernyőkép másolva"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:789
 msgid "Save Screenshot"
 msgstr "Képernyőkép mentése"
-#: NEEDS WORK
-msgid "Screencasts"
-msgstr "Képernyőfelvételek"
-#: NEEDS WORK
-msgid "Screencast From %d %t"
-msgstr "Képernyőfelvétel %d %t-tól"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partdownsize.js:18
 msgid "Recording resolution"
 msgstr "Felvételi felbontás"

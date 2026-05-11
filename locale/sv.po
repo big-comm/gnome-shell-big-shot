@@ -27,6 +27,9 @@ msgstr "Anteckningstext"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/drawing/overlay.js:510
 msgid "Confirm"
 msgstr "Bekräfta"
+#: NEEDS WORK
+msgid "BigShot from %d %t"
+msgstr "BigShot från %d %t"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:493
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:506
 msgid "Screenshot taken"
@@ -45,12 +48,6 @@ msgstr "Skärmbild kopierad"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:789
 msgid "Save Screenshot"
 msgstr "Spara skärmbild"
-#: NEEDS WORK
-msgid "Screencasts"
-msgstr "Skärminspelningar"
-#: NEEDS WORK
-msgid "Screencast From %d %t"
-msgstr "Screencast Från %d %t"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partdownsize.js:18
 msgid "Recording resolution"
 msgstr "Inspelningsupplösning"

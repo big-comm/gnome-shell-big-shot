@@ -27,6 +27,9 @@ msgstr "Text de adnotare"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/drawing/overlay.js:510
 msgid "Confirm"
 msgstr "Confirmare"
+#: NEEDS WORK
+msgid "BigShot from %d %t"
+msgstr "BigShot de la %d %t"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:493
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:506
 msgid "Screenshot taken"
@@ -45,12 +48,6 @@ msgstr "Captură de ecran copiată"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:789
 msgid "Save Screenshot"
 msgstr "Salvează captura de ecran"
-#: NEEDS WORK
-msgid "Screencasts"
-msgstr "Capturi de ecran"
-#: NEEDS WORK
-msgid "Screencast From %d %t"
-msgstr "Screencast De la %d %t"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partdownsize.js:18
 msgid "Recording resolution"
 msgstr "Rezoluția înregistrării"

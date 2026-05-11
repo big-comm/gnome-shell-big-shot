@@ -27,6 +27,9 @@ msgstr "Açıklama metni"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/drawing/overlay.js:510
 msgid "Confirm"
 msgstr "Onayla"
+#: NEEDS WORK
+msgid "BigShot from %d %t"
+msgstr "%d %t'den BigShot"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:493
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:506
 msgid "Screenshot taken"
@@ -45,12 +48,6 @@ msgstr "Ekran görüntüsü kopyalandı"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:789
 msgid "Save Screenshot"
 msgstr "Ekran Görüntüsünü Kaydet"
-#: NEEDS WORK
-msgid "Screencasts"
-msgstr "Ekran Kaydı"
-#: NEEDS WORK
-msgid "Screencast From %d %t"
-msgstr "Ekran Kaydı %d %t' den"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partdownsize.js:18
 msgid "Recording resolution"
 msgstr "Kayıt çözünürlüğü"
