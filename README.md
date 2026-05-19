@@ -8,7 +8,7 @@ A GNOME Shell extension that transforms the native Print Screen UI into a powerf
 
 <img src="usr/share/icons/hicolor/scalable/apps/big-shot.svg" width="128" alt="Big Shot icon">
 
-[![GNOME Shell](https://img.shields.io/badge/GNOME_Shell-46--49-4A86CF?logo=gnome&logoColor=white)](https://extensions.gnome.org/) [![GJS](https://img.shields.io/badge/GJS-ES2022-F7DF1E?logo=javascript&logoColor=black)](https://gjs.guide/) [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE) [![Platform](https://img.shields.io/badge/platform-Linux-FCC624?logo=linux&logoColor=black)](https://www.gnome.org/) [![GStreamer](https://img.shields.io/badge/GStreamer-1.0-red)](https://gstreamer.freedesktop.org/) [![i18n](https://img.shields.io/badge/i18n-29_languages-green)](locale/)
+[![GNOME Shell](https://img.shields.io/badge/GNOME_Shell-46--50-4A86CF?logo=gnome&logoColor=white)](https://extensions.gnome.org/) [![GJS](https://img.shields.io/badge/GJS-ES2022-F7DF1E?logo=javascript&logoColor=black)](https://gjs.guide/) [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE) [![Platform](https://img.shields.io/badge/platform-Linux-FCC624?logo=linux&logoColor=black)](https://www.gnome.org/) [![GStreamer](https://img.shields.io/badge/GStreamer-1.0-red)](https://gstreamer.freedesktop.org/) [![i18n](https://img.shields.io/badge/i18n-29_languages-green)](locale/)
 
 </div>
 
@@ -18,12 +18,13 @@ A GNOME Shell extension that transforms the native Print Screen UI into a powerf
 
 **Big Shot** hooks into GNOME Shell's built-in Screenshot UI (activated by `Print Screen`) and extends it with:
 
-- **14 annotation tools** for marking up screenshots in real-time
+- **15 annotation tools** for marking up screenshots in real-time
 - **Gradient backgrounds, crop, padding & drop-shadow** for professional-looking captures
 - **Desktop + Microphone audio** recording via PulseAudio/PipeWire
 - **GPU-accelerated screencasting** with automatic hardware detection (NVIDIA NVENC, AMD/Intel VA-API)
 - **Live webcam overlay** with 7 mask effects and 5 size presets
-- **Pause/Resume recording** with panel indicator and timer
+- **Live video annotations** using the same drawing tools during recording or while paused
+- **Pause/Resume recording** with automatic segment merging, panel indicator, and timer
 - **Copy to Clipboard & Save As…** with annotations composited onto the image
 
 No separate windows. No external apps. Everything lives inside the native GNOME UI.
@@ -34,7 +35,7 @@ No separate windows. No external apps. Everything lives inside the native GNOME 
 
 ### 🖊️ Screenshot Annotation Tools
 
-14 tools available via floating draggable toolbar:
+15 tools available via floating draggable toolbar:
 
 | Tool | Description |
 |------|-------------|
@@ -48,6 +49,7 @@ No separate windows. No external apps. Everything lives inside the native GNOME 
 | **Highlighter** | Semi-transparent marker (45% opacity), Shift = horizontal |
 | **Censor (Pixelate)** | Real mosaic pixelation over sensitive areas — 5 intensity levels |
 | **Blur** | Gaussian-like blur (iterative box blur, 3 passes) — 5 intensity levels |
+| **Invert Colors** | Invert the selected region using real pixel data |
 | **Number Stamp** | Sequential numbered circles for step-by-step guides |
 | **Number + Arrow** | Numbered badge with arrow pointing to target |
 | **Number + Pointer** | Numbered badge with dot pointer line |
@@ -89,7 +91,11 @@ No separate windows. No external apps. Everything lives inside the native GNOME 
 | **Resolution** | 100% (default) / 75% / 50% / 33% downscaling |
 | **Quality** | High / Medium / Low (bitrate presets) |
 | **Codec selection** | Auto (best available) or manual selection from detected codecs |
-| **Pause / Resume** | Freeze recording via SIGSTOP/SIGCONT — single continuous file, no merging needed |
+| **Live annotation** | Draw on top of open windows while recording; annotations are captured into the video |
+| **Paused annotation** | Pause recording and enter edit mode automatically; exit edit mode while staying paused |
+| **Privacy effects** | Censor, Blur, and Invert capture real pixels for video overlays in live and paused modes |
+| **Clear annotations** | Remove all active video annotations from the top-panel clear button |
+| **Pause / Resume** | Stop the current segment, keep the session paused, then resume into a new segment |
 | **Quick Stop** | Re-open screenshot UI while recording → stops recording instantly |
 | **Panel indicator** | Timer (MM:SS) + pause/play button in the top panel |
 | **Screenshot while recording** | Take screenshots during an active screencast (patched GNOME limitation) |
@@ -121,6 +127,17 @@ Floating draggable panel (visible in screencast mode) with:
 - **Mask row:** 7 mask options (visible when webcam is active)
 - **Size row:** XS / S / M / L / XL (visible when webcam is active)
 
+### ✏️ Video Annotation Workflow
+
+Video annotations reuse the screenshot drawing toolbar and are rendered as a GNOME Shell TopChrome overlay, so the screencast captures them directly.
+
+- Click the **pencil** icon while recording to enter or exit live edit mode.
+- Click **Pause** while recording to pause the current segment and enter paused edit mode automatically.
+- While paused, click the **Select / Move** tool to leave edit mode without resuming recording. This lets you open or prepare sensitive content before re-enabling the pencil and applying censorship.
+- Click the top-panel **play** button to resume recording; if paused edit mode is active, it closes the edit overlay first and then starts the next recording segment.
+- Censor, Blur, and Invert generate pixel-based previews from the current screen frame in both live and paused modes. During live capture, only the current effect action is excluded from the frame capture so previous annotations stay visible.
+- ESC and the toolbar close button exit video edit mode without resuming a paused recording.
+
 ### 🔍 GPU Detection & Pipeline Cascade
 
 Follows the same detection pattern as [big-video-converter](https://github.com/biglinux/big-video-converter):
@@ -147,7 +164,7 @@ Pipeline ordering: GPU hardware-accelerated first → Software fallback. The GNO
 | `Ctrl+Z` | Undo |
 | `Ctrl+Shift+Z` / `Ctrl+Y` | Redo |
 | `Delete` / `Backspace` | Remove selected or last object |
-| `Escape` | Deselect current object |
+| `Escape` | Deselect current object, or exit video edit mode |
 | `Ctrl+Scroll` | Adjust brush size (or intensity for Censor/Blur) |
 
 ---
@@ -166,10 +183,22 @@ Key implementation details:
 
 ### Pause / Resume Recording
 
-Recording pause uses `SIGSTOP` / `SIGCONT` signals sent directly to the GStreamer screencast process:
-- **Pause:** `kill -STOP <pid>` — freezes the pipeline, no frames captured
-- **Resume:** `kill -CONT <pid>` — pipeline continues, producing a single continuous file
-- No file segmenting or ffmpeg merging needed
+Recording pause is segment-based:
+- **Pause:** stops and finalizes the current screencast segment, marks the recording session as paused, and keeps the GNOME UI in a recording-aware state.
+- **Paused edit:** opens the video annotation overlay automatically. Exiting the overlay does not resume recording.
+- **Resume:** starts the next screencast segment with the same codec, quality, framerate, downsize, audio, and webcam settings.
+- **Final stop:** if more than one segment exists, Big Shot merges the segments with `ffmpeg -f concat -c copy` and cleans up temporary segment files under `~/Videos/BigShot/.segments/`.
+- **Single-segment recordings:** no merge is needed; the original output file is kept.
+
+This avoids freezing the external screencast process with POSIX signals and keeps pause/resume independent from the process name used by GNOME Shell.
+
+### Live Video Annotation Overlay
+
+The video annotation overlay is separate from the screenshot preview overlay:
+- It uses TopChrome so annotations are visible above normal application windows and captured by the screencast.
+- The top panel is left clickable while editing, and the floating edit toolbar is kept above the drawing capture layer.
+- Live Censor/Blur/Invert previews capture a current stage frame and exclude only the in-progress effect action, preventing stale previews and avoiding a full overlay blink.
+- Paused Censor/Blur/Invert previews capture a paused stage frame for accurate pixel effects without adding extra recorded frames.
 
 ### Audio Pipeline
 
@@ -181,7 +210,7 @@ Audio capture works via `Gvc.MixerControl` to detect PulseAudio/PipeWire output 
 ### Annotation Compositing
 
 Annotations are rendered onto the screenshot at save time:
-1. Pixel-manipulating effects (Censor/Blur) applied directly on `GdkPixbuf` pixel data
+1. Pixel-manipulating effects (Censor/Blur/Invert) applied directly on `GdkPixbuf` pixel data
 2. Vector annotations (Pen, Arrow, Text, etc.) rendered via Cairo on an `ImageSurface`
 3. Final PNG written to clipboard + file with full annotation fidelity
 
@@ -189,7 +218,7 @@ Annotations are rendered onto the screenshot at save time:
 
 ## Compatibility
 
-- **GNOME Shell:** 46, 47, 48, 49
+- **GNOME Shell:** 46, 47, 48, 49, 50
 - **Distribution:** Arch Linux (BigLinux / BigCommunity) — works on any Arch-based distro
 - **Audio:** PulseAudio / PipeWire (via PulseAudio compatibility)
 - **Video:** GStreamer 1.0
@@ -230,6 +259,7 @@ gnome-extensions install --force big-shot.zip
 | `gst-plugins-bad` | `openh264enc`, VA-API plugins |
 | `gst-plugin-va` | Modern VA H.264 encoding (`vah264enc`, `vah264lpenc`) |
 | `pciutils` | GPU detection via `lspci` |
+| `ffmpeg` | Merge pause/resume recording segments |
 
 ### Optional
 

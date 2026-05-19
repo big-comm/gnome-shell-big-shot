@@ -12,6 +12,7 @@ import St from 'gi://St';
 import GLib from 'gi://GLib';
 import Gio from 'gi://Gio';
 import Shell from 'gi://Shell';
+import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 import { gettext as _ } from 'resource:///org/gnome/shell/extensions/extension.js';
 
 import {
@@ -46,14 +47,31 @@ const TOOL_TO_MODE = {
 };
 
 export class DrawingOverlay {
-    constructor(screenshotUI, toolbar) {
+    constructor(screenshotUI, toolbar, options = {}) {
         this._ui = screenshotUI;
         this._toolbar = toolbar;
+        this._parentActor = options.parentActor ?? screenshotUI;
+        this._keyActor = options.keyActor ?? screenshotUI;
+        this._useTopChrome = !!options.useTopChrome;
+        this._liveVideo = !!options.liveVideo;
+        this._enableEffectPreview = options.enableEffectPreview ?? !this._liveVideo;
+        this._onCancel = options.onCancel ?? null;
+        this._useStageEvents = !!options.useStageEvents;
+        this._captureInputWithActor = !!options.captureInputWithActor;
+        this._eventActor = options.eventActor ?? global.stage;
+        this._shouldIgnoreEvent = options.shouldIgnoreEvent ?? null;
+        this._captureStageForPreview = !!options.captureStageForPreview;
+        this._shouldCaptureStagePreview = options.shouldCaptureStagePreview ?? (() => this._captureStageForPreview);
+        this._getPreviewHiddenActors = options.getPreviewHiddenActors ?? (() => []);
+        this._eventsActive = false;
+        this._originX = 0;
+        this._originY = 0;
         this._actions = [];
         this._undoStack = [];
         this._currentStroke = null;
         this._startPoint = null;
         this._isDrawing = false;
+        this._previewExcludedAction = null;
         // Number counters are computed dynamically from this._actions
         // See _getNextNumber()
 
@@ -82,6 +100,7 @@ export class DrawingOverlay {
         // Reactivity is toggled by setReactive() when a drawing tool is active.
         this._actor = new St.DrawingArea({
             reactive: false,
+            can_focus: true,
             x_expand: true,
             y_expand: true,
             accessible_name: _('Drawing canvas'),
@@ -107,19 +126,35 @@ export class DrawingOverlay {
         this._actor.connect('motion-event', (_actor, event) => {
             return this._onMotion(event);
         });
-
-        // Key events for shortcuts (connected to the UI itself)
-        this._keyId = this._ui.connect('key-press-event', (actor, event) => {
+        this._actor.connect('key-press-event', (_actor, event) => {
             if (!this._actor?.visible) return Clutter.EVENT_PROPAGATE;
             return this._onKeyPress(event);
         });
+
+        if (this._useStageEvents && !this._captureInputWithActor && this._eventActor) {
+            this._stageEventId = this._eventActor.connect('captured-event',
+                (_actor, event) => this._onStageCapturedEvent(event));
+        }
+
+        // Key events for shortcuts (connected to the UI itself)
+        if (this._keyActor) {
+            this._keyId = this._keyActor.connect('key-press-event', (_actor, event) => {
+                if (!this._actor?.visible) return Clutter.EVENT_PROPAGATE;
+                return this._onKeyPress(event);
+            });
+        }
 
         // Initially hidden
         this._actor.visible = false;
 
         // Insert BELOW _primaryMonitorBin (which contains panel/close button)
         // and ABOVE _areaSelector (the selection handles).
-        if (this._ui) {
+        if (this._useTopChrome) {
+            Main.layoutManager.addTopChrome(this._actor, {
+                trackFullscreen: false,
+            });
+            this._addedAsChrome = true;
+        } else if (this._ui) {
             const primaryBin = this._ui._primaryMonitorBin;
             if (primaryBin?.get_parent() === this._ui) {
                 this._ui.insert_child_below(this._actor, primaryBin);
@@ -129,7 +164,10 @@ export class DrawingOverlay {
         }
     }
 
-    show(width, height) {
+    show(width, height, x = 0, y = 0) {
+        this._originX = x;
+        this._originY = y;
+        this._actor.set_position(x, y);
         this._actor.set_size(width, height);
         this._actor.visible = true;
         this._actor.queue_repaint();
@@ -147,8 +185,21 @@ export class DrawingOverlay {
      * and close button remain clickable since they're in a higher z-layer.
      */
     setReactive(active) {
-        if (this._actor) {
+        if (this._captureInputWithActor) {
+            this._eventsActive = false;
+            if (this._actor) {
+                this._actor.reactive = active;
+                if (active)
+                    this._actor.grab_key_focus?.();
+            }
+        } else if (this._useStageEvents) {
+            this._eventsActive = active;
+            if (this._actor)
+                this._actor.reactive = false;
+        } else if (this._actor) {
             this._actor.reactive = active;
+            if (active)
+                this._actor.grab_key_focus?.();
         }
         if (!active) {
             // Reset drawing state when deactivating
@@ -158,6 +209,64 @@ export class DrawingOverlay {
             this._currentEndPoint = null;
             this._isDragging = false;
             this._dragStart = null;
+        }
+    }
+
+    _onStageCapturedEvent(event) {
+        if (!this._eventsActive || !this._actor?.visible)
+            return Clutter.EVENT_PROPAGATE;
+
+        const type = event.type();
+
+        if (type === Clutter.EventType.KEY_PRESS) {
+            if (this._shouldIgnoreStageEvent(event, null, null))
+                return Clutter.EVENT_PROPAGATE;
+            return this._onKeyPress(event);
+        }
+
+        if (type === Clutter.EventType.BUTTON_PRESS) {
+            const [x, y] = event.get_coords();
+            if (this._actorContainsStagePoint(this._textPopover, x, y) ||
+                this._shouldIgnoreStageEvent(event, x, y))
+                return Clutter.EVENT_PROPAGATE;
+            return this._onButtonPress(event);
+        }
+
+        if (type === Clutter.EventType.MOTION) {
+            if (!this._isDrawing && !this._isDragging)
+                return Clutter.EVENT_PROPAGATE;
+            return this._onMotion(event);
+        }
+
+        if (type === Clutter.EventType.BUTTON_RELEASE) {
+            if (!this._isDrawing && !this._isDragging)
+                return Clutter.EVENT_PROPAGATE;
+            return this._onButtonRelease(event);
+        }
+
+        return Clutter.EVENT_PROPAGATE;
+    }
+
+    _shouldIgnoreStageEvent(event, x, y) {
+        if (!this._shouldIgnoreEvent)
+            return false;
+
+        if (this._shouldIgnoreEvent.length >= 3)
+            return this._shouldIgnoreEvent(event, x, y);
+        return this._shouldIgnoreEvent(x, y);
+    }
+
+    _actorContainsStagePoint(actor, stageX, stageY) {
+        if (!actor?.visible)
+            return false;
+
+        try {
+            const [ok, x, y] = actor.transform_stage_point(stageX, stageY);
+            if (!ok)
+                return false;
+            return x >= 0 && y >= 0 && x <= actor.width && y <= actor.height;
+        } catch (_e) {
+            return false;
         }
     }
 
@@ -183,6 +292,7 @@ export class DrawingOverlay {
             fillColor,
             font: toolbar?.currentFont || 'Sans',
             intensity,
+            liveVideo: this._liveVideo,
         });
     }
 
@@ -200,7 +310,7 @@ export class DrawingOverlay {
     }
 
     _toWidgetCoords(x, y) {
-        return [x, y];
+        return [x - this._originX, y - this._originY];
     }
 
     // =========================================================================
@@ -417,6 +527,8 @@ export class DrawingOverlay {
 
             // Generate real preview for effect actions (censor/blur)
             if (action instanceof CensorAction || action instanceof BlurAction || action instanceof InvertAction) {
+                if (this._liveVideo && this._captureStageForPreview)
+                    this.clearPreviewCache();
                 this._generateEffectPreview(action).catch(e =>
                     console.error(`[Big Shot] Preview generation failed: ${e.message}`)
                 );
@@ -494,6 +606,10 @@ export class DrawingOverlay {
 
         // Escape → deselect current selection
         if (key === Clutter.KEY_Escape) {
+            if (this._onCancel) {
+                this._onCancel();
+                return Clutter.EVENT_STOP;
+            }
             if (this._selectedAction) {
                 this._selectedAction = null;
                 this._actor.queue_repaint();
@@ -511,7 +627,9 @@ export class DrawingOverlay {
     _showTextPopover(position, options, existingAction = null) {
         this._closeTextPopover();
 
-        const [wx, wy] = this._toWidgetCoords(position[0], position[1]);
+        const [wx, wy] = this._useTopChrome
+            ? position
+            : this._toWidgetCoords(position[0], position[1]);
 
         this._textPopover = new St.BoxLayout({
             style: 'background: rgba(30,30,30,0.95); border-radius: 8px; padding: 8px; ' +
@@ -583,7 +701,7 @@ export class DrawingOverlay {
         this._textPopover.add_child(this._textEntry);
         this._textPopover.add_child(confirmBtn);
 
-        this._ui.add_child(this._textPopover);
+        this._addFloatingChild(this._textPopover);
         this._textPopover.set_position(
             Math.max(0, wx - 100),
             Math.max(0, wy - 44)
@@ -614,12 +732,27 @@ export class DrawingOverlay {
             GLib.source_remove(this._focusIdleId);
             this._focusIdleId = 0;
         }
+        if (this._textPopover?._bigShotChrome) {
+            try { Main.layoutManager.removeChrome(this._textPopover); } catch (_e) { /* */ }
+            this._textPopover._bigShotChrome = false;
+        }
         this._textPopover?.destroy();
         this._textPopover = null;
         this._textEntry = null;
 
         // Return focus to the screenshot UI so Enter key works for capture
-        this._ui?.grab_key_focus();
+        this._ui?.grab_key_focus?.();
+    }
+
+    _addFloatingChild(actor) {
+        if (this._useTopChrome) {
+            Main.layoutManager.addTopChrome(actor, {
+                trackFullscreen: false,
+            });
+            actor._bigShotChrome = true;
+            return;
+        }
+        this._ui?.add_child(actor);
     }
 
     // =========================================================================
@@ -654,6 +787,9 @@ export class DrawingOverlay {
 
         // Draw all committed actions
         for (const action of this._actions) {
+            if (action === this._previewExcludedAction)
+                continue;
+
             cr.save();
             cr.newPath();
             action.draw(cr, toWidget, scale);
@@ -753,8 +889,18 @@ export class DrawingOverlay {
     // EFFECT PREVIEW (censor / blur real preview from screenshot pixels)
     // =========================================================================
 
-    async _ensurePixbufCache() {
+    async _ensurePixbufCache(excludedAction = null) {
+        if (!this._enableEffectPreview) return;
         if (this._cachedPixbuf) return;
+
+        if (this._captureStageForPreview && this._shouldCaptureStagePreview()) {
+            await this._captureStagePixbuf(excludedAction);
+            if (this._cachedPixbuf)
+                return;
+        }
+
+        if (this._liveVideo && this._captureStageForPreview)
+            return;
 
         const content = this._ui._stageScreenshot?.get_content();
         if (!content) return;
@@ -776,8 +922,57 @@ export class DrawingOverlay {
         }
     }
 
+    async _captureStagePixbuf(excludedAction = null) {
+        this._previewExcludedAction = excludedAction;
+        this._actor?.queue_repaint();
+
+        const hiddenActors = [
+            excludedAction ? null : this._actor,
+            ...this._getPreviewHiddenActors(),
+        ].filter(actor => actor?.visible);
+
+        for (const actor of hiddenActors)
+            actor.hide();
+
+        try {
+            await new Promise(resolve => {
+                GLib.idle_add(GLib.PRIORITY_DEFAULT, () => {
+                    resolve();
+                    return GLib.SOURCE_REMOVE;
+                });
+            });
+
+            const shooter = new Shell.Screenshot();
+            const [content] = await shooter.screenshot_stage_to_content();
+            const texture = content?.get_texture?.();
+            if (!texture)
+                return;
+
+            const bufScale = St.ThemeContext.get_for_stage(global.stage).scale_factor || 1;
+            const stream = Gio.MemoryOutputStream.new_resizable();
+            const pixbuf = await Shell.Screenshot.composite_to_stream(
+                texture, 0, 0, -1, -1, bufScale,
+                null, 0, 0, 1,
+                stream
+            );
+            stream.close(null);
+
+            if (pixbuf) {
+                this._cachedPixbuf = pixbuf;
+                this._cachedBufScale = bufScale;
+            }
+        } catch (e) {
+            console.error(`[Big Shot] Stage preview capture failed: ${e.message}`);
+        } finally {
+            this._previewExcludedAction = null;
+            for (const actor of hiddenActors)
+                actor.show();
+            this._actor?.queue_repaint();
+        }
+    }
+
     async _generateEffectPreview(action) {
-        await this._ensurePixbufCache();
+        await this._ensurePixbufCache(action);
         if (!this._cachedPixbuf) return;
 
         action.generatePreview(this._cachedPixbuf, this._cachedBufScale);
@@ -792,9 +987,18 @@ export class DrawingOverlay {
         this._actions = [];
         this._undoStack = [];
         // Number counters are dynamic — no reset needed
+        this.clearPreviewCache();
+        this._actor.queue_repaint();
+    }
+
+    clearPreviewCache() {
         this._cachedPixbuf = null;
         this._cachedBufScale = null;
-        this._actor.queue_repaint();
+    }
+
+    clearSelection() {
+        this._selectedAction = null;
+        this._actor?.queue_repaint();
     }
 
     destroy() {
@@ -809,11 +1013,19 @@ export class DrawingOverlay {
         if (this._repaintId) {
             this._actor.disconnect(this._repaintId);
         }
-        if (this._keyId) {
-            this._ui.disconnect(this._keyId);
+        if (this._keyId && this._keyActor) {
+            this._keyActor.disconnect(this._keyId);
             this._keyId = 0;
         }
+        if (this._stageEventId && this._eventActor) {
+            this._eventActor.disconnect(this._stageEventId);
+            this._stageEventId = 0;
+        }
 
+        if (this._actor && this._addedAsChrome) {
+            try { Main.layoutManager.removeChrome(this._actor); } catch (_e) { /* */ }
+            this._addedAsChrome = false;
+        }
         this._actor?.destroy();
         this._actor = null;
     }

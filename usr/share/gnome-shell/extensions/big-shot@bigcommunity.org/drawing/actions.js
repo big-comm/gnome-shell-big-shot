@@ -48,6 +48,7 @@ export class DrawingOptions {
         size = 3,
         font = 'Sans',
         intensity = 3,
+        liveVideo = false,
     } = {}) {
         this.mode = mode;
         this.primaryColor = primaryColor;
@@ -56,6 +57,7 @@ export class DrawingOptions {
         this.size = size;
         this.font = font;
         this.intensity = intensity;
+        this.liveVideo = liveVideo;
     }
 
     clone() {
@@ -67,6 +69,7 @@ export class DrawingOptions {
             size: this.size,
             font: this.font,
             intensity: this.intensity,
+            liveVideo: this.liveVideo,
         });
     }
 }
@@ -489,6 +492,11 @@ export class CensorAction extends RectAction {
             return;
         }
 
+        if (this.options?.liveVideo) {
+            this._drawOpaqueLiveMask(cr, toWidget);
+            return;
+        }
+
         // Fallback: checkerboard placeholder (shown during drag)
         let [x1, y1] = toWidget(...this.start);
         let [x2, y2] = toWidget(...this.end);
@@ -521,6 +529,42 @@ export class CensorAction extends RectAction {
                 cr.fill();
             }
         }
+        cr.restore();
+    }
+
+    _drawOpaqueLiveMask(cr, toWidget) {
+        let [x1, y1] = toWidget(...this.start);
+        let [x2, y2] = toWidget(...this.end);
+
+        const x = Math.min(x1, x2);
+        const y = Math.min(y1, y2);
+        const w = Math.abs(x2 - x1);
+        const h = Math.abs(y2 - y1);
+
+        if (w < 1 || h < 1) return;
+
+        cr.save();
+        cr.rectangle(x, y, w, h);
+        cr.clip();
+
+        const blockSize = this._blockSizeForIntensity(1);
+        const blocksX = Math.max(1, Math.ceil(w / blockSize));
+        const blocksY = Math.max(1, Math.ceil(h / blockSize));
+
+        for (let bx = 0; bx < blocksX; bx++) {
+            for (let by = 0; by < blocksY; by++) {
+                const shade = ((bx + by) % 2 === 0) ? 0.04 : 0.16;
+                cr.setSourceRGBA(shade, shade, shade, 1.0);
+                cr.rectangle(
+                    x + bx * blockSize,
+                    y + by * blockSize,
+                    blockSize,
+                    blockSize
+                );
+                cr.fill();
+            }
+        }
+
         cr.restore();
     }
 
@@ -725,6 +769,11 @@ export class BlurAction extends RectAction {
             return;
         }
 
+        if (this.options?.liveVideo) {
+            this._drawLiveBlurMask(cr, x, y, w, h, scale);
+            return;
+        }
+
         // Fallback: frosted/hatched overlay (shown during drag)
         cr.save();
         cr.rectangle(x, y, w, h);
@@ -737,6 +786,27 @@ export class BlurAction extends RectAction {
         cr.setSourceRGBA(1.0, 1.0, 1.0, 0.3);
         cr.setLineWidth(1.0);
         const spacing = 6 * scale;
+        const maxDim = w + h;
+        for (let d = -maxDim; d < maxDim; d += spacing) {
+            cr.moveTo(x + d, y);
+            cr.lineTo(x + d + h, y + h);
+        }
+        cr.stroke();
+        cr.restore();
+    }
+
+    _drawLiveBlurMask(cr, x, y, w, h, scale) {
+        cr.save();
+        cr.rectangle(x, y, w, h);
+        cr.clip();
+
+        cr.setSourceRGBA(0.78, 0.84, 0.9, 0.88);
+        cr.rectangle(x, y, w, h);
+        cr.fill();
+
+        cr.setSourceRGBA(1.0, 1.0, 1.0, 0.45);
+        cr.setLineWidth(1.2 * scale);
+        const spacing = Math.max(4, 6 * scale);
         const maxDim = w + h;
         for (let d = -maxDim; d < maxDim; d += spacing) {
             cr.moveTo(x + d, y);
@@ -972,6 +1042,11 @@ export class InvertAction extends RectAction {
             return;
         }
 
+        if (this.options?.liveVideo) {
+            this._drawLiveInvertMask(cr, x, y, w, h);
+            return;
+        }
+
         // Fallback: hatched overlay during drag (preview not ready yet).
         cr.save();
         cr.rectangle(x, y, w, h);
@@ -982,6 +1057,27 @@ export class InvertAction extends RectAction {
         cr.setSourceRGBA(0.0, 0.0, 0.0, 0.3);
         cr.setLineWidth(1.0);
         const spacing = 6;
+        const maxDim = w + h;
+        for (let d = -maxDim; d < maxDim; d += spacing) {
+            cr.moveTo(x + d, y);
+            cr.lineTo(x + d + h, y + h);
+        }
+        cr.stroke();
+        cr.restore();
+    }
+
+    _drawLiveInvertMask(cr, x, y, w, h) {
+        cr.save();
+        cr.rectangle(x, y, w, h);
+        cr.clip();
+
+        cr.setSourceRGBA(1.0, 1.0, 1.0, 0.82);
+        cr.rectangle(x, y, w, h);
+        cr.fill();
+
+        cr.setSourceRGBA(0.0, 0.0, 0.0, 0.35);
+        cr.setLineWidth(1.0);
+        const spacing = 5;
         const maxDim = w + h;
         for (let d = -maxDim; d < maxDim; d += spacing) {
             cr.moveTo(x + d, y);
