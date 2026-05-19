@@ -14,55 +14,10 @@ msgstr  "Project-Id-Version: gnome-shell-big-shot\n"
         "Content-Type: text/plain; charset=UTF-8\n"
         "Content-Transfer-Encoding: 8bit\n"
 
-msgid   "Drawing canvas"
+msgid   "Edit live"
 msgstr  ""
 
-msgid   "Text…"
-msgstr  ""
-
-msgid   "Annotation text"
-msgstr  ""
-
-msgid   "Confirm"
-msgstr  ""
-
-msgid   "BigShot from %d %t"
-msgstr  ""
-
-msgid   "Screenshot taken"
-msgstr  ""
-
-msgid   "Screenshots"
-msgstr  ""
-
-msgid   "Screenshot from %s"
-msgstr  ""
-
-msgid   "Screenshot copied"
-msgstr  ""
-
-msgid   "Save Screenshot"
-msgstr  ""
-
-msgid   "Recording resolution"
-msgstr  ""
-
-msgid   "Desktop"
-msgstr  ""
-
-msgid   "Mic"
-msgstr  ""
-
-msgid   "Record Desktop Audio"
-msgstr  ""
-
-msgid   "Record Microphone"
-msgstr  ""
-
-msgid   "Webcam"
-msgstr  ""
-
-msgid   "Webcam Overlay"
+msgid   "Clear annotations"
 msgstr  ""
 
 msgid   "Select / Move"
@@ -152,6 +107,9 @@ msgstr  ""
 msgid   "Close"
 msgstr  ""
 
+msgid   "Done"
+msgstr  ""
+
 msgid   "Video Settings"
 msgstr  ""
 
@@ -171,6 +129,9 @@ msgid   "Recording quality (bitrate)"
 msgstr  ""
 
 msgid   "Codec"
+msgstr  ""
+
+msgid   "Mic"
 msgstr  ""
 
 msgid   "Camera"
@@ -203,6 +164,12 @@ msgstr  ""
 msgid   "Video codec"
 msgstr  ""
 
+msgid   "Webcam"
+msgstr  ""
+
+msgid   "Webcam Overlay"
+msgstr  ""
+
 msgid   "Gradient Angle"
 msgstr  ""
 
@@ -210,4 +177,46 @@ msgid   "Border Radius"
 msgstr  ""
 
 msgid   "Frames per second"
+msgstr  ""
+
+msgid   "Recording resolution"
+msgstr  ""
+
+msgid   "Desktop"
+msgstr  ""
+
+msgid   "Record Desktop Audio"
+msgstr  ""
+
+msgid   "Record Microphone"
+msgstr  ""
+
+msgid   "BigShot from %d %t"
+msgstr  ""
+
+msgid   "Screenshot taken"
+msgstr  ""
+
+msgid   "Screenshots"
+msgstr  ""
+
+msgid   "Screenshot from %s"
+msgstr  ""
+
+msgid   "Screenshot copied"
+msgstr  ""
+
+msgid   "Save Screenshot"
+msgstr  ""
+
+msgid   "Drawing canvas"
+msgstr  ""
+
+msgid   "Text…"
+msgstr  ""
+
+msgid   "Annotation text"
+msgstr  ""
+
+msgid   "Confirm"
 msgstr  ""
