@@ -809,12 +809,7 @@ export class PartToolbar extends PartUI {
         this.raiseRecordingToolbar();
 
         this._positionRecordingToolbar();
-        this._editContainer.opacity = 0;
-        this._editContainer.ease({
-            opacity: 230,
-            duration: 160,
-            mode: Clutter.AnimationMode.EASE_OUT_QUAD,
-        });
+        this._presentRecordingToolbar();
     }
 
     detachEditForRecording() {
@@ -837,21 +832,46 @@ export class PartToolbar extends PartUI {
         if (!this._editContainer)
             return;
 
+        this._setRecordingToolbarPosition();
         this._editContainer.queue_relayout();
         GLib.idle_add(GLib.PRIORITY_DEFAULT, () => {
             if (!this._recordingToolbarAttached)
                 return GLib.SOURCE_REMOVE;
 
-            const monitor = global.display.get_current_monitor();
-            const rect = global.display.get_monitor_geometry(monitor);
-            const cw = this._editContainer.get_preferred_width(-1)[1] || 620;
-            const ch = this._editContainer.get_preferred_height(-1)[1] || 40;
-            this._editContainer.set_position(
-                rect.x + Math.max(12, (rect.width - cw) / 2),
-                rect.y + rect.height - ch - 64
-            );
+            this._setRecordingToolbarPosition();
+            this._queueActorFrame(this._editContainer);
             return GLib.SOURCE_REMOVE;
         });
+    }
+
+    _setRecordingToolbarPosition() {
+        const monitor = global.display.get_current_monitor();
+        const rect = global.display.get_monitor_geometry(monitor);
+        const cw = this._editContainer.get_preferred_width(-1)[1] || 620;
+        const ch = this._editContainer.get_preferred_height(-1)[1] || 40;
+        this._editContainer.set_position(
+            rect.x + Math.max(12, (rect.width - cw) / 2),
+            rect.y + rect.height - ch - 64
+        );
+    }
+
+    _presentRecordingToolbar() {
+        if (!this._editContainer)
+            return;
+
+        this._editContainer.remove_all_transitions?.();
+        this._editContainer.show();
+        this._editContainer.opacity = 230;
+        this._queueActorFrame(this._editContainer);
+    }
+
+    _queueActorFrame(actor) {
+        actor?.queue_relayout?.();
+        actor?.queue_redraw?.();
+        const parent = actor?.get_parent?.();
+        parent?.queue_relayout?.();
+        parent?.queue_redraw?.();
+        global.stage?.queue_redraw?.();
     }
 
     _raiseRecordingToolbar() {
