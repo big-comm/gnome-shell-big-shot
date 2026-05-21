@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
-export const APP_VERSION = '26.8.1';
+export const APP_VERSION = '26.8.2';
 
 // Top-level imports are intentionally minimal. Anything imported here runs
 // synchronously inside GNOME's serial extension load loop and delays every
@@ -395,6 +395,7 @@ export default class BigShotExtension extends Extension {
         this._recordingContext = null;
         this._recordingSession = null;
         this._currentSegment = null;
+        this._suppressPauseStopFailure = false;
         this._stopWatcherId = 0;
 
         const screenshotUI = Main.screenshotUI;
@@ -1406,6 +1407,17 @@ export default class BigShotExtension extends Extension {
             };
         }
 
+        this._origScreencastFailed = screenshotUI._screencastFailed?.bind(screenshotUI);
+        if (this._origScreencastFailed) {
+            screenshotUI._screencastFailed = function (...args) {
+                if (ext._shouldIgnorePauseStopFailure()) {
+                    ext._suppressPauseStopFailure = false;
+                    return;
+                }
+                return ext._origScreencastFailed(...args);
+            };
+        }
+
         // Native sets _windowButton.reactive = false in two places when
         // entering screencast mode:
         //   1. _onCastButtonToggled (toggle handler)
@@ -1544,6 +1556,8 @@ export default class BigShotExtension extends Extension {
             ui._startScreencast = this._origStartScreencast;
         if (ui && this._origStopScreencast)
             ui.stopScreencast = this._origStopScreencast;
+        if (ui && this._origScreencastFailed)
+            ui._screencastFailed = this._origScreencastFailed;
         if (ui && this._origSyncWindowButtonSensitivity)
             ui._syncWindowButtonSensitivity = this._origSyncWindowButtonSensitivity;
         if (ui && this._castButtonReactivityId && ui._castButton) {
@@ -1556,6 +1570,7 @@ export default class BigShotExtension extends Extension {
         this._origOpen = null;
         this._origStartScreencast = null;
         this._origStopScreencast = null;
+        this._origScreencastFailed = null;
         this._origSyncWindowButtonSensitivity = null;
         this._castButtonReactivityId = 0;
     }
@@ -1776,6 +1791,11 @@ export default class BigShotExtension extends Extension {
             ui._screencastInProgress = active;
     }
 
+    _shouldIgnorePauseStopFailure() {
+        return this._suppressPauseStopFailure &&
+            (this._recordingState === 'pausing' || this._recordingState === 'paused');
+    }
+
     // =========================================================================
     // PAUSE / RESUME RECORDING
     // =========================================================================
@@ -1784,6 +1804,7 @@ export default class BigShotExtension extends Extension {
         if (!this._origStopScreencastAsync)
             return false;
 
+        this._suppressPauseStopFailure = true;
         const result = await this._origStopScreencastAsync();
         return Array.isArray(result) ? !!result[0] : !!result;
     }
@@ -1870,6 +1891,8 @@ export default class BigShotExtension extends Extension {
         } catch (e) {
             console.error(`[Big Shot] Failed to pause recording: ${e.message}`);
             this._recordingState = 'recording';
+            this._suppressPauseStopFailure = false;
+            this._setScreencastInProgress(true);
             this._indicator?.onResumed();
             return false;
         }

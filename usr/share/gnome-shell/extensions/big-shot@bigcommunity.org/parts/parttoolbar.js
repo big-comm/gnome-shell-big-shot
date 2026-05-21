@@ -808,8 +808,8 @@ export class PartToolbar extends PartUI {
         });
         this.raiseRecordingToolbar();
 
+        this._editContainer.opacity = 0;
         this._positionRecordingToolbar();
-        this._presentRecordingToolbar();
     }
 
     detachEditForRecording() {
@@ -832,14 +832,13 @@ export class PartToolbar extends PartUI {
         if (!this._editContainer)
             return;
 
-        this._setRecordingToolbarPosition();
         this._editContainer.queue_relayout();
         GLib.idle_add(GLib.PRIORITY_DEFAULT, () => {
             if (!this._recordingToolbarAttached)
                 return GLib.SOURCE_REMOVE;
 
             this._setRecordingToolbarPosition();
-            this._queueActorFrame(this._editContainer);
+            this._presentRecordingToolbar();
             return GLib.SOURCE_REMOVE;
         });
     }
@@ -847,12 +846,15 @@ export class PartToolbar extends PartUI {
     _setRecordingToolbarPosition() {
         const monitor = global.display.get_current_monitor();
         const rect = global.display.get_monitor_geometry(monitor);
-        const cw = this._editContainer.get_preferred_width(-1)[1] || 620;
-        const ch = this._editContainer.get_preferred_height(-1)[1] || 40;
-        this._editContainer.set_position(
-            rect.x + Math.max(12, (rect.width - cw) / 2),
-            rect.y + rect.height - ch - 64
-        );
+        const prefWidth = this._editContainer.get_preferred_width(-1)[1];
+        const prefHeight = this._editContainer.get_preferred_height(-1)[1];
+        const cw = Number.isFinite(prefWidth) && prefWidth > 0 ? prefWidth : 620;
+        const ch = Number.isFinite(prefHeight) && prefHeight > 0 ? prefHeight : 40;
+        const x = rect.x + Math.max(12, (rect.width - cw) / 2);
+        const y = rect.y + rect.height - ch - 64;
+
+        if (Number.isFinite(x) && Number.isFinite(y))
+            this._editContainer.set_position(x, y);
     }
 
     _presentRecordingToolbar() {
@@ -899,11 +901,14 @@ export class PartToolbar extends PartUI {
             Main.layoutManager.addTopChrome(this._editContainer, {
                 trackFullscreen: false,
             });
-            if (x !== null && y !== null)
-                this._editContainer.set_position(x, y);
+            if (x !== null && y !== null) {
+                if (Number.isFinite(x) && Number.isFinite(y))
+                    this._editContainer.set_position(x, y);
+            }
         }
 
         this._raiseRecordingToolbar();
+        this._queueActorFrame(this._editContainer);
     }
 
     containsRecordingControl(stageX, stageY, targetActor = null) {
@@ -1788,29 +1793,37 @@ export class PartToolbar extends PartUI {
 
     _showTooltip(button, text) {
         this._hideTooltip();
-        this._tooltip = new St.Label({
+        const tooltip = new St.Label({
             text,
             style_class: 'big-shot-tooltip',
             style: 'background: rgba(0,0,0,0.85); color: #ffffff; padding: 4px 8px; border-radius: 4px; font-size: 11px;',
         });
-        this._addFloatingActor(this._tooltip);
+        this._tooltip = tooltip;
+        this._addFloatingActor(tooltip);
         if (!this._recordingToolbarAttached)
-            this._ui.set_child_above_sibling(this._tooltip, null);
+            this._ui.set_child_above_sibling(tooltip, null);
 
-        GLib.idle_add(GLib.PRIORITY_DEFAULT, () => {
-            if (!this._tooltip) return GLib.SOURCE_REMOVE;
+        this._tooltipIdleId = GLib.idle_add(GLib.PRIORITY_DEFAULT, () => {
+            this._tooltipIdleId = 0;
+            if (this._tooltip !== tooltip || !tooltip.get_parent?.() || !button.get_parent?.())
+                return GLib.SOURCE_REMOVE;
             const [bx, by] = button.get_transformed_position();
             const bw = button.width;
-            const tw = this._tooltip.width;
-            this._tooltip.set_position(
-                bx + (bw - tw) / 2,
-                by - this._tooltip.height - 4
-            );
+            const tw = tooltip.width;
+            const th = tooltip.height;
+            const x = bx + (bw - tw) / 2;
+            const y = by - th - 4;
+            if (Number.isFinite(x) && Number.isFinite(y))
+                tooltip.set_position(x, y);
             return GLib.SOURCE_REMOVE;
         });
     }
 
     _hideTooltip() {
+        if (this._tooltipIdleId) {
+            GLib.source_remove(this._tooltipIdleId);
+            this._tooltipIdleId = 0;
+        }
         if (this._tooltip) {
             this._destroyFloatingActor(this._tooltip);
             this._tooltip = null;
