@@ -275,11 +275,6 @@ export class PartVideoAnnotation extends PartUI {
         if (!this._editing || !this._overlay)
             return;
 
-        if (this._activeMode === 'paused' && toolId === 'select') {
-            this._finishEdit(false);
-            return;
-        }
-
         const reactive = toolId !== null;
         this._overlay.setReactive(reactive);
         if (!reactive)

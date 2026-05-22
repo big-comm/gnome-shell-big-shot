@@ -133,7 +133,7 @@ Video annotations reuse the screenshot drawing toolbar and are rendered as a GNO
 
 - Click the **pencil** icon while recording to enter or exit live edit mode.
 - Click **Pause** while recording to pause the current segment and enter paused edit mode automatically.
-- While paused, click the **Select / Move** tool to leave edit mode without resuming recording. This lets you open or prepare sensitive content before re-enabling the pencil and applying censorship.
+- While paused, use the **Select / Move** tool to select, move, or edit existing annotations without resuming recording.
 - Click the top-panel **play** button to resume recording; if paused edit mode is active, it closes the edit overlay first and then starts the next recording segment.
 - Censor, Blur, and Invert generate pixel-based previews from the current screen frame in both live and paused modes. During live capture, only the current effect action is excluded from the frame capture so previous annotations stay visible.
 - ESC and the toolbar close button exit video edit mode without resuming a paused recording.
