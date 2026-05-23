@@ -147,81 +147,12 @@ export class PartToolbar extends PartUI {
             return Clutter.EVENT_STOP;
         });
 
-        // Motion and release: listen on the stage so drag works even when
-        // the recording overlay is the actor under the pointer.
-        this._dragEventActor = global.stage ?? this._ui;
-        this._dragMotionId = this._dragEventActor.connect('captured-event', (_actor, event) => {
-            const type = event.type();
-
-            // Ctrl+Scroll anywhere adjusts brush size or intensity while editing
-            if (this._editMode && type === Clutter.EventType.SCROLL) {
-                const state = event.get_state();
-                if (state & Clutter.ModifierType.CONTROL_MASK) {
-                    const dir = event.get_scroll_direction();
-                    const isEffectTool = this._activeTool === 'censor' || this._activeTool === 'blur';
-
-                    if (isEffectTool) {
-                        // Adjust intensity for censor/blur
-                        let lvl = this._intensityLevel;
-                        if (dir === Clutter.ScrollDirection.UP) {
-                            lvl = Math.min(lvl + 1, 5);
-                        } else if (dir === Clutter.ScrollDirection.DOWN) {
-                            lvl = Math.max(lvl - 1, 1);
-                        } else if (dir === Clutter.ScrollDirection.SMOOTH) {
-                            const [, dy] = event.get_scroll_delta();
-                            if (dy < 0) lvl = Math.min(lvl + 1, 5);
-                            else if (dy > 0) lvl = Math.max(lvl - 1, 1);
-                        }
-                        this._intensityLevel = lvl;
-                        this._intensityLabel.text = String(lvl);
-                    } else {
-                        // Adjust brush size for other tools
-                        let sz = this.brushSize;
-                        if (dir === Clutter.ScrollDirection.UP) {
-                            sz = Math.min(sz + 1, 100);
-                        } else if (dir === Clutter.ScrollDirection.DOWN) {
-                            sz = Math.max(sz - 1, 1);
-                        } else if (dir === Clutter.ScrollDirection.SMOOTH) {
-                            const [, dy] = event.get_scroll_delta();
-                            if (dy < 0) sz = Math.min(sz + 1, 100);
-                            else if (dy > 0) sz = Math.max(sz - 1, 1);
-                        }
-                        this._setBrushSize(sz);
-                    }
-                    return Clutter.EVENT_STOP;
-                }
-            }
-
-            if (!this._dragging && !this._videoDragging) return Clutter.EVENT_PROPAGATE;
-            if (type === Clutter.EventType.MOTION) {
-                const [mx, my] = event.get_coords();
-                if (this._dragging) {
-                    const dx = mx - this._dragStartX;
-                    const dy = my - this._dragStartY;
-                    if (Math.abs(dx) < 4 && Math.abs(dy) < 4)
-                        return Clutter.EVENT_PROPAGATE;
-                    this._editContainer.set_position(
-                        mx + this._dragOffsetX,
-                        my + this._dragOffsetY,
-                    );
-                } else if (this._videoDragging) {
-                    const dx = mx - this._videoDragStartX;
-                    const dy = my - this._videoDragStartY;
-                    if (Math.abs(dx) < 4 && Math.abs(dy) < 4)
-                        return Clutter.EVENT_PROPAGATE;
-                    this._videoContainer.set_position(
-                        mx + this._videoDragOffsetX,
-                        my + this._videoDragOffsetY,
-                    );
-                }
-                return Clutter.EVENT_STOP;
-            } else if (type === Clutter.EventType.BUTTON_RELEASE) {
-                this._dragging = false;
-                this._videoDragging = false;
-                return Clutter.EVENT_STOP;
-            }
-            return Clutter.EVENT_PROPAGATE;
-        });
+        // The native screenshot UI installs a grab, so movement must be
+        // captured from ScreenshotUI there. Recording mode reparents the
+        // toolbar to TopChrome, where stage capture is the right scope.
+        this._dragEventActor = null;
+        this._dragMotionId = 0;
+        this._connectDragEventActor(this._ui ?? global.stage);
 
         // 90% opacity by default, fully opaque on hover
         this._editContainer.opacity = 230;
@@ -753,9 +684,105 @@ export class PartToolbar extends PartUI {
         this._connectSignal(this._ui, 'notify::visible', () => this._onUIVisibilityChanged());
     }
 
+    _connectDragEventActor(actor) {
+        if (!actor || actor === this._dragEventActor)
+            return;
+
+        this._disconnectDragEventActor();
+        this._dragEventActor = actor;
+        this._dragMotionId = actor.connect('captured-event',
+            (_actor, event) => this._onDragCapturedEvent(event));
+    }
+
+    _disconnectDragEventActor() {
+        if (this._dragMotionId && this._dragEventActor) {
+            try {
+                this._dragEventActor.disconnect(this._dragMotionId);
+            } catch (_e) {
+                // Already disconnected.
+            }
+        }
+        this._dragMotionId = 0;
+        this._dragEventActor = null;
+    }
+
+    _onDragCapturedEvent(event) {
+        const type = event.type();
+
+        // Ctrl+Scroll anywhere adjusts brush size or intensity while editing
+        if (this._editMode && type === Clutter.EventType.SCROLL) {
+            const state = event.get_state();
+            if (state & Clutter.ModifierType.CONTROL_MASK) {
+                const dir = event.get_scroll_direction();
+                const isEffectTool = this._activeTool === 'censor' || this._activeTool === 'blur';
+
+                if (isEffectTool) {
+                    // Adjust intensity for censor/blur
+                    let lvl = this._intensityLevel;
+                    if (dir === Clutter.ScrollDirection.UP) {
+                        lvl = Math.min(lvl + 1, 5);
+                    } else if (dir === Clutter.ScrollDirection.DOWN) {
+                        lvl = Math.max(lvl - 1, 1);
+                    } else if (dir === Clutter.ScrollDirection.SMOOTH) {
+                        const [, dy] = event.get_scroll_delta();
+                        if (dy < 0) lvl = Math.min(lvl + 1, 5);
+                        else if (dy > 0) lvl = Math.max(lvl - 1, 1);
+                    }
+                    this._intensityLevel = lvl;
+                    this._intensityLabel.text = String(lvl);
+                } else {
+                    // Adjust brush size for other tools
+                    let sz = this.brushSize;
+                    if (dir === Clutter.ScrollDirection.UP) {
+                        sz = Math.min(sz + 1, 100);
+                    } else if (dir === Clutter.ScrollDirection.DOWN) {
+                        sz = Math.max(sz - 1, 1);
+                    } else if (dir === Clutter.ScrollDirection.SMOOTH) {
+                        const [, dy] = event.get_scroll_delta();
+                        if (dy < 0) sz = Math.min(sz + 1, 100);
+                        else if (dy > 0) sz = Math.max(sz - 1, 1);
+                    }
+                    this._setBrushSize(sz);
+                }
+                return Clutter.EVENT_STOP;
+            }
+        }
+
+        if (!this._dragging && !this._videoDragging) return Clutter.EVENT_PROPAGATE;
+        if (type === Clutter.EventType.MOTION) {
+            const [mx, my] = event.get_coords();
+            if (this._dragging) {
+                const dx = mx - this._dragStartX;
+                const dy = my - this._dragStartY;
+                if (Math.abs(dx) < 4 && Math.abs(dy) < 4)
+                    return Clutter.EVENT_PROPAGATE;
+                this._editContainer.set_position(
+                    mx + this._dragOffsetX,
+                    my + this._dragOffsetY,
+                );
+            } else if (this._videoDragging) {
+                const dx = mx - this._videoDragStartX;
+                const dy = my - this._videoDragStartY;
+                if (Math.abs(dx) < 4 && Math.abs(dy) < 4)
+                    return Clutter.EVENT_PROPAGATE;
+                this._videoContainer.set_position(
+                    mx + this._videoDragOffsetX,
+                    my + this._videoDragOffsetY,
+                );
+            }
+            return Clutter.EVENT_STOP;
+        } else if (type === Clutter.EventType.BUTTON_RELEASE) {
+            this._dragging = false;
+            this._videoDragging = false;
+            return Clutter.EVENT_STOP;
+        }
+        return Clutter.EVENT_PROPAGATE;
+    }
+
     /** Add edit toolbar as floating actor above the native panel. */
     _attachEditToPanel() {
         if (this._editContainer.get_parent()) return;
+        this._connectDragEventActor(this._ui ?? global.stage);
         this._ui.add_child(this._editContainer);
 
         // Position editContainer above the native panel
@@ -802,6 +829,7 @@ export class PartToolbar extends PartUI {
         this._recordingToolbarAttached = true;
         this._recordingDoneCallback = onDone;
         this._setRecordingToolbarMode(true);
+        this._connectDragEventActor(global.stage ?? this._ui);
 
         Main.layoutManager.addTopChrome(this._editContainer, {
             trackFullscreen: false,
@@ -826,6 +854,7 @@ export class PartToolbar extends PartUI {
         this._recordingToolbarAttached = false;
         this._recordingDoneCallback = null;
         this._setRecordingToolbarMode(false);
+        this._connectDragEventActor(this._ui ?? global.stage);
     }
 
     _positionRecordingToolbar() {
@@ -1861,11 +1890,7 @@ export class PartToolbar extends PartUI {
     }
 
     destroy() {
-        if (this._dragMotionId) {
-            this._dragEventActor?.disconnect(this._dragMotionId);
-            this._dragMotionId = 0;
-            this._dragEventActor = null;
-        }
+        this._disconnectDragEventActor();
         this.detachEditForRecording();
         this._detachEditFromPanel();
         this._detachVideoFromPanel();
