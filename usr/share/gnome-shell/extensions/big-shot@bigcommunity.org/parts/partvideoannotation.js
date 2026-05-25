@@ -106,7 +106,7 @@ export class PartVideoAnnotation extends PartUI {
     finishPausedEditFromPause() {
         if (this._activeMode !== 'paused')
             return false;
-        this._finishEdit(true);
+        this._finishEdit(false);
         return true;
     }
 

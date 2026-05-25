@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
-export const APP_VERSION = '26.8.4';
+export const APP_VERSION = '26.8.5';
 
 // Top-level imports are intentionally minimal. Anything imported here runs
 // synchronously inside GNOME's serial extension load loop and delays every
@@ -146,18 +146,30 @@ function detectGpuVendors() {
 // =============================================================================
 
 /**
- * Quality presets aligned with big-video-converter defaults.
- * QP values follow the same scale: lower = higher quality, larger files.
+ * Quality presets aligned with big-video-converter.
+ * QP/CRF/CQ values follow the same scale: lower = higher quality, larger files.
  *
  * big-video-converter mapping:
- *   veryhigh → qp 18 / crf 18    (used here for 'high')
- *   medium   → qp 24 / crf 24    (used here for 'medium')
- *   low      → qp 27 / crf 27    (used here for 'low')
+ *   high   → H.264 QP 21 / HEVC QP 25 / VP9 CQ 24
+ *   medium → H.264 QP 24 / HEVC QP 28 / VP9 CQ 28
+ *   low    → H.264 QP 27 / HEVC QP 31 / VP9 CQ 31
  */
 const QUALITY_PRESETS = Object.freeze({
-    high: { qp: 18, qp_i: 18, qp_p: 20, qp_b: 22, openh264_br: 8000000, vp9_cq: 13, vp9_minq: 10, vp9_maxq: 50 },
-    medium: { qp: 24, qp_i: 24, qp_p: 26, qp_b: 28, openh264_br: 4000000, vp9_cq: 24, vp9_minq: 15, vp9_maxq: 55 },
-    low: { qp: 27, qp_i: 27, qp_p: 29, qp_b: 31, openh264_br: 2000000, vp9_cq: 31, vp9_minq: 20, vp9_maxq: 58 },
+    high: {
+        qp: 21, qp_i: 21, qp_p: 23, qp_b: 25,
+        hevc_qp: 25, hevc_qp_i: 25, hevc_qp_p: 27, hevc_qp_b: 29,
+        openh264_br: 6000000, vp9_cq: 24, vp9_minq: 10, vp9_maxq: 50,
+    },
+    medium: {
+        qp: 24, qp_i: 24, qp_p: 26, qp_b: 28,
+        hevc_qp: 28, hevc_qp_i: 28, hevc_qp_p: 30, hevc_qp_b: 32,
+        openh264_br: 3500000, vp9_cq: 28, vp9_minq: 15, vp9_maxq: 55,
+    },
+    low: {
+        qp: 27, qp_i: 27, qp_p: 29, qp_b: 31,
+        hevc_qp: 31, hevc_qp_i: 31, hevc_qp_p: 33, hevc_qp_b: 35,
+        openh264_br: 2000000, vp9_cq: 31, vp9_minq: 20, vp9_maxq: 58,
+    },
 });
 
 /**
@@ -169,16 +181,46 @@ const QUALITY_PRESETS = Object.freeze({
  *   elements — Required GStreamer elements to check
  *   ext      — Output container extension (mp4/webm)
  *   vendors  — Array of GPU vendors this config works on
+ *   auto     — false keeps heavy software codecs manual-only
  */
 const VIDEO_PIPELINES = [
+    // ── NVIDIA HEVC/H.265: better compression than H.264 when available ──
+    {
+        id: 'nvidia-raw-h265-nvenc',
+        label: 'NVIDIA H.265',
+        vendors: [GpuVendor.NVIDIA],
+        src: 'videoconvert chroma-mode=none dither=none matrix-mode=output-only n-threads=4 ! queue',
+        enc: (p) => `nvh265enc rc-mode=cqp qp-const=${p.hevc_qp} ! h265parse config-interval=-1`,
+        elements: ['videoconvert', 'nvh265enc', 'h265parse'],
+        ext: 'mp4',
+    },
     // ── NVIDIA (NVENC with raw input — works with GNOME Screencast service) ──
     {
         id: 'nvidia-raw-h264-nvenc',
         label: 'NVIDIA H.264',
         vendors: [GpuVendor.NVIDIA],
         src: 'videoconvert chroma-mode=none dither=none matrix-mode=output-only n-threads=4 ! queue',
-        enc: (p) => `nvh264enc rc-mode=cqp qp-const=${p.qp} ! h264parse`,
-        elements: ['videoconvert', 'nvh264enc'],
+        enc: (p) => `nvh264enc rc-mode=cqp qp-const=${p.qp} ! h264parse config-interval=-1`,
+        elements: ['videoconvert', 'nvh264enc', 'h264parse'],
+        ext: 'mp4',
+    },
+    // ── AMD + Intel HEVC/H.265 (VA — new gst-plugin-va, raw input) ──
+    {
+        id: 'va-raw-h265-lp',
+        label: 'VA H.265 Low-Power',
+        vendors: [GpuVendor.AMD, GpuVendor.INTEL],
+        src: 'videoconvert chroma-mode=none dither=none matrix-mode=output-only n-threads=4 ! queue',
+        enc: (p) => `vah265lpenc rate-control=cqp qpi=${p.hevc_qp_i} qpp=${p.hevc_qp_p} qpb=${p.hevc_qp_b} ! h265parse config-interval=-1`,
+        elements: ['videoconvert', 'vah265lpenc', 'h265parse'],
+        ext: 'mp4',
+    },
+    {
+        id: 'va-raw-h265',
+        label: 'VA H.265',
+        vendors: [GpuVendor.AMD, GpuVendor.INTEL],
+        src: 'videoconvert chroma-mode=none dither=none matrix-mode=output-only n-threads=4 ! queue',
+        enc: (p) => `vah265enc rate-control=cqp qpi=${p.hevc_qp_i} qpp=${p.hevc_qp_p} qpb=${p.hevc_qp_b} ! h265parse config-interval=-1`,
+        elements: ['videoconvert', 'vah265enc', 'h265parse'],
         ext: 'mp4',
     },
     // ── AMD + Intel (VA — new gst-plugin-va, raw input) ──
@@ -187,8 +229,8 @@ const VIDEO_PIPELINES = [
         label: 'VA H.264 Low-Power',
         vendors: [GpuVendor.AMD, GpuVendor.INTEL],
         src: 'videoconvert chroma-mode=none dither=none matrix-mode=output-only n-threads=4 ! queue',
-        enc: (p) => `vah264lpenc rate-control=cqp qpi=${p.qp_i} qpp=${p.qp_p} qpb=${p.qp_b} ! h264parse`,
-        elements: ['videoconvert', 'vah264lpenc'],
+        enc: (p) => `vah264lpenc rate-control=cqp qpi=${p.qp_i} qpp=${p.qp_p} qpb=${p.qp_b} ! h264parse config-interval=-1`,
+        elements: ['videoconvert', 'vah264lpenc', 'h264parse'],
         ext: 'mp4',
     },
     {
@@ -196,8 +238,18 @@ const VIDEO_PIPELINES = [
         label: 'VA H.264',
         vendors: [GpuVendor.AMD, GpuVendor.INTEL],
         src: 'videoconvert chroma-mode=none dither=none matrix-mode=output-only n-threads=4 ! queue',
-        enc: (p) => `vah264enc rate-control=cqp qpi=${p.qp_i} qpp=${p.qp_p} qpb=${p.qp_b} ! h264parse`,
-        elements: ['videoconvert', 'vah264enc'],
+        enc: (p) => `vah264enc rate-control=cqp qpi=${p.qp_i} qpp=${p.qp_p} qpb=${p.qp_b} ! h264parse config-interval=-1`,
+        elements: ['videoconvert', 'vah264enc', 'h264parse'],
+        ext: 'mp4',
+    },
+    // ── AMD + Intel HEVC/H.265 (VAAPI — legacy gstreamer-vaapi, raw input) ──
+    {
+        id: 'vaapi-raw-h265',
+        label: 'VAAPI H.265',
+        vendors: [GpuVendor.AMD, GpuVendor.INTEL],
+        src: 'videoconvert chroma-mode=none dither=none matrix-mode=output-only n-threads=4 ! queue',
+        enc: (p) => `vaapih265enc rate-control=cqp init-qp=${p.hevc_qp} ! h265parse config-interval=-1`,
+        elements: ['videoconvert', 'vaapih265enc', 'h265parse'],
         ext: 'mp4',
     },
     // ── AMD + Intel (VAAPI — legacy gstreamer-vaapi, raw input) ──
@@ -206,13 +258,33 @@ const VIDEO_PIPELINES = [
         label: 'VAAPI H.264',
         vendors: [GpuVendor.AMD, GpuVendor.INTEL],
         src: 'videoconvert chroma-mode=none dither=none matrix-mode=output-only n-threads=4 ! queue',
-        enc: (p) => `vaapih264enc rate-control=cqp init-qp=${p.qp} ! h264parse`,
-        elements: ['videoconvert', 'vaapih264enc'],
+        enc: (p) => `vaapih264enc rate-control=cqp init-qp=${p.qp} ! h264parse config-interval=-1`,
+        elements: ['videoconvert', 'vaapih264enc', 'h264parse'],
         ext: 'mp4',
     },
     // ── Software fallbacks (any GPU / no GPU) ──
     // Note: the screencast service prepends "capsfilter caps=video/x-raw,max-framerate=F/1"
     // for custom pipelines, which forces video/x-raw (no DMABuf/GL/CUDA memory).
+    {
+        id: 'sw-memfd-h264-x264',
+        label: 'Software H.264 x264',
+        vendors: [],
+        src: 'videoconvert chroma-mode=none dither=none matrix-mode=output-only n-threads=4 ! video/x-raw,format=I420 ! queue',
+        enc: (p) => `x264enc speed-preset=faster pass=qual quantizer=${p.qp} threads=0 key-int-max=120 ! h264parse config-interval=-1`,
+        elements: ['videoconvert', 'x264enc', 'h264parse'],
+        ext: 'mp4',
+        auto: false,
+    },
+    {
+        id: 'sw-memfd-h265-x265',
+        label: 'Software H.265 x265',
+        vendors: [],
+        src: 'videoconvert chroma-mode=none dither=none matrix-mode=output-only n-threads=4 ! video/x-raw,format=I420 ! queue',
+        enc: (p) => `x265enc speed-preset=faster tune=ssim qp=${p.hevc_qp} log-level=warning ! h265parse config-interval=-1`,
+        elements: ['videoconvert', 'x265enc', 'h265parse'],
+        ext: 'mp4',
+        auto: false,
+    },
     {
         id: 'sw-memfd-h264-openh264',
         label: 'Software H.264',
@@ -221,8 +293,8 @@ const VIDEO_PIPELINES = [
         // capsfilter caps=video/x-raw,max-framerate=F/1 for custom pipelines.
         // Adding a second capsfilter causes FATAL_ERRORS linking failure.
         src: 'videoconvert chroma-mode=none dither=none matrix-mode=output-only n-threads=4 ! queue',
-        enc: (p) => `openh264enc complexity=high bitrate=${p.openh264_br} multi-thread=4 ! h264parse`,
-        elements: ['videoconvert', 'openh264enc'],
+        enc: (p) => `openh264enc complexity=high bitrate=${p.openh264_br} multi-thread=4 ! h264parse config-interval=-1`,
+        elements: ['videoconvert', 'openh264enc', 'h264parse'],
         ext: 'mp4',
     },
     {
@@ -233,6 +305,7 @@ const VIDEO_PIPELINES = [
         enc: (p) => `vp9enc min_quantizer=${p.vp9_minq} max_quantizer=${p.vp9_maxq} cq_level=${p.vp9_cq} cpu-used=5 threads=4 deadline=1 static-threshold=1000 buffer-size=20000 row-mt=1 ! queue`,
         elements: ['videoconvert', 'vp9enc'],
         ext: 'webm',
+        auto: false,
     },
 ];
 
@@ -312,6 +385,14 @@ function buildBigShotSegmentPath(sessionId, index) {
     ]);
 }
 
+function getSegmentSessionFolder(sessionId) {
+    return GLib.build_filenamev([
+        getRecordingFolder(),
+        BIGSHOT_SEGMENT_FOLDER,
+        sessionId,
+    ]);
+}
+
 function buildSegmentSessionId() {
     const now = GLib.DateTime.new_now_local();
     const stamp = now.format('%Y%m%d-%H%M%S') ?? String(GLib.get_monotonic_time());
@@ -325,8 +406,8 @@ function getRecordingFolder() {
     return GLib.build_filenamev([videoDir, BIGSHOT_VIDEO_FOLDER]);
 }
 
-function findRecentRecordingFile(ext, startedAtUnix) {
-    const dir = Gio.File.new_for_path(getRecordingFolder());
+function findRecentFileInDirectory(dirPath, prefix, ext, startedAtUnix) {
+    const dir = Gio.File.new_for_path(dirPath);
     if (!dir.query_exists(null))
         return null;
 
@@ -346,7 +427,7 @@ function findRecentRecordingFile(ext, startedAtUnix) {
                 continue;
 
             const name = info.get_name();
-            if (!name.startsWith('BigShot'))
+            if (!name.startsWith(prefix))
                 continue;
             if (!name.endsWith(`.${ext}`) && !name.endsWith('.undefined') && !name.endsWith('.unknown'))
                 continue;
@@ -371,6 +452,19 @@ function findRecentRecordingFile(ext, startedAtUnix) {
     }
 
     return best?.path ?? null;
+}
+
+function findRecentRecordingFile(ext, startedAtUnix) {
+    return findRecentFileInDirectory(getRecordingFolder(), 'BigShot', ext, startedAtUnix);
+}
+
+function findRecentSegmentFile(sessionId, index, ext, startedAtUnix) {
+    return findRecentFileInDirectory(
+        getSegmentSessionFolder(sessionId),
+        `segment-${String(index).padStart(3, '0')}`,
+        ext,
+        startedAtUnix
+    );
 }
 
 /**
@@ -1218,6 +1312,17 @@ export default class BigShotExtension extends Extension {
         }
     }
 
+    _getAutoPipelineConfigs() {
+        if (!this._availableConfigs)
+            return [];
+
+        const gpuConfigs = this._availableConfigs.filter(config => config.vendors.length > 0);
+        const swFallbacks = this._availableConfigs.filter(config =>
+            config.vendors.length === 0 && config.auto !== false);
+
+        return [...gpuConfigs, ...swFallbacks];
+    }
+
     _createParts() {
         const ui = this._screenshotUI;
         const ext = this;
@@ -1660,15 +1765,16 @@ export default class BigShotExtension extends Extension {
         // Show indicator once at the start of cascade
         this._indicator?.onPipelineStarting();
 
-        // Build pipeline order: preferred codec first, then rest
-        let configs = [...this._availableConfigs];
+        // Auto mode is GPU-first. Software encoders are only fallbacks after
+        // every detected GPU pipeline failed. Manual codec selection still
+        // starts with the selected pipeline.
+        let configs = this._getAutoPipelineConfigs();
         const preferredId = this._toolbar?.selectedPipelineId;
         if (preferredId) {
-            const idx = configs.findIndex(c => c.id === preferredId);
-            if (idx > 0) {
-                const [preferred] = configs.splice(idx, 1);
-                configs.unshift(preferred);
-            }
+            const preferred = this._availableConfigs.find(c => c.id === preferredId);
+            configs = preferred
+                ? [preferred, ...configs.filter(c => c.id !== preferredId)]
+                : configs;
         }
 
         // Try each config in cascade: preferred → GPU hw → VAAPI → Software
@@ -1976,6 +2082,8 @@ export default class BigShotExtension extends Extension {
 
         const index = session.nextIndex++;
         const filePath = buildBigShotSegmentPath(session.id, index);
+        GLib.mkdir_with_parents(getSegmentSessionFolder(session.id), 0o755);
+
         const pipeline = this._makePipelineString(
             session.config,
             session.framerateCaps,
@@ -1987,9 +2095,24 @@ export default class BigShotExtension extends Extension {
             pipeline: new GLib.Variant('s', pipeline),
         };
 
-        const result = await session.starter(filePath, pipelineOptions);
-        if (result && result[0] === false)
-            throw new Error('Screencast service returned failure');
+        const startedAtUnix = GLib.DateTime.new_now_local().to_unix();
+        let result;
+
+        try {
+            result = await session.starter(filePath, pipelineOptions);
+            if (result && result[0] === false)
+                throw new Error('Screencast service returned failure');
+        } catch (e) {
+            if (!this._isStartupTimeout(e))
+                throw e;
+
+            const activePath = findRecentSegmentFile(session.id, index, session.ext, startedAtUnix);
+            if (!activePath)
+                throw e;
+
+            console.warn(`[Big Shot] Resume segment ${index} timed out after output began; keeping recording attached`);
+            result = [true, activePath];
+        }
 
         const actualPath = result?.[1] ?? filePath;
         const correctExt = `.${session.ext}`;
@@ -2042,10 +2165,13 @@ export default class BigShotExtension extends Extension {
     }
 
     async resumeRecording() {
+        if (this._recordingState === 'resuming')
+            return true;
         if (this._recordingState !== 'paused')
             return false;
 
         this._recordingState = 'resuming';
+        this._indicator?.onResuming?.();
 
         try {
             await this._startNextSegment();
@@ -2055,6 +2181,7 @@ export default class BigShotExtension extends Extension {
         } catch (e) {
             console.error(`[Big Shot] Failed to resume recording: ${e.message}`);
             this._recordingState = 'paused';
+            this._indicator?.onPaused();
             return false;
         }
     }
@@ -2063,12 +2190,12 @@ export default class BigShotExtension extends Extension {
      * Toggle pause/resume — called by the indicator panel button.
      */
     async togglePauseRecording() {
+        console.log(`[Big Shot] Toggle pause/resume state=${this._recordingState}`);
         if (this._recordingState === 'recording') {
             if (await this.pauseRecording())
                 this._videoAnnotation?.enterPausedEditFromPause();
         } else if (this._recordingState === 'paused') {
-            if (this._videoAnnotation?.finishPausedEditFromPause())
-                return;
+            this._videoAnnotation?.finishPausedEditFromPause();
             await this.resumeRecording();
         }
     }

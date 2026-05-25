@@ -60,6 +60,11 @@ export class PartIndicator extends PartUI {
     /**
      * Called when recording is resumed.
      */
+    onResuming() {
+        this._isPaused = false;
+        this._updatePanelButton();
+    }
+
     onResumed() {
         this._isPaused = false;
         this._elapsed = 0;
