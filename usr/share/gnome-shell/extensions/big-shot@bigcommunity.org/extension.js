@@ -246,6 +246,8 @@ const MUXERS = {
     webm: 'webmmux',
 };
 
+const SCREENCAST_DBUS_TIMEOUT_MS = 30000;
+
 // =============================================================================
 // HELPER FUNCTIONS
 // =============================================================================
@@ -323,6 +325,54 @@ function getRecordingFolder() {
     return GLib.build_filenamev([videoDir, BIGSHOT_VIDEO_FOLDER]);
 }
 
+function findRecentRecordingFile(ext, startedAtUnix) {
+    const dir = Gio.File.new_for_path(getRecordingFolder());
+    if (!dir.query_exists(null))
+        return null;
+
+    let enumerator = null;
+    let best = null;
+
+    try {
+        enumerator = dir.enumerate_children(
+            'standard::name,standard::type,standard::size,time::modified',
+            Gio.FileQueryInfoFlags.NONE,
+            null
+        );
+
+        let info;
+        while ((info = enumerator.next_file(null)) !== null) {
+            if (info.get_file_type() !== Gio.FileType.REGULAR)
+                continue;
+
+            const name = info.get_name();
+            if (!name.startsWith('BigShot'))
+                continue;
+            if (!name.endsWith(`.${ext}`) && !name.endsWith('.undefined') && !name.endsWith('.unknown'))
+                continue;
+
+            const modified = info.get_attribute_uint64('time::modified');
+            const size = info.get_size();
+            if (size <= 0 || modified < startedAtUnix - 10)
+                continue;
+
+            if (!best || modified > best.modified || (modified === best.modified && size > best.size)) {
+                best = {
+                    modified,
+                    size,
+                    path: dir.get_child(name).get_path(),
+                };
+            }
+        }
+    } catch (e) {
+        console.warn(`[Big Shot] Could not scan recording folder: ${e.message}`);
+    } finally {
+        try { enumerator?.close(null); } catch (_e) { /* */ }
+    }
+
+    return best?.path ?? null;
+}
+
 /**
  * Make sure ~/Videos/BigShot/ exists before the screencast service tries
  * to write to it. The service does not auto-create the target directory.
@@ -397,6 +447,7 @@ export default class BigShotExtension extends Extension {
         this._currentSegment = null;
         this._suppressPauseStopFailure = false;
         this._stopWatcherId = 0;
+        this._origScreencastProxyTimeout = null;
 
         const screenshotUI = Main.screenshotUI;
         if (!screenshotUI) {
@@ -1310,6 +1361,11 @@ export default class BigShotExtension extends Extension {
         if (screencastProxy) {
             this._origScreencast = screencastProxy.ScreencastAsync?.bind(screencastProxy);
             this._origScreencastArea = screencastProxy.ScreencastAreaAsync?.bind(screencastProxy);
+            if (typeof screencastProxy.get_default_timeout === 'function' &&
+                typeof screencastProxy.set_default_timeout === 'function') {
+                this._origScreencastProxyTimeout = screencastProxy.get_default_timeout();
+                screencastProxy.set_default_timeout(SCREENCAST_DBUS_TIMEOUT_MS);
+            }
 
             // Patch ScreencastAsync
             if (this._origScreencast) {
@@ -1548,6 +1604,9 @@ export default class BigShotExtension extends Extension {
                 screencastProxy.ScreencastAreaAsync = this._origScreencastArea;
             if (this._origStopScreencastAsync)
                 screencastProxy.StopScreencastAsync = this._origStopScreencastAsync;
+            if (this._origScreencastProxyTimeout !== null &&
+                typeof screencastProxy.set_default_timeout === 'function')
+                screencastProxy.set_default_timeout(this._origScreencastProxyTimeout);
         }
 
         if (ui && this._origOpen)
@@ -1573,6 +1632,7 @@ export default class BigShotExtension extends Extension {
         this._origScreencastFailed = null;
         this._origSyncWindowButtonSensitivity = null;
         this._castButtonReactivityId = 0;
+        this._origScreencastProxyTimeout = null;
     }
 
     async _screencastCommonAsync(filePath, options, originalMethod) {
@@ -1624,67 +1684,37 @@ export default class BigShotExtension extends Extension {
             // the notify::visible handler can reparent the webcam overlay
             // instead of stopping it when the UI hides.
             this._recordingState = 'starting';
+            const startedAtUnix = GLib.DateTime.new_now_local().to_unix();
 
             try {
                 const result = await originalMethod(filePath, pipelineOptions);
                 if (result && result[0] === false)
                     throw new Error('Screencast service returned failure');
-                this._indicator?.onPipelineReady();
-
-                // Save recording context for pause/resume
-                this._recordingState = 'recording';
-                this._recordingContext = {
+                return this._registerRecordingStarted({
+                    result,
                     config,
                     originalMethod,
-                };
-
-                // Fix .undefined extension: GNOME creates files with .undefined
-                // for custom pipelines. Track both paths so pause can close
-                // and rename each segment immediately before concatenation.
-                const actualPath = result?.[1] ?? filePath;
-                const correctExt = `.${config.ext}`;
-                const correctedPath = typeof actualPath === 'string' && !actualPath.endsWith(correctExt)
-                    ? actualPath.replace(/\.[^.]+$/, correctExt)
-                    : actualPath;
-
-                this._recordingSession = {
-                    id: buildSegmentSessionId(),
-                    config,
-                    starter: originalMethod,
                     baseOptions,
                     framerateCaps,
                     downsize,
                     quality,
-                    ext: config.ext,
-                    segments: [],
-                    finalPath: correctedPath,
-                    nextIndex: 2,
-                };
-                this._currentSegment = {
-                    index: 1,
-                    actualPath,
-                    path: correctedPath,
-                    ext: config.ext,
-                    finalized: false,
-                };
-                this._currentSegmentPath = correctedPath;
-
-                // Start watching for final stop
-                this._watchForFinalStop();
-
-                try {
-                    this._indicator?.onRecordingStarted();
-                    this._videoAnnotation?.onRecordingStarted();
-                } catch (indErr) {
-                    console.error('[Big Shot] onRecordingStarted ERROR:', indErr.message, indErr.stack);
-                }
-
-                // Return result with corrected file extension so GNOME
-                // notifications point to the .mp4/.webm file, not .undefined
-                return (result && result[0])
-                    ? [result[0], correctedPath]
-                    : result;
+                    fallbackPath: filePath,
+                });
             } catch (e) {
+                const recovered = this._recoverStartedRecordingAfterTimeout({
+                    error: e,
+                    config,
+                    originalMethod,
+                    baseOptions,
+                    framerateCaps,
+                    downsize,
+                    quality,
+                    startedAtUnix,
+                });
+                if (recovered)
+                    return recovered;
+
+                this._recordingState = 'idle';
                 console.warn(`[Big Shot] Pipeline ${config.id} failed: ${e.message}`);
                 // Continue to next config
             }
@@ -1694,6 +1724,119 @@ export default class BigShotExtension extends Extension {
         console.warn('[Big Shot] All pipelines failed, falling back to GNOME default');
         this._indicator?.onPipelineReady();
         return originalMethod(filePath, options);
+    }
+
+    _registerRecordingStarted({
+        result,
+        config,
+        originalMethod,
+        baseOptions,
+        framerateCaps,
+        downsize,
+        quality,
+        fallbackPath,
+    }) {
+        this._indicator?.onPipelineReady();
+
+        this._recordingState = 'recording';
+        this._recordingContext = {
+            config,
+            originalMethod,
+        };
+
+        const actualPath = result?.[1] ?? fallbackPath;
+        const correctExt = `.${config.ext}`;
+        const correctedPath = typeof actualPath === 'string' && !actualPath.endsWith(correctExt)
+            ? actualPath.replace(/\.[^.]+$/, correctExt)
+            : actualPath;
+
+        this._recordingSession = {
+            id: buildSegmentSessionId(),
+            config,
+            starter: originalMethod,
+            baseOptions,
+            framerateCaps,
+            downsize,
+            quality,
+            ext: config.ext,
+            segments: [],
+            finalPath: correctedPath,
+            nextIndex: 2,
+        };
+        this._currentSegment = {
+            index: 1,
+            actualPath,
+            path: correctedPath,
+            ext: config.ext,
+            finalized: false,
+        };
+        this._currentSegmentPath = correctedPath;
+
+        this._watchForFinalStop();
+
+        try {
+            this._indicator?.onRecordingStarted();
+            this._videoAnnotation?.onRecordingStarted();
+        } catch (indErr) {
+            console.error('[Big Shot] onRecordingStarted ERROR:', indErr.message, indErr.stack);
+        }
+
+        return (result && result[0])
+            ? [result[0], correctedPath]
+            : result;
+    }
+
+    _isStartupTimeout(error) {
+        if (error?.matches?.(Gio.IOErrorEnum, Gio.IOErrorEnum.TIMED_OUT))
+            return true;
+        const message = String(error?.message ?? error).toLowerCase();
+        return message.includes('timeout') || message.includes('timed out') ||
+            message.includes('tempo limite');
+    }
+
+    _recoverStartedRecordingAfterTimeout({
+        error,
+        config,
+        originalMethod,
+        baseOptions,
+        framerateCaps,
+        downsize,
+        quality,
+        startedAtUnix,
+    }) {
+        if (!this._isStartupTimeout(error))
+            return null;
+
+        const activePath = findRecentRecordingFile(config.ext, startedAtUnix);
+        if (!activePath) {
+            this._stopScreencastAfterStartupFailure();
+            return null;
+        }
+
+        console.warn(`[Big Shot] Pipeline ${config.id} start timed out after output began; keeping recording attached`);
+        return this._registerRecordingStarted({
+            result: [true, activePath],
+            config,
+            originalMethod,
+            baseOptions,
+            framerateCaps,
+            downsize,
+            quality,
+            fallbackPath: activePath,
+        });
+    }
+
+    _stopScreencastAfterStartupFailure() {
+        if (!this._origStopScreencastAsync)
+            return;
+
+        try {
+            const result = this._origStopScreencastAsync();
+            if (result?.catch)
+                result.catch(e => console.warn(`[Big Shot] stale screencast stop failed: ${e.message}`));
+        } catch (e) {
+            console.warn(`[Big Shot] stale screencast stop failed: ${e.message}`);
+        }
     }
 
     // =========================================================================
