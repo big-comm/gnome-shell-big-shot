@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
-export const APP_VERSION = '26.8.5';
+export const APP_VERSION = '26.8.6';
 
 // Top-level imports are intentionally minimal. Anything imported here runs
 // synchronously inside GNOME's serial extension load loop and delays every
@@ -184,16 +184,6 @@ const QUALITY_PRESETS = Object.freeze({
  *   auto     — false keeps heavy software codecs manual-only
  */
 const VIDEO_PIPELINES = [
-    // ── NVIDIA HEVC/H.265: better compression than H.264 when available ──
-    {
-        id: 'nvidia-raw-h265-nvenc',
-        label: 'NVIDIA H.265',
-        vendors: [GpuVendor.NVIDIA],
-        src: 'videoconvert chroma-mode=none dither=none matrix-mode=output-only n-threads=4 ! queue',
-        enc: (p) => `nvh265enc rc-mode=cqp qp-const=${p.hevc_qp} ! h265parse config-interval=-1`,
-        elements: ['videoconvert', 'nvh265enc', 'h265parse'],
-        ext: 'mp4',
-    },
     // ── NVIDIA (NVENC with raw input — works with GNOME Screencast service) ──
     {
         id: 'nvidia-raw-h264-nvenc',
@@ -204,23 +194,14 @@ const VIDEO_PIPELINES = [
         elements: ['videoconvert', 'nvh264enc', 'h264parse'],
         ext: 'mp4',
     },
-    // ── AMD + Intel HEVC/H.265 (VA — new gst-plugin-va, raw input) ──
+    // ── NVIDIA HEVC/H.265: better compression than H.264 when selected ──
     {
-        id: 'va-raw-h265-lp',
-        label: 'VA H.265 Low-Power',
-        vendors: [GpuVendor.AMD, GpuVendor.INTEL],
+        id: 'nvidia-raw-h265-nvenc',
+        label: 'NVIDIA H.265',
+        vendors: [GpuVendor.NVIDIA],
         src: 'videoconvert chroma-mode=none dither=none matrix-mode=output-only n-threads=4 ! queue',
-        enc: (p) => `vah265lpenc rate-control=cqp qpi=${p.hevc_qp_i} qpp=${p.hevc_qp_p} qpb=${p.hevc_qp_b} ! h265parse config-interval=-1`,
-        elements: ['videoconvert', 'vah265lpenc', 'h265parse'],
-        ext: 'mp4',
-    },
-    {
-        id: 'va-raw-h265',
-        label: 'VA H.265',
-        vendors: [GpuVendor.AMD, GpuVendor.INTEL],
-        src: 'videoconvert chroma-mode=none dither=none matrix-mode=output-only n-threads=4 ! queue',
-        enc: (p) => `vah265enc rate-control=cqp qpi=${p.hevc_qp_i} qpp=${p.hevc_qp_p} qpb=${p.hevc_qp_b} ! h265parse config-interval=-1`,
-        elements: ['videoconvert', 'vah265enc', 'h265parse'],
+        enc: (p) => `nvh265enc rc-mode=cqp qp-const=${p.hevc_qp} ! h265parse config-interval=-1`,
+        elements: ['videoconvert', 'nvh265enc', 'h265parse'],
         ext: 'mp4',
     },
     // ── AMD + Intel (VA — new gst-plugin-va, raw input) ──
@@ -242,14 +223,23 @@ const VIDEO_PIPELINES = [
         elements: ['videoconvert', 'vah264enc', 'h264parse'],
         ext: 'mp4',
     },
-    // ── AMD + Intel HEVC/H.265 (VAAPI — legacy gstreamer-vaapi, raw input) ──
+    // ── AMD + Intel HEVC/H.265 (VA — new gst-plugin-va, raw input) ──
     {
-        id: 'vaapi-raw-h265',
-        label: 'VAAPI H.265',
+        id: 'va-raw-h265-lp',
+        label: 'VA H.265 Low-Power',
         vendors: [GpuVendor.AMD, GpuVendor.INTEL],
         src: 'videoconvert chroma-mode=none dither=none matrix-mode=output-only n-threads=4 ! queue',
-        enc: (p) => `vaapih265enc rate-control=cqp init-qp=${p.hevc_qp} ! h265parse config-interval=-1`,
-        elements: ['videoconvert', 'vaapih265enc', 'h265parse'],
+        enc: (p) => `vah265lpenc rate-control=cqp qpi=${p.hevc_qp_i} qpp=${p.hevc_qp_p} qpb=${p.hevc_qp_b} ! h265parse config-interval=-1`,
+        elements: ['videoconvert', 'vah265lpenc', 'h265parse'],
+        ext: 'mp4',
+    },
+    {
+        id: 'va-raw-h265',
+        label: 'VA H.265',
+        vendors: [GpuVendor.AMD, GpuVendor.INTEL],
+        src: 'videoconvert chroma-mode=none dither=none matrix-mode=output-only n-threads=4 ! queue',
+        enc: (p) => `vah265enc rate-control=cqp qpi=${p.hevc_qp_i} qpp=${p.hevc_qp_p} qpb=${p.hevc_qp_b} ! h265parse config-interval=-1`,
+        elements: ['videoconvert', 'vah265enc', 'h265parse'],
         ext: 'mp4',
     },
     // ── AMD + Intel (VAAPI — legacy gstreamer-vaapi, raw input) ──
@@ -260,6 +250,16 @@ const VIDEO_PIPELINES = [
         src: 'videoconvert chroma-mode=none dither=none matrix-mode=output-only n-threads=4 ! queue',
         enc: (p) => `vaapih264enc rate-control=cqp init-qp=${p.qp} ! h264parse config-interval=-1`,
         elements: ['videoconvert', 'vaapih264enc', 'h264parse'],
+        ext: 'mp4',
+    },
+    // ── AMD + Intel HEVC/H.265 (VAAPI — legacy gstreamer-vaapi, raw input) ──
+    {
+        id: 'vaapi-raw-h265',
+        label: 'VAAPI H.265',
+        vendors: [GpuVendor.AMD, GpuVendor.INTEL],
+        src: 'videoconvert chroma-mode=none dither=none matrix-mode=output-only n-threads=4 ! queue',
+        enc: (p) => `vaapih265enc rate-control=cqp init-qp=${p.hevc_qp} ! h265parse config-interval=-1`,
+        elements: ['videoconvert', 'vaapih265enc', 'h265parse'],
         ext: 'mp4',
     },
     // ── Software fallbacks (any GPU / no GPU) ──
