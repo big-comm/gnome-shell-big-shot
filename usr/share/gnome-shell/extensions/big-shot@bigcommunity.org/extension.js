@@ -4,30 +4,101 @@
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
-export const APP_VERSION = '26.5.1';
+export const APP_VERSION = '26.8.6';
 
+// Top-level imports are intentionally minimal. Anything imported here runs
+// synchronously inside GNOME's serial extension load loop and delays every
+// other extension's enable() — including Dash to Dock, which in turn lets
+// the vanilla GNOME dash flash on cold-boot login. Heavy modules (Gio,
+// Shell, St, GdkPixbuf, cairo, MessageTray, all parts/*) are loaded inside
+// the `heavyDepsReady` IIFE below, after `startup-complete`, so they don't
+// block the cold-boot path.
 import GLib from 'gi://GLib';
-import Gio from 'gi://Gio';
-import Shell from 'gi://Shell';
-import St from 'gi://St';
-import GdkPixbuf from 'gi://GdkPixbuf';
-import cairo from 'gi://cairo';
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
-import * as MessageTray from 'resource:///org/gnome/shell/ui/messageTray.js';
 import { Extension, gettext as _ } from 'resource:///org/gnome/shell/extensions/extension.js';
-import * as Screenshot from 'resource:///org/gnome/shell/ui/screenshot.js';
 
-// Parts
-import { PartToolbar } from './parts/parttoolbar.js';
-import { PartAnnotation } from './parts/partannotation.js';
-import { PartMagnifier } from './parts/partmagnifier.js';
+let Gio = null;
+let Shell = null;
+let St = null;
+let GdkPixbuf = null;
+let cairo = null;
+let MessageTray = null;
+let PartToolbar = null;
+let PartAnnotation = null;
+let PartMagnifier = null;
+let PartAudio = null;
+let PartFramerate = null;
+let PartDownsize = null;
+let PartIndicator = null;
+let PartQuickStop = null;
+let PartWebcam = null;
+let PartVideoAnnotation = null;
 
-import { PartAudio } from './parts/partaudio.js';
-import { PartFramerate } from './parts/partframerate.js';
-import { PartDownsize } from './parts/partdownsize.js';
-import { PartIndicator } from './parts/partindicator.js';
-import { PartQuickStop } from './parts/partquickstop.js';
-import { PartWebcam } from './parts/partwebcam.js';
+/**
+ * Deferred load of every heavy dependency.
+ *
+ * Order matters for cold-boot perf:
+ *   1. Module evaluation finishes immediately (only 3 cheap imports above).
+ *   2. GNOME's serial loader moves on to the next extension without delay.
+ *   3. Dash to Dock's enable() runs and hides the vanilla dash before the
+ *      compositor has a chance to paint a frame with it visible.
+ *   4. After `startup-complete`, this IIFE pulls in the heavy modules in
+ *      parallel — `import()` yields between modules so the main loop stays
+ *      responsive.
+ *
+ * Methods that use these references must `await heavyDepsReady` first.
+ */
+const heavyDepsReady = (async () => {
+    if (Main.layoutManager._startingUp) {
+        await new Promise(resolve => {
+            const id = Main.layoutManager.connect('startup-complete', () => {
+                Main.layoutManager.disconnect(id);
+                resolve();
+            });
+        });
+    }
+
+    const [
+        gioMod, shellMod, stMod, pixbufMod, cairoMod,
+        msgTrayMod,
+        toolbarMod, annotationMod, magnifierMod, audioMod, framerateMod,
+        downsizeMod, indicatorMod, quickstopMod, webcamMod, videoAnnotationMod,
+    ] = await Promise.all([
+        import('gi://Gio'),
+        import('gi://Shell'),
+        import('gi://St'),
+        import('gi://GdkPixbuf'),
+        import('gi://cairo'),
+        import('resource:///org/gnome/shell/ui/messageTray.js'),
+        import('./parts/parttoolbar.js'),
+        import('./parts/partannotation.js'),
+        import('./parts/partmagnifier.js'),
+        import('./parts/partaudio.js'),
+        import('./parts/partframerate.js'),
+        import('./parts/partdownsize.js'),
+        import('./parts/partindicator.js'),
+        import('./parts/partquickstop.js'),
+        import('./parts/partwebcam.js'),
+        import('./parts/partvideoannotation.js'),
+    ]);
+
+    Gio = gioMod.default;
+    Shell = shellMod.default;
+    St = stMod.default;
+    GdkPixbuf = pixbufMod.default;
+    cairo = cairoMod.default;
+    MessageTray = msgTrayMod;
+    PartToolbar = toolbarMod.PartToolbar;
+    PartAnnotation = annotationMod.PartAnnotation;
+    PartMagnifier = magnifierMod.PartMagnifier;
+    PartAudio = audioMod.PartAudio;
+    PartFramerate = framerateMod.PartFramerate;
+    PartDownsize = downsizeMod.PartDownsize;
+    PartIndicator = indicatorMod.PartIndicator;
+    PartQuickStop = quickstopMod.PartQuickStop;
+    PartWebcam = webcamMod.PartWebcam;
+    PartVideoAnnotation = videoAnnotationMod.PartVideoAnnotation;
+})();
 
 // =============================================================================
 // GPU DETECTION (following big-video-converter pattern)
@@ -75,18 +146,30 @@ function detectGpuVendors() {
 // =============================================================================
 
 /**
- * Quality presets aligned with big-video-converter defaults.
- * QP values follow the same scale: lower = higher quality, larger files.
+ * Quality presets aligned with big-video-converter.
+ * QP/CRF/CQ values follow the same scale: lower = higher quality, larger files.
  *
  * big-video-converter mapping:
- *   veryhigh → qp 18 / crf 18    (used here for 'high')
- *   medium   → qp 24 / crf 24    (used here for 'medium')
- *   low      → qp 27 / crf 27    (used here for 'low')
+ *   high   → H.264 QP 21 / HEVC QP 25 / VP9 CQ 24
+ *   medium → H.264 QP 24 / HEVC QP 28 / VP9 CQ 28
+ *   low    → H.264 QP 27 / HEVC QP 31 / VP9 CQ 31
  */
 const QUALITY_PRESETS = Object.freeze({
-    high: { qp: 18, qp_i: 18, qp_p: 20, qp_b: 22, openh264_br: 8000000, vp9_cq: 13, vp9_minq: 10, vp9_maxq: 50 },
-    medium: { qp: 24, qp_i: 24, qp_p: 26, qp_b: 28, openh264_br: 4000000, vp9_cq: 24, vp9_minq: 15, vp9_maxq: 55 },
-    low: { qp: 27, qp_i: 27, qp_p: 29, qp_b: 31, openh264_br: 2000000, vp9_cq: 31, vp9_minq: 20, vp9_maxq: 58 },
+    high: {
+        qp: 21, qp_i: 21, qp_p: 23, qp_b: 25,
+        hevc_qp: 25, hevc_qp_i: 25, hevc_qp_p: 27, hevc_qp_b: 29,
+        openh264_br: 6000000, vp9_cq: 24, vp9_minq: 10, vp9_maxq: 50,
+    },
+    medium: {
+        qp: 24, qp_i: 24, qp_p: 26, qp_b: 28,
+        hevc_qp: 28, hevc_qp_i: 28, hevc_qp_p: 30, hevc_qp_b: 32,
+        openh264_br: 3500000, vp9_cq: 28, vp9_minq: 15, vp9_maxq: 55,
+    },
+    low: {
+        qp: 27, qp_i: 27, qp_p: 29, qp_b: 31,
+        hevc_qp: 31, hevc_qp_i: 31, hevc_qp_p: 33, hevc_qp_b: 35,
+        openh264_br: 2000000, vp9_cq: 31, vp9_minq: 20, vp9_maxq: 58,
+    },
 });
 
 /**
@@ -98,6 +181,7 @@ const QUALITY_PRESETS = Object.freeze({
  *   elements — Required GStreamer elements to check
  *   ext      — Output container extension (mp4/webm)
  *   vendors  — Array of GPU vendors this config works on
+ *   auto     — false keeps heavy software codecs manual-only
  */
 const VIDEO_PIPELINES = [
     // ── NVIDIA (NVENC with raw input — works with GNOME Screencast service) ──
@@ -106,8 +190,18 @@ const VIDEO_PIPELINES = [
         label: 'NVIDIA H.264',
         vendors: [GpuVendor.NVIDIA],
         src: 'videoconvert chroma-mode=none dither=none matrix-mode=output-only n-threads=4 ! queue',
-        enc: (p) => `nvh264enc rc-mode=cqp qp-const=${p.qp} ! h264parse`,
-        elements: ['videoconvert', 'nvh264enc'],
+        enc: (p) => `nvh264enc rc-mode=cqp qp-const=${p.qp} ! h264parse config-interval=-1`,
+        elements: ['videoconvert', 'nvh264enc', 'h264parse'],
+        ext: 'mp4',
+    },
+    // ── NVIDIA HEVC/H.265: better compression than H.264 when selected ──
+    {
+        id: 'nvidia-raw-h265-nvenc',
+        label: 'NVIDIA H.265',
+        vendors: [GpuVendor.NVIDIA],
+        src: 'videoconvert chroma-mode=none dither=none matrix-mode=output-only n-threads=4 ! queue',
+        enc: (p) => `nvh265enc rc-mode=cqp qp-const=${p.hevc_qp} ! h265parse config-interval=-1`,
+        elements: ['videoconvert', 'nvh265enc', 'h265parse'],
         ext: 'mp4',
     },
     // ── AMD + Intel (VA — new gst-plugin-va, raw input) ──
@@ -116,8 +210,8 @@ const VIDEO_PIPELINES = [
         label: 'VA H.264 Low-Power',
         vendors: [GpuVendor.AMD, GpuVendor.INTEL],
         src: 'videoconvert chroma-mode=none dither=none matrix-mode=output-only n-threads=4 ! queue',
-        enc: (p) => `vah264lpenc rate-control=cqp qpi=${p.qp_i} qpp=${p.qp_p} qpb=${p.qp_b} ! h264parse`,
-        elements: ['videoconvert', 'vah264lpenc'],
+        enc: (p) => `vah264lpenc rate-control=cqp qpi=${p.qp_i} qpp=${p.qp_p} qpb=${p.qp_b} ! h264parse config-interval=-1`,
+        elements: ['videoconvert', 'vah264lpenc', 'h264parse'],
         ext: 'mp4',
     },
     {
@@ -125,8 +219,27 @@ const VIDEO_PIPELINES = [
         label: 'VA H.264',
         vendors: [GpuVendor.AMD, GpuVendor.INTEL],
         src: 'videoconvert chroma-mode=none dither=none matrix-mode=output-only n-threads=4 ! queue',
-        enc: (p) => `vah264enc rate-control=cqp qpi=${p.qp_i} qpp=${p.qp_p} qpb=${p.qp_b} ! h264parse`,
-        elements: ['videoconvert', 'vah264enc'],
+        enc: (p) => `vah264enc rate-control=cqp qpi=${p.qp_i} qpp=${p.qp_p} qpb=${p.qp_b} ! h264parse config-interval=-1`,
+        elements: ['videoconvert', 'vah264enc', 'h264parse'],
+        ext: 'mp4',
+    },
+    // ── AMD + Intel HEVC/H.265 (VA — new gst-plugin-va, raw input) ──
+    {
+        id: 'va-raw-h265-lp',
+        label: 'VA H.265 Low-Power',
+        vendors: [GpuVendor.AMD, GpuVendor.INTEL],
+        src: 'videoconvert chroma-mode=none dither=none matrix-mode=output-only n-threads=4 ! queue',
+        enc: (p) => `vah265lpenc rate-control=cqp qpi=${p.hevc_qp_i} qpp=${p.hevc_qp_p} qpb=${p.hevc_qp_b} ! h265parse config-interval=-1`,
+        elements: ['videoconvert', 'vah265lpenc', 'h265parse'],
+        ext: 'mp4',
+    },
+    {
+        id: 'va-raw-h265',
+        label: 'VA H.265',
+        vendors: [GpuVendor.AMD, GpuVendor.INTEL],
+        src: 'videoconvert chroma-mode=none dither=none matrix-mode=output-only n-threads=4 ! queue',
+        enc: (p) => `vah265enc rate-control=cqp qpi=${p.hevc_qp_i} qpp=${p.hevc_qp_p} qpb=${p.hevc_qp_b} ! h265parse config-interval=-1`,
+        elements: ['videoconvert', 'vah265enc', 'h265parse'],
         ext: 'mp4',
     },
     // ── AMD + Intel (VAAPI — legacy gstreamer-vaapi, raw input) ──
@@ -135,13 +248,43 @@ const VIDEO_PIPELINES = [
         label: 'VAAPI H.264',
         vendors: [GpuVendor.AMD, GpuVendor.INTEL],
         src: 'videoconvert chroma-mode=none dither=none matrix-mode=output-only n-threads=4 ! queue',
-        enc: (p) => `vaapih264enc rate-control=cqp init-qp=${p.qp} ! h264parse`,
-        elements: ['videoconvert', 'vaapih264enc'],
+        enc: (p) => `vaapih264enc rate-control=cqp init-qp=${p.qp} ! h264parse config-interval=-1`,
+        elements: ['videoconvert', 'vaapih264enc', 'h264parse'],
+        ext: 'mp4',
+    },
+    // ── AMD + Intel HEVC/H.265 (VAAPI — legacy gstreamer-vaapi, raw input) ──
+    {
+        id: 'vaapi-raw-h265',
+        label: 'VAAPI H.265',
+        vendors: [GpuVendor.AMD, GpuVendor.INTEL],
+        src: 'videoconvert chroma-mode=none dither=none matrix-mode=output-only n-threads=4 ! queue',
+        enc: (p) => `vaapih265enc rate-control=cqp init-qp=${p.hevc_qp} ! h265parse config-interval=-1`,
+        elements: ['videoconvert', 'vaapih265enc', 'h265parse'],
         ext: 'mp4',
     },
     // ── Software fallbacks (any GPU / no GPU) ──
     // Note: the screencast service prepends "capsfilter caps=video/x-raw,max-framerate=F/1"
     // for custom pipelines, which forces video/x-raw (no DMABuf/GL/CUDA memory).
+    {
+        id: 'sw-memfd-h264-x264',
+        label: 'Software H.264 x264',
+        vendors: [],
+        src: 'videoconvert chroma-mode=none dither=none matrix-mode=output-only n-threads=4 ! video/x-raw,format=I420 ! queue',
+        enc: (p) => `x264enc speed-preset=faster pass=qual quantizer=${p.qp} threads=0 key-int-max=120 ! h264parse config-interval=-1`,
+        elements: ['videoconvert', 'x264enc', 'h264parse'],
+        ext: 'mp4',
+        auto: false,
+    },
+    {
+        id: 'sw-memfd-h265-x265',
+        label: 'Software H.265 x265',
+        vendors: [],
+        src: 'videoconvert chroma-mode=none dither=none matrix-mode=output-only n-threads=4 ! video/x-raw,format=I420 ! queue',
+        enc: (p) => `x265enc speed-preset=faster tune=ssim qp=${p.hevc_qp} log-level=warning ! h265parse config-interval=-1`,
+        elements: ['videoconvert', 'x265enc', 'h265parse'],
+        ext: 'mp4',
+        auto: false,
+    },
     {
         id: 'sw-memfd-h264-openh264',
         label: 'Software H.264',
@@ -150,8 +293,8 @@ const VIDEO_PIPELINES = [
         // capsfilter caps=video/x-raw,max-framerate=F/1 for custom pipelines.
         // Adding a second capsfilter causes FATAL_ERRORS linking failure.
         src: 'videoconvert chroma-mode=none dither=none matrix-mode=output-only n-threads=4 ! queue',
-        enc: (p) => `openh264enc complexity=high bitrate=${p.openh264_br} multi-thread=4 ! h264parse`,
-        elements: ['videoconvert', 'openh264enc'],
+        enc: (p) => `openh264enc complexity=high bitrate=${p.openh264_br} multi-thread=4 ! h264parse config-interval=-1`,
+        elements: ['videoconvert', 'openh264enc', 'h264parse'],
         ext: 'mp4',
     },
     {
@@ -162,6 +305,7 @@ const VIDEO_PIPELINES = [
         enc: (p) => `vp9enc min_quantizer=${p.vp9_minq} max_quantizer=${p.vp9_maxq} cq_level=${p.vp9_cq} cpu-used=5 threads=4 deadline=1 static-threshold=1000 buffer-size=20000 row-mt=1 ! queue`,
         elements: ['videoconvert', 'vp9enc'],
         ext: 'webm',
+        auto: false,
     },
 ];
 
@@ -171,9 +315,11 @@ const AUDIO_PIPELINE = {
 };
 
 const MUXERS = {
-    mp4: 'mp4mux fragment-duration=500',
+    mp4: 'mp4mux fragment-duration=500 fragment-mode=first-moov-then-finalise',
     webm: 'webmmux',
 };
+
+const SCREENCAST_DBUS_TIMEOUT_MS = 30000;
 
 // =============================================================================
 // HELPER FUNCTIONS
@@ -203,24 +349,179 @@ function checkPipeline(config) {
 }
 
 /**
+ * Recording output folder under XDG_VIDEOS_DIR (always literal, never
+ * translated, so the path is the same in every locale).
+ */
+const BIGSHOT_VIDEO_FOLDER = 'BigShot';
+const BIGSHOT_SEGMENT_FOLDER = '.segments';
+
+/**
+ * Build the relative file template the screencast service receives. The
+ * service expands %d → YYYY-MM-DD and %t → HH-MM-SS server-side, so the
+ * placeholders MUST survive translation literally.
+ *
+ * We ignore the path GNOME passes ('Screencasts/Screencast From %d %t')
+ * and emit our own so:
+ *  - the folder is always ~/Videos/BigShot/ (locale-independent),
+ *  - the filename starts with "BigShot" instead of "Screencast",
+ *  - the "from" word follows the active GNOME locale via the extension's
+ *    own gettext domain (so we don't depend on the upstream gnome-shell
+ *    translation, which on several locales translates "%d %t" to "%s"
+ *    and breaks the service's token expansion).
+ */
+function buildBigShotRecordingPath() {
+    return GLib.build_filenamev([
+        BIGSHOT_VIDEO_FOLDER,
+        _('BigShot from %d %t'),
+    ]);
+}
+
+function buildBigShotSegmentPath(sessionId, index) {
+    return GLib.build_filenamev([
+        BIGSHOT_VIDEO_FOLDER,
+        BIGSHOT_SEGMENT_FOLDER,
+        sessionId,
+        `segment-${String(index).padStart(3, '0')}`,
+    ]);
+}
+
+function getSegmentSessionFolder(sessionId) {
+    return GLib.build_filenamev([
+        getRecordingFolder(),
+        BIGSHOT_SEGMENT_FOLDER,
+        sessionId,
+    ]);
+}
+
+function buildSegmentSessionId() {
+    const now = GLib.DateTime.new_now_local();
+    const stamp = now.format('%Y%m%d-%H%M%S') ?? String(GLib.get_monotonic_time());
+    const suffix = Math.floor(Math.random() * 0xffff).toString(16).padStart(4, '0');
+    return `${stamp}-${suffix}`;
+}
+
+function getRecordingFolder() {
+    const videoDir = GLib.get_user_special_dir(GLib.UserDirectory.DIRECTORY_VIDEOS)
+        ?? GLib.get_home_dir();
+    return GLib.build_filenamev([videoDir, BIGSHOT_VIDEO_FOLDER]);
+}
+
+function findRecentFileInDirectory(dirPath, prefix, ext, startedAtUnix) {
+    const dir = Gio.File.new_for_path(dirPath);
+    if (!dir.query_exists(null))
+        return null;
+
+    let enumerator = null;
+    let best = null;
+
+    try {
+        enumerator = dir.enumerate_children(
+            'standard::name,standard::type,standard::size,time::modified',
+            Gio.FileQueryInfoFlags.NONE,
+            null
+        );
+
+        let info;
+        while ((info = enumerator.next_file(null)) !== null) {
+            if (info.get_file_type() !== Gio.FileType.REGULAR)
+                continue;
+
+            const name = info.get_name();
+            if (!name.startsWith(prefix))
+                continue;
+            if (!name.endsWith(`.${ext}`) && !name.endsWith('.undefined') && !name.endsWith('.unknown'))
+                continue;
+
+            const modified = info.get_attribute_uint64('time::modified');
+            const size = info.get_size();
+            if (size <= 0 || modified < startedAtUnix - 10)
+                continue;
+
+            if (!best || modified > best.modified || (modified === best.modified && size > best.size)) {
+                best = {
+                    modified,
+                    size,
+                    path: dir.get_child(name).get_path(),
+                };
+            }
+        }
+    } catch (e) {
+        console.warn(`[Big Shot] Could not scan recording folder: ${e.message}`);
+    } finally {
+        try { enumerator?.close(null); } catch (_e) { /* */ }
+    }
+
+    return best?.path ?? null;
+}
+
+function findRecentRecordingFile(ext, startedAtUnix) {
+    return findRecentFileInDirectory(getRecordingFolder(), 'BigShot', ext, startedAtUnix);
+}
+
+function findRecentSegmentFile(sessionId, index, ext, startedAtUnix) {
+    return findRecentFileInDirectory(
+        getSegmentSessionFolder(sessionId),
+        `segment-${String(index).padStart(3, '0')}`,
+        ext,
+        startedAtUnix
+    );
+}
+
+/**
+ * Make sure ~/Videos/BigShot/ exists before the screencast service tries
+ * to write to it. The service does not auto-create the target directory.
+ */
+function ensureRecordingFolder() {
+    try {
+        GLib.mkdir_with_parents(getRecordingFolder(), 0o755);
+    } catch (e) {
+        console.warn(`[Big Shot] Could not create recording folder: ${e.message}`);
+    }
+}
+
+/**
  * Fix the file path extension after recording
  * GNOME creates files with .unknown extension, we rename to .mp4/.webm
  */
 function fixFilePath(filePath, ext) {
-    if (!filePath || !ext) return;
+    if (!filePath || !ext) return filePath;
     const file = Gio.File.new_for_path(filePath);
-    if (!file.query_exists(null)) return;
+    if (!file.query_exists(null)) {
+        const expectedPath = filePath.replace(/\.[^.]+$/, `.${ext}`);
+        return Gio.File.new_for_path(expectedPath).query_exists(null)
+            ? expectedPath
+            : filePath;
+    }
     // Replace the last extension (e.g., .webm → .mkv). Works correctly for
     // typical screencast filenames like 'Screencast_2024-01-01.webm'.
     const newPath = filePath.replace(/\.[^.]+$/, `.${ext}`);
     if (newPath !== filePath) {
         const newFile = Gio.File.new_for_path(newPath);
         try {
-            file.move(newFile, Gio.FileCopyFlags.NONE, null, null);
+            file.move(newFile, Gio.FileCopyFlags.OVERWRITE, null, null);
+            return newPath;
         } catch (e) {
             console.error(`[Big Shot] Failed to rename file: ${e.message}`);
+            return filePath;
         }
     }
+    return newPath;
+}
+
+function deletePathIfExists(path) {
+    if (!path)
+        return;
+    try {
+        const file = Gio.File.new_for_path(path);
+        if (file.query_exists(null))
+            file.delete(null);
+    } catch (e) {
+        console.warn(`[Big Shot] Could not delete ${path}: ${e.message}`);
+    }
+}
+
+function escapeFfmpegConcatPath(path) {
+    return path.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
 }
 
 // =============================================================================
@@ -234,9 +535,13 @@ export default class BigShotExtension extends Extension {
         this._currentConfigIndex = 0;
 
         // Pause/resume recording state
-        this._recordingState = 'idle'; // 'idle' | 'recording' | 'paused'
+        this._recordingState = 'idle'; // 'idle' | 'starting' | 'recording' | 'pausing' | 'paused' | 'resuming'
         this._recordingContext = null;
+        this._recordingSession = null;
+        this._currentSegment = null;
+        this._suppressPauseStopFailure = false;
         this._stopWatcherId = 0;
+        this._origScreencastProxyTimeout = null;
 
         const screenshotUI = Main.screenshotUI;
         if (!screenshotUI) {
@@ -255,6 +560,36 @@ export default class BigShotExtension extends Extension {
 
         // NOTE: Pipeline detection moved to lazy — runs on first screencast attempt
         // to avoid blocking enable() with synchronous subprocess calls.
+
+        // Defer the heavy UI/patch work until the shell finishes startup, so
+        // other extensions (Dash to Dock in particular) can replace the default
+        // dash before our synchronous widget construction runs.
+        this._scheduleDeferredEnable();
+    }
+
+    _scheduleDeferredEnable() {
+        // `heavyDepsReady` already waits for `startup-complete` internally,
+        // so we don't need to gate on it again here. Just schedule a low-
+        // priority idle that awaits the lazy import chain and then runs the
+        // patches/parts. Keeping enable() returning fast (synchronous, no
+        // await) is what lets every later extension's enable() run promptly.
+        this._enableDeferredId = GLib.idle_add(GLib.PRIORITY_LOW, () => {
+            this._enableDeferredId = 0;
+            this._runDeferredEnable();
+            return GLib.SOURCE_REMOVE;
+        });
+    }
+
+    async _runDeferredEnable() {
+        try {
+            await heavyDepsReady;
+        } catch (e) {
+            console.error(`[Big Shot] Failed to load deps: ${e.message}\n${e.stack}`);
+            return;
+        }
+
+        // disable() may have run while we were awaiting; bail out if so.
+        if (!this._screenshotUI) return;
 
         // Each patch is wrapped so a future API change in one area doesn't
         // prevent the rest of the extension from loading. Better partial
@@ -307,9 +642,22 @@ export default class BigShotExtension extends Extension {
     }
 
     disable() {
+        // Cancel deferred enable if it hasn't fired yet (extension disabled
+        // before the idle callback ran). Without this, the parts/patches would
+        // be created against a screenshotUI we no longer track. The async
+        // path inside _runDeferredEnable also bails out if _screenshotUI was
+        // cleared, so racing disable() against the heavyDepsReady await is
+        // safe.
+        if (this._enableDeferredId) {
+            GLib.source_remove(this._enableDeferredId);
+            this._enableDeferredId = 0;
+        }
+
         // Clean up pause/resume state
         this._recordingState = 'idle';
         this._recordingContext = null;
+        this._recordingSession = null;
+        this._currentSegment = null;
         if (this._stopWatcherId) {
             GLib.source_remove(this._stopWatcherId);
             this._stopWatcherId = 0;
@@ -1110,6 +1458,17 @@ export default class BigShotExtension extends Extension {
         }
     }
 
+    _getAutoPipelineConfigs() {
+        if (!this._availableConfigs)
+            return [];
+
+        const gpuConfigs = this._availableConfigs.filter(config => config.vendors.length > 0);
+        const swFallbacks = this._availableConfigs.filter(config =>
+            config.vendors.length === 0 && config.auto !== false);
+
+        return [...gpuConfigs, ...swFallbacks];
+    }
+
     _createParts() {
         const ui = this._screenshotUI;
         const ext = this;
@@ -1121,6 +1480,10 @@ export default class BigShotExtension extends Extension {
         // Annotation — connects toolbar to drawing overlay
         this._annotation = new PartAnnotation(ui, ext);
         this._parts.push(this._annotation);
+
+        // Video annotation — same drawing tools captured during screencast
+        this._videoAnnotation = new PartVideoAnnotation(ui, ext);
+        this._parts.push(this._videoAnnotation);
 
         // Magnifier — zoom pop-up on shift key
         this._magnifier = new PartMagnifier(ui, ext);
@@ -1259,6 +1622,11 @@ export default class BigShotExtension extends Extension {
         if (screencastProxy) {
             this._origScreencast = screencastProxy.ScreencastAsync?.bind(screencastProxy);
             this._origScreencastArea = screencastProxy.ScreencastAreaAsync?.bind(screencastProxy);
+            if (typeof screencastProxy.get_default_timeout === 'function' &&
+                typeof screencastProxy.set_default_timeout === 'function') {
+                this._origScreencastProxyTimeout = screencastProxy.get_default_timeout();
+                screencastProxy.set_default_timeout(SCREENCAST_DBUS_TIMEOUT_MS);
+            }
 
             // Patch ScreencastAsync
             if (this._origScreencast) {
@@ -1275,6 +1643,13 @@ export default class BigShotExtension extends Extension {
                     });
                 };
             }
+
+            this._origStopScreencastAsync = screencastProxy.StopScreencastAsync?.bind(screencastProxy);
+            if (this._origStopScreencastAsync) {
+                screencastProxy.StopScreencastAsync = function (...args) {
+                    return ext._stopScreencastProxyAsync(...args);
+                };
+            }
         } else {
             console.warn('[Big Shot] _screencastProxy not found — custom pipelines disabled');
         }
@@ -1289,33 +1664,33 @@ export default class BigShotExtension extends Extension {
         }
         this._origOpen = screenshotUI.open.bind(screenshotUI);
         screenshotUI.open = function (mode) {
-            // QuickStop: if recording (or paused) and user re-opens the UI,
-            // stop the ongoing recording instead of opening.
-            if (ext._recordingState === 'paused') {
-                // Resume the screencast process first so it can finalize the file
-                ext._signalScreencastProcess('CONT');
-                // Let GNOME stop the recording normally
-                ext._stopActiveRecording();
-                ext._onFinalStop();
-                Main.screenshotUI?.close();
-                return Promise.resolve();
-            }
+            if (mode === undefined) mode = 0; // UIMode.SCREENSHOT default
 
-            if (ext._isRecordingActive()) {
-                try {
-                    ext._stopActiveRecording();
+            // QuickStop only when user re-opens in SCREENCAST mode while
+            // a recording is in progress. Opening in SCREENSHOT mode (e.g.
+            // PrintScreen) must NOT stop the recording — the user wants to
+            // grab a quick screenshot/edit while the recording continues.
+            if (mode === 1 /* UIMode.SCREENCAST */) {
+                if (ext._recordingState === 'paused') {
+                    ext._finishPausedRecording();
                     Main.screenshotUI?.close();
-                } catch (e) {
-                    console.error(`[Big Shot] Quick stop error: ${e.message}`);
+                    return Promise.resolve();
                 }
-                return Promise.resolve();
+                if (ext._isRecordingActive()) {
+                    try {
+                        ext._stopActiveRecording();
+                        Main.screenshotUI?.close();
+                    } catch (e) {
+                        console.error(`[Big Shot] Quick stop error: ${e.message}`);
+                    }
+                    return Promise.resolve();
+                }
             }
 
-            if (mode === undefined) mode = 0; // UIMode.SCREENSHOT
-            // Allow screenshot while recording: GNOME blocks open() when
-            // _screencastInProgress is true. We temporarily clear the flag
-            // so screenshot mode (UIMode.SCREENSHOT=0) can open during recording.
-            if (this._screencastInProgress && mode !== 1) { // 1 = UIMode.SCREENCAST
+            // Allow screenshot UI while recording: GNOME blocks open() when
+            // _screencastInProgress is true. Temporarily clear the flag so
+            // screenshot mode (UIMode.SCREENSHOT=0) can open during recording.
+            if (this._screencastInProgress && mode !== 1) {
                 const saved = this._screencastInProgress;
                 this._screencastInProgress = false;
                 const result = ext._origOpen.call(this, mode);
@@ -1328,12 +1703,154 @@ export default class BigShotExtension extends Extension {
         // Patch _startScreencast so we can mark recording state BEFORE
         // the UI calls close(true), allowing the notify::visible handler
         // to reparent the webcam overlay instead of destroying it.
+        // Also: native _startScreencast doesn't handle window mode; intercept
+        // when _windowButton is checked and convert to ScreencastAreaAsync
+        // using the window's screen rect.
         this._origStartScreencast = screenshotUI._startScreencast?.bind(screenshotUI);
         if (this._origStartScreencast) {
             screenshotUI._startScreencast = function (...args) {
                 ext._recordingState = 'starting';
+                if (this._windowButton?.checked) {
+                    return ext._startWindowScreencast(this);
+                }
                 return ext._origStartScreencast(...args);
             };
+        }
+
+        this._origStopScreencast = screenshotUI.stopScreencast?.bind(screenshotUI);
+        if (this._origStopScreencast) {
+            screenshotUI.stopScreencast = function (...args) {
+                return ext._stopScreencastUiAsync(...args);
+            };
+        }
+
+        this._origScreencastFailed = screenshotUI._screencastFailed?.bind(screenshotUI);
+        if (this._origScreencastFailed) {
+            screenshotUI._screencastFailed = function (...args) {
+                if (ext._shouldIgnorePauseStopFailure()) {
+                    ext._suppressPauseStopFailure = false;
+                    return;
+                }
+                return ext._origScreencastFailed(...args);
+            };
+        }
+
+        // Native sets _windowButton.reactive = false in two places when
+        // entering screencast mode:
+        //   1. _onCastButtonToggled (toggle handler)
+        //   2. _syncWindowButtonSensitivity (called from open/refresh paths)
+        // Patch both so the window button stays usable during screencast.
+        this._origSyncWindowButtonSensitivity =
+            screenshotUI._syncWindowButtonSensitivity?.bind(screenshotUI);
+        if (this._origSyncWindowButtonSensitivity) {
+            screenshotUI._syncWindowButtonSensitivity = function () {
+                const windows =
+                    this._windowSelectors.flatMap(selector => selector.windows());
+                this._windowButton.reactive =
+                    Main.sessionMode.hasWindows && windows.length > 0;
+            };
+        }
+
+        // Native connects _onCastButtonToggled via .bind() at construction
+        // time, so monkey-patching the method has no effect on the live
+        // signal handler. Instead, connect our own notify::checked listener
+        // that runs after the native one and reverts reactive=false — but
+        // only when there are actually windows to record (matches the
+        // disabled state shown in screenshot mode when no windows exist).
+        const castButton = screenshotUI._castButton;
+        if (castButton) {
+            const refreshWindowReactive = () => {
+                if (!castButton.checked) return;
+                screenshotUI._syncWindowButtonSensitivity?.();
+            };
+            this._castButtonReactivityId = castButton.connect(
+                'notify::checked', refreshWindowReactive);
+            refreshWindowReactive();
+        }
+    }
+
+    /**
+     * Start a screencast of the currently selected window by converting it
+     * to a ScreencastAreaAsync call with the window's screen rect.
+     * Native GNOME 50 _startScreencast bails out when window mode is active
+     * (TODO comment in shell source), so we provide the implementation here.
+     */
+    async _startWindowScreencast(ui) {
+        const item = ui._windowSelectors
+            ?.flatMap(s => s.windows())
+            ?.find(win => win.checked);
+        if (!item) {
+            this._recordingState = 'idle';
+            return;
+        }
+
+        // UIWindowSelectorWindow exposes boundingBox = window.get_frame_rect()
+        // (logical screen coordinates), set at construction. The MetaWindow
+        // itself isn't kept as a property by GNOME 50.
+        const rect = item.boundingBox;
+        if (!rect || rect.width <= 0 || rect.height <= 0) {
+            console.warn('[Big Shot] Window screencast: invalid bounding box');
+            this._recordingState = 'idle';
+            return;
+        }
+        const proxy = ui._screencastProxy;
+        if (!proxy || typeof proxy.ScreencastAreaAsync !== 'function') {
+            console.warn('[Big Shot] Window screencast: proxy unavailable');
+            this._recordingState = 'idle';
+            return;
+        }
+
+        // Round to even pixels. H.264 (and most HW encoders) require even
+        // width/height; an odd rect makes the videocrop produce a stream
+        // the encoder can't accept cleanly, which the user sees as dropped
+        // / repeated frames at the edge.
+        const x = rect.x & ~1;
+        const y = rect.y & ~1;
+        const width = Math.max(2, rect.width & ~1);
+        const height = Math.max(2, rect.height & ~1);
+
+        const drawCursor = ui._cursor?.visible ?? true;
+        // Save under ~/Videos/BigShot/ so window and full-screen recordings
+        // land in the same place. The screencast service resolves this
+        // relative to XDG_VIDEOS_DIR and expands %d/%t.
+        const filePath = buildBigShotRecordingPath();
+        ensureRecordingFolder();
+        const options = { 'draw-cursor': new GLib.Variant('b', drawCursor) };
+
+        // Set in-progress BEFORE the async call so the indicator picks it up
+        // (mirrors native _startScreencast).
+        if (typeof ui._setScreencastInProgress === 'function')
+            ui._setScreencastInProgress(true);
+        else
+            ui._screencastInProgress = true;
+        ui._screencastStarting = true;
+
+        // Close the UI immediately so the fade-out doesn't get recorded.
+        try { ui.close(true); } catch (_e) { /* */ }
+
+        try {
+            const [success, path] = await proxy.ScreencastAreaAsync(
+                x, y, width, height, filePath, options
+            );
+            if (success) {
+                ui._screencastPath = path;
+            } else {
+                this._recordingState = 'idle';
+                if (typeof ui._setScreencastInProgress === 'function')
+                    ui._setScreencastInProgress(false);
+                else
+                    ui._screencastInProgress = false;
+                console.warn('[Big Shot] Window screencast: service returned failure');
+            }
+        } catch (e) {
+            this._recordingState = 'idle';
+            if (typeof ui._setScreencastInProgress === 'function')
+                ui._setScreencastInProgress(false);
+            else
+                ui._screencastInProgress = false;
+            console.error(`[Big Shot] Window screencast error: ${e.message}`);
+        } finally {
+            delete ui._screencastStarting;
         }
     }
 
@@ -1346,22 +1863,47 @@ export default class BigShotExtension extends Extension {
                 screencastProxy.ScreencastAsync = this._origScreencast;
             if (this._origScreencastArea)
                 screencastProxy.ScreencastAreaAsync = this._origScreencastArea;
+            if (this._origStopScreencastAsync)
+                screencastProxy.StopScreencastAsync = this._origStopScreencastAsync;
+            if (this._origScreencastProxyTimeout !== null &&
+                typeof screencastProxy.set_default_timeout === 'function')
+                screencastProxy.set_default_timeout(this._origScreencastProxyTimeout);
         }
 
         if (ui && this._origOpen)
             ui.open = this._origOpen;
         if (ui && this._origStartScreencast)
             ui._startScreencast = this._origStartScreencast;
+        if (ui && this._origStopScreencast)
+            ui.stopScreencast = this._origStopScreencast;
+        if (ui && this._origScreencastFailed)
+            ui._screencastFailed = this._origScreencastFailed;
+        if (ui && this._origSyncWindowButtonSensitivity)
+            ui._syncWindowButtonSensitivity = this._origSyncWindowButtonSensitivity;
+        if (ui && this._castButtonReactivityId && ui._castButton) {
+            try { ui._castButton.disconnect(this._castButtonReactivityId); } catch (_e) { /* */ }
+        }
 
         this._origScreencast = null;
         this._origScreencastArea = null;
+        this._origStopScreencastAsync = null;
         this._origOpen = null;
         this._origStartScreencast = null;
+        this._origStopScreencast = null;
+        this._origScreencastFailed = null;
+        this._origSyncWindowButtonSensitivity = null;
+        this._castButtonReactivityId = 0;
+        this._origScreencastProxyTimeout = null;
     }
 
     async _screencastCommonAsync(filePath, options, originalMethod) {
         // Lazy pipeline detection on first use (avoids blocking enable())
         this._detectPipelines();
+
+        // Force every recording (full-screen and area) into ~/Videos/BigShot/
+        // with the localized "BigShot from %d %t" filename.
+        filePath = buildBigShotRecordingPath();
+        ensureRecordingFolder();
 
         if (this._availableConfigs.length === 0) {
             return originalMethod(filePath, options);
@@ -1374,19 +1916,21 @@ export default class BigShotExtension extends Extension {
 
         // Set framerate in D-Bus options
         options['framerate'] = new GLib.Variant('i', framerate);
+        const baseOptions = { ...options };
 
         // Show indicator once at the start of cascade
         this._indicator?.onPipelineStarting();
 
-        // Build pipeline order: preferred codec first, then rest
-        let configs = [...this._availableConfigs];
+        // Auto mode is GPU-first. Software encoders are only fallbacks after
+        // every detected GPU pipeline failed. Manual codec selection still
+        // starts with the selected pipeline.
+        let configs = this._getAutoPipelineConfigs();
         const preferredId = this._toolbar?.selectedPipelineId;
         if (preferredId) {
-            const idx = configs.findIndex(c => c.id === preferredId);
-            if (idx > 0) {
-                const [preferred] = configs.splice(idx, 1);
-                configs.unshift(preferred);
-            }
+            const preferred = this._availableConfigs.find(c => c.id === preferredId);
+            configs = preferred
+                ? [preferred, ...configs.filter(c => c.id !== preferredId)]
+                : configs;
         }
 
         // Try each config in cascade: preferred → GPU hw → VAAPI → Software
@@ -1402,49 +1946,37 @@ export default class BigShotExtension extends Extension {
             // the notify::visible handler can reparent the webcam overlay
             // instead of stopping it when the UI hides.
             this._recordingState = 'starting';
+            const startedAtUnix = GLib.DateTime.new_now_local().to_unix();
 
             try {
                 const result = await originalMethod(filePath, pipelineOptions);
-                this._indicator?.onPipelineReady();
-
-                // Save recording context for pause/resume
-                this._recordingState = 'recording';
-                this._recordingContext = {
+                if (result && result[0] === false)
+                    throw new Error('Screencast service returned failure');
+                return this._registerRecordingStarted({
+                    result,
                     config,
-                };
-
-                // Fix .undefined extension: GNOME creates files with .undefined
-                // for custom pipelines. Schedule rename after recording stops
-                // and fix the return path so notifications use correct extension.
-                let correctedPath = result?.[1] ?? filePath;
-                if (result && result[0] && typeof result[1] === 'string') {
-                    const actualPath = result[1];
-                    const correctExt = `.${config.ext}`;
-                    if (!actualPath.endsWith(correctExt)) {
-                        correctedPath = actualPath.replace(/\.[^.]+$/, correctExt);
-                        this._scheduleFileRename(actualPath, config.ext);
-                    }
-                }
-                this._currentSegmentPath = correctedPath;
-
-                // Start watching for final stop
-                this._watchForFinalStop();
-
-                // Notify indicator
-                console.log('[Big Shot] About to call onRecordingStarted, indicator exists:', !!this._indicator);
-                try {
-                    this._indicator?.onRecordingStarted();
-                    console.log('[Big Shot] onRecordingStarted called successfully');
-                } catch (indErr) {
-                    console.error('[Big Shot] onRecordingStarted ERROR:', indErr.message, indErr.stack);
-                }
-
-                // Return result with corrected file extension so GNOME
-                // notifications point to the .mp4/.webm file, not .undefined
-                return (result && result[0])
-                    ? [result[0], correctedPath]
-                    : result;
+                    originalMethod,
+                    baseOptions,
+                    framerateCaps,
+                    downsize,
+                    quality,
+                    fallbackPath: filePath,
+                });
             } catch (e) {
+                const recovered = this._recoverStartedRecordingAfterTimeout({
+                    error: e,
+                    config,
+                    originalMethod,
+                    baseOptions,
+                    framerateCaps,
+                    downsize,
+                    quality,
+                    startedAtUnix,
+                });
+                if (recovered)
+                    return recovered;
+
+                this._recordingState = 'idle';
                 console.warn(`[Big Shot] Pipeline ${config.id} failed: ${e.message}`);
                 // Continue to next config
             }
@@ -1454,6 +1986,119 @@ export default class BigShotExtension extends Extension {
         console.warn('[Big Shot] All pipelines failed, falling back to GNOME default');
         this._indicator?.onPipelineReady();
         return originalMethod(filePath, options);
+    }
+
+    _registerRecordingStarted({
+        result,
+        config,
+        originalMethod,
+        baseOptions,
+        framerateCaps,
+        downsize,
+        quality,
+        fallbackPath,
+    }) {
+        this._indicator?.onPipelineReady();
+
+        this._recordingState = 'recording';
+        this._recordingContext = {
+            config,
+            originalMethod,
+        };
+
+        const actualPath = result?.[1] ?? fallbackPath;
+        const correctExt = `.${config.ext}`;
+        const correctedPath = typeof actualPath === 'string' && !actualPath.endsWith(correctExt)
+            ? actualPath.replace(/\.[^.]+$/, correctExt)
+            : actualPath;
+
+        this._recordingSession = {
+            id: buildSegmentSessionId(),
+            config,
+            starter: originalMethod,
+            baseOptions,
+            framerateCaps,
+            downsize,
+            quality,
+            ext: config.ext,
+            segments: [],
+            finalPath: correctedPath,
+            nextIndex: 2,
+        };
+        this._currentSegment = {
+            index: 1,
+            actualPath,
+            path: correctedPath,
+            ext: config.ext,
+            finalized: false,
+        };
+        this._currentSegmentPath = correctedPath;
+
+        this._watchForFinalStop();
+
+        try {
+            this._indicator?.onRecordingStarted();
+            this._videoAnnotation?.onRecordingStarted();
+        } catch (indErr) {
+            console.error('[Big Shot] onRecordingStarted ERROR:', indErr.message, indErr.stack);
+        }
+
+        return (result && result[0])
+            ? [result[0], correctedPath]
+            : result;
+    }
+
+    _isStartupTimeout(error) {
+        if (error?.matches?.(Gio.IOErrorEnum, Gio.IOErrorEnum.TIMED_OUT))
+            return true;
+        const message = String(error?.message ?? error).toLowerCase();
+        return message.includes('timeout') || message.includes('timed out') ||
+            message.includes('tempo limite');
+    }
+
+    _recoverStartedRecordingAfterTimeout({
+        error,
+        config,
+        originalMethod,
+        baseOptions,
+        framerateCaps,
+        downsize,
+        quality,
+        startedAtUnix,
+    }) {
+        if (!this._isStartupTimeout(error))
+            return null;
+
+        const activePath = findRecentRecordingFile(config.ext, startedAtUnix);
+        if (!activePath) {
+            this._stopScreencastAfterStartupFailure();
+            return null;
+        }
+
+        console.warn(`[Big Shot] Pipeline ${config.id} start timed out after output began; keeping recording attached`);
+        return this._registerRecordingStarted({
+            result: [true, activePath],
+            config,
+            originalMethod,
+            baseOptions,
+            framerateCaps,
+            downsize,
+            quality,
+            fallbackPath: activePath,
+        });
+    }
+
+    _stopScreencastAfterStartupFailure() {
+        if (!this._origStopScreencastAsync)
+            return;
+
+        try {
+            const result = this._origStopScreencastAsync();
+            if (result?.catch)
+                result.catch(e => console.warn(`[Big Shot] stale screencast stop failed: ${e.message}`));
+        } catch (e) {
+            console.warn(`[Big Shot] stale screencast stop failed: ${e.message}`);
+        }
     }
 
     // =========================================================================
@@ -1487,6 +2132,11 @@ export default class BigShotExtension extends Extension {
         const ui = this._screenshotUI ?? Main.screenshotUI;
         if (!ui) return;
 
+        if (this._recordingState === 'paused') {
+            this._finishPausedRecording();
+            return;
+        }
+
         // Preferred: GNOME 50+ public API
         if (typeof ui.stopScreencast === 'function') {
             try { ui.stopScreencast(); return; } catch (e) {
@@ -1511,92 +2161,203 @@ export default class BigShotExtension extends Extension {
         }
     }
 
+    _prepareRecordingStop() {
+        this._videoAnnotation?.finishEditForStop();
+    }
+
+    _stopScreencastProxyAsync(...args) {
+        if (this._recordingState === 'paused') {
+            this._finishPausedRecording();
+            return Promise.resolve([true]);
+        }
+
+        this._prepareRecordingStop();
+        return this._origStopScreencastAsync(...args);
+    }
+
+    _stopScreencastUiAsync(...args) {
+        if (this._recordingState === 'paused') {
+            this._finishPausedRecording();
+            return Promise.resolve();
+        }
+
+        this._prepareRecordingStop();
+        return this._origStopScreencast(...args);
+    }
+
+    _setScreencastInProgress(active) {
+        const ui = this._screenshotUI ?? Main.screenshotUI;
+        if (!ui)
+            return;
+
+        if (typeof ui._setScreencastInProgress === 'function')
+            ui._setScreencastInProgress(active);
+        else
+            ui._screencastInProgress = active;
+    }
+
+    _shouldIgnorePauseStopFailure() {
+        return this._suppressPauseStopFailure &&
+            (this._recordingState === 'pausing' || this._recordingState === 'paused');
+    }
+
     // =========================================================================
     // PAUSE / RESUME RECORDING
     // =========================================================================
 
-    /**
-     * Find the PID of the gnome-shell-screencast subprocess.
-     * Returns the PID as a number, or 0 if not found.
-     */
-    _findScreencastPid() {
-        try {
-            const proc = Gio.Subprocess.new(
-                ['pgrep', '-f', 'org.gnome.Shell.Screencast'],
-                Gio.SubprocessFlags.STDOUT_PIPE | Gio.SubprocessFlags.STDERR_SILENCE
-            );
-            const [, stdout] = proc.communicate_utf8(null, null);
-            const pid = parseInt((stdout || '').trim().split('\n')[0], 10);
-            return isNaN(pid) ? 0 : pid;
-        } catch (_e) {
-            return 0;
-        }
+    async _stopCurrentSegmentForPause() {
+        if (!this._origStopScreencastAsync)
+            return false;
+
+        this._suppressPauseStopFailure = true;
+        const result = await this._origStopScreencastAsync();
+        return Array.isArray(result) ? !!result[0] : !!result;
     }
 
-    /**
-     * Send a POSIX signal to the screencast process.
-     */
-    _signalScreencastProcess(signal) {
-        const pid = this._findScreencastPid();
-        if (!pid) {
-            console.warn('[Big Shot] Screencast process not found for signal');
-            return false;
-        }
+    _finalizeCurrentSegment() {
+        const segment = this._currentSegment;
+        if (!segment || segment.finalized)
+            return null;
+
+        const finalPath = fixFilePath(segment.actualPath, segment.ext) ?? segment.path;
+        segment.path = finalPath;
+        segment.finalized = true;
+
+        const session = this._recordingSession;
+        if (session && !session.segments.some(s => s.path === finalPath))
+            session.segments.push({ ...segment, path: finalPath });
+
+        this._currentSegment = null;
+        return finalPath;
+    }
+
+    async _startNextSegment() {
+        const session = this._recordingSession;
+        if (!session?.starter || !session.config)
+            throw new Error('No recording session to resume');
+
+        const index = session.nextIndex++;
+        const filePath = buildBigShotSegmentPath(session.id, index);
+        GLib.mkdir_with_parents(getSegmentSessionFolder(session.id), 0o755);
+
+        const pipeline = this._makePipelineString(
+            session.config,
+            session.framerateCaps,
+            session.downsize,
+            session.quality
+        );
+        const pipelineOptions = {
+            ...session.baseOptions,
+            pipeline: new GLib.Variant('s', pipeline),
+        };
+
+        const startedAtUnix = GLib.DateTime.new_now_local().to_unix();
+        let result;
+
         try {
-            const proc = Gio.Subprocess.new(
-                ['kill', `-${signal}`, String(pid)],
-                Gio.SubprocessFlags.STDOUT_SILENCE | Gio.SubprocessFlags.STDERR_SILENCE
-            );
-            proc.wait(null);
-            return proc.get_successful();
+            result = await session.starter(filePath, pipelineOptions);
+            if (result && result[0] === false)
+                throw new Error('Screencast service returned failure');
         } catch (e) {
-            console.error(`[Big Shot] Failed to signal process: ${e.message}`);
+            if (!this._isStartupTimeout(e))
+                throw e;
+
+            const activePath = findRecentSegmentFile(session.id, index, session.ext, startedAtUnix);
+            if (!activePath)
+                throw e;
+
+            console.warn(`[Big Shot] Resume segment ${index} timed out after output began; keeping recording attached`);
+            result = [true, activePath];
+        }
+
+        const actualPath = result?.[1] ?? filePath;
+        const correctExt = `.${session.ext}`;
+        const correctedPath = typeof actualPath === 'string' && !actualPath.endsWith(correctExt)
+            ? actualPath.replace(/\.[^.]+$/, correctExt)
+            : actualPath;
+
+        this._currentSegment = {
+            index,
+            actualPath,
+            path: correctedPath,
+            ext: session.ext,
+            finalized: false,
+        };
+        this._currentSegmentPath = correctedPath;
+
+        const ui = this._screenshotUI ?? Main.screenshotUI;
+        if (ui)
+            ui._screencastPath = session.finalPath;
+        this._setScreencastInProgress(true);
+    }
+
+    async pauseRecording() {
+        if (this._recordingState !== 'recording')
+            return false;
+        if (!this._recordingSession || !this._currentSegment) {
+            console.warn('[Big Shot] Pause unavailable without active segment');
+            return false;
+        }
+
+        this._recordingState = 'pausing';
+        this._indicator?.onPaused();
+
+        try {
+            if (!await this._stopCurrentSegmentForPause())
+                throw new Error('StopScreencast returned false');
+
+            this._finalizeCurrentSegment();
+            this._recordingState = 'paused';
+            this._setScreencastInProgress(true);
+            return true;
+        } catch (e) {
+            console.error(`[Big Shot] Failed to pause recording: ${e.message}`);
+            this._recordingState = 'recording';
+            this._suppressPauseStopFailure = false;
+            this._setScreencastInProgress(true);
+            this._indicator?.onResumed();
             return false;
         }
     }
 
-    /**
-     * Pause the current recording by sending SIGSTOP to the screencast
-     * subprocess. The GStreamer pipeline freezes and no new frames are
-     * captured, but GNOME Shell continues to think recording is active.
-     */
-    pauseRecording() {
-        if (this._recordingState !== 'recording') return;
+    async resumeRecording() {
+        if (this._recordingState === 'resuming')
+            return true;
+        if (this._recordingState !== 'paused')
+            return false;
 
-        if (this._signalScreencastProcess('STOP')) {
-            this._recordingState = 'paused';
-            this._indicator?.onPaused();
-            console.log('[Big Shot] Recording paused (SIGSTOP)');
-        }
-    }
+        this._recordingState = 'resuming';
+        this._indicator?.onResuming?.();
 
-    /**
-     * Resume recording by sending SIGCONT to the screencast subprocess.
-     */
-    resumeRecording() {
-        if (this._recordingState !== 'paused') return;
-
-        if (this._signalScreencastProcess('CONT')) {
+        try {
+            await this._startNextSegment();
             this._recordingState = 'recording';
             this._indicator?.onResumed();
-            console.log('[Big Shot] Recording resumed (SIGCONT)');
+            return true;
+        } catch (e) {
+            console.error(`[Big Shot] Failed to resume recording: ${e.message}`);
+            this._recordingState = 'paused';
+            this._indicator?.onPaused();
+            return false;
         }
     }
 
     /**
      * Toggle pause/resume — called by the indicator panel button.
      */
-    togglePauseRecording() {
+    async togglePauseRecording() {
+        console.log(`[Big Shot] Toggle pause/resume state=${this._recordingState}`);
         if (this._recordingState === 'recording') {
-            this.pauseRecording();
+            if (await this.pauseRecording())
+                this._videoAnnotation?.enterPausedEditFromPause();
         } else if (this._recordingState === 'paused') {
-            this.resumeRecording();
+            this._videoAnnotation?.finishPausedEditFromPause();
+            await this.resumeRecording();
         }
     }
 
     /**
      * Watch for the final stop (user-initiated).
-     * When the user stops recording, we make sure to resume first if paused.
      */
     _watchForFinalStop() {
         if (this._stopWatcherId) {
@@ -1605,9 +2366,9 @@ export default class BigShotExtension extends Extension {
         }
 
         this._stopWatcherId = GLib.timeout_add(GLib.PRIORITY_DEFAULT, 500, () => {
-            // If paused, keep watching — the user may resume or the QuickStop
-            // handler will SIGCONT before stopping.
-            if (this._recordingState === 'paused')
+            if (this._recordingState === 'pausing' ||
+                this._recordingState === 'paused' ||
+                this._recordingState === 'resuming')
                 return GLib.SOURCE_CONTINUE;
 
             if (this._screenshotUI?._screencastInProgress)
@@ -1625,10 +2386,107 @@ export default class BigShotExtension extends Extension {
     _onFinalStop() {
         if (this._recordingState === 'idle') return;
 
+        this._finalizeCurrentSegment();
+        const session = this._recordingSession;
+
         this._recordingState = 'idle';
+        this._videoAnnotation?.onRecordingStopped();
         this._indicator?.onRecordingStopped();
         this._webcam?.stopPreview();
         this._recordingContext = null;
+        this._recordingSession = null;
+        this._currentSegment = null;
+
+        if (session?.segments?.length > 1)
+            this._mergeSegments(session);
+    }
+
+    _finishPausedRecording() {
+        if (this._recordingState !== 'paused')
+            return false;
+
+        this._prepareRecordingStop();
+        this._setScreencastInProgress(false);
+        this._onFinalStop();
+        return true;
+    }
+
+    _mergeSegments(session) {
+        const finalPath = session.finalPath;
+        const tmpPath = `${finalPath}.merge-${session.id}.${session.ext}`;
+        const listPath = GLib.build_filenamev([
+            getRecordingFolder(),
+            `${session.id}.concat.txt`,
+        ]);
+
+        try {
+            const list = session.segments
+                .map(segment => `file '${escapeFfmpegConcatPath(segment.path)}'`)
+                .join('\n') + '\n';
+            Gio.File.new_for_path(listPath).replace_contents(
+                new TextEncoder().encode(list),
+                null,
+                false,
+                Gio.FileCreateFlags.NONE,
+                null
+            );
+
+            const proc = Gio.Subprocess.new([
+                'ffmpeg',
+                '-hide_banner',
+                '-loglevel', 'warning',
+                '-y',
+                '-f', 'concat',
+                '-safe', '0',
+                '-i', listPath,
+                '-c', 'copy',
+                tmpPath,
+            ], Gio.SubprocessFlags.STDOUT_SILENCE | Gio.SubprocessFlags.STDERR_SILENCE);
+
+            proc.wait_async(null, (subprocess, result) => {
+                try {
+                    subprocess.wait_finish(result);
+                    if (!subprocess.get_successful())
+                        throw new Error('ffmpeg concat failed');
+
+                    const tmpFile = Gio.File.new_for_path(tmpPath);
+                    tmpFile.move(
+                        Gio.File.new_for_path(finalPath),
+                        Gio.FileCopyFlags.OVERWRITE,
+                        null,
+                        null
+                    );
+                    this._cleanupMergedSegments(session, listPath, tmpPath);
+                } catch (e) {
+                    console.error(`[Big Shot] Failed to merge recording segments: ${e.message}`);
+                    deletePathIfExists(tmpPath);
+                    deletePathIfExists(listPath);
+                }
+            });
+        } catch (e) {
+            console.error(`[Big Shot] Failed to start segment merge: ${e.message}`);
+            deletePathIfExists(tmpPath);
+            deletePathIfExists(listPath);
+        }
+    }
+
+    _cleanupMergedSegments(session, listPath, tmpPath) {
+        deletePathIfExists(listPath);
+        deletePathIfExists(tmpPath);
+
+        for (const segment of session.segments) {
+            if (segment.path !== session.finalPath)
+                deletePathIfExists(segment.path);
+            if (segment.actualPath !== segment.path)
+                deletePathIfExists(segment.actualPath);
+        }
+
+        const sessionDir = GLib.build_filenamev([
+            getRecordingFolder(),
+            BIGSHOT_SEGMENT_FOLDER,
+            session.id,
+        ]);
+        deletePathIfExists(sessionDir);
     }
 
     /**

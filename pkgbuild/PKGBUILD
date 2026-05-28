@@ -2,7 +2,7 @@
 
 pkgname=gnome-shell-big-shot
 pkgdesc="Enhanced Screenshot & Screencast for GNOME Shell — annotation tools, audio recording, FPS/resolution control"
-depends=('gnome-shell>=46' 'gstreamer' 'gst-plugins-base' 'gst-plugins-good' 'gst-plugins-bad' 'gst-plugin-va' 'pciutils')
+depends=('gnome-shell>=46' 'gstreamer' 'gst-plugins-base' 'gst-plugins-good' 'gst-plugins-bad' 'gst-plugin-va' 'pciutils' 'ffmpeg')
 optdepends=(
     'gst-plugins-ugly: additional GStreamer codecs (x264, mpeg2, a52)'
 )

@@ -39,14 +39,11 @@ export class PartIndicator extends PartUI {
      * Called when recording starts — show the pause button in the panel.
      */
     onRecordingStarted() {
-        console.log('[Big Shot Indicator] onRecordingStarted called');
         this._elapsed = 0;
         this._pausedElapsed = 0;
         this._isPaused = false;
         this._createPanelButton();
-        console.log('[Big Shot Indicator] _createPanelButton done');
         this._startTimer();
-        console.log('[Big Shot Indicator] _startTimer done');
     }
 
     /**
@@ -63,6 +60,11 @@ export class PartIndicator extends PartUI {
     /**
      * Called when recording is resumed.
      */
+    onResuming() {
+        this._isPaused = false;
+        this._updatePanelButton();
+    }
+
     onResumed() {
         this._isPaused = false;
         this._elapsed = 0;
@@ -82,12 +84,10 @@ export class PartIndicator extends PartUI {
     }
 
     _createPanelButton() {
-        console.log('[Big Shot Indicator] _createPanelButton start');
         this._destroyPanelButton();
 
         try {
             this._panelButton = new PanelMenu.Button(0.0, 'Big Shot Pause', true);
-            console.log('[Big Shot Indicator] PanelMenu.Button created');
         } catch (e) {
             console.error('[Big Shot Indicator] PanelMenu.Button creation FAILED:', e.message, e.stack);
             return;
@@ -129,7 +129,6 @@ export class PartIndicator extends PartUI {
             } else {
                 Main.panel.addToStatusArea('big-shot-pause', this._panelButton, 0, 'right');
             }
-            console.log('[Big Shot Indicator] addToStatusArea SUCCESS, visible:', this._panelButton.visible, 'width:', this._panelButton.width);
         } catch (e) {
             console.error('[Big Shot Indicator] addToStatusArea FAILED:', e.message, e.stack);
         }

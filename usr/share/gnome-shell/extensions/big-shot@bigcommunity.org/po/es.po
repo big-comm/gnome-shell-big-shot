@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: big-shot 1.0\n"
 "Report-Msgid-Bugs-To: https://github.com/BigCommunity/gnome-shell-big-shot/"
 "issues\n"
-"POT-Creation-Date: 2026-03-19 13:22-0300\n"
+"POT-Creation-Date: 2026-05-07 14:49-0300\n"
 "PO-Revision-Date: 2024-01-01 00:00+0000\n"
 "Last-Translator: BigCommunity <dev@bigcommunity.org>\n"
 "Language-Team: Spanish\n"
@@ -16,60 +16,68 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/drawing/overlay.js:74
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/drawing/overlay.js:87
 msgid "Drawing canvas"
 msgstr "Lienzo de dibujo"
 
-#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/drawing/overlay.js:495
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/drawing/overlay.js:524
 msgid "Text…"
 msgstr "Texto…"
 
-#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/drawing/overlay.js:498
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/drawing/overlay.js:527
 msgid "Annotation text"
 msgstr "Texto de anotación"
 
-#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/drawing/overlay.js:510
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/drawing/overlay.js:539
 msgid "Confirm"
 msgstr "Confirmar"
 
-#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:493
-#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:506
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:649
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:662
 msgid "Screenshot taken"
 msgstr "Captura de pantalla tomada"
 
-#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:548
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:704
 msgid "Screenshots"
 msgstr "Capturas de pantalla"
 
-#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:558
-#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:777
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:714
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:933
 #, javascript-format
 msgid "Screenshot from %s"
 msgstr "Captura de pantalla de %s"
 
-#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:740
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:896
 msgid "Screenshot copied"
 msgstr "Captura de pantalla copiada"
 
-#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:789
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:945
 msgid "Save Screenshot"
 msgstr "Guardar captura de pantalla"
 
-#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partaudio.js:96
-#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partaudio.js:153
+#. TRANSLATORS: Recording filename template.
+#. %d expands to YYYY-MM-DD (date), %t expands to HH-MM-SS (time).
+#. Both placeholders MUST stay literally in the translation.
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:292
+msgid "BigShot from %d %t"
+msgstr "BigShot del %d %t"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partaudio.js:97
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partaudio.js:159
 msgid "Desktop"
 msgstr "Escritorio"
 
-#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partaudio.js:108
-#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partaudio.js:161
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partaudio.js:109
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partaudio.js:167
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:604
 msgid "Mic"
 msgstr "Mic"
 
-#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partaudio.js:155
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partaudio.js:161
 msgid "Record Desktop Audio"
 msgstr "Grabar Audio del Escritorio"
 
-#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partaudio.js:163
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partaudio.js:169
 msgid "Record Microphone"
 msgstr "Grabar Micrófono"
 
@@ -130,159 +138,169 @@ msgid "Blur"
 msgstr "Desenfoque"
 
 #: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:45
+msgid "Invert Colors"
+msgstr "Invertir colores"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:46
 msgid "Number"
 msgstr "Número"
 
-#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:46
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:47
 msgid "Number with Arrow"
 msgstr "Número con flecha"
 
-#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:47
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:48
 msgid "Number with Pointer"
 msgstr "Número con puntero"
 
-#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:48
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:49
 msgid "Eraser"
 msgstr "Borrador"
 
-#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:116
-#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:124
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:117
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:125
 msgid "Show screenshot panel"
 msgstr "Mostrar panel de capturas"
 
-#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:124
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:125
 msgid "Hide screenshot panel"
 msgstr "Ocultar panel de capturas"
 
-#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:269
-#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:272
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:270
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:273
 msgid "Color"
 msgstr "Color"
 
-#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:284
-#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:287
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:285
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:288
 msgid "Fill"
 msgstr "Rellenar"
 
-#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:297
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:298
 msgid "Decrease Size"
 msgstr "Disminuir tamaño"
 
-#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:314
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:315
 msgid "Brush Size"
 msgstr "Tamaño del Pincel"
 
-#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:338
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:339
 msgid "Increase Size"
 msgstr "Aumentar tamaño"
 
-#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:357
-#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:361
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:358
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:362
 msgid "Font"
 msgstr "Fuente"
 
-#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:384
-#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:404
-#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:1041
-#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:1061
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:385
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:405
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:1098
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:1118
 msgid "Intensity"
 msgstr "Intensidad"
 
-#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:416
-#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:419
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:417
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:420
 msgid "Undo"
 msgstr "Deshacer"
 
-#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:428
-#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:431
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:429
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:432
 msgid "Redo"
 msgstr "Rehacer"
 
-#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:443
-#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:446
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:444
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:447
 msgid "Copy to Clipboard"
 msgstr "Copiar al portapapeles"
 
-#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:455
-#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:458
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:456
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:459
 msgid "Save As…"
 msgstr "Guardar como…"
 
-#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:478
-#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:483
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:479
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:484
 msgid "Close"
 msgstr "Cerrar"
 
-#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:516
-#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:686
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:517
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:716
 msgid "Video Settings"
 msgstr "Configuración de Vídeo"
 
-#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:560
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:561
 msgid "Quality"
 msgstr "Calidad"
 
-#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:566
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:567
 msgid "High"
 msgstr "Alta"
 
-#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:567
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:568
 msgid "Medium"
 msgstr "Media"
 
-#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:568
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:569
 msgid "Low"
 msgstr "Bajo"
 
-#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:580
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:581
 msgid "Recording quality (bitrate)"
 msgstr "Calidad de grabación (tasa de bits)"
 
-#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:590
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:591
 msgid "Codec"
 msgstr "Códec"
 
-#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:603
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:618
+msgid "Camera"
+msgstr ""
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:632
 msgid "Mask"
 msgstr "Máscara"
 
-#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:640
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:670
 msgid "Size"
 msgstr "Tamaño"
 
-#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:680
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:710
 msgid "Edit"
 msgstr "Editar"
 
-#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:686
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:716
 msgid "Edit Screenshot"
 msgstr "Editar Captura de Pantalla"
 
-#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:905
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:962
 msgid "Custom"
 msgstr "Personalizado"
 
-#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:1144
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:1201
 msgid "No Fill"
 msgstr "Sin Relleno"
 
-#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:1277
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:1334
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:1396
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:1462
 msgid "Auto"
 msgstr "Automático"
 
-#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:1281
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:1466
 msgid "Use best available codec"
 msgstr "Usar el códec disponible más adecuado"
 
-#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:1297
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:1482
 msgid "Video codec"
 msgstr "Códec de video"
 
-#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partwebcam.js:88
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partwebcam.js:96
 msgid "Webcam"
 msgstr "Cámara web"
 
-#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partwebcam.js:113
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partwebcam.js:121
 msgid "Webcam Overlay"
 msgstr "Superposición de cámara web"
 

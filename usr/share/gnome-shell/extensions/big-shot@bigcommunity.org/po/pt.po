@@ -1,0 +1,230 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: big-shot 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: pt\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: attranslate\n"
+
+msgid "Annotation text"
+msgstr "Texto da anotação"
+
+msgid "Arrow"
+msgstr "Seta"
+
+msgid "Auto"
+msgstr "Automático"
+
+msgid "Blur"
+msgstr "Desfoque"
+
+msgid "Border Radius"
+msgstr "Raio da Borda"
+
+msgid "Brush Size"
+msgstr "Tamanho do Pincel"
+
+msgid "Camera"
+msgstr "Câmara"
+
+msgid "Censor"
+msgstr "Censurar"
+
+msgid "Checker"
+msgstr "Checker"
+
+msgid "Circle"
+msgstr "Circle"
+
+msgid "Close"
+msgstr "Fechar"
+
+msgid "Codec"
+msgstr "Codec"
+
+msgid "Color"
+msgstr "Cor"
+
+msgid "Confirm"
+msgstr "Confirmar"
+
+msgid "Copy to Clipboard"
+msgstr "Copiar para a área de transferência"
+
+msgid "Custom"
+msgstr "Personalizado"
+
+msgid "Decrease Size"
+msgstr "Diminuir Tamanho"
+
+msgid "Desktop"
+msgstr "Desktop"
+
+msgid "Drawing canvas"
+msgstr "Tela de desenho"
+
+msgid "Edit"
+msgstr "Editar"
+
+msgid "Edit Screenshot"
+msgstr "Editar Captura de Tela"
+
+msgid "Eraser"
+msgstr "Borracha"
+
+msgid "Fill"
+msgstr "Preencher"
+
+msgid "Font"
+msgstr "Fonte"
+
+msgid "Frames per second"
+msgstr "Quadros por segundo"
+
+msgid "Gradient Angle"
+msgstr "Ângulo do gradiente"
+
+msgid "Hide screenshot panel"
+msgstr "Ocultar painel de captura de tela"
+
+msgid "High"
+msgstr "Alta"
+
+msgid "Highlighter"
+msgstr "Marcador"
+
+msgid "Increase Size"
+msgstr "Aumentar Tamanho"
+
+msgid "Intensity"
+msgstr "Intensidade"
+
+msgid "Line"
+msgstr "Linha"
+
+msgid "Low"
+msgstr "Baixo"
+
+msgid "Mask"
+msgstr "Máscara"
+
+msgid "Medium"
+msgstr "Média"
+
+msgid "Mic"
+msgstr "Mic"
+
+msgid "Neon"
+msgstr "Neon"
+
+msgid "No Fill"
+msgstr "Sem preenchimento"
+
+msgid "None"
+msgstr "None"
+
+msgid "Number"
+msgstr "Número"
+
+msgid "Number with Arrow"
+msgstr "Número com Seta"
+
+msgid "Number with Pointer"
+msgstr "Número com Ponteiro"
+
+msgid "Ornate"
+msgstr "Ornate"
+
+msgid "Oval"
+msgstr "Oval"
+
+msgid "Pen"
+msgstr "Caneta"
+
+msgid "Quality"
+msgstr "Qualidade"
+
+msgid "Record Desktop Audio"
+msgstr "Gravar áudio da área de trabalho"
+
+msgid "Record Microphone"
+msgstr "Gravar Microfone"
+
+msgid "Recording quality (bitrate)"
+msgstr "Qualidade da gravação (bitrate)"
+
+msgid "Recording resolution"
+msgstr "Resolução de gravação"
+
+msgid "Rectangle"
+msgstr "Retângulo"
+
+msgid "Redo"
+msgstr "Refazer"
+
+msgid "Save As…"
+msgstr "Salvar como…"
+
+msgid "Save Screenshot"
+msgstr "Salvar captura de tela"
+
+msgid "Screenshot copied"
+msgstr "Captura de tela copiada"
+
+msgid "Screenshot from %s"
+msgstr "Captura de tela de %s"
+
+msgid "Screenshot taken"
+msgstr "Captura de tela feita"
+
+msgid "Screenshots"
+msgstr "Capturas de tela"
+
+msgid "Select / Move"
+msgstr "Selecionar / Mover"
+
+msgid "Show screenshot panel"
+msgstr "Mostrar painel de captura de tela"
+
+msgid "Size"
+msgstr "Tamanho"
+
+msgid "Soft"
+msgstr "Soft"
+
+msgid "Spot"
+msgstr "Spot"
+
+msgid "Text"
+msgstr "Texto"
+
+msgid "Text…"
+msgstr "Texto…"
+
+msgid "Undo"
+msgstr "Desfazer"
+
+msgid "Use best available codec"
+msgstr "Use o melhor codec disponível"
+
+msgid "Video Settings"
+msgstr "Configurações de Vídeo"
+
+msgid "Video codec"
+msgstr "Codec de vídeo"
+
+msgid "Webcam"
+msgstr "Câmera Web"
+
+msgid "Webcam Overlay"
+msgstr "Sobreposição da webcam"
+
+#. TRANSLATORS: Recording filename template.
+#. %d expands to YYYY-MM-DD (date), %t expands to HH-MM-SS (time).
+#. Both placeholders MUST stay literally in the translation.
+msgid "BigShot from %d %t"
+msgstr "BigShot de %d %t"

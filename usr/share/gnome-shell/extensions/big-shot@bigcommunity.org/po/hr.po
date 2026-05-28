@@ -1,0 +1,230 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: big-shot 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: hr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: attranslate\n"
+
+msgid "Annotation text"
+msgstr "Tekst bilješke"
+
+msgid "Arrow"
+msgstr "Strelica"
+
+msgid "Auto"
+msgstr "Automatski"
+
+msgid "Blur"
+msgstr "Zamućenje"
+
+msgid "Border Radius"
+msgstr "Radius obruba"
+
+msgid "Brush Size"
+msgstr "Veličina četkice"
+
+msgid "Camera"
+msgstr "Kamera"
+
+msgid "Censor"
+msgstr "Cenzuriraj"
+
+msgid "Checker"
+msgstr "Checker"
+
+msgid "Circle"
+msgstr "Circle"
+
+msgid "Close"
+msgstr "Zatvori"
+
+msgid "Codec"
+msgstr "Kodek"
+
+msgid "Color"
+msgstr "Boja"
+
+msgid "Confirm"
+msgstr "Potvrdi"
+
+msgid "Copy to Clipboard"
+msgstr "Kopiraj u međuspremnik"
+
+msgid "Custom"
+msgstr "Prilagođeno"
+
+msgid "Decrease Size"
+msgstr "Smanji veličinu"
+
+msgid "Desktop"
+msgstr "Desktop"
+
+msgid "Drawing canvas"
+msgstr "Platno za crtanje"
+
+msgid "Edit"
+msgstr "Uredi"
+
+msgid "Edit Screenshot"
+msgstr "Uredi snimku zaslona"
+
+msgid "Eraser"
+msgstr "Gumica"
+
+msgid "Fill"
+msgstr "Ispuni"
+
+msgid "Font"
+msgstr "Font"
+
+msgid "Frames per second"
+msgstr "Okviri po sekundi"
+
+msgid "Gradient Angle"
+msgstr "Kut gradijenta"
+
+msgid "Hide screenshot panel"
+msgstr "Sakrij ploču sa snimkama zaslona"
+
+msgid "High"
+msgstr "Visoko"
+
+msgid "Highlighter"
+msgstr "Marker"
+
+msgid "Increase Size"
+msgstr "Povećaj veličinu"
+
+msgid "Intensity"
+msgstr "Intenzitet"
+
+msgid "Line"
+msgstr "Linija"
+
+msgid "Low"
+msgstr "Nizak"
+
+msgid "Mask"
+msgstr "Maska"
+
+msgid "Medium"
+msgstr "Srednje"
+
+msgid "Mic"
+msgstr "Mikrofon"
+
+msgid "Neon"
+msgstr "Neon"
+
+msgid "No Fill"
+msgstr "Bez ispune"
+
+msgid "None"
+msgstr "None"
+
+msgid "Number"
+msgstr "Broj"
+
+msgid "Number with Arrow"
+msgstr "Broj s strelicom"
+
+msgid "Number with Pointer"
+msgstr "Broj s pokazivačem"
+
+msgid "Ornate"
+msgstr "Ornate"
+
+msgid "Oval"
+msgstr "Oval"
+
+msgid "Pen"
+msgstr "Olovka"
+
+msgid "Quality"
+msgstr "Kvaliteta"
+
+msgid "Record Desktop Audio"
+msgstr "Snimaj zvuk s radne površine"
+
+msgid "Record Microphone"
+msgstr "Snimi mikrofon"
+
+msgid "Recording quality (bitrate)"
+msgstr "Kvaliteta snimanja (bitrate)"
+
+msgid "Recording resolution"
+msgstr "Rezolucija snimanja"
+
+msgid "Rectangle"
+msgstr "Pravokutnik"
+
+msgid "Redo"
+msgstr "Ponovi"
+
+msgid "Save As…"
+msgstr "Spremi kao…"
+
+msgid "Save Screenshot"
+msgstr "Spremi snimku zaslona"
+
+msgid "Screenshot copied"
+msgstr "Snimka zaslona kopirana"
+
+msgid "Screenshot from %s"
+msgstr "Snimka zaslona s %s"
+
+msgid "Screenshot taken"
+msgstr "Snimka zaslona napravljena"
+
+msgid "Screenshots"
+msgstr "Snimke zaslona"
+
+msgid "Select / Move"
+msgstr "Odaberi / Premjesti"
+
+msgid "Show screenshot panel"
+msgstr "Prikaži ploču sa snimkama zaslona"
+
+msgid "Size"
+msgstr "Veličina"
+
+msgid "Soft"
+msgstr "Soft"
+
+msgid "Spot"
+msgstr "Spot"
+
+msgid "Text"
+msgstr "Tekst"
+
+msgid "Text…"
+msgstr "Tekst…"
+
+msgid "Undo"
+msgstr "Poništi"
+
+msgid "Use best available codec"
+msgstr "Koristi najbolji dostupni kodek"
+
+msgid "Video Settings"
+msgstr "Postavke videa"
+
+msgid "Video codec"
+msgstr "Video kodek"
+
+msgid "Webcam"
+msgstr "Web kamera"
+
+msgid "Webcam Overlay"
+msgstr "Preklop web kamere"
+
+#. TRANSLATORS: Recording filename template.
+#. %d expands to YYYY-MM-DD (date), %t expands to HH-MM-SS (time).
+#. Both placeholders MUST stay literally in the translation.
+msgid "BigShot from %d %t"
+msgstr "BigShot od %d %t"

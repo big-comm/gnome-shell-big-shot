@@ -234,9 +234,10 @@ export class PartAudio extends PartUI {
                     desktopChannels = channelMap.get_num_channels();
             }
             desktopSource = [
-                `pulsesrc device=${this._desktopDevice} provide-clock=false`,
-                `capsfilter caps=audio/x-raw,channels=${desktopChannels}`,
+                `pulsesrc device=${this._desktopDevice} provide-clock=false do-timestamp=true`,
                 'audioconvert',
+                'audioresample',
+                `capsfilter caps=audio/x-raw,format=S16LE,rate=48000,channels=${desktopChannels},layout=interleaved`,
                 'queue',
             ].join(' ! ');
         }
@@ -260,10 +261,12 @@ export class PartAudio extends PartUI {
                         micChannels = channelMap.get_num_channels();
                 }
             }
+            const targetMicChannels = desktopActive ? desktopChannels : micChannels;
             micSource = [
-                `pulsesrc device=${micDeviceName} provide-clock=false`,
-                `capsfilter caps=audio/x-raw,channels=${micChannels}`,
+                `pulsesrc device=${micDeviceName} provide-clock=false do-timestamp=true`,
                 'audioconvert',
+                'audioresample',
+                `capsfilter caps=audio/x-raw,format=S16LE,rate=48000,channels=${targetMicChannels},layout=interleaved`,
                 'queue',
             ].join(' ! ');
         }
@@ -273,7 +276,7 @@ export class PartAudio extends PartUI {
             const result = [
                 `${desktopSource} ! audiomixer name=am latency=100000000`,
                 `${micSource} ! am.`,
-                `am. ! capsfilter caps=audio/x-raw,channels=${desktopChannels} ! audioconvert ! queue`,
+                `am. ! audioconvert ! audioresample ! capsfilter caps=audio/x-raw,format=S16LE,rate=48000,channels=${desktopChannels},layout=interleaved ! queue`,
             ].join(' ');
             console.log(`[Big Shot Audio] Mixed pipeline: ${result}`);
             return result;

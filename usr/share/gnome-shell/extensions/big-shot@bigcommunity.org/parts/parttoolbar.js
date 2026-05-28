@@ -14,6 +14,7 @@ import Clutter from 'gi://Clutter';
 import GLib from 'gi://GLib';
 import Gio from 'gi://Gio';
 import PangoCairo from 'gi://PangoCairo';
+import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 import { gettext as _ } from 'resource:///org/gnome/shell/extensions/extension.js';
 
 import { PartUI } from './partbase.js';
@@ -146,80 +147,12 @@ export class PartToolbar extends PartUI {
             return Clutter.EVENT_STOP;
         });
 
-        // Motion and release: listen on the global stage so drag works
-        // even if cursor leaves the container
-        this._dragMotionId = this._ui.connect('captured-event', (_actor, event) => {
-            const type = event.type();
-
-            // Ctrl+Scroll anywhere adjusts brush size or intensity while editing
-            if (this._editMode && type === Clutter.EventType.SCROLL) {
-                const state = event.get_state();
-                if (state & Clutter.ModifierType.CONTROL_MASK) {
-                    const dir = event.get_scroll_direction();
-                    const isEffectTool = this._activeTool === 'censor' || this._activeTool === 'blur';
-
-                    if (isEffectTool) {
-                        // Adjust intensity for censor/blur
-                        let lvl = this._intensityLevel;
-                        if (dir === Clutter.ScrollDirection.UP) {
-                            lvl = Math.min(lvl + 1, 5);
-                        } else if (dir === Clutter.ScrollDirection.DOWN) {
-                            lvl = Math.max(lvl - 1, 1);
-                        } else if (dir === Clutter.ScrollDirection.SMOOTH) {
-                            const [, dy] = event.get_scroll_delta();
-                            if (dy < 0) lvl = Math.min(lvl + 1, 5);
-                            else if (dy > 0) lvl = Math.max(lvl - 1, 1);
-                        }
-                        this._intensityLevel = lvl;
-                        this._intensityLabel.text = String(lvl);
-                    } else {
-                        // Adjust brush size for other tools
-                        let sz = this.brushSize;
-                        if (dir === Clutter.ScrollDirection.UP) {
-                            sz = Math.min(sz + 1, 100);
-                        } else if (dir === Clutter.ScrollDirection.DOWN) {
-                            sz = Math.max(sz - 1, 1);
-                        } else if (dir === Clutter.ScrollDirection.SMOOTH) {
-                            const [, dy] = event.get_scroll_delta();
-                            if (dy < 0) sz = Math.min(sz + 1, 100);
-                            else if (dy > 0) sz = Math.max(sz - 1, 1);
-                        }
-                        this._setBrushSize(sz);
-                    }
-                    return Clutter.EVENT_STOP;
-                }
-            }
-
-            if (!this._dragging && !this._videoDragging) return Clutter.EVENT_PROPAGATE;
-            if (type === Clutter.EventType.MOTION) {
-                const [mx, my] = event.get_coords();
-                if (this._dragging) {
-                    const dx = mx - this._dragStartX;
-                    const dy = my - this._dragStartY;
-                    if (Math.abs(dx) < 4 && Math.abs(dy) < 4)
-                        return Clutter.EVENT_PROPAGATE;
-                    this._editContainer.set_position(
-                        mx + this._dragOffsetX,
-                        my + this._dragOffsetY,
-                    );
-                } else if (this._videoDragging) {
-                    const dx = mx - this._videoDragStartX;
-                    const dy = my - this._videoDragStartY;
-                    if (Math.abs(dx) < 4 && Math.abs(dy) < 4)
-                        return Clutter.EVENT_PROPAGATE;
-                    this._videoContainer.set_position(
-                        mx + this._videoDragOffsetX,
-                        my + this._videoDragOffsetY,
-                    );
-                }
-                return Clutter.EVENT_STOP;
-            } else if (type === Clutter.EventType.BUTTON_RELEASE) {
-                this._dragging = false;
-                this._videoDragging = false;
-                return Clutter.EVENT_STOP;
-            }
-            return Clutter.EVENT_PROPAGATE;
-        });
+        // The native screenshot UI installs a grab, so movement must be
+        // captured from ScreenshotUI there. Recording mode reparents the
+        // toolbar to TopChrome, where stage capture is the right scope.
+        this._dragEventActor = null;
+        this._dragMotionId = 0;
+        this._connectDragEventActor(this._ui ?? global.stage);
 
         // 90% opacity by default, fully opaque on hover
         this._editContainer.opacity = 230;
@@ -434,7 +367,8 @@ export class PartToolbar extends PartUI {
         this._editContainer.add_child(this._redoButton);
 
         // Separator before action buttons
-        this._editContainer.add_child(new St.Widget({ style_class: 'big-shot-edit-sep' }));
+        this._actionSep = new St.Widget({ style_class: 'big-shot-edit-sep' });
+        this._editContainer.add_child(this._actionSep);
 
         // Copy to clipboard
         this._copyButton = new St.Button({
@@ -511,9 +445,10 @@ export class PartToolbar extends PartUI {
             accessible_name: _('Close'),
             visible: false,
         });
-        this._toolbarCloseBtn.connect('clicked', () => this._ui.close());
+        this._toolbarCloseBtn.connect('clicked', () => this._onToolbarCloseClicked());
         this._toolbarCloseBtn.connect('enter-event', () =>
-            this._showTooltip(this._toolbarCloseBtn, _('Close')));
+            this._showTooltip(this._toolbarCloseBtn,
+                this._recordingToolbarAttached ? _('Done') : _('Close')));
         this._toolbarCloseBtn.connect('leave-event', () => this._hideTooltip());
         this._editContainer.add_child(this._toolbarCloseBtn);
 
@@ -781,9 +716,105 @@ export class PartToolbar extends PartUI {
         this._connectSignal(this._ui, 'notify::visible', () => this._onUIVisibilityChanged());
     }
 
+    _connectDragEventActor(actor) {
+        if (!actor || actor === this._dragEventActor)
+            return;
+
+        this._disconnectDragEventActor();
+        this._dragEventActor = actor;
+        this._dragMotionId = actor.connect('captured-event',
+            (_actor, event) => this._onDragCapturedEvent(event));
+    }
+
+    _disconnectDragEventActor() {
+        if (this._dragMotionId && this._dragEventActor) {
+            try {
+                this._dragEventActor.disconnect(this._dragMotionId);
+            } catch (_e) {
+                // Already disconnected.
+            }
+        }
+        this._dragMotionId = 0;
+        this._dragEventActor = null;
+    }
+
+    _onDragCapturedEvent(event) {
+        const type = event.type();
+
+        // Ctrl+Scroll anywhere adjusts brush size or intensity while editing
+        if (this._editMode && type === Clutter.EventType.SCROLL) {
+            const state = event.get_state();
+            if (state & Clutter.ModifierType.CONTROL_MASK) {
+                const dir = event.get_scroll_direction();
+                const isEffectTool = this._activeTool === 'censor' || this._activeTool === 'blur';
+
+                if (isEffectTool) {
+                    // Adjust intensity for censor/blur
+                    let lvl = this._intensityLevel;
+                    if (dir === Clutter.ScrollDirection.UP) {
+                        lvl = Math.min(lvl + 1, 5);
+                    } else if (dir === Clutter.ScrollDirection.DOWN) {
+                        lvl = Math.max(lvl - 1, 1);
+                    } else if (dir === Clutter.ScrollDirection.SMOOTH) {
+                        const [, dy] = event.get_scroll_delta();
+                        if (dy < 0) lvl = Math.min(lvl + 1, 5);
+                        else if (dy > 0) lvl = Math.max(lvl - 1, 1);
+                    }
+                    this._intensityLevel = lvl;
+                    this._intensityLabel.text = String(lvl);
+                } else {
+                    // Adjust brush size for other tools
+                    let sz = this.brushSize;
+                    if (dir === Clutter.ScrollDirection.UP) {
+                        sz = Math.min(sz + 1, 100);
+                    } else if (dir === Clutter.ScrollDirection.DOWN) {
+                        sz = Math.max(sz - 1, 1);
+                    } else if (dir === Clutter.ScrollDirection.SMOOTH) {
+                        const [, dy] = event.get_scroll_delta();
+                        if (dy < 0) sz = Math.min(sz + 1, 100);
+                        else if (dy > 0) sz = Math.max(sz - 1, 1);
+                    }
+                    this._setBrushSize(sz);
+                }
+                return Clutter.EVENT_STOP;
+            }
+        }
+
+        if (!this._dragging && !this._videoDragging) return Clutter.EVENT_PROPAGATE;
+        if (type === Clutter.EventType.MOTION) {
+            const [mx, my] = event.get_coords();
+            if (this._dragging) {
+                const dx = mx - this._dragStartX;
+                const dy = my - this._dragStartY;
+                if (Math.abs(dx) < 4 && Math.abs(dy) < 4)
+                    return Clutter.EVENT_PROPAGATE;
+                this._editContainer.set_position(
+                    mx + this._dragOffsetX,
+                    my + this._dragOffsetY,
+                );
+            } else if (this._videoDragging) {
+                const dx = mx - this._videoDragStartX;
+                const dy = my - this._videoDragStartY;
+                if (Math.abs(dx) < 4 && Math.abs(dy) < 4)
+                    return Clutter.EVENT_PROPAGATE;
+                this._videoContainer.set_position(
+                    mx + this._videoDragOffsetX,
+                    my + this._videoDragOffsetY,
+                );
+            }
+            return Clutter.EVENT_STOP;
+        } else if (type === Clutter.EventType.BUTTON_RELEASE) {
+            this._dragging = false;
+            this._videoDragging = false;
+            return Clutter.EVENT_STOP;
+        }
+        return Clutter.EVENT_PROPAGATE;
+    }
+
     /** Add edit toolbar as floating actor above the native panel. */
     _attachEditToPanel() {
         if (this._editContainer.get_parent()) return;
+        this._connectDragEventActor(this._ui ?? global.stage);
         this._ui.add_child(this._editContainer);
 
         // Position editContainer above the native panel
@@ -812,9 +843,238 @@ export class PartToolbar extends PartUI {
 
     /** Remove edit tools from the native panel. */
     _detachEditFromPanel() {
+        if (this._recordingToolbarAttached)
+            return;
         const parent = this._editContainer.get_parent();
         if (parent) parent.remove_child(this._editContainer);
         this._setNativePanelVisible(true);
+    }
+
+    attachEditForRecording(onDone) {
+        if (!this._editContainer || this._recordingToolbarAttached)
+            return;
+
+        const parent = this._editContainer.get_parent();
+        if (parent)
+            parent.remove_child(this._editContainer);
+
+        this._recordingToolbarAttached = true;
+        this._recordingDoneCallback = onDone;
+        this._setRecordingToolbarMode(true);
+        this._connectDragEventActor(global.stage ?? this._ui);
+
+        Main.layoutManager.addTopChrome(this._editContainer, {
+            trackFullscreen: false,
+        });
+        this.raiseRecordingToolbar();
+
+        this._editContainer.opacity = 0;
+        this._positionRecordingToolbar();
+    }
+
+    detachEditForRecording() {
+        if (!this._recordingToolbarAttached)
+            return;
+
+        this._closeColorPopup();
+        this._closeSizePopup();
+        this._closeFontPopup();
+        this._closeIntensityPopup();
+        this._hideTooltip();
+
+        try { Main.layoutManager.removeChrome(this._editContainer); } catch (_e) { /* */ }
+        this._recordingToolbarAttached = false;
+        this._recordingDoneCallback = null;
+        this._setRecordingToolbarMode(false);
+        this._connectDragEventActor(this._ui ?? global.stage);
+    }
+
+    _positionRecordingToolbar() {
+        if (!this._editContainer)
+            return;
+
+        this._editContainer.queue_relayout();
+        GLib.idle_add(GLib.PRIORITY_DEFAULT, () => {
+            if (!this._recordingToolbarAttached)
+                return GLib.SOURCE_REMOVE;
+
+            this._setRecordingToolbarPosition();
+            this._presentRecordingToolbar();
+            return GLib.SOURCE_REMOVE;
+        });
+    }
+
+    _setRecordingToolbarPosition() {
+        const monitor = global.display.get_current_monitor();
+        const rect = global.display.get_monitor_geometry(monitor);
+        const prefWidth = this._editContainer.get_preferred_width(-1)[1];
+        const prefHeight = this._editContainer.get_preferred_height(-1)[1];
+        const cw = Number.isFinite(prefWidth) && prefWidth > 0 ? prefWidth : 620;
+        const ch = Number.isFinite(prefHeight) && prefHeight > 0 ? prefHeight : 40;
+        const x = rect.x + Math.max(12, (rect.width - cw) / 2);
+        const y = rect.y + rect.height - ch - 64;
+
+        if (Number.isFinite(x) && Number.isFinite(y))
+            this._editContainer.set_position(x, y);
+    }
+
+    _presentRecordingToolbar() {
+        if (!this._editContainer)
+            return;
+
+        this._editContainer.remove_all_transitions?.();
+        this._editContainer.show();
+        this._editContainer.opacity = 230;
+        this._queueActorFrame(this._editContainer);
+    }
+
+    _queueActorFrame(actor) {
+        actor?.queue_relayout?.();
+        actor?.queue_redraw?.();
+        const parent = actor?.get_parent?.();
+        parent?.queue_relayout?.();
+        parent?.queue_redraw?.();
+        global.stage?.queue_redraw?.();
+    }
+
+    _raiseRecordingToolbar() {
+        const parent = this._editContainer?.get_parent?.();
+        if (!parent)
+            return;
+        try { parent.set_child_above_sibling(this._editContainer, null); } catch (_e) { /* */ }
+    }
+
+    raiseRecordingToolbar() {
+        if (!this._recordingToolbarAttached || !this._editContainer)
+            return;
+
+        const parent = this._editContainer.get_parent?.();
+        let x = null;
+        let y = null;
+        if (parent) {
+            try {
+                [x, y] = this._editContainer.get_transformed_position();
+                Main.layoutManager.removeChrome(this._editContainer);
+            } catch (_e) { /* */ }
+        }
+
+        if (!this._editContainer.get_parent?.()) {
+            Main.layoutManager.addTopChrome(this._editContainer, {
+                trackFullscreen: false,
+            });
+            if (x !== null && y !== null) {
+                if (Number.isFinite(x) && Number.isFinite(y))
+                    this._editContainer.set_position(x, y);
+            }
+        }
+
+        this._raiseRecordingToolbar();
+        this._queueActorFrame(this._editContainer);
+    }
+
+    containsRecordingControl(stageX, stageY, targetActor = null) {
+        const actors = [
+            this._editContainer,
+            this._sizePopup,
+            this._fontPopup,
+            this._intensityPopup,
+            this._colorPopup,
+            this._inlineMsg,
+            this._tooltip,
+        ];
+        return this._actorIsDescendant(targetActor, actors) ||
+            actors.some(actor => this._actorContainsStagePoint(actor, stageX, stageY));
+    }
+
+    previewHiddenActors() {
+        return [
+            this._editContainer,
+            this._sizePopup,
+            this._fontPopup,
+            this._intensityPopup,
+            this._colorPopup,
+            this._inlineMsg,
+            this._tooltip,
+        ];
+    }
+
+    _actorIsDescendant(actor, roots) {
+        while (actor) {
+            if (roots.includes(actor))
+                return true;
+            actor = actor.get_parent?.() ?? null;
+        }
+        return false;
+    }
+
+    _eventTargetsActor(event, actors) {
+        if (!event)
+            return false;
+        const target = global.stage.get_event_actor(event);
+        return this._actorIsDescendant(target, actors.filter(Boolean));
+    }
+
+    _actorContainsStagePoint(actor, stageX, stageY) {
+        if (!actor?.visible)
+            return false;
+
+        try {
+            const [ok, x, y] = actor.transform_stage_point(stageX, stageY);
+            if (!ok)
+                return false;
+            return x >= 0 && y >= 0 && x <= actor.width && y <= actor.height;
+        } catch (_e) {
+            return false;
+        }
+    }
+
+    _setRecordingToolbarMode(active) {
+        if (this._actionSep)
+            this._actionSep.visible = !active;
+        if (this._copyButton)
+            this._copyButton.visible = !active;
+        if (this._saveAsButton)
+            this._saveAsButton.visible = !active;
+        if (this._panelToggleBtn)
+            this._panelToggleBtn.visible = !active;
+        if (this._toolbarCloseSep)
+            this._toolbarCloseSep.visible = active;
+        if (this._toolbarCloseBtn) {
+            this._toolbarCloseBtn.visible = active;
+            this._toolbarCloseBtn.accessible_name = active ? _('Done') : _('Close');
+        }
+    }
+
+    _onToolbarCloseClicked() {
+        if (this._recordingToolbarAttached && this._recordingDoneCallback) {
+            this._recordingDoneCallback();
+            return;
+        }
+        this._ui.close();
+    }
+
+    _addFloatingActor(actor) {
+        if (this._recordingToolbarAttached) {
+            Main.layoutManager.addTopChrome(actor, {
+                trackFullscreen: false,
+            });
+            actor._bigShotToolbarChrome = true;
+            const parent = actor.get_parent?.();
+            try { parent?.set_child_above_sibling(actor, null); } catch (_e) { /* */ }
+            this._raiseRecordingToolbar();
+            return;
+        }
+        this._ui.add_child(actor);
+    }
+
+    _destroyFloatingActor(actor) {
+        if (!actor)
+            return;
+        if (actor._bigShotToolbarChrome) {
+            try { Main.layoutManager.removeChrome(actor); } catch (_e) { /* */ }
+            actor._bigShotToolbarChrome = false;
+        }
+        actor.destroy();
     }
 
     /** Toggle native panel visibility (eye button). */
@@ -920,11 +1180,14 @@ export class PartToolbar extends PartUI {
     }
 
     _onToolChanged(toolId) {
-        this._toolChangedCallback?.(toolId);
+        for (const callback of this._toolChangedCallbacks ?? [])
+            callback(toolId);
     }
 
     onToolChanged(callback) {
-        this._toolChangedCallback = callback;
+        if (!this._toolChangedCallbacks)
+            this._toolChangedCallbacks = [];
+        this._toolChangedCallbacks.push(callback);
     }
 
     selectTool(toolId) {
@@ -1006,13 +1269,13 @@ export class PartToolbar extends PartUI {
         this._sizePopup.add_child(customRow);
 
         // Position above the size button
-        this._ui.add_child(this._sizePopup);
+        this._addFloatingActor(this._sizePopup);
         const [bx, by] = this._sizeButton.get_transformed_position();
         this._sizePopup.set_position(bx, by - this._sizePopup.height - 8);
     }
 
     _closeSizePopup() {
-        this._sizePopup?.destroy();
+        this._destroyFloatingActor(this._sizePopup);
         this._sizePopup = null;
     }
 
@@ -1063,7 +1326,7 @@ export class PartToolbar extends PartUI {
         scrollView.set_child(listBox);
         this._fontPopup.add_child(scrollView);
 
-        this._ui.add_child(this._fontPopup);
+        this._addFloatingActor(this._fontPopup);
 
         GLib.idle_add(GLib.PRIORITY_DEFAULT, () => {
             if (!this._fontPopup) return GLib.SOURCE_REMOVE;
@@ -1081,7 +1344,9 @@ export class PartToolbar extends PartUI {
         this._fontPopupTimeoutId = GLib.timeout_add(GLib.PRIORITY_DEFAULT, 100, () => {
             this._fontPopupTimeoutId = 0;
             if (this._destroyed) return GLib.SOURCE_REMOVE;
-            this._fontPopupClickId = global.stage.connect('button-press-event', () => {
+            this._fontPopupClickId = global.stage.connect('button-press-event', (_stage, event) => {
+                if (this._eventTargetsActor(event, [this._fontPopup, this._fontButton]))
+                    return Clutter.EVENT_PROPAGATE;
                 this._closeFontPopup();
                 return Clutter.EVENT_PROPAGATE;
             });
@@ -1098,7 +1363,7 @@ export class PartToolbar extends PartUI {
             global.stage.disconnect(this._fontPopupClickId);
             this._fontPopupClickId = null;
         }
-        this._fontPopup?.destroy();
+        this._destroyFloatingActor(this._fontPopup);
         this._fontPopup = null;
     }
 
@@ -1160,7 +1425,7 @@ export class PartToolbar extends PartUI {
         }
         this._intensityPopup.add_child(row);
 
-        this._ui.add_child(this._intensityPopup);
+        this._addFloatingActor(this._intensityPopup);
 
         GLib.idle_add(GLib.PRIORITY_DEFAULT, () => {
             if (!this._intensityPopup) return GLib.SOURCE_REMOVE;
@@ -1178,7 +1443,9 @@ export class PartToolbar extends PartUI {
         this._intensityPopupTimeoutId = GLib.timeout_add(GLib.PRIORITY_DEFAULT, 100, () => {
             this._intensityPopupTimeoutId = 0;
             if (this._destroyed) return GLib.SOURCE_REMOVE;
-            this._intensityPopupClickId = global.stage.connect('button-press-event', () => {
+            this._intensityPopupClickId = global.stage.connect('button-press-event', (_stage, event) => {
+                if (this._eventTargetsActor(event, [this._intensityPopup, this._intensityButton]))
+                    return Clutter.EVENT_PROPAGATE;
                 this._closeIntensityPopup();
                 return Clutter.EVENT_PROPAGATE;
             });
@@ -1195,7 +1462,7 @@ export class PartToolbar extends PartUI {
             global.stage.disconnect(this._intensityPopupClickId);
             this._intensityPopupClickId = null;
         }
-        this._intensityPopup?.destroy();
+        this._destroyFloatingActor(this._intensityPopup);
         this._intensityPopup = null;
     }
 
@@ -1242,7 +1509,7 @@ export class PartToolbar extends PartUI {
         }
 
         const anchor = target === 'fill' ? this._fillButton : this._colorButton;
-        this._ui.add_child(this._colorPopup);
+        this._addFloatingActor(this._colorPopup);
 
         GLib.idle_add(GLib.PRIORITY_DEFAULT, () => {
             if (!this._colorPopup) return GLib.SOURCE_REMOVE;
@@ -1260,7 +1527,9 @@ export class PartToolbar extends PartUI {
         this._popupTimeoutId = GLib.timeout_add(GLib.PRIORITY_DEFAULT, 100, () => {
             this._popupTimeoutId = 0;
             if (this._destroyed) return GLib.SOURCE_REMOVE;
-            this._colorPopupClickId = global.stage.connect('button-press-event', () => {
+            this._colorPopupClickId = global.stage.connect('button-press-event', (_stage, event) => {
+                if (this._eventTargetsActor(event, [this._colorPopup, this._colorButton, this._fillButton]))
+                    return Clutter.EVENT_PROPAGATE;
                 this._closeColorPopup();
                 return Clutter.EVENT_PROPAGATE;
             });
@@ -1297,7 +1566,7 @@ export class PartToolbar extends PartUI {
             global.stage.disconnect(this._colorPopupClickId);
             this._colorPopupClickId = null;
         }
-        this._colorPopup?.destroy();
+        this._destroyFloatingActor(this._colorPopup);
         this._colorPopup = null;
     }
 
@@ -1703,7 +1972,7 @@ export class PartToolbar extends PartUI {
             style: 'color: #ffffff; font-size: 11px; background: rgba(0,0,0,0.7); padding: 4px 10px; border-radius: 8px;',
         });
         if (this._editContainer.get_parent()) {
-            this._ui.add_child(this._inlineMsg);
+            this._addFloatingActor(this._inlineMsg);
             const [cx, cy] = this._editContainer.get_transformed_position();
             const cw = this._editContainer.width;
             GLib.idle_add(GLib.PRIORITY_DEFAULT, () => {
@@ -1728,37 +1997,46 @@ export class PartToolbar extends PartUI {
             this._inlineMsgTimer = 0;
         }
         if (this._inlineMsg) {
-            this._inlineMsg.destroy();
+            this._destroyFloatingActor(this._inlineMsg);
             this._inlineMsg = null;
         }
     }
 
     _showTooltip(button, text) {
         this._hideTooltip();
-        this._tooltip = new St.Label({
+        const tooltip = new St.Label({
             text,
             style_class: 'big-shot-tooltip',
             style: 'background: rgba(0,0,0,0.85); color: #ffffff; padding: 4px 8px; border-radius: 4px; font-size: 11px;',
         });
-        this._ui.add_child(this._tooltip);
-        this._ui.set_child_above_sibling(this._tooltip, null);
+        this._tooltip = tooltip;
+        this._addFloatingActor(tooltip);
+        if (!this._recordingToolbarAttached)
+            this._ui.set_child_above_sibling(tooltip, null);
 
-        GLib.idle_add(GLib.PRIORITY_DEFAULT, () => {
-            if (!this._tooltip) return GLib.SOURCE_REMOVE;
+        this._tooltipIdleId = GLib.idle_add(GLib.PRIORITY_DEFAULT, () => {
+            this._tooltipIdleId = 0;
+            if (this._tooltip !== tooltip || !tooltip.get_parent?.() || !button.get_parent?.())
+                return GLib.SOURCE_REMOVE;
             const [bx, by] = button.get_transformed_position();
             const bw = button.width;
-            const tw = this._tooltip.width;
-            this._tooltip.set_position(
-                bx + (bw - tw) / 2,
-                by - this._tooltip.height - 4
-            );
+            const tw = tooltip.width;
+            const th = tooltip.height;
+            const x = bx + (bw - tw) / 2;
+            const y = by - th - 4;
+            if (Number.isFinite(x) && Number.isFinite(y))
+                tooltip.set_position(x, y);
             return GLib.SOURCE_REMOVE;
         });
     }
 
     _hideTooltip() {
+        if (this._tooltipIdleId) {
+            GLib.source_remove(this._tooltipIdleId);
+            this._tooltipIdleId = 0;
+        }
         if (this._tooltip) {
-            this._tooltip.destroy();
+            this._destroyFloatingActor(this._tooltip);
             this._tooltip = null;
         }
     }
@@ -1794,10 +2072,8 @@ export class PartToolbar extends PartUI {
     }
 
     destroy() {
-        if (this._dragMotionId) {
-            this._ui.disconnect(this._dragMotionId);
-            this._dragMotionId = 0;
-        }
+        this._disconnectDragEventActor();
+        this.detachEditForRecording();
         this._detachEditFromPanel();
         this._detachVideoFromPanel();
         this._closeColorPopup();
@@ -1826,6 +2102,7 @@ export class PartToolbar extends PartUI {
         this._toolButtons.clear();
         this._qualityButtons?.clear();
         this._codecButtons?.clear();
+        this._toolChangedCallbacks = [];
         super.destroy();
     }
 }

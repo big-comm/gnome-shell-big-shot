@@ -1,0 +1,230 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: big-shot 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: da\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: attranslate\n"
+
+msgid "Annotation text"
+msgstr "Anmærkningstekst"
+
+msgid "Arrow"
+msgstr "Pil"
+
+msgid "Auto"
+msgstr "Automatisk"
+
+msgid "Blur"
+msgstr "Sløring"
+
+msgid "Border Radius"
+msgstr "Border Radius"
+
+msgid "Brush Size"
+msgstr "Penselstørrelse"
+
+msgid "Camera"
+msgstr "Kamera"
+
+msgid "Censor"
+msgstr "Censur"
+
+msgid "Checker"
+msgstr "Checker"
+
+msgid "Circle"
+msgstr "Circle"
+
+msgid "Close"
+msgstr "Luk"
+
+msgid "Codec"
+msgstr "Kodek"
+
+msgid "Color"
+msgstr "Farve"
+
+msgid "Confirm"
+msgstr "Bekræft"
+
+msgid "Copy to Clipboard"
+msgstr "Kopier til udklipsholder"
+
+msgid "Custom"
+msgstr "Brugerdefineret"
+
+msgid "Decrease Size"
+msgstr "Formindsk størrelse"
+
+msgid "Desktop"
+msgstr "Skrivebord"
+
+msgid "Drawing canvas"
+msgstr "Tegne lærred"
+
+msgid "Edit"
+msgstr "Rediger"
+
+msgid "Edit Screenshot"
+msgstr "Rediger skærmbillede"
+
+msgid "Eraser"
+msgstr "Viskelæder"
+
+msgid "Fill"
+msgstr "Fyld"
+
+msgid "Font"
+msgstr "Skrifttype"
+
+msgid "Frames per second"
+msgstr "Billeder pr. sekund"
+
+msgid "Gradient Angle"
+msgstr "Gradientvinkel"
+
+msgid "Hide screenshot panel"
+msgstr "Skjul skærmbilledpanel"
+
+msgid "High"
+msgstr "Høj"
+
+msgid "Highlighter"
+msgstr "Marker"
+
+msgid "Increase Size"
+msgstr "Forøg størrelse"
+
+msgid "Intensity"
+msgstr "Intensitet"
+
+msgid "Line"
+msgstr "Linje"
+
+msgid "Low"
+msgstr "Lav"
+
+msgid "Mask"
+msgstr "Maske"
+
+msgid "Medium"
+msgstr "Mellem"
+
+msgid "Mic"
+msgstr "Mikrofon"
+
+msgid "Neon"
+msgstr "Neon"
+
+msgid "No Fill"
+msgstr "Ingen fyldning"
+
+msgid "None"
+msgstr "None"
+
+msgid "Number"
+msgstr "Nummer"
+
+msgid "Number with Arrow"
+msgstr "Nummer med pil"
+
+msgid "Number with Pointer"
+msgstr "Nummer med pegepind"
+
+msgid "Ornate"
+msgstr "Ornate"
+
+msgid "Oval"
+msgstr "Oval"
+
+msgid "Pen"
+msgstr "Pen"
+
+msgid "Quality"
+msgstr "Kvalitet"
+
+msgid "Record Desktop Audio"
+msgstr "Optag skrivebordslyd"
+
+msgid "Record Microphone"
+msgstr "Optag Mikrofon"
+
+msgid "Recording quality (bitrate)"
+msgstr "Optagekvalitet (bitrate)"
+
+msgid "Recording resolution"
+msgstr "Optagelsesopløsning"
+
+msgid "Rectangle"
+msgstr "Rektangel"
+
+msgid "Redo"
+msgstr "Annuller fortryd"
+
+msgid "Save As…"
+msgstr "Gem som…"
+
+msgid "Save Screenshot"
+msgstr "Gem skærmbillede"
+
+msgid "Screenshot copied"
+msgstr "Skærmbillede kopieret"
+
+msgid "Screenshot from %s"
+msgstr "Skærmbillede fra %s"
+
+msgid "Screenshot taken"
+msgstr "Skærmbillede taget"
+
+msgid "Screenshots"
+msgstr "Skærmbilleder"
+
+msgid "Select / Move"
+msgstr "Vælg / Flyt"
+
+msgid "Show screenshot panel"
+msgstr "Vis skærmbilledpanel"
+
+msgid "Size"
+msgstr "Størrelse"
+
+msgid "Soft"
+msgstr "Soft"
+
+msgid "Spot"
+msgstr "Spot"
+
+msgid "Text"
+msgstr "Tekst"
+
+msgid "Text…"
+msgstr "Tekst…"
+
+msgid "Undo"
+msgstr "Fortryd"
+
+msgid "Use best available codec"
+msgstr "Brug den bedste tilgængelige codec"
+
+msgid "Video Settings"
+msgstr "Videoindstillinger"
+
+msgid "Video codec"
+msgstr "Video codec"
+
+msgid "Webcam"
+msgstr "Webkamera"
+
+msgid "Webcam Overlay"
+msgstr "Webcam-overlay"
+
+#. TRANSLATORS: Recording filename template.
+#. %d expands to YYYY-MM-DD (date), %t expands to HH-MM-SS (time).
+#. Both placeholders MUST stay literally in the translation.
+msgid "BigShot from %d %t"
+msgstr "BigShot fra %d %t"

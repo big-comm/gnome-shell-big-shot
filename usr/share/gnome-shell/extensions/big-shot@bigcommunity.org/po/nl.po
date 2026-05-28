@@ -1,0 +1,230 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: big-shot 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: nl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: attranslate\n"
+
+msgid "Annotation text"
+msgstr "Aantekeningtekst"
+
+msgid "Arrow"
+msgstr "Pijl"
+
+msgid "Auto"
+msgstr "Automatisch"
+
+msgid "Blur"
+msgstr "Vervagen"
+
+msgid "Border Radius"
+msgstr "Randradius"
+
+msgid "Brush Size"
+msgstr "Borstelgrootte"
+
+msgid "Camera"
+msgstr "Camera"
+
+msgid "Censor"
+msgstr "Censureren"
+
+msgid "Checker"
+msgstr "Checker"
+
+msgid "Circle"
+msgstr "Circle"
+
+msgid "Close"
+msgstr "Sluiten"
+
+msgid "Codec"
+msgstr "Codec"
+
+msgid "Color"
+msgstr "Kleur"
+
+msgid "Confirm"
+msgstr "Bevestigen"
+
+msgid "Copy to Clipboard"
+msgstr "Kopiëren naar klembord"
+
+msgid "Custom"
+msgstr "Aangepast"
+
+msgid "Decrease Size"
+msgstr "Grootte Verkleinen"
+
+msgid "Desktop"
+msgstr "Bureaublad"
+
+msgid "Drawing canvas"
+msgstr "Tekent canvas"
+
+msgid "Edit"
+msgstr "Bewerken"
+
+msgid "Edit Screenshot"
+msgstr "Screenshot bewerken"
+
+msgid "Eraser"
+msgstr "Gum"
+
+msgid "Fill"
+msgstr "Vullen"
+
+msgid "Font"
+msgstr "Lettertype"
+
+msgid "Frames per second"
+msgstr "Frames per seconde"
+
+msgid "Gradient Angle"
+msgstr "Verloophoek"
+
+msgid "Hide screenshot panel"
+msgstr "Screenshotpaneel verbergen"
+
+msgid "High"
+msgstr "Hoog"
+
+msgid "Highlighter"
+msgstr "Markeerstift"
+
+msgid "Increase Size"
+msgstr "Vergroot grootte"
+
+msgid "Intensity"
+msgstr "Intensiteit"
+
+msgid "Line"
+msgstr "Lijn"
+
+msgid "Low"
+msgstr "Laag"
+
+msgid "Mask"
+msgstr "Masker"
+
+msgid "Medium"
+msgstr "Gemiddeld"
+
+msgid "Mic"
+msgstr "Microfoon"
+
+msgid "Neon"
+msgstr "Neon"
+
+msgid "No Fill"
+msgstr "Geen vulling"
+
+msgid "None"
+msgstr "None"
+
+msgid "Number"
+msgstr "Nummer"
+
+msgid "Number with Arrow"
+msgstr "Nummer met Pijl"
+
+msgid "Number with Pointer"
+msgstr "Nummer met Pointer"
+
+msgid "Ornate"
+msgstr "Ornate"
+
+msgid "Oval"
+msgstr "Oval"
+
+msgid "Pen"
+msgstr "Pen"
+
+msgid "Quality"
+msgstr "Kwaliteit"
+
+msgid "Record Desktop Audio"
+msgstr "Desktopgeluid opnemen"
+
+msgid "Record Microphone"
+msgstr "Opnemen Microfoon"
+
+msgid "Recording quality (bitrate)"
+msgstr "Opnamekwaliteit (bitrate)"
+
+msgid "Recording resolution"
+msgstr "Opname-resolutie"
+
+msgid "Rectangle"
+msgstr "Rechthoek"
+
+msgid "Redo"
+msgstr "Opnieuw"
+
+msgid "Save As…"
+msgstr "Opslaan als…"
+
+msgid "Save Screenshot"
+msgstr "Screenshot opslaan"
+
+msgid "Screenshot copied"
+msgstr "Screenshot gekopieerd"
+
+msgid "Screenshot from %s"
+msgstr "Screenshot van %s"
+
+msgid "Screenshot taken"
+msgstr "Screenshot genomen"
+
+msgid "Screenshots"
+msgstr "Schermafbeeldingen"
+
+msgid "Select / Move"
+msgstr "Selecteren / Verplaatsen"
+
+msgid "Show screenshot panel"
+msgstr "Screenshotpaneel tonen"
+
+msgid "Size"
+msgstr "Grootte"
+
+msgid "Soft"
+msgstr "Soft"
+
+msgid "Spot"
+msgstr "Spot"
+
+msgid "Text"
+msgstr "Tekst"
+
+msgid "Text…"
+msgstr "Tekst…"
+
+msgid "Undo"
+msgstr "Ongedaan maken"
+
+msgid "Use best available codec"
+msgstr "Gebruik de beste beschikbare codec"
+
+msgid "Video Settings"
+msgstr "Videoinstellingen"
+
+msgid "Video codec"
+msgstr "Videocodec"
+
+msgid "Webcam"
+msgstr "Webcam"
+
+msgid "Webcam Overlay"
+msgstr "Webcam-overlay"
+
+#. TRANSLATORS: Recording filename template.
+#. %d expands to YYYY-MM-DD (date), %t expands to HH-MM-SS (time).
+#. Both placeholders MUST stay literally in the translation.
+msgid "BigShot from %d %t"
+msgstr "BigShot van %d %t"

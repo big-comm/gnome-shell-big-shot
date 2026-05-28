@@ -1,0 +1,230 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: big-shot 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: hu\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: attranslate\n"
+
+msgid "Annotation text"
+msgstr "Megjegyzés szövege"
+
+msgid "Arrow"
+msgstr "Nyíl"
+
+msgid "Auto"
+msgstr "Automatikus"
+
+msgid "Blur"
+msgstr "Elmosódás"
+
+msgid "Border Radius"
+msgstr "Sarok sugár"
+
+msgid "Brush Size"
+msgstr "Ecsetméret"
+
+msgid "Camera"
+msgstr "Kamera"
+
+msgid "Censor"
+msgstr "Cenzúra"
+
+msgid "Checker"
+msgstr "Checker"
+
+msgid "Circle"
+msgstr "Circle"
+
+msgid "Close"
+msgstr "Bezárás"
+
+msgid "Codec"
+msgstr "Kodek"
+
+msgid "Color"
+msgstr "Szín"
+
+msgid "Confirm"
+msgstr "Megerősít"
+
+msgid "Copy to Clipboard"
+msgstr "Másolás a vágólapra"
+
+msgid "Custom"
+msgstr "Egyedi"
+
+msgid "Decrease Size"
+msgstr "Méret csökkentése"
+
+msgid "Desktop"
+msgstr "Asztal"
+
+msgid "Drawing canvas"
+msgstr "Rajzoló vászon"
+
+msgid "Edit"
+msgstr "Szerkesztés"
+
+msgid "Edit Screenshot"
+msgstr "Képernyőkép szerkesztése"
+
+msgid "Eraser"
+msgstr "Radír"
+
+msgid "Fill"
+msgstr "Kitöltés"
+
+msgid "Font"
+msgstr "Betűtípus"
+
+msgid "Frames per second"
+msgstr "Képkocka másodpercenként"
+
+msgid "Gradient Angle"
+msgstr "Áttűnés szöge"
+
+msgid "Hide screenshot panel"
+msgstr "Képernyőkép panel elrejtése"
+
+msgid "High"
+msgstr "Magas"
+
+msgid "Highlighter"
+msgstr "Kiemelő"
+
+msgid "Increase Size"
+msgstr "Méret növelése"
+
+msgid "Intensity"
+msgstr "Intenzitás"
+
+msgid "Line"
+msgstr "Sor"
+
+msgid "Low"
+msgstr "Alacsony"
+
+msgid "Mask"
+msgstr "Maszk"
+
+msgid "Medium"
+msgstr "Közepes"
+
+msgid "Mic"
+msgstr "Mikrofon"
+
+msgid "Neon"
+msgstr "Neon"
+
+msgid "No Fill"
+msgstr "Kitöltés nélkül"
+
+msgid "None"
+msgstr "None"
+
+msgid "Number"
+msgstr "Szám"
+
+msgid "Number with Arrow"
+msgstr "Szám nyíllal"
+
+msgid "Number with Pointer"
+msgstr "Mutatóval rendelkező szám"
+
+msgid "Ornate"
+msgstr "Ornate"
+
+msgid "Oval"
+msgstr "Oval"
+
+msgid "Pen"
+msgstr "Toll"
+
+msgid "Quality"
+msgstr "Minőség"
+
+msgid "Record Desktop Audio"
+msgstr "Asztali hang rögzítése"
+
+msgid "Record Microphone"
+msgstr "Mikrofon rögzítése"
+
+msgid "Recording quality (bitrate)"
+msgstr "Felvételi minőség (bitráta)"
+
+msgid "Recording resolution"
+msgstr "Felvételi felbontás"
+
+msgid "Rectangle"
+msgstr "Téglalap"
+
+msgid "Redo"
+msgstr "Újra"
+
+msgid "Save As…"
+msgstr "Mentés másként…"
+
+msgid "Save Screenshot"
+msgstr "Képernyőkép mentése"
+
+msgid "Screenshot copied"
+msgstr "Képernyőkép másolva"
+
+msgid "Screenshot from %s"
+msgstr "Képernyőkép innen: %s"
+
+msgid "Screenshot taken"
+msgstr "Képernyőkép készítve"
+
+msgid "Screenshots"
+msgstr "Képernyőképek"
+
+msgid "Select / Move"
+msgstr "Kiválasztás / Mozgatás"
+
+msgid "Show screenshot panel"
+msgstr "Képernyőkép panel megjelenítése"
+
+msgid "Size"
+msgstr "Méret"
+
+msgid "Soft"
+msgstr "Soft"
+
+msgid "Spot"
+msgstr "Spot"
+
+msgid "Text"
+msgstr "Szöveg"
+
+msgid "Text…"
+msgstr "Szöveg…"
+
+msgid "Undo"
+msgstr "Visszavonás"
+
+msgid "Use best available codec"
+msgstr "Használja a legjobb elérhető kodeket"
+
+msgid "Video Settings"
+msgstr "Videóbeállítások"
+
+msgid "Video codec"
+msgstr "Videó kodek"
+
+msgid "Webcam"
+msgstr "Webkamera"
+
+msgid "Webcam Overlay"
+msgstr "Webkamera átfedés"
+
+#. TRANSLATORS: Recording filename template.
+#. %d expands to YYYY-MM-DD (date), %t expands to HH-MM-SS (time).
+#. Both placeholders MUST stay literally in the translation.
+msgid "BigShot from %d %t"
+msgstr "BigShot innen: %d %t"

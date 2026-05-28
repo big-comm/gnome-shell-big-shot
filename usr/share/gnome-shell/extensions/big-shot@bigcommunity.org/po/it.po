@@ -1,0 +1,230 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: big-shot 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: it\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: attranslate\n"
+
+msgid "Annotation text"
+msgstr "Testo annotazione"
+
+msgid "Arrow"
+msgstr "Freccia"
+
+msgid "Auto"
+msgstr "Automatico"
+
+msgid "Blur"
+msgstr "Sfocatura"
+
+msgid "Border Radius"
+msgstr "Raggio del bordo"
+
+msgid "Brush Size"
+msgstr "Dimensione Pennello"
+
+msgid "Camera"
+msgstr "Fotocamera"
+
+msgid "Censor"
+msgstr "Censura"
+
+msgid "Checker"
+msgstr "Checker"
+
+msgid "Circle"
+msgstr "Circle"
+
+msgid "Close"
+msgstr "Chiudi"
+
+msgid "Codec"
+msgstr "Codec"
+
+msgid "Color"
+msgstr "Colore"
+
+msgid "Confirm"
+msgstr "Conferma"
+
+msgid "Copy to Clipboard"
+msgstr "Copia negli appunti"
+
+msgid "Custom"
+msgstr "Personalizzato"
+
+msgid "Decrease Size"
+msgstr "Riduci dimensione"
+
+msgid "Desktop"
+msgstr "Desktop"
+
+msgid "Drawing canvas"
+msgstr "Tavola da disegno"
+
+msgid "Edit"
+msgstr "Modifica"
+
+msgid "Edit Screenshot"
+msgstr "Modifica Screenshot"
+
+msgid "Eraser"
+msgstr "Cancellatore"
+
+msgid "Fill"
+msgstr "Riempi"
+
+msgid "Font"
+msgstr "Carattere"
+
+msgid "Frames per second"
+msgstr "Frame al secondo"
+
+msgid "Gradient Angle"
+msgstr "Angolo gradiente"
+
+msgid "Hide screenshot panel"
+msgstr "Nascondi pannello screenshot"
+
+msgid "High"
+msgstr "Alta"
+
+msgid "Highlighter"
+msgstr "Evidenziatore"
+
+msgid "Increase Size"
+msgstr "Aumenta Dimensione"
+
+msgid "Intensity"
+msgstr "Intensità"
+
+msgid "Line"
+msgstr "Linea"
+
+msgid "Low"
+msgstr "Basso"
+
+msgid "Mask"
+msgstr "Maschera"
+
+msgid "Medium"
+msgstr "Media"
+
+msgid "Mic"
+msgstr "Microfono"
+
+msgid "Neon"
+msgstr "Neon"
+
+msgid "No Fill"
+msgstr "Nessun riempimento"
+
+msgid "None"
+msgstr "None"
+
+msgid "Number"
+msgstr "Numero"
+
+msgid "Number with Arrow"
+msgstr "Numero con Freccia"
+
+msgid "Number with Pointer"
+msgstr "Numero con Puntatore"
+
+msgid "Ornate"
+msgstr "Ornate"
+
+msgid "Oval"
+msgstr "Oval"
+
+msgid "Pen"
+msgstr "Penna"
+
+msgid "Quality"
+msgstr "Qualità"
+
+msgid "Record Desktop Audio"
+msgstr "Registra audio desktop"
+
+msgid "Record Microphone"
+msgstr "Registra Microfono"
+
+msgid "Recording quality (bitrate)"
+msgstr "Qualità registrazione (bitrate)"
+
+msgid "Recording resolution"
+msgstr "Risoluzione di registrazione"
+
+msgid "Rectangle"
+msgstr "Rettangolo"
+
+msgid "Redo"
+msgstr "Ripeti"
+
+msgid "Save As…"
+msgstr "Salva con nome…"
+
+msgid "Save Screenshot"
+msgstr "Salva screenshot"
+
+msgid "Screenshot copied"
+msgstr "Screenshot copiato"
+
+msgid "Screenshot from %s"
+msgstr "Screenshot da %s"
+
+msgid "Screenshot taken"
+msgstr "Screenshot acquisito"
+
+msgid "Screenshots"
+msgstr "Screenshot"
+
+msgid "Select / Move"
+msgstr "Seleziona / Sposta"
+
+msgid "Show screenshot panel"
+msgstr "Mostra pannello screenshot"
+
+msgid "Size"
+msgstr "Dimensione"
+
+msgid "Soft"
+msgstr "Soft"
+
+msgid "Spot"
+msgstr "Spot"
+
+msgid "Text"
+msgstr "Testo"
+
+msgid "Text…"
+msgstr "Testo…"
+
+msgid "Undo"
+msgstr "Annulla"
+
+msgid "Use best available codec"
+msgstr "Usa il miglior codec disponibile"
+
+msgid "Video Settings"
+msgstr "Impostazioni video"
+
+msgid "Video codec"
+msgstr "Codec video"
+
+msgid "Webcam"
+msgstr "Webcam"
+
+msgid "Webcam Overlay"
+msgstr "Sovrapposizione webcam"
+
+#. TRANSLATORS: Recording filename template.
+#. %d expands to YYYY-MM-DD (date), %t expands to HH-MM-SS (time).
+#. Both placeholders MUST stay literally in the translation.
+msgid "BigShot from %d %t"
+msgstr "BigShot del %d %t"

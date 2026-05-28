@@ -48,6 +48,7 @@ export class DrawingOptions {
         size = 3,
         font = 'Sans',
         intensity = 3,
+        liveVideo = false,
     } = {}) {
         this.mode = mode;
         this.primaryColor = primaryColor;
@@ -56,6 +57,7 @@ export class DrawingOptions {
         this.size = size;
         this.font = font;
         this.intensity = intensity;
+        this.liveVideo = liveVideo;
     }
 
     clone() {
@@ -67,6 +69,7 @@ export class DrawingOptions {
             size: this.size,
             font: this.font,
             intensity: this.intensity,
+            liveVideo: this.liveVideo,
         });
     }
 }
@@ -489,6 +492,11 @@ export class CensorAction extends RectAction {
             return;
         }
 
+        if (this.options?.liveVideo) {
+            this._drawOpaqueLiveMask(cr, toWidget);
+            return;
+        }
+
         // Fallback: checkerboard placeholder (shown during drag)
         let [x1, y1] = toWidget(...this.start);
         let [x2, y2] = toWidget(...this.end);
@@ -521,6 +529,42 @@ export class CensorAction extends RectAction {
                 cr.fill();
             }
         }
+        cr.restore();
+    }
+
+    _drawOpaqueLiveMask(cr, toWidget) {
+        let [x1, y1] = toWidget(...this.start);
+        let [x2, y2] = toWidget(...this.end);
+
+        const x = Math.min(x1, x2);
+        const y = Math.min(y1, y2);
+        const w = Math.abs(x2 - x1);
+        const h = Math.abs(y2 - y1);
+
+        if (w < 1 || h < 1) return;
+
+        cr.save();
+        cr.rectangle(x, y, w, h);
+        cr.clip();
+
+        const blockSize = this._blockSizeForIntensity(1);
+        const blocksX = Math.max(1, Math.ceil(w / blockSize));
+        const blocksY = Math.max(1, Math.ceil(h / blockSize));
+
+        for (let bx = 0; bx < blocksX; bx++) {
+            for (let by = 0; by < blocksY; by++) {
+                const shade = ((bx + by) % 2 === 0) ? 0.04 : 0.16;
+                cr.setSourceRGBA(shade, shade, shade, 1.0);
+                cr.rectangle(
+                    x + bx * blockSize,
+                    y + by * blockSize,
+                    blockSize,
+                    blockSize
+                );
+                cr.fill();
+            }
+        }
+
         cr.restore();
     }
 
@@ -725,6 +769,11 @@ export class BlurAction extends RectAction {
             return;
         }
 
+        if (this.options?.liveVideo) {
+            this._drawLiveBlurMask(cr, x, y, w, h, scale);
+            return;
+        }
+
         // Fallback: frosted/hatched overlay (shown during drag)
         cr.save();
         cr.rectangle(x, y, w, h);
@@ -737,6 +786,27 @@ export class BlurAction extends RectAction {
         cr.setSourceRGBA(1.0, 1.0, 1.0, 0.3);
         cr.setLineWidth(1.0);
         const spacing = 6 * scale;
+        const maxDim = w + h;
+        for (let d = -maxDim; d < maxDim; d += spacing) {
+            cr.moveTo(x + d, y);
+            cr.lineTo(x + d + h, y + h);
+        }
+        cr.stroke();
+        cr.restore();
+    }
+
+    _drawLiveBlurMask(cr, x, y, w, h, scale) {
+        cr.save();
+        cr.rectangle(x, y, w, h);
+        cr.clip();
+
+        cr.setSourceRGBA(0.78, 0.84, 0.9, 0.88);
+        cr.rectangle(x, y, w, h);
+        cr.fill();
+
+        cr.setSourceRGBA(1.0, 1.0, 1.0, 0.45);
+        cr.setLineWidth(1.2 * scale);
+        const spacing = Math.max(4, 6 * scale);
         const maxDim = w + h;
         for (let d = -maxDim; d < maxDim; d += spacing) {
             cr.moveTo(x + d, y);
@@ -939,12 +1009,11 @@ export class BlurAction extends RectAction {
 
 export class InvertAction extends RectAction {
     /**
-     * Preview draw — uses the cached inverted pixbuf for real preview,
-     * or falls back to a visual overlay during drag.
+     * Preview draw — uses the cached inverted Cairo surface for real preview
+     * (after the rectangle is committed), or falls back to a hatched overlay
+     * during drag.
      */
     draw(cr, toWidget, _scale) {
-        // Visual overlay during drag (cyan/magenta tint)
-        // Real inversion happens in drawReal() at save time.
         let [x1, y1] = toWidget(...this.start);
         let [x2, y2] = toWidget(...this.end);
 
@@ -955,14 +1024,36 @@ export class InvertAction extends RectAction {
 
         if (w < 1 || h < 1) return;
 
+        // Real inverted preview from cached surface
+        if (this._previewSurface) {
+            cr.save();
+            cr.rectangle(x, y, w, h);
+            cr.clip();
+            cr.translate(x, y);
+            cr.scale(w / this._previewW, h / this._previewH);
+            cr.setSourceSurface(this._previewSurface, 0, 0);
+            const pattern = cr.getSource();
+            // BILINEAR (4) — keeps the preview smooth when widget size differs
+            // from the cached surface size.
+            if (pattern.setFilter)
+                pattern.setFilter(4);
+            cr.paint();
+            cr.restore();
+            return;
+        }
+
+        if (this.options?.liveVideo) {
+            this._drawLiveInvertMask(cr, x, y, w, h);
+            return;
+        }
+
+        // Fallback: hatched overlay during drag (preview not ready yet).
         cr.save();
-        // Semi-transparent inverted-look overlay
         cr.rectangle(x, y, w, h);
         cr.setSourceRGBA(1.0, 1.0, 1.0, 0.5);
         cr.fillPreserve();
         cr.clip();
 
-        // Diagonal lines to indicate "invert" effect during drag
         cr.setSourceRGBA(0.0, 0.0, 0.0, 0.3);
         cr.setLineWidth(1.0);
         const spacing = 6;
@@ -973,6 +1064,90 @@ export class InvertAction extends RectAction {
         }
         cr.stroke();
         cr.restore();
+    }
+
+    _drawLiveInvertMask(cr, x, y, w, h) {
+        cr.save();
+        cr.rectangle(x, y, w, h);
+        cr.clip();
+
+        cr.setSourceRGBA(1.0, 1.0, 1.0, 0.82);
+        cr.rectangle(x, y, w, h);
+        cr.fill();
+
+        cr.setSourceRGBA(0.0, 0.0, 0.0, 0.35);
+        cr.setLineWidth(1.0);
+        const spacing = 5;
+        const maxDim = w + h;
+        for (let d = -maxDim; d < maxDim; d += spacing) {
+            cr.moveTo(x + d, y);
+            cr.lineTo(x + d + h, y + h);
+        }
+        cr.stroke();
+        cr.restore();
+    }
+
+    /**
+     * Generate real inverted-color preview from screenshot pixel data.
+     * Builds a Cairo ImageSurface by drawing inverted pixels via a Context
+     * (the GJS Cairo binding doesn't expose ImageSurface.getData(), so we
+     * can't write the byte buffer directly). For very large regions we cap
+     * the preview resolution and let bilinear filtering upscale at draw
+     * time — the saved result is always exact (drawReal at full resolution).
+     */
+    generatePreview(pixbuf, bufScale) {
+        const regionX = Math.min(this.start[0], this.end[0]);
+        const regionY = Math.min(this.start[1], this.end[1]);
+        const regionW = Math.abs(this.end[0] - this.start[0]);
+        const regionH = Math.abs(this.end[1] - this.start[1]);
+
+        const imgW = pixbuf.get_width();
+        const imgH = pixbuf.get_height();
+
+        const x = Math.round(Math.max(0, Math.min(regionX * bufScale, imgW - 1)));
+        const y = Math.round(Math.max(0, Math.min(regionY * bufScale, imgH - 1)));
+        const w = Math.round(Math.min(regionW * bufScale, imgW - x));
+        const h = Math.round(Math.min(regionH * bufScale, imgH - y));
+
+        if (w < 2 || h < 2) return;
+
+        // Cap at ~160k pixels (~400×400) to keep per-pixel Cairo fills cheap;
+        // bilinear filter at draw() upscales smoothly when the widget is bigger.
+        const MAX_PREVIEW_PIXELS = 160000;
+        let pw = w, ph = h;
+        if (w * h > MAX_PREVIEW_PIXELS) {
+            const factor = Math.sqrt((w * h) / MAX_PREVIEW_PIXELS);
+            pw = Math.max(2, Math.round(w / factor));
+            ph = Math.max(2, Math.round(h / factor));
+        }
+
+        const bytes = pixbuf.read_pixel_bytes();
+        const data = bytes.get_data();
+        const rowstride = pixbuf.get_rowstride();
+        const nChannels = pixbuf.get_n_channels();
+
+        const surface = new cairo.ImageSurface(cairo.Format.ARGB32, pw, ph);
+        const scr = new cairo.Context(surface);
+
+        for (let py = 0; py < ph; py++) {
+            const srcY = y + Math.min(h - 1, Math.floor(py * h / ph));
+            for (let px = 0; px < pw; px++) {
+                const srcX = x + Math.min(w - 1, Math.floor(px * w / pw));
+                const off = srcY * rowstride + srcX * nChannels;
+                const r = (255 - data[off]) / 255;
+                const g = (255 - data[off + 1]) / 255;
+                const b = (255 - data[off + 2]) / 255;
+                const a = nChannels === 4 ? data[off + 3] / 255 : 1.0;
+                scr.setSourceRGBA(r, g, b, a);
+                scr.rectangle(px, py, 1, 1);
+                scr.fill();
+            }
+        }
+
+        surface.flush();
+        this._previewSurface = surface;
+        this._previewW = pw;
+        this._previewH = ph;
     }
 
     /**

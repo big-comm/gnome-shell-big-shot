@@ -1,0 +1,230 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: big-shot 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: zh\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: attranslate\n"
+
+msgid "Annotation text"
+msgstr "注释文本"
+
+msgid "Arrow"
+msgstr "箭头"
+
+msgid "Auto"
+msgstr "自动"
+
+msgid "Blur"
+msgstr "模糊"
+
+msgid "Border Radius"
+msgstr "边框半径"
+
+msgid "Brush Size"
+msgstr "画笔大小"
+
+msgid "Camera"
+msgstr "相机"
+
+msgid "Censor"
+msgstr "马赛克"
+
+msgid "Checker"
+msgstr "Checker"
+
+msgid "Circle"
+msgstr "Circle"
+
+msgid "Close"
+msgstr "关闭"
+
+msgid "Codec"
+msgstr "编解码器"
+
+msgid "Color"
+msgstr "颜色"
+
+msgid "Confirm"
+msgstr "确认"
+
+msgid "Copy to Clipboard"
+msgstr "复制到剪贴板"
+
+msgid "Custom"
+msgstr "自定义"
+
+msgid "Decrease Size"
+msgstr "减小尺寸"
+
+msgid "Desktop"
+msgstr "桌面"
+
+msgid "Drawing canvas"
+msgstr "绘图画布"
+
+msgid "Edit"
+msgstr "编辑"
+
+msgid "Edit Screenshot"
+msgstr "编辑截图"
+
+msgid "Eraser"
+msgstr "橡皮擦"
+
+msgid "Fill"
+msgstr "填充"
+
+msgid "Font"
+msgstr "字体"
+
+msgid "Frames per second"
+msgstr "每秒帧数"
+
+msgid "Gradient Angle"
+msgstr "渐变角度"
+
+msgid "Hide screenshot panel"
+msgstr "隐藏截图面板"
+
+msgid "High"
+msgstr "高"
+
+msgid "Highlighter"
+msgstr "高亮工具"
+
+msgid "Increase Size"
+msgstr "增大尺寸"
+
+msgid "Intensity"
+msgstr "强度"
+
+msgid "Line"
+msgstr "行"
+
+msgid "Low"
+msgstr "低"
+
+msgid "Mask"
+msgstr "遮罩"
+
+msgid "Medium"
+msgstr "中"
+
+msgid "Mic"
+msgstr "麦克风"
+
+msgid "Neon"
+msgstr "Neon"
+
+msgid "No Fill"
+msgstr "无填充"
+
+msgid "None"
+msgstr "None"
+
+msgid "Number"
+msgstr "数字"
+
+msgid "Number with Arrow"
+msgstr "带箭头的数字"
+
+msgid "Number with Pointer"
+msgstr "带指针的数字"
+
+msgid "Ornate"
+msgstr "Ornate"
+
+msgid "Oval"
+msgstr "Oval"
+
+msgid "Pen"
+msgstr "笔"
+
+msgid "Quality"
+msgstr "质量"
+
+msgid "Record Desktop Audio"
+msgstr "录制桌面音频"
+
+msgid "Record Microphone"
+msgstr "录制麦克风"
+
+msgid "Recording quality (bitrate)"
+msgstr "录制质量（比特率）"
+
+msgid "Recording resolution"
+msgstr "录制分辨率"
+
+msgid "Rectangle"
+msgstr "矩形"
+
+msgid "Redo"
+msgstr "重做"
+
+msgid "Save As…"
+msgstr "另存为…"
+
+msgid "Save Screenshot"
+msgstr "保存截图"
+
+msgid "Screenshot copied"
+msgstr "截图已复制"
+
+msgid "Screenshot from %s"
+msgstr "来自 %s 的截图"
+
+msgid "Screenshot taken"
+msgstr "截图已保存"
+
+msgid "Screenshots"
+msgstr "截图"
+
+msgid "Select / Move"
+msgstr "选择 / 移动"
+
+msgid "Show screenshot panel"
+msgstr "显示截图面板"
+
+msgid "Size"
+msgstr "大小"
+
+msgid "Soft"
+msgstr "Soft"
+
+msgid "Spot"
+msgstr "Spot"
+
+msgid "Text"
+msgstr "文本"
+
+msgid "Text…"
+msgstr "文本…"
+
+msgid "Undo"
+msgstr "撤销"
+
+msgid "Use best available codec"
+msgstr "使用最佳可用编解码器"
+
+msgid "Video Settings"
+msgstr "视频设置"
+
+msgid "Video codec"
+msgstr "视频编码器"
+
+msgid "Webcam"
+msgstr "网络摄像头"
+
+msgid "Webcam Overlay"
+msgstr "网络摄像头叠加"
+
+#. TRANSLATORS: Recording filename template.
+#. %d expands to YYYY-MM-DD (date), %t expands to HH-MM-SS (time).
+#. Both placeholders MUST stay literally in the translation.
+msgid "BigShot from %d %t"
+msgstr "BigShot %d %t"

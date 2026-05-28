@@ -1,0 +1,230 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: big-shot 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: fi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: attranslate\n"
+
+msgid "Annotation text"
+msgstr "Kommenttiteksti"
+
+msgid "Arrow"
+msgstr "Nuoli"
+
+msgid "Auto"
+msgstr "Automaattinen"
+
+msgid "Blur"
+msgstr "Sume"
+
+msgid "Border Radius"
+msgstr "Reunakulma"
+
+msgid "Brush Size"
+msgstr "Harjan koko"
+
+msgid "Camera"
+msgstr "Kamera"
+
+msgid "Censor"
+msgstr "Sensuuri"
+
+msgid "Checker"
+msgstr "Checker"
+
+msgid "Circle"
+msgstr "Circle"
+
+msgid "Close"
+msgstr "Sulje"
+
+msgid "Codec"
+msgstr "Koodekki"
+
+msgid "Color"
+msgstr "Väri"
+
+msgid "Confirm"
+msgstr "Vahvista"
+
+msgid "Copy to Clipboard"
+msgstr "Kopioi leikepöydälle"
+
+msgid "Custom"
+msgstr "Mukautettu"
+
+msgid "Decrease Size"
+msgstr "Vähennä kokoa"
+
+msgid "Desktop"
+msgstr "Työpöytä"
+
+msgid "Drawing canvas"
+msgstr "Piirtoalusta"
+
+msgid "Edit"
+msgstr "Muokkaa"
+
+msgid "Edit Screenshot"
+msgstr "Muokkaa näyttökuvaa"
+
+msgid "Eraser"
+msgstr "Pyyhekumi"
+
+msgid "Fill"
+msgstr "Täytä"
+
+msgid "Font"
+msgstr "Fontti"
+
+msgid "Frames per second"
+msgstr "Kuvakehyksiä sekunnissa"
+
+msgid "Gradient Angle"
+msgstr "Liukuvärin kulma"
+
+msgid "Hide screenshot panel"
+msgstr "Piilota kuvakaappauspaneeli"
+
+msgid "High"
+msgstr "Korkea"
+
+msgid "Highlighter"
+msgstr "Korostin"
+
+msgid "Increase Size"
+msgstr "Lisää kokoa"
+
+msgid "Intensity"
+msgstr "Intensiteetti"
+
+msgid "Line"
+msgstr "Rivi"
+
+msgid "Low"
+msgstr "Alhainen"
+
+msgid "Mask"
+msgstr "Maski"
+
+msgid "Medium"
+msgstr "Keskitaso"
+
+msgid "Mic"
+msgstr "Mikrofoni"
+
+msgid "Neon"
+msgstr "Neon"
+
+msgid "No Fill"
+msgstr "Ei täyttöä"
+
+msgid "None"
+msgstr "None"
+
+msgid "Number"
+msgstr "Numero"
+
+msgid "Number with Arrow"
+msgstr "Numero nuolella"
+
+msgid "Number with Pointer"
+msgstr "Numero osoittimella"
+
+msgid "Ornate"
+msgstr "Ornate"
+
+msgid "Oval"
+msgstr "Oval"
+
+msgid "Pen"
+msgstr "Kynä"
+
+msgid "Quality"
+msgstr "Laatu"
+
+msgid "Record Desktop Audio"
+msgstr "Tallenna työpöydän ääni"
+
+msgid "Record Microphone"
+msgstr "Tallenna mikrofoni"
+
+msgid "Recording quality (bitrate)"
+msgstr "Tallennuksen laatu (bitrate)"
+
+msgid "Recording resolution"
+msgstr "Tallennusresoluutio"
+
+msgid "Rectangle"
+msgstr "Suorakulmio"
+
+msgid "Redo"
+msgstr "Tee uudelleen"
+
+msgid "Save As…"
+msgstr "Tallenna nimellä…"
+
+msgid "Save Screenshot"
+msgstr "Tallenna kuvakaappaus"
+
+msgid "Screenshot copied"
+msgstr "Kuvakaappaus kopioitu"
+
+msgid "Screenshot from %s"
+msgstr "Kuvakaappaus kohteesta %s"
+
+msgid "Screenshot taken"
+msgstr "Kuvakaappaus otettu"
+
+msgid "Screenshots"
+msgstr "Kuvakaappaukset"
+
+msgid "Select / Move"
+msgstr "Valitse / Siirrä"
+
+msgid "Show screenshot panel"
+msgstr "Näytä kuvakaappauspaneeli"
+
+msgid "Size"
+msgstr "Koko"
+
+msgid "Soft"
+msgstr "Soft"
+
+msgid "Spot"
+msgstr "Spot"
+
+msgid "Text"
+msgstr "Teksti"
+
+msgid "Text…"
+msgstr "Teksti…"
+
+msgid "Undo"
+msgstr "Kumoa"
+
+msgid "Use best available codec"
+msgstr "Käytä parasta saatavilla olevaa koodekkia"
+
+msgid "Video Settings"
+msgstr "Videon asetukset"
+
+msgid "Video codec"
+msgstr "Videokoodekki"
+
+msgid "Webcam"
+msgstr "Webkamera"
+
+msgid "Webcam Overlay"
+msgstr "Verkkokameran peittokuva"
+
+#. TRANSLATORS: Recording filename template.
+#. %d expands to YYYY-MM-DD (date), %t expands to HH-MM-SS (time).
+#. Both placeholders MUST stay literally in the translation.
+msgid "BigShot from %d %t"
+msgstr "BigShot päivältä %d %t"
