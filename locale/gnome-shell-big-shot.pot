@@ -14,10 +14,46 @@ msgstr  "Project-Id-Version: gnome-shell-big-shot\n"
         "Content-Type: text/plain; charset=UTF-8\n"
         "Content-Transfer-Encoding: 8bit\n"
 
-msgid   "Edit live"
+msgid   "Drawing canvas"
 msgstr  ""
 
-msgid   "Clear annotations"
+msgid   "Text…"
+msgstr  ""
+
+msgid   "Annotation text"
+msgstr  ""
+
+msgid   "Confirm"
+msgstr  ""
+
+msgid   "Webcam"
+msgstr  ""
+
+msgid   "Webcam Overlay"
+msgstr  ""
+
+msgid   "Gradient Angle"
+msgstr  ""
+
+msgid   "Border Radius"
+msgstr  ""
+
+msgid   "Desktop"
+msgstr  ""
+
+msgid   "Mic"
+msgstr  ""
+
+msgid   "Record Desktop Audio"
+msgstr  ""
+
+msgid   "Record Microphone"
+msgstr  ""
+
+msgid   "Recording resolution"
+msgstr  ""
+
+msgid   "Frames per second"
 msgstr  ""
 
 msgid   "Select / Move"
@@ -104,6 +140,15 @@ msgstr  ""
 msgid   "Save As…"
 msgstr  ""
 
+msgid   "Extract Text (OCR)"
+msgstr  ""
+
+msgid   "OCR Language"
+msgstr  ""
+
+msgid   "Select OCR Language"
+msgstr  ""
+
 msgid   "Close"
 msgstr  ""
 
@@ -129,9 +174,6 @@ msgid   "Recording quality (bitrate)"
 msgstr  ""
 
 msgid   "Codec"
-msgstr  ""
-
-msgid   "Mic"
 msgstr  ""
 
 msgid   "Camera"
@@ -164,31 +206,20 @@ msgstr  ""
 msgid   "Video codec"
 msgstr  ""
 
-msgid   "Webcam"
+msgid   "Tesseract not found. Install: sudo pacman -S tesseract tesseract-"
+        "data-por"
 msgstr  ""
 
-msgid   "Webcam Overlay"
+msgid   "OCR Languages"
 msgstr  ""
 
-msgid   "Gradient Angle"
+msgid   "Auto (system)"
 msgstr  ""
 
-msgid   "Border Radius"
+msgid   "Edit live"
 msgstr  ""
 
-msgid   "Frames per second"
-msgstr  ""
-
-msgid   "Recording resolution"
-msgstr  ""
-
-msgid   "Desktop"
-msgstr  ""
-
-msgid   "Record Desktop Audio"
-msgstr  ""
-
-msgid   "Record Microphone"
+msgid   "Clear annotations"
 msgstr  ""
 
 msgid   "BigShot from %d %t"
@@ -206,17 +237,21 @@ msgstr  ""
 msgid   "Screenshot copied"
 msgstr  ""
 
+msgid   "Tesseract not found. Please install the ‘tesseract’ package for your "
+        "distribution."
+msgstr  ""
+
+msgid   "Extracting text..."
+msgstr  ""
+
+msgid   "Text copied to clipboard! (%d chars)"
+msgstr  ""
+
+msgid   "No text found in selection"
+msgstr  ""
+
+msgid   "OCR failed: %s"
+msgstr  ""
+
 msgid   "Save Screenshot"
-msgstr  ""
-
-msgid   "Drawing canvas"
-msgstr  ""
-
-msgid   "Text…"
-msgstr  ""
-
-msgid   "Annotation text"
-msgstr  ""
-
-msgid   "Confirm"
 msgstr  ""
