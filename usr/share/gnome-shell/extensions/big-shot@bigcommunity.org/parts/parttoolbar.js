@@ -44,6 +44,7 @@ const SCREENSHOT_TOOLS = [
     { id: 'censor', icon: 'big-shot-censor-symbolic', label: () => _('Censor') },
     { id: 'blur', icon: 'big-shot-blur-symbolic', label: () => _('Blur') },
     { id: 'invert', icon: 'big-shot-invert-symbolic', label: () => _('Invert Colors') },
+    { id: 'zoom', icon: 'big-shot-zoom-symbolic', label: () => _('Magnify / Zoom') },
     { id: 'number', icon: 'big-shot-number-symbolic', label: () => _('Number') },
     { id: 'number-arrow', icon: 'big-shot-number-arrow-symbolic', label: () => _('Number with Arrow') },
     { id: 'number-pointer', icon: 'big-shot-number-pointer-symbolic', label: () => _('Number with Pointer') },
