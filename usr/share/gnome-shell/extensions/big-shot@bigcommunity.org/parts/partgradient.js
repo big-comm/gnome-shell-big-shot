@@ -5,7 +5,7 @@
  * Shows a row of gradient swatches in the toolbar when 'gradient' tool is active.
  * Includes angle selector and border-radius control.
  *
- * SPDX-License-Identifier: GPL-2.0-or-later
+ * SPDX-License-Identifier: MIT
  */
 
 import St from 'gi://St';

@@ -4,7 +4,7 @@
  * All annotation tools that can be placed on a screenshot.
  * Each action knows how to draw itself via Cairo and report its bounds.
  *
- * SPDX-License-Identifier: GPL-2.0-or-later
+ * SPDX-License-Identifier: MIT
  */
 
 import Pango from 'gi://Pango';

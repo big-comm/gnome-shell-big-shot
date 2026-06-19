@@ -6,7 +6,7 @@
  * additional rows INSIDE the native screenshot panel — keeping
  * everything in a single unified box.
  *
- * SPDX-License-Identifier: GPL-2.0-or-later
+ * SPDX-License-Identifier: MIT
  */
 
 import St from 'gi://St';

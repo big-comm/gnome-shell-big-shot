@@ -1,7 +1,7 @@
 /**
  * Big Shot — Gradient presets for screenshot beautification
  *
- * SPDX-License-Identifier: GPL-2.0-or-later
+ * SPDX-License-Identifier: MIT
  */
 
 import Cairo from 'gi://cairo';

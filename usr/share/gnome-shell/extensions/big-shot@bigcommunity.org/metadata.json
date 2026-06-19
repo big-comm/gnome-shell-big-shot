@@ -1,6 +1,6 @@
 {
     "name": "Big Shot",
-    "description": "Enhanced screenshot annotation and screencast recording for GNOME Shell",
+    "description": "Enhanced screenshot annotation, clipboard copy, saving, and screencast recording for GNOME Shell",
     "uuid": "big-shot@bigcommunity.org",
     "shell-version": ["46", "47", "48", "49", "50"],
     "version": 2605102,

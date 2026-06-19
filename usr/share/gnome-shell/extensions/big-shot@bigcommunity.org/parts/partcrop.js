@@ -4,7 +4,7 @@
  * Adds crop + padding functionality for screenshot beautification.
  * Provides a crop box overlay with 8 draggable handles (4 corners + 4 edges).
  *
- * SPDX-License-Identifier: GPL-2.0-or-later
+ * SPDX-License-Identifier: MIT
  */
 
 import St from 'gi://St';

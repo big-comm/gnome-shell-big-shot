@@ -1,7 +1,7 @@
 /**
  * Big Shot — Base classes for extension modules (Parts)
  *
- * SPDX-License-Identifier: GPL-2.0-or-later
+ * SPDX-License-Identifier: MIT
  */
 
 import Clutter from 'gi://Clutter';

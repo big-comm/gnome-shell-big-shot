@@ -1,7 +1,7 @@
 /**
  * Big Shot — Resolution downsize selector
  *
- * SPDX-License-Identifier: GPL-2.0-or-later
+ * SPDX-License-Identifier: MIT
  */
 
 import { PartPopupSelect } from './partbase.js';

@@ -1,7 +1,7 @@
 /**
  * Big Shot — Enhanced Screenshot & Screencast for GNOME Shell
  *
- * SPDX-License-Identifier: GPL-2.0-or-later
+ * SPDX-License-Identifier: MIT
  */
 
 export const APP_VERSION = '26.8.6';
@@ -595,8 +595,6 @@ export default class BigShotExtension extends Extension {
 
         // Detect Shell version once for version-conditional code paths.
         this._shellVersion = this._detectShellVersion();
-        console.log(`[Big Shot] Enabling on GNOME Shell ${this._shellVersion ?? 'unknown'}`);
-
         // Initialize translations (must be before _createParts so _() works)
         this.initTranslations();
 
@@ -2273,7 +2271,6 @@ export default class BigShotExtension extends Extension {
      * Toggle pause/resume — called by the indicator panel button.
      */
     async togglePauseRecording() {
-        console.log(`[Big Shot] Toggle pause/resume state=${this._recordingState}`);
         if (this._recordingState === 'recording') {
             if (await this.pauseRecording())
                 this._videoAnnotation?.enterPausedEditFromPause();

@@ -1,7 +1,7 @@
 /**
  * Big Shot — Magnifier / Zoom Lens for pixel-perfect area selection
  *
- * SPDX-License-Identifier: GPL-2.0-or-later
+ * SPDX-License-Identifier: MIT
  */
 
 import Clutter from 'gi://Clutter';
@@ -284,8 +284,8 @@ export class PartMagnifier extends PartUI {
         if (button === undefined) {
             if (!this._selectionButtonWarned) {
                 this._selectionButtonWarned = true;
-                console.log('[Big Shot] Magnifier: _selectionButton not found on screenshot UI; '
-                          + 'lens disabled (Shell API may have changed).');
+                console.warn('[Big Shot] Magnifier: _selectionButton not found on screenshot UI; '
+                           + 'lens disabled (Shell API may have changed).');
             }
             return false;
         }
