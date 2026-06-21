@@ -14,6 +14,40 @@ msgstr  "Project-Id-Version: gnome-shell-big-shot\n"
         "Content-Type: text/plain; charset=UTF-8\n"
         "Content-Transfer-Encoding: 8bit\n"
 
+msgid   "BigShot from %d %t"
+msgstr  ""
+
+msgid   "Screenshot taken"
+msgstr  ""
+
+msgid   "Screenshots"
+msgstr  ""
+
+msgid   "Screenshot from %s"
+msgstr  ""
+
+msgid   "Screenshot copied"
+msgstr  ""
+
+msgid   "Tesseract not found. Please install the ‘tesseract’ package for your "
+        "distribution."
+msgstr  ""
+
+msgid   "Extracting text..."
+msgstr  ""
+
+msgid   "Text copied to clipboard! (%d chars)"
+msgstr  ""
+
+msgid   "No text found in selection"
+msgstr  ""
+
+msgid   "OCR failed: %s"
+msgstr  ""
+
+msgid   "Save Screenshot"
+msgstr  ""
+
 msgid   "Drawing canvas"
 msgstr  ""
 
@@ -35,18 +69,6 @@ msgstr  ""
 msgid   "Zoom caption"
 msgstr  ""
 
-msgid   "Webcam"
-msgstr  ""
-
-msgid   "Webcam Overlay"
-msgstr  ""
-
-msgid   "Gradient Angle"
-msgstr  ""
-
-msgid   "Border Radius"
-msgstr  ""
-
 msgid   "Desktop"
 msgstr  ""
 
@@ -59,10 +81,28 @@ msgstr  ""
 msgid   "Record Microphone"
 msgstr  ""
 
-msgid   "Recording resolution"
+msgid   "Webcam"
+msgstr  ""
+
+msgid   "Webcam Overlay"
+msgstr  ""
+
+msgid   "Gradient Angle"
+msgstr  ""
+
+msgid   "Border Radius"
+msgstr  ""
+
+msgid   "Edit live"
+msgstr  ""
+
+msgid   "Clear annotations"
 msgstr  ""
 
 msgid   "Frames per second"
+msgstr  ""
+
+msgid   "Recording resolution"
 msgstr  ""
 
 msgid   "Select / Move"
@@ -218,42 +258,12 @@ msgstr  ""
 msgid   "Video codec"
 msgstr  ""
 
-msgid   "Edit live"
+msgid   "Tesseract not found. Install: sudo pacman -S tesseract tesseract-"
+        "data-por"
 msgstr  ""
 
-msgid   "Clear annotations"
+msgid   "OCR Languages"
 msgstr  ""
 
-msgid   "BigShot from %d %t"
-msgstr  ""
-
-msgid   "Screenshot taken"
-msgstr  ""
-
-msgid   "Screenshots"
-msgstr  ""
-
-msgid   "Screenshot from %s"
-msgstr  ""
-
-msgid   "Screenshot copied"
-msgstr  ""
-
-msgid   "Tesseract not found. Please install the ‘tesseract’ package for your "
-        "distribution."
-msgstr  ""
-
-msgid   "Extracting text..."
-msgstr  ""
-
-msgid   "Text copied to clipboard! (%d chars)"
-msgstr  ""
-
-msgid   "No text found in selection"
-msgstr  ""
-
-msgid   "OCR failed: %s"
-msgstr  ""
-
-msgid   "Save Screenshot"
+msgid   "Auto (system)"
 msgstr  ""

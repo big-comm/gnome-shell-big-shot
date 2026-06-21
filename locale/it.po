@@ -15,6 +15,42 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: attranslate\n"
+#: NEEDS WORK
+msgid "BigShot from %d %t"
+msgstr "BigShot da %d %t"
+#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:493
+#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:506
+msgid "Screenshot taken"
+msgstr "Screenshot acquisito"
+#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:548
+msgid "Screenshots"
+msgstr "Screenshot"
+#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:558
+#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:777
+#, javascript-format
+msgid "Screenshot from %s"
+msgstr "Screenshot da %s"
+#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:740
+msgid "Screenshot copied"
+msgstr "Screenshot copiato"
+#: NEEDS WORK
+msgid "Tesseract not found. Please install the ‘tesseract’ package for your distribution."
+msgstr "Tesseract non trovato. Si prega di installare il pacchetto 'tesseract' per la propria distribuzione."
+#: NEEDS WORK
+msgid "Extracting text..."
+msgstr "Estrazione del testo..."
+#: NEEDS WORK
+msgid "Text copied to clipboard! (%d chars)"
+msgstr "Testo copiato negli appunti! (%d caratteri)"
+#: NEEDS WORK
+msgid "No text found in selection"
+msgstr "Nessun testo trovato nella selezione"
+#: NEEDS WORK
+msgid "OCR failed: %s"
+msgstr "OCR non riuscito: %s"
+#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:789
+msgid "Save Screenshot"
+msgstr "Salva screenshot"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/drawing/overlay.js:74
 msgid "Drawing canvas"
 msgstr "Tavola da disegno"
@@ -36,18 +72,6 @@ msgstr "Didascalia (↑/↓ = dimensione)…"
 #: NEEDS WORK
 msgid "Zoom caption"
 msgstr "Sottotitoli Zoom"
-#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partwebcam.js:88
-msgid "Webcam"
-msgstr "Webcam"
-#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partwebcam.js:113
-msgid "Webcam Overlay"
-msgstr "Sovrapposizione webcam"
-#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partgradient.js:92
-msgid "Gradient Angle"
-msgstr "Angolo gradiente"
-#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partgradient.js:105
-msgid "Border Radius"
-msgstr "Raggio del bordo"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partaudio.js:96
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partaudio.js:153
 msgid "Desktop"
@@ -62,12 +86,30 @@ msgstr "Registra audio desktop"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partaudio.js:163
 msgid "Record Microphone"
 msgstr "Registra Microfono"
-#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partdownsize.js:18
-msgid "Recording resolution"
-msgstr "Risoluzione di registrazione"
+#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partwebcam.js:88
+msgid "Webcam"
+msgstr "Webcam"
+#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partwebcam.js:113
+msgid "Webcam Overlay"
+msgstr "Sovrapposizione webcam"
+#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partgradient.js:92
+msgid "Gradient Angle"
+msgstr "Angolo gradiente"
+#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partgradient.js:105
+msgid "Border Radius"
+msgstr "Raggio del bordo"
+#: NEEDS WORK
+msgid "Edit live"
+msgstr "Modifica in tempo reale"
+#: NEEDS WORK
+msgid "Clear annotations"
+msgstr "Cancella annotazioni"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partframerate.js:18
 msgid "Frames per second"
 msgstr "Frame al secondo"
+#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partdownsize.js:18
+msgid "Recording resolution"
+msgstr "Risoluzione di registrazione"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:35
 msgid "Select / Move"
 msgstr "Seleziona / Sposta"
@@ -235,44 +277,11 @@ msgstr "Usa il miglior codec disponibile"
 msgid "Video codec"
 msgstr "Codec video"
 #: NEEDS WORK
-msgid "Edit live"
-msgstr "Modifica in tempo reale"
+msgid "Tesseract not found. Install: sudo pacman -S tesseract tesseract-data-por"
+msgstr "Tesseract non trovato. Installa: sudo pacman -S tesseract tesseract-data-por"
 #: NEEDS WORK
-msgid "Clear annotations"
-msgstr "Cancella annotazioni"
+msgid "OCR Languages"
+msgstr "Lingue OCR"
 #: NEEDS WORK
-msgid "BigShot from %d %t"
-msgstr "BigShot da %d %t"
-#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:493
-#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:506
-msgid "Screenshot taken"
-msgstr "Screenshot acquisito"
-#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:548
-msgid "Screenshots"
-msgstr "Screenshot"
-#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:558
-#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:777
-#, javascript-format
-msgid "Screenshot from %s"
-msgstr "Screenshot da %s"
-#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:740
-msgid "Screenshot copied"
-msgstr "Screenshot copiato"
-#: NEEDS WORK
-msgid "Tesseract not found. Please install the ‘tesseract’ package for your distribution."
-msgstr "Tesseract non trovato. Si prega di installare il pacchetto 'tesseract' per la propria distribuzione."
-#: NEEDS WORK
-msgid "Extracting text..."
-msgstr "Estrazione del testo..."
-#: NEEDS WORK
-msgid "Text copied to clipboard! (%d chars)"
-msgstr "Testo copiato negli appunti! (%d caratteri)"
-#: NEEDS WORK
-msgid "No text found in selection"
-msgstr "Nessun testo trovato nella selezione"
-#: NEEDS WORK
-msgid "OCR failed: %s"
-msgstr "OCR non riuscito: %s"
-#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:789
-msgid "Save Screenshot"
-msgstr "Salva screenshot"
+msgid "Auto (system)"
+msgstr "Auto (sistema)"

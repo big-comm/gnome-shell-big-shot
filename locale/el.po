@@ -15,6 +15,42 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: attranslate\n"
+#: NEEDS WORK
+msgid "BigShot from %d %t"
+msgstr "BigShot από %d %t"
+#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:493
+#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:506
+msgid "Screenshot taken"
+msgstr "Η λήψη οθόνης ολοκληρώθηκε"
+#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:548
+msgid "Screenshots"
+msgstr "Λήψεις οθόνης"
+#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:558
+#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:777
+#, javascript-format
+msgid "Screenshot from %s"
+msgstr "Λήψη οθόνης από %s"
+#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:740
+msgid "Screenshot copied"
+msgstr "Η λήψη οθόνης αντιγράφηκε"
+#: NEEDS WORK
+msgid "Tesseract not found. Please install the ‘tesseract’ package for your distribution."
+msgstr "Δεν βρέθηκε ο Tesseract. Παρακαλώ εγκαταστήστε το πακέτο ‘tesseract’ για τη διανομή σας."
+#: NEEDS WORK
+msgid "Extracting text..."
+msgstr "Εξαγωγή κειμένου..."
+#: NEEDS WORK
+msgid "Text copied to clipboard! (%d chars)"
+msgstr "Κείμενο αντιγραμμένο στο πρόχειρο! (%d χαρακτήρες)"
+#: NEEDS WORK
+msgid "No text found in selection"
+msgstr "Δεν βρέθηκε κείμενο στην επιλογή"
+#: NEEDS WORK
+msgid "OCR failed: %s"
+msgstr "Η αναγνώριση χαρακτήρων απέτυχε: %s"
+#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:789
+msgid "Save Screenshot"
+msgstr "Αποθήκευση λήψης οθόνης"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/drawing/overlay.js:74
 msgid "Drawing canvas"
 msgstr "Καμβάς σχεδίασης"
@@ -36,18 +72,6 @@ msgstr "Λεζάντα (↑/↓ = μέγεθος)…"
 #: NEEDS WORK
 msgid "Zoom caption"
 msgstr "Λεζάντα Zoom"
-#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partwebcam.js:88
-msgid "Webcam"
-msgstr "Κάμερα web"
-#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partwebcam.js:113
-msgid "Webcam Overlay"
-msgstr "Επικάλυψη κάμερας"
-#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partgradient.js:92
-msgid "Gradient Angle"
-msgstr "Γωνία κλίσης"
-#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partgradient.js:105
-msgid "Border Radius"
-msgstr "Ακτίνα Περιγράμματος"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partaudio.js:96
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partaudio.js:153
 msgid "Desktop"
@@ -62,12 +86,30 @@ msgstr "Καταγραφή ήχου επιφάνειας εργασίας"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partaudio.js:163
 msgid "Record Microphone"
 msgstr "Καταγραφή Μικροφώνου"
-#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partdownsize.js:18
-msgid "Recording resolution"
-msgstr "Ανάλυση εγγραφής"
+#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partwebcam.js:88
+msgid "Webcam"
+msgstr "Κάμερα web"
+#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partwebcam.js:113
+msgid "Webcam Overlay"
+msgstr "Επικάλυψη κάμερας"
+#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partgradient.js:92
+msgid "Gradient Angle"
+msgstr "Γωνία κλίσης"
+#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partgradient.js:105
+msgid "Border Radius"
+msgstr "Ακτίνα Περιγράμματος"
+#: NEEDS WORK
+msgid "Edit live"
+msgstr "Επεξεργασία σε πραγματικό χρόνο"
+#: NEEDS WORK
+msgid "Clear annotations"
+msgstr "Καθαρισμός σχολίων"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partframerate.js:18
 msgid "Frames per second"
 msgstr "Καρέ ανά δευτερόλεπτο"
+#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partdownsize.js:18
+msgid "Recording resolution"
+msgstr "Ανάλυση εγγραφής"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:35
 msgid "Select / Move"
 msgstr "Επιλογή / Μετακίνηση"
@@ -235,44 +277,11 @@ msgstr "Χρησιμοποιήστε τον καλύτερο διαθέσιμο 
 msgid "Video codec"
 msgstr "Κωδικοποιητής βίντεο"
 #: NEEDS WORK
-msgid "Edit live"
-msgstr "Επεξεργασία σε πραγματικό χρόνο"
+msgid "Tesseract not found. Install: sudo pacman -S tesseract tesseract-data-por"
+msgstr "Δεν βρέθηκε το Tesseract. Εγκαταστήστε: sudo pacman -S tesseract tesseract-data-por"
 #: NEEDS WORK
-msgid "Clear annotations"
-msgstr "Καθαρισμός σχολίων"
+msgid "OCR Languages"
+msgstr "Γλώσσες OCR"
 #: NEEDS WORK
-msgid "BigShot from %d %t"
-msgstr "BigShot από %d %t"
-#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:493
-#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:506
-msgid "Screenshot taken"
-msgstr "Η λήψη οθόνης ολοκληρώθηκε"
-#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:548
-msgid "Screenshots"
-msgstr "Λήψεις οθόνης"
-#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:558
-#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:777
-#, javascript-format
-msgid "Screenshot from %s"
-msgstr "Λήψη οθόνης από %s"
-#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:740
-msgid "Screenshot copied"
-msgstr "Η λήψη οθόνης αντιγράφηκε"
-#: NEEDS WORK
-msgid "Tesseract not found. Please install the ‘tesseract’ package for your distribution."
-msgstr "Δεν βρέθηκε ο Tesseract. Παρακαλώ εγκαταστήστε το πακέτο ‘tesseract’ για τη διανομή σας."
-#: NEEDS WORK
-msgid "Extracting text..."
-msgstr "Εξαγωγή κειμένου..."
-#: NEEDS WORK
-msgid "Text copied to clipboard! (%d chars)"
-msgstr "Κείμενο αντιγραμμένο στο πρόχειρο! (%d χαρακτήρες)"
-#: NEEDS WORK
-msgid "No text found in selection"
-msgstr "Δεν βρέθηκε κείμενο στην επιλογή"
-#: NEEDS WORK
-msgid "OCR failed: %s"
-msgstr "Η αναγνώριση χαρακτήρων απέτυχε: %s"
-#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:789
-msgid "Save Screenshot"
-msgstr "Αποθήκευση λήψης οθόνης"
+msgid "Auto (system)"
+msgstr "Αυτόματο (σύστημα)"

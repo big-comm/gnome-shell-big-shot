@@ -15,6 +15,43 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+msgid "BigShot from %d %t"
+msgstr "BigShot from %d %t"
+
+msgid "Screenshot taken"
+msgstr "Screenshot taken"
+
+msgid "Screenshots"
+msgstr "Screenshots"
+
+msgid "Screenshot from %s"
+msgstr "Screenshot from %s"
+
+msgid "Screenshot copied"
+msgstr "Screenshot copied"
+
+msgid ""
+"Tesseract not found. Please install the ‘tesseract’ package for your "
+"distribution."
+msgstr ""
+"Tesseract not found. Please install the ‘tesseract’ package for your "
+"distribution."
+
+msgid "Extracting text..."
+msgstr "Extracting text..."
+
+msgid "Text copied to clipboard! (%d chars)"
+msgstr "Text copied to clipboard! (%d chars)"
+
+msgid "No text found in selection"
+msgstr "No text found in selection"
+
+msgid "OCR failed: %s"
+msgstr "OCR failed: %s"
+
+msgid "Save Screenshot"
+msgstr "Save Screenshot"
+
 msgid "Drawing canvas"
 msgstr "Drawing canvas"
 
@@ -36,18 +73,6 @@ msgstr "Caption (↑/↓ = size)…"
 msgid "Zoom caption"
 msgstr "Zoom caption"
 
-msgid "Webcam"
-msgstr "Webcam"
-
-msgid "Webcam Overlay"
-msgstr "Webcam Overlay"
-
-msgid "Gradient Angle"
-msgstr "Gradient Angle"
-
-msgid "Border Radius"
-msgstr "Border Radius"
-
 msgid "Desktop"
 msgstr "Desktop"
 
@@ -60,11 +85,29 @@ msgstr "Record Desktop Audio"
 msgid "Record Microphone"
 msgstr "Record Microphone"
 
-msgid "Recording resolution"
-msgstr "Recording resolution"
+msgid "Webcam"
+msgstr "Webcam"
+
+msgid "Webcam Overlay"
+msgstr "Webcam Overlay"
+
+msgid "Gradient Angle"
+msgstr "Gradient Angle"
+
+msgid "Border Radius"
+msgstr "Border Radius"
+
+msgid "Edit live"
+msgstr "Edit live"
+
+msgid "Clear annotations"
+msgstr "Clear annotations"
 
 msgid "Frames per second"
 msgstr "Frames per second"
+
+msgid "Recording resolution"
+msgstr "Recording resolution"
 
 msgid "Select / Move"
 msgstr "Select / Move"
@@ -219,45 +262,13 @@ msgstr "Use best available codec"
 msgid "Video codec"
 msgstr "Video codec"
 
-msgid "Edit live"
-msgstr "Edit live"
-
-msgid "Clear annotations"
-msgstr "Clear annotations"
-
-msgid "BigShot from %d %t"
-msgstr "BigShot from %d %t"
-
-msgid "Screenshot taken"
-msgstr "Screenshot taken"
-
-msgid "Screenshots"
-msgstr "Screenshots"
-
-msgid "Screenshot from %s"
-msgstr "Screenshot from %s"
-
-msgid "Screenshot copied"
-msgstr "Screenshot copied"
-
 msgid ""
-"Tesseract not found. Please install the ‘tesseract’ package for your "
-"distribution."
+"Tesseract not found. Install: sudo pacman -S tesseract tesseract-data-por"
 msgstr ""
-"Tesseract not found. Please install the ‘tesseract’ package for your "
-"distribution."
+"Tesseract not found. Install: sudo pacman -S tesseract tesseract-data-por"
 
-msgid "Extracting text..."
-msgstr "Extracting text..."
+msgid "OCR Languages"
+msgstr "OCR Languages"
 
-msgid "Text copied to clipboard! (%d chars)"
-msgstr "Text copied to clipboard! (%d chars)"
-
-msgid "No text found in selection"
-msgstr "No text found in selection"
-
-msgid "OCR failed: %s"
-msgstr "OCR failed: %s"
-
-msgid "Save Screenshot"
-msgstr "Save Screenshot"
+msgid "Auto (system)"
+msgstr "Auto (system)"

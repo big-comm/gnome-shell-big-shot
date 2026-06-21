@@ -15,6 +15,42 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: attranslate\n"
+#: NEEDS WORK
+msgid "BigShot from %d %t"
+msgstr "BigShot от %d %t"
+#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:493
+#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:506
+msgid "Screenshot taken"
+msgstr "Екранна снимка направена"
+#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:548
+msgid "Screenshots"
+msgstr "Екранни снимки"
+#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:558
+#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:777
+#, javascript-format
+msgid "Screenshot from %s"
+msgstr "Екранна снимка от %s"
+#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:740
+msgid "Screenshot copied"
+msgstr "Екранната снимка е копирана"
+#: NEEDS WORK
+msgid "Tesseract not found. Please install the ‘tesseract’ package for your distribution."
+msgstr "Tesseract не е намерен. Моля, инсталирайте пакета ‘tesseract’ за вашата дистрибуция."
+#: NEEDS WORK
+msgid "Extracting text..."
+msgstr "Извличане на текст..."
+#: NEEDS WORK
+msgid "Text copied to clipboard! (%d chars)"
+msgstr "Текстът е копиран в клипборда! (%d знака)"
+#: NEEDS WORK
+msgid "No text found in selection"
+msgstr "Няма намерен текст в избора"
+#: NEEDS WORK
+msgid "OCR failed: %s"
+msgstr "OCR неуспешен: %s"
+#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:789
+msgid "Save Screenshot"
+msgstr "Запази екранната снимка"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/drawing/overlay.js:74
 msgid "Drawing canvas"
 msgstr "Рисувателна платформа"
@@ -36,18 +72,6 @@ msgstr "Заглавие (↑/↓ = размер)…"
 #: NEEDS WORK
 msgid "Zoom caption"
 msgstr "Zoom надпис"
-#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partwebcam.js:88
-msgid "Webcam"
-msgstr "Уебкамера"
-#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partwebcam.js:113
-msgid "Webcam Overlay"
-msgstr "Наслагване на уебкамера"
-#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partgradient.js:92
-msgid "Gradient Angle"
-msgstr "Ъгъл на градиента"
-#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partgradient.js:105
-msgid "Border Radius"
-msgstr "Радиус на границата"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partaudio.js:96
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partaudio.js:153
 msgid "Desktop"
@@ -62,12 +86,30 @@ msgstr "Запис на звука от работния плот"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partaudio.js:163
 msgid "Record Microphone"
 msgstr "Запис на микрофон"
-#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partdownsize.js:18
-msgid "Recording resolution"
-msgstr "Разделителна способност на записа"
+#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partwebcam.js:88
+msgid "Webcam"
+msgstr "Уебкамера"
+#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partwebcam.js:113
+msgid "Webcam Overlay"
+msgstr "Наслагване на уебкамера"
+#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partgradient.js:92
+msgid "Gradient Angle"
+msgstr "Ъгъл на градиента"
+#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partgradient.js:105
+msgid "Border Radius"
+msgstr "Радиус на границата"
+#: NEEDS WORK
+msgid "Edit live"
+msgstr "Редактиране на живо"
+#: NEEDS WORK
+msgid "Clear annotations"
+msgstr "Изчисти анотации"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partframerate.js:18
 msgid "Frames per second"
 msgstr "Кадри в секунда"
+#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partdownsize.js:18
+msgid "Recording resolution"
+msgstr "Разделителна способност на записа"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:35
 msgid "Select / Move"
 msgstr "Избор / Преместване"
@@ -235,44 +277,11 @@ msgstr "Използвайте най-добрия наличен кодек"
 msgid "Video codec"
 msgstr "Видео кодек"
 #: NEEDS WORK
-msgid "Edit live"
-msgstr "Редактиране на живо"
+msgid "Tesseract not found. Install: sudo pacman -S tesseract tesseract-data-por"
+msgstr "Tesseract не е намерен. Инсталирайте: sudo pacman -S tesseract tesseract-data-por"
 #: NEEDS WORK
-msgid "Clear annotations"
-msgstr "Изчисти анотации"
+msgid "OCR Languages"
+msgstr "OCR езици"
 #: NEEDS WORK
-msgid "BigShot from %d %t"
-msgstr "BigShot от %d %t"
-#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:493
-#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:506
-msgid "Screenshot taken"
-msgstr "Екранна снимка направена"
-#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:548
-msgid "Screenshots"
-msgstr "Екранни снимки"
-#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:558
-#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:777
-#, javascript-format
-msgid "Screenshot from %s"
-msgstr "Екранна снимка от %s"
-#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:740
-msgid "Screenshot copied"
-msgstr "Екранната снимка е копирана"
-#: NEEDS WORK
-msgid "Tesseract not found. Please install the ‘tesseract’ package for your distribution."
-msgstr "Tesseract не е намерен. Моля, инсталирайте пакета ‘tesseract’ за вашата дистрибуция."
-#: NEEDS WORK
-msgid "Extracting text..."
-msgstr "Извличане на текст..."
-#: NEEDS WORK
-msgid "Text copied to clipboard! (%d chars)"
-msgstr "Текстът е копиран в клипборда! (%d знака)"
-#: NEEDS WORK
-msgid "No text found in selection"
-msgstr "Няма намерен текст в избора"
-#: NEEDS WORK
-msgid "OCR failed: %s"
-msgstr "OCR неуспешен: %s"
-#: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:789
-msgid "Save Screenshot"
-msgstr "Запази екранната снимка"
+msgid "Auto (system)"
+msgstr "Авто (система)"
