@@ -27,6 +27,15 @@ msgstr "Skýringartexti"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/drawing/overlay.js:510
 msgid "Confirm"
 msgstr "Staðfesta"
+#: NEEDS WORK
+msgid "Caption style — click to toggle highlight / neutral"
+msgstr "Lýsingarstíll — smelltu til að breyta áherslu / hlutlaust"
+#: NEEDS WORK
+msgid "Caption (↑/↓ = size)…"
+msgstr "Titill (↑/↓ = stærð)…"
+#: NEEDS WORK
+msgid "Zoom caption"
+msgstr "Zoom fyrirsagnir"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partwebcam.js:88
 msgid "Webcam"
 msgstr "Vefmyndavél"
@@ -93,6 +102,9 @@ msgstr "Ófærð"
 #: NEEDS WORK
 msgid "Invert Colors"
 msgstr "Invertera litningar"
+#: NEEDS WORK
+msgid "Magnify / Zoom"
+msgstr "Stækka / Zooma"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:45
 msgid "Number"
 msgstr "Tala"
@@ -222,15 +234,6 @@ msgstr "Notaðu besta tiltæka kóðara"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:1297
 msgid "Video codec"
 msgstr "Vöruvíddarkóðari"
-#: NEEDS WORK
-msgid "Tesseract not found. Install: sudo pacman -S tesseract tesseract-data-por"
-msgstr "Tesseract fannst ekki. Settu upp: sudo pacman -S tesseract tesseract-data-por"
-#: NEEDS WORK
-msgid "OCR Languages"
-msgstr "OCR tungumál"
-#: NEEDS WORK
-msgid "Auto (system)"
-msgstr "Sjálfvirkt (kerfi)"
 #: NEEDS WORK
 msgid "Edit live"
 msgstr "Breyta í rauntíma"

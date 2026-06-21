@@ -27,6 +27,15 @@ msgstr "주석 텍스트"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/drawing/overlay.js:510
 msgid "Confirm"
 msgstr "확인"
+#: NEEDS WORK
+msgid "Caption style — click to toggle highlight / neutral"
+msgstr "캡션 스타일 — 클릭하여 강조 표시 / 중립 전환"
+#: NEEDS WORK
+msgid "Caption (↑/↓ = size)…"
+msgstr "캡션 (↑/↓ = 크기)…"
+#: NEEDS WORK
+msgid "Zoom caption"
+msgstr "줌 자막"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partwebcam.js:88
 msgid "Webcam"
 msgstr "웹캠"
@@ -93,6 +102,9 @@ msgstr "블러"
 #: NEEDS WORK
 msgid "Invert Colors"
 msgstr "색상 반전"
+#: NEEDS WORK
+msgid "Magnify / Zoom"
+msgstr "확대 / 줌"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:45
 msgid "Number"
 msgstr "숫자"
@@ -222,15 +234,6 @@ msgstr "최고의 사용 가능한 코덱 사용"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:1297
 msgid "Video codec"
 msgstr "비디오 코덱"
-#: NEEDS WORK
-msgid "Tesseract not found. Install: sudo pacman -S tesseract tesseract-data-por"
-msgstr "Tesseract를 찾을 수 없습니다. 설치: sudo pacman -S tesseract tesseract-data-por"
-#: NEEDS WORK
-msgid "OCR Languages"
-msgstr "OCR 언어"
-#: NEEDS WORK
-msgid "Auto (system)"
-msgstr "자동 (시스템)"
 #: NEEDS WORK
 msgid "Edit live"
 msgstr "실시간 편집"

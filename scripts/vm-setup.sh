@@ -9,7 +9,7 @@
 #   curl -fsSL https://raw.githubusercontent.com/xathay/gnome-shell-big-shot/main/scripts/vm-setup.sh | bash
 #   # or clone the repo first and run: bash scripts/vm-setup.sh
 #
-# SPDX-License-Identifier: GPL-2.0-or-later
+# SPDX-License-Identifier: MIT
 
 set -euo pipefail
 

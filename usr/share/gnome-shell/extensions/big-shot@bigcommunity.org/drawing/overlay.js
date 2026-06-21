@@ -4,7 +4,7 @@
  * A transparent Clutter.Actor overlay on top of the screenshot preview.
  * Handles mouse/touch input for drawing annotations using Cairo.
  *
- * SPDX-License-Identifier: GPL-2.0-or-later
+ * SPDX-License-Identifier: MIT
  */
 
 import Clutter from 'gi://Clutter';
@@ -22,6 +22,7 @@ import {
     CensorAction,
     BlurAction,
     InvertAction,
+    ZoomCalloutAction,
     TextAction,
     NumberStampAction,
     NumberArrowAction,
@@ -39,6 +40,7 @@ const TOOL_TO_MODE = {
     'censor': DrawingMode.CENSOR,
     'blur': DrawingMode.BLUR,
     'invert': DrawingMode.INVERT,
+    'zoom': DrawingMode.ZOOM_CALLOUT,
     'number': DrawingMode.NUMBER,
     'number-arrow': DrawingMode.NUMBER_ARROW,
     'number-pointer': DrawingMode.NUMBER_POINTER,
@@ -79,6 +81,11 @@ export class DrawingOverlay {
         this._selectedAction = null;
         this._isDragging = false;
         this._dragStart = null;
+        // Resize-by-handle state (text actions)
+        this._isResizing = false;
+        this._resizeCenter = null;
+        this._resizeStartDist = 0;
+        this._resizeStartFont = 0;
 
         this._buildOverlay();
     }
@@ -125,6 +132,9 @@ export class DrawingOverlay {
         });
         this._actor.connect('motion-event', (_actor, event) => {
             return this._onMotion(event);
+        });
+        this._actor.connect('scroll-event', (_actor, event) => {
+            return this._onScroll(event);
         });
         this._actor.connect('key-press-event', (_actor, event) => {
             if (!this._actor?.visible) return Clutter.EVENT_PROPAGATE;
@@ -233,15 +243,22 @@ export class DrawingOverlay {
         }
 
         if (type === Clutter.EventType.MOTION) {
-            if (!this._isDrawing && !this._isDragging)
+            if (!this._isDrawing && !this._isDragging && !this._isResizing)
                 return Clutter.EVENT_PROPAGATE;
             return this._onMotion(event);
         }
 
         if (type === Clutter.EventType.BUTTON_RELEASE) {
-            if (!this._isDrawing && !this._isDragging)
+            if (!this._isDrawing && !this._isDragging && !this._isResizing)
                 return Clutter.EVENT_PROPAGATE;
             return this._onButtonRelease(event);
+        }
+
+        if (type === Clutter.EventType.SCROLL) {
+            if (!(this._selectedAction instanceof ZoomCalloutAction) &&
+                !(this._selectedAction instanceof TextAction))
+                return Clutter.EVENT_PROPAGATE;
+            return this._onScroll(event);
         }
 
         return Clutter.EVENT_PROPAGATE;
@@ -339,6 +356,18 @@ export class DrawingOverlay {
         }
 
         if (isSelectMode) {
+            // Grabbing a corner handle of the selected text starts a resize.
+            if (this._selectedAction instanceof TextAction &&
+                this._hitTextResizeHandle(this._selectedAction, ix, iy)) {
+                const [minX, minY, maxX, maxY] = this._selectedAction.getBounds();
+                this._resizeCenter = [(minX + maxX) / 2, (minY + maxY) / 2];
+                this._resizeStartDist = Math.max(1, Math.hypot(
+                    ix - this._resizeCenter[0], iy - this._resizeCenter[1]));
+                this._resizeStartFont = this._selectedAction.fontSize;
+                this._isResizing = true;
+                return Clutter.EVENT_STOP;
+            }
+
             // Try to find an action under the cursor (top-most first)
             let found = null;
             for (let i = this._actions.length - 1; i >= 0; i--) {
@@ -355,6 +384,16 @@ export class DrawingOverlay {
                 this._lastClickAction = null;
                 this._lastClickTime = 0;
                 this._editTextAction(found);
+                return Clutter.EVENT_STOP;
+            }
+
+            // Double-click on a zoom callout → add / edit its caption
+            if (found instanceof ZoomCalloutAction &&
+                this._lastClickAction === found &&
+                (now - this._lastClickTime) < 500000) { // 500ms
+                this._lastClickAction = null;
+                this._lastClickTime = 0;
+                this._showCaptionPopover(found);
                 return Clutter.EVENT_STOP;
             }
 
@@ -388,6 +427,15 @@ export class DrawingOverlay {
         const [x, y] = event.get_coords();
         const [ix, iy] = this._toImageCoords(x, y);
 
+        // Resize mode — scaling selected text via a corner handle
+        if (this._isResizing && this._selectedAction && this._resizeCenter) {
+            const d = Math.hypot(ix - this._resizeCenter[0], iy - this._resizeCenter[1]);
+            const f = this._resizeStartFont * (d / this._resizeStartDist);
+            this._selectedAction.fontSize = Math.max(8, Math.min(200, f));
+            this._actor.queue_repaint();
+            return Clutter.EVENT_STOP;
+        }
+
         // Drag mode — moving selected action
         if (this._isDragging && this._selectedAction && this._dragStart) {
             const dx = ix - this._dragStart[0];
@@ -414,6 +462,13 @@ export class DrawingOverlay {
     }
 
     _onButtonRelease(event) {
+        // End resize
+        if (this._isResizing) {
+            this._isResizing = false;
+            this._resizeCenter = null;
+            return Clutter.EVENT_STOP;
+        }
+
         // End drag
         if (this._isDragging) {
             this._isDragging = false;
@@ -479,6 +534,18 @@ export class DrawingOverlay {
                     start: this._startPoint, end: [ix, iy]
                 }, options);
                 break;
+            case DrawingMode.ZOOM_CALLOUT: {
+                const zdx = ix - this._startPoint[0];
+                const zdy = iy - this._startPoint[1];
+                if (Math.abs(zdx) > 8 && Math.abs(zdy) > 8) {
+                    const zoom = 2;
+                    const destPos = this._computeCalloutDest(this._startPoint, [ix, iy], zoom);
+                    action = createAction(DrawingMode.ZOOM_CALLOUT, {
+                        start: this._startPoint, end: [ix, iy], destPos, zoom,
+                    }, options);
+                }
+                break;
+            }
             case DrawingMode.TEXT:
                 // Show text entry popover instead of hardcoded text
                 this._showTextPopover(this._startPoint, options);
@@ -525,8 +592,9 @@ export class DrawingOverlay {
             this._actions.push(action);
             this._undoStack = []; // Clear redo stack on new action
 
-            // Generate real preview for effect actions (censor/blur)
-            if (action instanceof CensorAction || action instanceof BlurAction || action instanceof InvertAction) {
+            // Generate real preview for effect actions (censor/blur/invert/zoom)
+            if (action instanceof CensorAction || action instanceof BlurAction ||
+                action instanceof InvertAction || action instanceof ZoomCalloutAction) {
                 if (this._liveVideo && this._captureStageForPreview)
                     this.clearPreviewCache();
                 this._generateEffectPreview(action).catch(e =>
@@ -535,6 +603,10 @@ export class DrawingOverlay {
             }
         }
 
+        // Newly created zoom callout → prompt for an optional caption.
+        if (action instanceof ZoomCalloutAction)
+            this._showCaptionPopover(action);
+
         this._isDrawing = false;
         this._currentStroke = null;
         this._startPoint = null;
@@ -542,6 +614,59 @@ export class DrawingOverlay {
         this._actor.queue_repaint();
 
         return Clutter.EVENT_STOP;
+    }
+
+    _onScroll(event) {
+        // Scroll over a selected zoom callout adjusts its magnification;
+        // over a selected text it adjusts the font size.
+        const sel = this._selectedAction;
+        if (!(sel instanceof ZoomCalloutAction) && !(sel instanceof TextAction))
+            return Clutter.EVENT_PROPAGATE;
+
+        const dir = event.get_scroll_direction();
+        let delta = 0;
+        if (dir === Clutter.ScrollDirection.UP) {
+            delta = 1;
+        } else if (dir === Clutter.ScrollDirection.DOWN) {
+            delta = -1;
+        } else if (dir === Clutter.ScrollDirection.SMOOTH) {
+            const [, dy] = event.get_scroll_delta();
+            if (dy < 0) delta = 1;
+            else if (dy > 0) delta = -1;
+            else return Clutter.EVENT_PROPAGATE;
+        } else {
+            return Clutter.EVENT_PROPAGATE;
+        }
+
+        if (sel instanceof ZoomCalloutAction) {
+            sel.setZoom(sel.zoom + delta * 0.25);
+            this._clampActionToCanvas(sel);
+        } else { // TextAction
+            sel.fontSize = Math.max(8, Math.min(200, sel.fontSize + delta * 2));
+        }
+        this._actor.queue_repaint();
+        return Clutter.EVENT_STOP;
+    }
+
+    /** Keep a zoom callout's inset (and its caption) inside the canvas. */
+    _clampActionToCanvas(action) {
+        if (!(action instanceof ZoomCalloutAction) || !this._actor) return;
+        const W = this._actor.width;
+        const H = this._actor.height;
+        // Reserve room for the caption band below the inset so it isn't clipped.
+        const capH = typeof action.captionBlockHeight === 'function'
+            ? action.captionBlockHeight() : 0;
+        const x = Math.min(Math.max(0, action.destPos[0]), Math.max(0, W - action.destW));
+        const y = Math.min(Math.max(0, action.destPos[1]), Math.max(0, H - action.destH - capH));
+        action.destPos = [x, y];
+    }
+
+    /** True if (ix,iy) is over one of the selection's corner handles. */
+    _hitTextResizeHandle(action, ix, iy, tol = 12) {
+        const [minX, minY, maxX, maxY] = action.getBounds();
+        const corners = [[minX, minY], [maxX, minY], [minX, maxY], [maxX, maxY]];
+        return corners.some(([cx, cy]) =>
+            Math.abs(ix - cx) <= tol && Math.abs(iy - cy) <= tol);
     }
 
     _onKeyPress(event) {
@@ -624,7 +749,7 @@ export class DrawingOverlay {
     // TEXT POPOVER
     // =========================================================================
 
-    _showTextPopover(position, options, existingAction = null) {
+    _showTextPopover(position, options, existingAction = null, custom = null) {
         this._closeTextPopover();
 
         const [wx, wy] = this._useTopChrome
@@ -639,15 +764,24 @@ export class DrawingOverlay {
         });
 
         this._textEntry = new St.Entry({
-            hint_text: _('Text…'),
+            hint_text: custom?.hint ?? _('Text…'),
             style: 'width: 200px; min-height: 28px; font-size: 14px;',
             can_focus: true,
-            accessible_name: _('Annotation text'),
+            accessible_name: custom?.accessibleName ?? _('Annotation text'),
         });
 
-        // Pre-fill with existing text when editing
-        if (existingAction) {
+        // Pre-fill: custom flow supplies its own initial text; otherwise editing.
+        if (custom) {
+            if (custom.initialText) this._textEntry.set_text(custom.initialText);
+        } else if (existingAction) {
             this._textEntry.set_text(existingAction.text);
+        }
+
+        // Live preview for custom flows (e.g. caption) as the user types.
+        if (custom?.onChange) {
+            this._textEntry.clutter_text.connect('text-changed', () => {
+                custom.onChange(this._textEntry.get_text());
+            });
         }
 
         const confirmBtn = new St.Button({
@@ -659,7 +793,9 @@ export class DrawingOverlay {
 
         const confirmAction = () => {
             const text = this._textEntry.get_text().trim();
-            if (existingAction) {
+            if (custom) {
+                custom.onConfirm(text);
+            } else if (existingAction) {
             // Editing existing text
                 if (text) {
                     existingAction.text = text;
@@ -689,16 +825,22 @@ export class DrawingOverlay {
         confirmBtn.connect('clicked', confirmAction);
         this._textEntry.clutter_text.connect('activate', confirmAction);
 
-        // Escape closes without adding
+        // Escape closes without adding; custom flows may consume other keys
+        // (e.g. ↑/↓ to change caption size).
         this._textEntry.clutter_text.connect('key-press-event', (_actor, event) => {
             if (event.get_key_symbol() === Clutter.KEY_Escape) {
+                custom?.onCancel?.();
                 this._closeTextPopover();
                 return Clutter.EVENT_STOP;
             }
+            if (custom?.onKey && custom.onKey(event))
+                return Clutter.EVENT_STOP;
             return Clutter.EVENT_PROPAGATE;
         });
 
         this._textPopover.add_child(this._textEntry);
+        if (custom?.extraChild)
+            this._textPopover.add_child(custom.extraChild);
         this._textPopover.add_child(confirmBtn);
 
         this._addFloatingChild(this._textPopover);
@@ -712,8 +854,8 @@ export class DrawingOverlay {
             this._focusIdleId = 0;
             if (this._textEntry) {
                 this._textEntry.grab_key_focus();
-                // Select all text when editing existing action
-                if (existingAction) {
+                // Select all text when editing (existing action or pre-filled custom)
+                if (existingAction || custom?.initialText) {
                     const clutterText = this._textEntry.clutter_text;
                     clutterText.set_selection(0, clutterText.get_text().length);
                 }
@@ -725,6 +867,71 @@ export class DrawingOverlay {
     _editTextAction(action) {
         this._selectedAction = null;
         this._showTextPopover(action.position, action.options, action);
+    }
+
+    /** Prompt for / edit a zoom callout's caption (empty = no caption). */
+    _showCaptionPopover(action) {
+        this._selectedAction = null;
+        const anchor = [action.destPos[0], action.destPos[1] + action.destH];
+        const origCaption = action.caption;
+        const origSizeIndex = action.captionSizeIndex;
+        const origStyle = action.captionStyle;
+
+        // Button to toggle the caption style (neutral strip ↔ orange highlight
+        // box). Its background reflects the active style so toggling is obvious.
+        const styleLabel = new St.Label({ text: '★',
+            style: 'color: #ffffff; font-weight: bold; padding: 0 6px;',
+            y_align: Clutter.ActorAlign.CENTER });
+        const styleBtn = new St.Button({
+            child: styleLabel,
+            can_focus: false,
+            accessible_name: _('Caption style — click to toggle highlight / neutral'),
+        });
+        const refreshStyleBtn = () => {
+            styleBtn.set_style(action.captionStyle === 'highlight'
+                ? 'background: #dd4814; border-radius: 6px; border: 1px solid rgba(255,255,255,0.4); min-height: 28px;'
+                : 'background: rgba(255,255,255,0.12); border-radius: 6px; border: 1px solid rgba(255,255,255,0.2); min-height: 28px;');
+        };
+        refreshStyleBtn();
+        styleBtn.connect('clicked', () => {
+            action.toggleCaptionStyle();
+            refreshStyleBtn();
+            this._actor.queue_repaint();
+            this._textEntry?.grab_key_focus();
+        });
+
+        this._showTextPopover(anchor, action.options, null, {
+            hint: _('Caption (↑/↓ = size)…'),
+            accessibleName: _('Zoom caption'),
+            initialText: action.caption || '',
+            extraChild: styleBtn,
+            // Live preview while typing; nudge the inset up if the caption
+            // would run past the bottom of the canvas.
+            onChange: (text) => {
+                action.setCaption(text);
+                this._clampActionToCanvas(action);
+                this._actor.queue_repaint();
+            },
+            // Up/Down cycle the caption size (P/M/G).
+            onKey: (event) => {
+                const sym = event.get_key_symbol();
+                if (sym === Clutter.KEY_Up || sym === Clutter.KEY_Down) {
+                    action.cycleCaptionSize(sym === Clutter.KEY_Up ? 1 : -1);
+                    this._clampActionToCanvas(action);
+                    this._actor.queue_repaint();
+                    return true;
+                }
+                return false;
+            },
+            onConfirm: (text) => action.setCaption(text),
+            // Restore on cancel so a discarded edit leaves nothing behind.
+            onCancel: () => {
+                action.caption = origCaption;
+                action.captionSizeIndex = origSizeIndex;
+                action.captionStyle = origStyle;
+                this._actor.queue_repaint();
+            },
+        });
     }
 
     _closeTextPopover() {
@@ -849,6 +1056,23 @@ export class DrawingOverlay {
                 cr.save();
                 cr.newPath();
                 tempAction.draw(cr, toWidget, scale);
+                cr.restore();
+            }
+
+            // Zoom callout: just show the source selection while dragging;
+            // the magnified inset appears on release once pixels are captured.
+            if (mode === DrawingMode.ZOOM_CALLOUT) {
+                const [wx1, wy1] = toWidget(...this._startPoint);
+                const [wx2, wy2] = toWidget(...end);
+                cr.save();
+                cr.setSourceRGBA(0.384, 0.627, 0.917, 0.95); // #62a0ea
+                cr.setLineWidth(1.5);
+                cr.setDash([5, 4], 0);
+                cr.rectangle(
+                    Math.min(wx1, wx2), Math.min(wy1, wy2),
+                    Math.abs(wx2 - wx1), Math.abs(wy2 - wy1)
+                );
+                cr.stroke();
                 cr.restore();
             }
         }
@@ -977,6 +1201,40 @@ export class DrawingOverlay {
 
         action.generatePreview(this._cachedPixbuf, this._cachedBufScale);
         this._actor.queue_repaint();
+    }
+
+    /**
+     * Pick where the magnified inset lands: alongside the source region,
+     * in whichever direction fits the canvas (right → left → below → above),
+     * falling back to a clamped position when nothing fits cleanly.
+     */
+    _computeCalloutDest(srcStart, srcEnd, zoom) {
+        const sx0 = Math.min(srcStart[0], srcEnd[0]);
+        const sy0 = Math.min(srcStart[1], srcEnd[1]);
+        const sx1 = Math.max(srcStart[0], srcEnd[0]);
+        const sy1 = Math.max(srcStart[1], srcEnd[1]);
+        const dw = (sx1 - sx0) * zoom;
+        const dh = (sy1 - sy0) * zoom;
+
+        const W = this._actor?.width || (sx1 + dw);
+        const H = this._actor?.height || (sy1 + dh);
+        const margin = 24;
+
+        const candidates = [
+            [sx1 + margin, sy0],            // right
+            [sx0 - margin - dw, sy0],       // left
+            [sx0, sy1 + margin],            // below
+            [sx0, sy0 - margin - dh],       // above
+        ];
+        for (const [cx, cy] of candidates) {
+            if (cx >= 0 && cy >= 0 && cx + dw <= W && cy + dh <= H)
+                return [cx, cy];
+        }
+
+        // Nothing fits — clamp the inset inside the canvas.
+        const cx = Math.min(Math.max(0, sx1 + margin), Math.max(0, W - dw));
+        const cy = Math.min(Math.max(0, sy0), Math.max(0, H - dh));
+        return [cx, cy];
     }
 
     // =========================================================================

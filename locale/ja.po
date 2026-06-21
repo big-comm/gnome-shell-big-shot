@@ -27,6 +27,15 @@ msgstr "注釈テキスト"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/drawing/overlay.js:510
 msgid "Confirm"
 msgstr "確認"
+#: NEEDS WORK
+msgid "Caption style — click to toggle highlight / neutral"
+msgstr "キャプションスタイル — クリックしてハイライト/ニュートラルを切り替え"
+#: NEEDS WORK
+msgid "Caption (↑/↓ = size)…"
+msgstr "キャプション (↑/↓ = サイズ)…"
+#: NEEDS WORK
+msgid "Zoom caption"
+msgstr "ズームキャプション"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partwebcam.js:88
 msgid "Webcam"
 msgstr "ウェブカメラ"
@@ -93,6 +102,9 @@ msgstr "ぼかし"
 #: NEEDS WORK
 msgid "Invert Colors"
 msgstr "色を反転"
+#: NEEDS WORK
+msgid "Magnify / Zoom"
+msgstr "拡大 / ズーム"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:45
 msgid "Number"
 msgstr "数字"
@@ -222,15 +234,6 @@ msgstr "最適なコーデックを使用する"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:1297
 msgid "Video codec"
 msgstr "ビデオコーデック"
-#: NEEDS WORK
-msgid "Tesseract not found. Install: sudo pacman -S tesseract tesseract-data-por"
-msgstr "Tesseractが見つかりません。インストール: sudo pacman -S tesseract tesseract-data-por"
-#: NEEDS WORK
-msgid "OCR Languages"
-msgstr "OCR言語"
-#: NEEDS WORK
-msgid "Auto (system)"
-msgstr "オート（システム）"
 #: NEEDS WORK
 msgid "Edit live"
 msgstr "ライブ編集"

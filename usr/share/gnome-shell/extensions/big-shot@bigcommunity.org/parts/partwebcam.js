@@ -6,7 +6,7 @@
  * All mask effects (circle, oval, soft, vignette, ornate, checker) are
  * implemented as pixel-level alpha/colour operations — no external SVGs.
  *
- * SPDX-License-Identifier: GPL-2.0-or-later
+ * SPDX-License-Identifier: MIT
  */
 
 import Clutter from 'gi://Clutter';

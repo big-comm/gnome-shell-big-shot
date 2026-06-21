@@ -27,6 +27,15 @@ msgstr "Texto da anotação"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/drawing/overlay.js:510
 msgid "Confirm"
 msgstr "Confirmar"
+#: NEEDS WORK
+msgid "Caption style — click to toggle highlight / neutral"
+msgstr "Estilo da legenda — clique para alternar entre destaque / neutro"
+#: NEEDS WORK
+msgid "Caption (↑/↓ = size)…"
+msgstr "Legenda (↑/↓ = tamanho)…"
+#: NEEDS WORK
+msgid "Zoom caption"
+msgstr "Legenda do Zoom"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partwebcam.js:88
 msgid "Webcam"
 msgstr "Câmera Web"
@@ -93,6 +102,9 @@ msgstr "Desfoque"
 #: NEEDS WORK
 msgid "Invert Colors"
 msgstr "Inverter Cores"
+#: NEEDS WORK
+msgid "Magnify / Zoom"
+msgstr "Ampliar / Zoom"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:45
 msgid "Number"
 msgstr "Número"
@@ -222,15 +234,6 @@ msgstr "Use o melhor codec disponível"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:1297
 msgid "Video codec"
 msgstr "Codec de vídeo"
-#: NEEDS WORK
-msgid "Tesseract not found. Install: sudo pacman -S tesseract tesseract-data-por"
-msgstr "Tesseract não encontrado. Instale: sudo pacman -S tesseract tesseract-data-por"
-#: NEEDS WORK
-msgid "OCR Languages"
-msgstr "Idiomas OCR"
-#: NEEDS WORK
-msgid "Auto (system)"
-msgstr "Automático (sistema)"
 #: NEEDS WORK
 msgid "Edit live"
 msgstr "Editar ao vivo"

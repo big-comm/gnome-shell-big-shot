@@ -27,6 +27,15 @@ msgstr "Megjegyzés szövege"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/drawing/overlay.js:510
 msgid "Confirm"
 msgstr "Megerősít"
+#: NEEDS WORK
+msgid "Caption style — click to toggle highlight / neutral"
+msgstr "Felirat stílus — kattintson a kiemelés / semleges váltásához"
+#: NEEDS WORK
+msgid "Caption (↑/↓ = size)…"
+msgstr "Felirat (↑/↓ = méret)…"
+#: NEEDS WORK
+msgid "Zoom caption"
+msgstr "Zoom felirat"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partwebcam.js:88
 msgid "Webcam"
 msgstr "Webkamera"
@@ -93,6 +102,9 @@ msgstr "Elmosódás"
 #: NEEDS WORK
 msgid "Invert Colors"
 msgstr "Színek megfordítása"
+#: NEEDS WORK
+msgid "Magnify / Zoom"
+msgstr "Nagyítás / Kicsinyítés"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:45
 msgid "Number"
 msgstr "Szám"
@@ -222,15 +234,6 @@ msgstr "Használja a legjobb elérhető kodeket"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:1297
 msgid "Video codec"
 msgstr "Videó kodek"
-#: NEEDS WORK
-msgid "Tesseract not found. Install: sudo pacman -S tesseract tesseract-data-por"
-msgstr "A Tesseract nem található. Telepítés: sudo pacman -S tesseract tesseract-data-por"
-#: NEEDS WORK
-msgid "OCR Languages"
-msgstr "OCR nyelvek"
-#: NEEDS WORK
-msgid "Auto (system)"
-msgstr "Automatikus (rendszer)"
 #: NEEDS WORK
 msgid "Edit live"
 msgstr "Élő szerkesztés"

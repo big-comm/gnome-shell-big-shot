@@ -1,7 +1,7 @@
 /**
  * Big Shot — Enhanced Screenshot & Screencast for GNOME Shell
  *
- * SPDX-License-Identifier: GPL-2.0-or-later
+ * SPDX-License-Identifier: MIT
  */
 
 export const APP_VERSION = '26.8.6';
@@ -349,6 +349,48 @@ function checkPipeline(config) {
 }
 
 /**
+ * Some annotations (zoom callouts) can be placed outside the captured area.
+ * Compute how much the export canvas must grow so they are not clipped.
+ *
+ * Coordinates: annotations live in monitor-logical coords; the captured image
+ * occupies the rect [offsetX, offsetY, offsetX+imgW/bufScale, offsetY+imgH/bufScale].
+ * Returns pixel-space padding to add around the base image plus the new size.
+ * `expanded: false` means nothing overflows — keep the original 1:1 behavior.
+ */
+function _computeCanvasExpansion(actions, imgW, imgH, offsetX, offsetY, bufScale) {
+    const none = { expanded: false };
+    if (!actions || actions.length === 0) return none;
+
+    const imgMaxX = offsetX + imgW / bufScale;
+    const imgMaxY = offsetY + imgH / bufScale;
+
+    let minX = offsetX, minY = offsetY, maxX = imgMaxX, maxY = imgMaxY;
+    let overflow = false;
+    for (const a of actions) {
+        if (!a?.expandsCanvas || typeof a.getBounds !== 'function') continue;
+        const [bMinX, bMinY, bMaxX, bMaxY] = a.getBounds();
+        if (bMinX < minX) { minX = bMinX; overflow = true; }
+        if (bMinY < minY) { minY = bMinY; overflow = true; }
+        if (bMaxX > maxX) { maxX = bMaxX; overflow = true; }
+        if (bMaxY > maxY) { maxY = bMaxY; overflow = true; }
+    }
+    if (!overflow) return none;
+
+    const padLeftPx = Math.ceil((offsetX - minX) * bufScale);
+    const padTopPx = Math.ceil((offsetY - minY) * bufScale);
+    const padRightPx = Math.ceil((maxX - imgMaxX) * bufScale);
+    const padBottomPx = Math.ceil((maxY - imgMaxY) * bufScale);
+
+    return {
+        expanded: true,
+        padLeftPx,
+        padTopPx,
+        newW: imgW + padLeftPx + padRightPx,
+        newH: imgH + padTopPx + padBottomPx,
+    };
+}
+
+/**
  * Recording output folder under XDG_VIDEOS_DIR (always literal, never
  * translated, so the path is the same in every locale).
  */
@@ -553,8 +595,6 @@ export default class BigShotExtension extends Extension {
 
         // Detect Shell version once for version-conditional code paths.
         this._shellVersion = this._detectShellVersion();
-        console.log(`[Big Shot] Enabling on GNOME Shell ${this._shellVersion ?? 'unknown'}`);
-
         // Initialize translations (must be before _createParts so _() works)
         this.initTranslations();
 
@@ -863,15 +903,34 @@ export default class BigShotExtension extends Extension {
                 // 2. Save (possibly modified) pixbuf as PNG
                 workPixbuf.savev(tmpBase, 'png', [], []);
 
-                // 3. Load as Cairo ImageSurface
-                const surface = cairo.ImageSurface.createFromPNG(tmpBase);
-                const cr = new cairo.Context(surface);
+                // 3. Build the Cairo surface. If an annotation (e.g. a zoom inset)
+                //    sits outside the captured area, grow the canvas and fill the
+                //    new region with a neutral border so nothing gets clipped.
+                const exp = _computeCanvasExpansion(actions, imgW, imgH, offsetX, offsetY, bufScale);
+                let surface, cr, drawToWidget;
+                if (exp.expanded) {
+                    const baseSurface = cairo.ImageSurface.createFromPNG(tmpBase);
+                    surface = new cairo.ImageSurface(cairo.Format.ARGB32, exp.newW, exp.newH);
+                    cr = new cairo.Context(surface);
+                    cr.setSourceRGBA(1, 1, 1, 1); // white border fill
+                    cr.paint();
+                    cr.setSourceSurface(baseSurface, exp.padLeftPx, exp.padTopPx);
+                    cr.paint();
+                    drawToWidget = (x, y) => [
+                        (x - offsetX) * bufScale + exp.padLeftPx,
+                        (y - offsetY) * bufScale + exp.padTopPx,
+                    ];
+                } else {
+                    surface = cairo.ImageSurface.createFromPNG(tmpBase);
+                    cr = new cairo.Context(surface);
+                    drawToWidget = toWidget;
+                }
 
                 // 4. Draw all normal annotations (pen, arrow, text, etc.)
                 for (const action of actions) {
                     if (typeof action.drawReal !== 'function') {
                         cr.save();
-                        action.draw(cr, toWidget, drawScale);
+                        action.draw(cr, drawToWidget, drawScale);
                         cr.restore();
                     }
                 }
@@ -1089,13 +1148,35 @@ export default class BigShotExtension extends Extension {
             }
 
             workPixbuf.savev(tmpBase, 'png', [], []);
-            const surface = cairo.ImageSurface.createFromPNG(tmpBase);
-            const cr = new cairo.Context(surface);
+
+            // Grow the canvas with a neutral border if an annotation (e.g. a zoom
+            // inset) sits outside the captured area, so it is not clipped.
+            const imgW = pixbuf.get_width();
+            const imgH = pixbuf.get_height();
+            const exp = _computeCanvasExpansion(actions, imgW, imgH, offsetX, offsetY, bufScale);
+            let surface, cr, drawToWidget;
+            if (exp.expanded) {
+                const baseSurface = cairo.ImageSurface.createFromPNG(tmpBase);
+                surface = new cairo.ImageSurface(cairo.Format.ARGB32, exp.newW, exp.newH);
+                cr = new cairo.Context(surface);
+                cr.setSourceRGBA(1, 1, 1, 1); // white border fill
+                cr.paint();
+                cr.setSourceSurface(baseSurface, exp.padLeftPx, exp.padTopPx);
+                cr.paint();
+                drawToWidget = (x, y) => [
+                    (x - offsetX) * bufScale + exp.padLeftPx,
+                    (y - offsetY) * bufScale + exp.padTopPx,
+                ];
+            } else {
+                surface = cairo.ImageSurface.createFromPNG(tmpBase);
+                cr = new cairo.Context(surface);
+                drawToWidget = toWidget;
+            }
 
             for (const action of actions) {
                 if (typeof action.drawReal !== 'function') {
                     cr.save();
-                    action.draw(cr, toWidget, drawScale);
+                    action.draw(cr, drawToWidget, drawScale);
                     cr.restore();
                 }
             }
@@ -2346,7 +2427,6 @@ export default class BigShotExtension extends Extension {
      * Toggle pause/resume — called by the indicator panel button.
      */
     async togglePauseRecording() {
-        console.log(`[Big Shot] Toggle pause/resume state=${this._recordingState}`);
         if (this._recordingState === 'recording') {
             if (await this.pauseRecording())
                 this._videoAnnotation?.enterPausedEditFromPause();

@@ -27,6 +27,15 @@ msgstr "Текст на анотацията"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/drawing/overlay.js:510
 msgid "Confirm"
 msgstr "Потвърдете"
+#: NEEDS WORK
+msgid "Caption style — click to toggle highlight / neutral"
+msgstr "Стил на надписа — кликнете, за да превключите между акцент и неутрален"
+#: NEEDS WORK
+msgid "Caption (↑/↓ = size)…"
+msgstr "Заглавие (↑/↓ = размер)…"
+#: NEEDS WORK
+msgid "Zoom caption"
+msgstr "Zoom надпис"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partwebcam.js:88
 msgid "Webcam"
 msgstr "Уебкамера"
@@ -93,6 +102,9 @@ msgstr "Замъгляване"
 #: NEEDS WORK
 msgid "Invert Colors"
 msgstr "Обърни цветовете"
+#: NEEDS WORK
+msgid "Magnify / Zoom"
+msgstr "Увеличаване / Мащабиране"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:45
 msgid "Number"
 msgstr "Номер"
@@ -222,15 +234,6 @@ msgstr "Използвайте най-добрия наличен кодек"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:1297
 msgid "Video codec"
 msgstr "Видео кодек"
-#: NEEDS WORK
-msgid "Tesseract not found. Install: sudo pacman -S tesseract tesseract-data-por"
-msgstr "Tesseract не е намерен. Инсталирайте: sudo pacman -S tesseract tesseract-data-por"
-#: NEEDS WORK
-msgid "OCR Languages"
-msgstr "OCR езици"
-#: NEEDS WORK
-msgid "Auto (system)"
-msgstr "Авто (система)"
 #: NEEDS WORK
 msgid "Edit live"
 msgstr "Редактиране на живо"

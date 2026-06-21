@@ -4,7 +4,7 @@
  * All annotation tools that can be placed on a screenshot.
  * Each action knows how to draw itself via Cairo and report its bounds.
  *
- * SPDX-License-Identifier: GPL-2.0-or-later
+ * SPDX-License-Identifier: MIT
  */
 
 import Pango from 'gi://Pango';
@@ -33,6 +33,7 @@ export const DrawingMode = Object.freeze({
     NUMBER_POINTER: 'NUMBER_POINTER',
     ERASER:         'ERASER',
     INVERT:         'INVERT',
+    ZOOM_CALLOUT:   'ZOOM_CALLOUT',
 });
 
 // =============================================================================
@@ -1439,6 +1440,296 @@ export class NumberPointerAction extends DrawingAction {
     }
 }
 
+// =============================================================================
+// ZOOM CALLOUT — crop a region, magnify it as an inset, link it with an arrow
+// Preview & export both go through draw(): the cropped pixels are captured once
+// into a Cairo surface by generatePreview(), then painted scaled into the inset.
+// =============================================================================
+
+export class ZoomCalloutAction extends DrawingAction {
+    constructor(srcStart, srcEnd, destPos, zoom, options, caption = '') {
+        super();
+        this.options = options;
+
+        // Source rectangle, normalized to top-left / bottom-right (image coords)
+        this.srcStart = [Math.min(srcStart[0], srcEnd[0]), Math.min(srcStart[1], srcEnd[1])];
+        this.srcEnd = [Math.max(srcStart[0], srcEnd[0]), Math.max(srcStart[1], srcEnd[1])];
+
+        this.zoom = ZoomCalloutAction.clampZoom(zoom || 2);
+        this.destPos = destPos; // top-left of the magnified inset (image coords)
+
+        // Optional caption rendered below the inset (empty = none)
+        this.caption = (caption || '').trim();
+        // Caption size: index into CAPTION_SCALES (0=small, 1=medium, 2=large)
+        this.captionSizeIndex = 1;
+        // Caption style: 'dark' (neutral strip) or 'highlight' (orange box)
+        this.captionStyle = 'dark';
+
+        // The inset (and its caption) may sit outside the captured area, so the
+        // export pipeline should grow the canvas to keep it from being clipped.
+        this.expandsCanvas = true;
+
+        // Captured source pixels (filled by generatePreview); reused on every repaint
+        this._sourceSurface = null;
+        this._srcPixW = 0;
+        this._srcPixH = 0;
+    }
+
+    static clampZoom(z) {
+        return Math.max(1.5, Math.min(6, z));
+    }
+
+    get srcW() { return this.srcEnd[0] - this.srcStart[0]; }
+    get srcH() { return this.srcEnd[1] - this.srcStart[1]; }
+    get destW() { return this.srcW * this.zoom; }
+    get destH() { return this.srcH * this.zoom; }
+
+    setZoom(z) {
+        this.zoom = ZoomCalloutAction.clampZoom(z);
+    }
+
+    setCaption(text) {
+        this.caption = (text || '').trim();
+    }
+
+    // Caption font size as a fraction of the inset HEIGHT: P / M / G.
+    // Proportional so the caption scales with the magnified crop instead of
+    // being a fixed size (small crop → small caption, bigger crop → bigger).
+    static get CAPTION_SCALES() { return [0.10, 0.15, 0.23]; }
+
+    cycleCaptionSize(dir) {
+        const max = ZoomCalloutAction.CAPTION_SCALES.length - 1;
+        this.captionSizeIndex = Math.max(0, Math.min(max, this.captionSizeIndex + dir));
+    }
+
+    toggleCaptionStyle() {
+        this.captionStyle = this.captionStyle === 'highlight' ? 'dark' : 'highlight';
+    }
+
+    /** Caption font size in image space (proportional to inset height, clamped). */
+    captionFontSize() {
+        const m = ZoomCalloutAction.CAPTION_SCALES[this.captionSizeIndex] ?? 0.15;
+        return Math.max(11, Math.min(60, this.destH * m));
+    }
+
+    /** Height (image space) the caption band occupies below the inset, 0 if none. */
+    captionBlockHeight() {
+        if (!this.caption) return 0;
+        return this.captionFontSize() * 1.3 + 12; // text + vertical padding + gap
+    }
+
+    /**
+     * Capture the source region pixels into a standalone Cairo surface.
+     * Goes through a tiny temp PNG — the same pixbuf→surface bridge the
+     * export pipeline already relies on, so it works in every context.
+     */
+    generatePreview(pixbuf, bufScale) {
+        const imgW = pixbuf.get_width();
+        const imgH = pixbuf.get_height();
+
+        const sx = Math.round(Math.max(0, Math.min(this.srcStart[0] * bufScale, imgW - 1)));
+        const sy = Math.round(Math.max(0, Math.min(this.srcStart[1] * bufScale, imgH - 1)));
+        const sw = Math.round(Math.min(this.srcW * bufScale, imgW - sx));
+        const sh = Math.round(Math.min(this.srcH * bufScale, imgH - sy));
+        if (sw < 1 || sh < 1) return;
+
+        const tmpPath = GLib.build_filenamev([
+            GLib.get_tmp_dir(),
+            `big-shot-zoom-${GLib.get_monotonic_time()}.png`,
+        ]);
+
+        try {
+            const sub = pixbuf.new_subpixbuf(sx, sy, sw, sh).copy();
+            sub.savev(tmpPath, 'png', [], []);
+            this._sourceSurface = cairo.ImageSurface.createFromPNG(tmpPath);
+            this._srcPixW = sw;
+            this._srcPixH = sh;
+        } catch (err) {
+            console.error(`[Big Shot] Zoom callout capture failed: ${err.message}`);
+            this._sourceSurface = null;
+        } finally {
+            GLib.unlink(tmpPath);
+        }
+    }
+
+    draw(cr, toWidget, scale) {
+        const [dx0, dy0] = toWidget(this.destPos[0], this.destPos[1]);
+        const [dx1, dy1] = toWidget(this.destPos[0] + this.destW, this.destPos[1] + this.destH);
+        const dw = dx1 - dx0;
+        const dh = dy1 - dy0;
+
+        const [sx0, sy0] = toWidget(this.srcStart[0], this.srcStart[1]);
+        const [sx1, sy1] = toWidget(this.srcEnd[0], this.srcEnd[1]);
+
+        // 1. Connector from the source rectangle to the inset
+        this._drawConnector(cr, sx0, sy0, sx1, sy1, dx0, dy0, dw, dh, scale);
+
+        // 2. Thin outline around the source region (what's being magnified)
+        cr.save();
+        cr.setSourceRGBA(...this.options.primaryColor);
+        cr.setLineWidth(Math.max(1, this.options.size * 0.6 * scale));
+        cr.rectangle(sx0, sy0, sx1 - sx0, sy1 - sy0);
+        cr.stroke();
+        cr.restore();
+
+        // 3. The magnified image
+        if (this._sourceSurface && dw > 1 && dh > 1) {
+            cr.save();
+            cr.rectangle(dx0, dy0, dw, dh);
+            cr.clip();
+            cr.translate(dx0, dy0);
+            cr.scale(dw / this._srcPixW, dh / this._srcPixH);
+            cr.setSourceSurface(this._sourceSurface, 0, 0);
+            // Highest-quality resampling (enum 2 = BEST) so magnified text
+            // stays as crisp as the source pixels allow.
+            const pattern = cr.getSource();
+            if (pattern.setFilter)
+                pattern.setFilter(2);
+            cr.paint();
+            cr.restore();
+        } else if (dw > 1 && dh > 1) {
+            // Surface not ready yet — neutral placeholder
+            cr.save();
+            cr.setSourceRGBA(0.15, 0.15, 0.15, 0.85);
+            cr.rectangle(dx0, dy0, dw, dh);
+            cr.fill();
+            cr.restore();
+        }
+
+        // 4. Inset frame (shadow + white border) on top of the image
+        const borderW = Math.max(2, this.options.size * 0.9 * scale);
+        cr.save();
+        const shadowOff = Math.max(1, Math.round(scale));
+        cr.setSourceRGBA(0, 0, 0, 0.35);
+        cr.setLineWidth(borderW);
+        cr.rectangle(dx0 + shadowOff, dy0 + shadowOff, dw, dh);
+        cr.stroke();
+        cr.setSourceRGBA(1, 1, 1, 1);
+        cr.setLineWidth(borderW);
+        cr.rectangle(dx0, dy0, dw, dh);
+        cr.stroke();
+        cr.restore();
+
+        // 5. Optional caption strip below the inset
+        if (this.caption)
+            this._drawCaption(cr, dx0, dy0, dw, dh, scale);
+    }
+
+    /** Caption band centered just below the inset (figure-caption style). */
+    _drawCaption(cr, dx0, dy0, dw, dh, scale) {
+        const fontSize = this.captionFontSize() * scale;
+        const padX = Math.max(6, 6 * scale);
+        const padY = Math.max(4, 3 * scale);
+        const gap = Math.max(4, 4 * scale);
+        const highlight = this.captionStyle === 'highlight';
+
+        // Both styles honour the toolbar font selector.
+        const layout = PangoCairo.create_layout(cr);
+        const family = this.options.font || 'Sans';
+        layout.set_font_description(Pango.FontDescription.from_string(`${family} ${fontSize}`));
+        layout.set_text(this.caption, -1);
+        const [, logicalRect] = layout.get_pixel_extents();
+        const textW = logicalRect.width;
+        const textH = logicalRect.height;
+
+        // Highlight style hugs the text (colored box); the neutral style
+        // spans the inset width (figure-caption strip).
+        const barW = highlight ? (textW + padX * 2) : Math.max(textW + padX * 2, dw);
+        const barH = textH + padY * 2;
+        const barX = dx0 + dw / 2 - barW / 2;
+        const barY = dy0 + dh + gap;
+
+        cr.save();
+        const shadowOff = Math.max(1, Math.round(scale));
+        cr.setSourceRGBA(0, 0, 0, 0.30);
+        cr.rectangle(barX + shadowOff, barY + shadowOff, barW, barH);
+        cr.fill();
+        cr.setSourceRGBA(...(highlight ? [0.867, 0.282, 0.078, 1]   // orange highlight #DD4814
+                                       : [0, 0, 0, 0.72]));
+        cr.rectangle(barX, barY, barW, barH);
+        cr.fill();
+
+        // Centered white text.
+        cr.setSourceRGBA(1, 1, 1, 1);
+        cr.moveTo(barX + barW / 2 - textW / 2, barY + padY);
+        PangoCairo.show_layout(cr, layout);
+        cr.restore();
+    }
+
+    /** Arrow from the source-rect border toward the inset border. */
+    _drawConnector(cr, sx0, sy0, sx1, sy1, dx0, dy0, dw, dh, scale) {
+        const scx = (sx0 + sx1) / 2;
+        const scy = (sy0 + sy1) / 2;
+        const dcx = dx0 + dw / 2;
+        const dcy = dy0 + dh / 2;
+
+        let dirX = dcx - scx;
+        let dirY = dcy - scy;
+        const len = Math.hypot(dirX, dirY);
+        if (len < 1) return;
+        dirX /= len;
+        dirY /= len;
+
+        const [bx, by] = this._exitPoint(scx, scy, (sx1 - sx0) / 2, (sy1 - sy0) / 2, dirX, dirY);
+        const [ex, ey] = this._exitPoint(dcx, dcy, dw / 2, dh / 2, -dirX, -dirY);
+
+        const width = Math.max(1.5, this.options.size * 1.2 * scale);
+        const angle = Math.atan2(ey - by, ex - bx);
+        const headSize = Math.max(6, this.options.size * 2.5 * scale);
+        const arrowAngle = Math.PI / 6;
+        const lx = ex + headSize * Math.cos(angle + Math.PI - arrowAngle);
+        const ly = ey + headSize * Math.sin(angle + Math.PI - arrowAngle);
+        const rx = ex + headSize * Math.cos(angle + Math.PI + arrowAngle);
+        const ry = ey + headSize * Math.sin(angle + Math.PI + arrowAngle);
+
+        cr.save();
+        cr.setLineWidth(width);
+        cr.setLineCap(1); // ROUND
+
+        // Shadow
+        const off = Math.max(1, Math.round(scale));
+        cr.setSourceRGBA(0, 0, 0, 0.4);
+        cr.moveTo(bx + off, by + off); cr.lineTo(ex + off, ey + off); cr.stroke();
+        cr.moveTo(ex + off, ey + off); cr.lineTo(lx + off, ly + off); cr.stroke();
+        cr.moveTo(ex + off, ey + off); cr.lineTo(rx + off, ry + off); cr.stroke();
+
+        // Arrow
+        cr.setSourceRGBA(...this.options.primaryColor);
+        cr.moveTo(bx, by); cr.lineTo(ex, ey); cr.stroke();
+        cr.moveTo(ex, ey); cr.lineTo(lx, ly); cr.stroke();
+        cr.moveTo(ex, ey); cr.lineTo(rx, ry); cr.stroke();
+        cr.restore();
+    }
+
+    /** Point where a ray from (cx,cy) in direction (dx,dy) exits a half-w/half-h box. */
+    _exitPoint(cx, cy, hw, hh, dx, dy) {
+        const tx = dx !== 0 ? hw / Math.abs(dx) : Infinity;
+        const ty = dy !== 0 ? hh / Math.abs(dy) : Infinity;
+        const t = Math.min(tx, ty);
+        return [cx + dx * t, cy + dy * t];
+    }
+
+    getBounds() {
+        const xs = [this.srcStart[0], this.srcEnd[0], this.destPos[0], this.destPos[0] + this.destW];
+        const ys = [this.srcStart[1], this.srcEnd[1], this.destPos[1], this.destPos[1] + this.destH];
+        let maxY = Math.max(...ys);
+        if (this.caption) {
+            maxY = this.destPos[1] + this.destH + this.captionBlockHeight();
+        }
+        return [Math.min(...xs), Math.min(...ys), Math.max(...xs), maxY];
+    }
+
+    // Only the inset is grabbable — dragging moves the magnified box, not the source.
+    containsPoint(x, y) {
+        return x >= this.destPos[0] && x <= this.destPos[0] + this.destW &&
+               y >= this.destPos[1] && y <= this.destPos[1] + this.destH;
+    }
+
+    translate(dx, dy) {
+        this.destPos = [this.destPos[0] + dx, this.destPos[1] + dy];
+    }
+}
+
 /** Distance from point (px,py) to line segment (ax,ay)-(bx,by) */
 function _pointToSegmentDist(px, py, ax, ay, bx, by) {
     const abx = bx - ax, aby = by - ay;
@@ -1477,6 +1768,8 @@ export function createAction(mode, data, options) {
             return new BlurAction(data.start, data.end, false, options);
         case DrawingMode.INVERT:
             return new InvertAction(data.start, data.end, false, options);
+        case DrawingMode.ZOOM_CALLOUT:
+            return new ZoomCalloutAction(data.start, data.end, data.destPos, data.zoom, options, data.caption);
         case DrawingMode.NUMBER:
             return new NumberStampAction(data.position, data.number, options);
         case DrawingMode.NUMBER_ARROW:

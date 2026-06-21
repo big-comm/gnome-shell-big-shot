@@ -9,7 +9,7 @@
  * lock-screen disable/enable cycles. This part exists only as a
  * placeholder for future quick-stop UI or settings.
  *
- * SPDX-License-Identifier: GPL-2.0-or-later
+ * SPDX-License-Identifier: MIT
  */
 
 import { PartUI } from './partbase.js';

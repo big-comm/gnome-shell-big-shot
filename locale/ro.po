@@ -27,6 +27,15 @@ msgstr "Text de adnotare"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/drawing/overlay.js:510
 msgid "Confirm"
 msgstr "Confirmare"
+#: NEEDS WORK
+msgid "Caption style — click to toggle highlight / neutral"
+msgstr "Stil de subtitrări — faceți clic pentru a comuta între evidențiat / neutru"
+#: NEEDS WORK
+msgid "Caption (↑/↓ = size)…"
+msgstr "Titlu (↑/↓ = dimensiune)…"
+#: NEEDS WORK
+msgid "Zoom caption"
+msgstr "Subtitrări Zoom"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partwebcam.js:88
 msgid "Webcam"
 msgstr "Cameră web"
@@ -93,6 +102,9 @@ msgstr "Estompare"
 #: NEEDS WORK
 msgid "Invert Colors"
 msgstr "Inversează culorile"
+#: NEEDS WORK
+msgid "Magnify / Zoom"
+msgstr "Mărește / Zoom"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:45
 msgid "Number"
 msgstr "Număr"
@@ -222,15 +234,6 @@ msgstr "Utilizați cel mai bun codec disponibil"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:1297
 msgid "Video codec"
 msgstr "Codec video"
-#: NEEDS WORK
-msgid "Tesseract not found. Install: sudo pacman -S tesseract tesseract-data-por"
-msgstr "Tesseract nu a fost găsit. Instalați: sudo pacman -S tesseract tesseract-data-por"
-#: NEEDS WORK
-msgid "OCR Languages"
-msgstr "Limbi OCR"
-#: NEEDS WORK
-msgid "Auto (system)"
-msgstr "Auto (sistem)"
 #: NEEDS WORK
 msgid "Edit live"
 msgstr "Editează în timp real"

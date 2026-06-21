@@ -26,6 +26,15 @@ msgstr  ""
 msgid   "Confirm"
 msgstr  ""
 
+msgid   "Caption style — click to toggle highlight / neutral"
+msgstr  ""
+
+msgid   "Caption (↑/↓ = size)…"
+msgstr  ""
+
+msgid   "Zoom caption"
+msgstr  ""
+
 msgid   "Webcam"
 msgstr  ""
 
@@ -87,6 +96,9 @@ msgid   "Blur"
 msgstr  ""
 
 msgid   "Invert Colors"
+msgstr  ""
+
+msgid   "Magnify / Zoom"
 msgstr  ""
 
 msgid   "Number"
@@ -204,16 +216,6 @@ msgid   "Use best available codec"
 msgstr  ""
 
 msgid   "Video codec"
-msgstr  ""
-
-msgid   "Tesseract not found. Install: sudo pacman -S tesseract tesseract-"
-        "data-por"
-msgstr  ""
-
-msgid   "OCR Languages"
-msgstr  ""
-
-msgid   "Auto (system)"
 msgstr  ""
 
 msgid   "Edit live"

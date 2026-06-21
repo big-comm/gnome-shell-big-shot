@@ -27,6 +27,15 @@ msgstr "Anteckningstext"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/drawing/overlay.js:510
 msgid "Confirm"
 msgstr "Bekräfta"
+#: NEEDS WORK
+msgid "Caption style — click to toggle highlight / neutral"
+msgstr "Textstil för undertexter — klicka för att växla mellan markerad / neutral"
+#: NEEDS WORK
+msgid "Caption (↑/↓ = size)…"
+msgstr "Rubrik (↑/↓ = storlek)…"
+#: NEEDS WORK
+msgid "Zoom caption"
+msgstr "Zoom-textning"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partwebcam.js:88
 msgid "Webcam"
 msgstr "Webbkamera"
@@ -93,6 +102,9 @@ msgstr "Sudda"
 #: NEEDS WORK
 msgid "Invert Colors"
 msgstr "Invertera färger"
+#: NEEDS WORK
+msgid "Magnify / Zoom"
+msgstr "Förstora / Zooma"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:45
 msgid "Number"
 msgstr "Nummer"
@@ -222,15 +234,6 @@ msgstr "Använd bästa tillgängliga codec"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:1297
 msgid "Video codec"
 msgstr "Videokodare"
-#: NEEDS WORK
-msgid "Tesseract not found. Install: sudo pacman -S tesseract tesseract-data-por"
-msgstr "Tesseract hittades inte. Installera: sudo pacman -S tesseract tesseract-data-por"
-#: NEEDS WORK
-msgid "OCR Languages"
-msgstr "OCR-språk"
-#: NEEDS WORK
-msgid "Auto (system)"
-msgstr "Auto (system)"
 #: NEEDS WORK
 msgid "Edit live"
 msgstr "Redigera live"

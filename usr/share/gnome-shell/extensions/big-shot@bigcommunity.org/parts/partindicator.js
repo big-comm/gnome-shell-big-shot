@@ -4,7 +4,7 @@
  * Shows a pause/resume button in the top panel with elapsed timer.
  * Supports pause/resume recording via stop+restart+merge.
  *
- * SPDX-License-Identifier: GPL-2.0-or-later
+ * SPDX-License-Identifier: MIT
  */
 
 import Clutter from 'gi://Clutter';

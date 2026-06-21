@@ -28,6 +28,15 @@ msgstr "Texte d’annotation"
 msgid "Confirm"
 msgstr "Confirmer"
 #: NEEDS WORK
+msgid "Caption style — click to toggle highlight / neutral"
+msgstr "Style de légende — cliquez pour basculer entre surligné / neutre"
+#: NEEDS WORK
+msgid "Caption (↑/↓ = size)…"
+msgstr "Légende (↑/↓ = taille)…"
+#: NEEDS WORK
+msgid "Zoom caption"
+msgstr "Sous-titre Zoom"
+#: NEEDS WORK
 msgid "Webcam"
 msgstr "Webcam"
 #: NEEDS WORK
@@ -90,6 +99,9 @@ msgstr "Flou"
 #: NEEDS WORK
 msgid "Invert Colors"
 msgstr "Inverser les couleurs"
+#: NEEDS WORK
+msgid "Magnify / Zoom"
+msgstr "Agrandir / Zoomer"
 #: NEEDS WORK
 msgid "Number"
 msgstr "Nombre"
@@ -206,15 +218,6 @@ msgstr "Utiliser le meilleur codec disponible"
 #: NEEDS WORK
 msgid "Video codec"
 msgstr "Codec vidéo"
-#: NEEDS WORK
-msgid "Tesseract not found. Install: sudo pacman -S tesseract tesseract-data-por"
-msgstr "Tesseract non trouvé. Installer : sudo pacman -S tesseract tesseract-data-por"
-#: NEEDS WORK
-msgid "OCR Languages"
-msgstr "Langues OCR"
-#: NEEDS WORK
-msgid "Auto (system)"
-msgstr "Auto (système)"
 #: NEEDS WORK
 msgid "Edit live"
 msgstr "Modifier en direct"

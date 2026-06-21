@@ -27,6 +27,15 @@ msgstr "Κείμενο σχολιασμού"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/drawing/overlay.js:510
 msgid "Confirm"
 msgstr "Επιβεβαίωση"
+#: NEEDS WORK
+msgid "Caption style — click to toggle highlight / neutral"
+msgstr "Στυλ λεζάντας — κάντε κλικ για εναλλαγή μεταξύ επισημασμένου / ουδέτερου"
+#: NEEDS WORK
+msgid "Caption (↑/↓ = size)…"
+msgstr "Λεζάντα (↑/↓ = μέγεθος)…"
+#: NEEDS WORK
+msgid "Zoom caption"
+msgstr "Λεζάντα Zoom"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partwebcam.js:88
 msgid "Webcam"
 msgstr "Κάμερα web"
@@ -93,6 +102,9 @@ msgstr "Θόλωμα"
 #: NEEDS WORK
 msgid "Invert Colors"
 msgstr "Αντιστροφή Χρωμάτων"
+#: NEEDS WORK
+msgid "Magnify / Zoom"
+msgstr "Μεγέθυνση / Ζουμ"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:45
 msgid "Number"
 msgstr "Αριθμός"
@@ -222,15 +234,6 @@ msgstr "Χρησιμοποιήστε τον καλύτερο διαθέσιμο 
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:1297
 msgid "Video codec"
 msgstr "Κωδικοποιητής βίντεο"
-#: NEEDS WORK
-msgid "Tesseract not found. Install: sudo pacman -S tesseract tesseract-data-por"
-msgstr "Δεν βρέθηκε το Tesseract. Εγκαταστήστε: sudo pacman -S tesseract tesseract-data-por"
-#: NEEDS WORK
-msgid "OCR Languages"
-msgstr "Γλώσσες OCR"
-#: NEEDS WORK
-msgid "Auto (system)"
-msgstr "Αυτόματο (σύστημα)"
 #: NEEDS WORK
 msgid "Edit live"
 msgstr "Επεξεργασία σε πραγματικό χρόνο"

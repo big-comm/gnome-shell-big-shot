@@ -7,7 +7,7 @@
  * Based on gnome-shell-screencast-extra-feature approach:
  * buttons are injected into the native _typeButtonContainer.
  *
- * SPDX-License-Identifier: GPL-2.0-or-later
+ * SPDX-License-Identifier: MIT
  */
 
 import GLib from 'gi://GLib';
@@ -216,12 +216,8 @@ export class PartAudio extends PartUI {
         const desktopActive = this._desktopButton?.checked && this._desktopDevice;
         const micActive = this._micButton?.checked && micDeviceName;
 
-        console.log(`[Big Shot Audio] desktopBtn=${this._desktopButton?.checked}, micBtn=${this._micButton?.checked}, dDev=${this._desktopDevice}, mDev=${this._micDevice}`);
-
-        if (!desktopActive && !micActive) {
-            console.log('[Big Shot Audio] No audio source active');
+        if (!desktopActive && !micActive)
             return null;
-        }
 
         // Desktop audio source
         let desktopSource = null;
@@ -278,13 +274,11 @@ export class PartAudio extends PartUI {
                 `${micSource} ! am.`,
                 `am. ! audioconvert ! audioresample ! capsfilter caps=audio/x-raw,format=S16LE,rate=48000,channels=${desktopChannels},layout=interleaved ! queue`,
             ].join(' ');
-            console.log(`[Big Shot Audio] Mixed pipeline: ${result}`);
             return result;
         }
 
         // Single source
         const result = desktopSource || micSource;
-        console.log(`[Big Shot Audio] Single pipeline: ${result}`);
         return result;
     }
 

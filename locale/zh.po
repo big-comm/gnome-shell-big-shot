@@ -27,6 +27,15 @@ msgstr "注释文本"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/drawing/overlay.js:510
 msgid "Confirm"
 msgstr "确认"
+#: NEEDS WORK
+msgid "Caption style — click to toggle highlight / neutral"
+msgstr "字幕样式 — 点击切换高亮/中性"
+#: NEEDS WORK
+msgid "Caption (↑/↓ = size)…"
+msgstr "标题 (↑/↓ = 大小)…"
+#: NEEDS WORK
+msgid "Zoom caption"
+msgstr "缩放字幕"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partwebcam.js:88
 msgid "Webcam"
 msgstr "网络摄像头"
@@ -93,6 +102,9 @@ msgstr "模糊"
 #: NEEDS WORK
 msgid "Invert Colors"
 msgstr "反转颜色"
+#: NEEDS WORK
+msgid "Magnify / Zoom"
+msgstr "放大 / 缩放"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:45
 msgid "Number"
 msgstr "数字"
@@ -222,15 +234,6 @@ msgstr "使用最佳可用编解码器"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:1297
 msgid "Video codec"
 msgstr "视频编码器"
-#: NEEDS WORK
-msgid "Tesseract not found. Install: sudo pacman -S tesseract tesseract-data-por"
-msgstr "未找到 Tesseract。安装：sudo pacman -S tesseract tesseract-data-por"
-#: NEEDS WORK
-msgid "OCR Languages"
-msgstr "OCR语言"
-#: NEEDS WORK
-msgid "Auto (system)"
-msgstr "自动（系统）"
 #: NEEDS WORK
 msgid "Edit live"
 msgstr "实时编辑"

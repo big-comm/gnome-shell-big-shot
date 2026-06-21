@@ -27,6 +27,15 @@ msgstr "טקסט הערה"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/drawing/overlay.js:510
 msgid "Confirm"
 msgstr "אשר"
+#: NEEDS WORK
+msgid "Caption style — click to toggle highlight / neutral"
+msgstr "סגנון כותרת — לחץ כדי להחליף בין הדגשה / נייטרלי"
+#: NEEDS WORK
+msgid "Caption (↑/↓ = size)…"
+msgstr "כותרת (↑/↓ = גודל)…"
+#: NEEDS WORK
+msgid "Zoom caption"
+msgstr "כיתוב זום"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partwebcam.js:88
 msgid "Webcam"
 msgstr "מצלמת רשת"
@@ -93,6 +102,9 @@ msgstr "טשטוש"
 #: NEEDS WORK
 msgid "Invert Colors"
 msgstr "הפוך צבעים"
+#: NEEDS WORK
+msgid "Magnify / Zoom"
+msgstr "הגדלה / זום"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:45
 msgid "Number"
 msgstr "מספר"
@@ -222,15 +234,6 @@ msgstr "השתמש בקודק הטוב ביותר הזמין"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:1297
 msgid "Video codec"
 msgstr "קודקוד וידאו"
-#: NEEDS WORK
-msgid "Tesseract not found. Install: sudo pacman -S tesseract tesseract-data-por"
-msgstr "Tesseract לא נמצא. התקן: sudo pacman -S tesseract tesseract-data-por"
-#: NEEDS WORK
-msgid "OCR Languages"
-msgstr "שפות OCR"
-#: NEEDS WORK
-msgid "Auto (system)"
-msgstr "אוטומטי (מערכת)"
 #: NEEDS WORK
 msgid "Edit live"
 msgstr "ערוך חי"
