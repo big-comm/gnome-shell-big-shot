@@ -15,7 +15,7 @@ export class PartFramerate extends PartPopupSelect {
             [15, 24, 30, 60],
             30,
             (v) => `${v} FPS`,
-            _('Frames per second')
+            _('Frames per second'),
         );
     }
 }

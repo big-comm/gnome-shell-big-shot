@@ -99,7 +99,7 @@ export class PartWebcam extends PartUI {
                 style_class: 'screenshot-ui-type-button',
                 toggle_mode: true,
                 reactive: false,
-            }
+            },
         );
         this._webcamButton.visible = false;
 
@@ -132,7 +132,7 @@ export class PartWebcam extends PartUI {
 
     get enabled() { return this._enabled; }
     set enabled(val) {
-        this._enabled = !!val;
+        this._enabled = Boolean(val);
         if (!this._enabled)
             this.stopPreview();
     }
@@ -273,7 +273,7 @@ export class PartWebcam extends PartUI {
         this._webcamActor.set_position(off.x, off.y);
         this._webcamActor.set_size(
             this._frameWidth || this._width,
-            this._frameHeight || Math.round(this._width * 3 / 4)
+            this._frameHeight || Math.round(this._width * 3 / 4),
         );
     }
 
@@ -433,7 +433,7 @@ export class PartWebcam extends PartUI {
                     const d = Math.sqrt(d2);
                     const t = (1.0 - d) / edge;
                     data[(y * w + x) * 4 + 3] = Math.round(
-                        data[(y * w + x) * 4 + 3] * t
+                        data[(y * w + x) * 4 + 3] * t,
                     );
                 }
             }
@@ -461,7 +461,7 @@ export class PartWebcam extends PartUI {
                     const d = Math.sqrt(d2);
                     const t = (1.0 - d) / edge;
                     data[(y * w + x) * 4 + 3] = Math.round(
-                        data[(y * w + x) * 4 + 3] * t
+                        data[(y * w + x) * 4 + 3] * t,
                     );
                 }
             }
@@ -494,7 +494,7 @@ export class PartWebcam extends PartUI {
                     const t = (1.0 - d) / edge;
                     // Quadratic ease-in for softer gradient
                     data[(y * w + x) * 4 + 3] = Math.round(
-                        data[(y * w + x) * 4 + 3] * t * t
+                        data[(y * w + x) * 4 + 3] * t * t,
                     );
                 }
             }
@@ -795,7 +795,7 @@ export class PartWebcam extends PartUI {
             const [mx, my] = event.get_coords();
             this._container.set_position(
                 mx + this._dragOffsetX,
-                my + this._dragOffsetY
+                my + this._dragOffsetY,
             );
             return Clutter.EVENT_STOP;
         }
@@ -1100,12 +1100,12 @@ export class PartWebcam extends PartUI {
                     fw, fh,
                     Cogl.PixelFormat.RGBA_8888,
                     fw * 4,
-                    data
+                    data,
                 );
 
                 if (texture) {
                     const content = Clutter.TextureContent.new_from_texture(
-                        texture, null
+                        texture, null,
                     );
                     this._webcamActor.set_content(content);
                 }

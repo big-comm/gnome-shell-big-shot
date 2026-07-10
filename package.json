@@ -1,0 +1,13 @@
+{
+  "name": "gnome-shell-big-shot",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "lint": "eslint usr/share/gnome-shell/extensions/big-shot@bigcommunity.org",
+    "check": "npm run lint"
+  },
+  "devDependencies": {
+    "eslint": "10.6.0",
+    "globals": "17.7.0"
+  }
+}

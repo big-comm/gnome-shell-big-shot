@@ -10,7 +10,6 @@
  * SPDX-License-Identifier: MIT
  */
 
-import GLib from 'gi://GLib';
 import St from 'gi://St';
 import Clutter from 'gi://Clutter';
 import GObject from 'gi://GObject';
@@ -100,7 +99,7 @@ export class PartAudio extends PartUI {
                 style_class: 'screenshot-ui-type-button',
                 toggle_mode: true,
                 reactive: false,
-            }
+            },
         );
 
         // Mic button
@@ -112,7 +111,7 @@ export class PartAudio extends PartUI {
                 style_class: 'screenshot-ui-type-button',
                 toggle_mode: true,
                 reactive: false,
-            }
+            },
         );
 
         typeContainer.add_child(this._desktopButton);

@@ -294,12 +294,12 @@ export class PartVideoAnnotation extends PartUI {
         this._liveButton = this._makePanelButton(
             'document-edit-symbolic',
             _('Edit live'),
-            () => this.togglePanelEdit()
+            () => this.togglePanelEdit(),
         );
         this._clearButton = this._makePanelButton(
             'edit-clear-symbolic',
             _('Clear annotations'),
-            () => this.clearAnnotations()
+            () => this.clearAnnotations(),
         );
         this._buttons = [this._liveButton, this._clearButton];
 

@@ -10,7 +10,6 @@
 import Pango from 'gi://Pango';
 import PangoCairo from 'gi://PangoCairo';
 import cairo from 'gi://cairo';
-import GdkPixbuf from 'gi://GdkPixbuf';
 import GLib from 'gi://GLib';
 
 // =============================================================================
@@ -264,7 +263,7 @@ export class RectAction extends DrawingAction {
     }
 
     draw(cr, toWidget, scale) {
-        let [x1, y1] = toWidget(...this.start);
+        const [x1, y1] = toWidget(...this.start);
         let [x2, y2] = toWidget(...this.end);
 
         if (this.shift) {
@@ -314,7 +313,7 @@ export class RectAction extends DrawingAction {
 
 export class CircleAction extends RectAction {
     draw(cr, toWidget, scale) {
-        let [x1, y1] = toWidget(...this.start);
+        const [x1, y1] = toWidget(...this.start);
         let [x2, y2] = toWidget(...this.end);
 
         if (this.shift) {
@@ -360,6 +359,31 @@ export class TextAction extends DrawingAction {
         this.fontSize = fontSize;
     }
 
+    _createLayout(cr, size) {
+        const layout = PangoCairo.create_layout(cr);
+        const fontDesc = Pango.FontDescription.from_string(`${this.options.font} ${size}`);
+        layout.set_font_description(fontDesc);
+        layout.set_text(this.text, -1);
+        return layout;
+    }
+
+    _getTextMetrics() {
+        const key = `${this.options.font}\0${this.fontSize}\0${this.text}`;
+        if (this._metrics?.key === key)
+            return this._metrics;
+
+        const surface = new cairo.ImageSurface(cairo.Format.ARGB32, 1, 1);
+        const cr = new cairo.Context(surface);
+        const layout = this._createLayout(cr, this.fontSize);
+        const [, logicalRect] = layout.get_pixel_extents();
+        this._metrics = {
+            key,
+            width: logicalRect.width,
+            height: logicalRect.height,
+        };
+        return this._metrics;
+    }
+
     draw(cr, toWidget, scale) {
         if (!this.text.trim()) return;
 
@@ -367,12 +391,9 @@ export class TextAction extends DrawingAction {
         const size = this.fontSize * scale;
 
         // Use PangoCairo for proper font rendering
-        const layout = PangoCairo.create_layout(cr);
-        const fontDesc = Pango.FontDescription.from_string(`${this.options.font} ${size}`);
-        layout.set_font_description(fontDesc);
-        layout.set_text(this.text, -1);
+        const layout = this._createLayout(cr, size);
 
-        const [inkRect, logicalRect] = layout.get_pixel_extents();
+        const [, logicalRect] = layout.get_pixel_extents();
         const textWidth = logicalRect.width;
         const textHeight = logicalRect.height;
 
@@ -412,13 +433,13 @@ export class TextAction extends DrawingAction {
     }
 
     getBounds() {
-        const pad = this.fontSize + 8;
+        const pad = 8;
         const [x, y] = this.position;
-        const estimatedWidth = this.text.length * this.fontSize * 0.6;
+        const { width, height } = this._getTextMetrics();
         return [
-            x - estimatedWidth / 2 - pad,
-            y - this.fontSize - pad,
-            x + estimatedWidth / 2 + pad,
+            x - width / 2 - pad,
+            y - height - pad,
+            x + width / 2 + pad,
             y + pad,
         ];
     }
@@ -483,7 +504,7 @@ export class CensorAction extends RectAction {
                 const [wx, wy] = toWidget(baseX + block.rx, baseY + block.ry);
                 const [wx2, wy2] = toWidget(
                     baseX + block.rx + block.rw,
-                    baseY + block.ry + block.rh
+                    baseY + block.ry + block.rh,
                 );
                 cr.setSourceRGBA(block.r, block.g, block.b, 1.0);
                 cr.rectangle(wx, wy, wx2 - wx, wy2 - wy);
@@ -499,8 +520,8 @@ export class CensorAction extends RectAction {
         }
 
         // Fallback: checkerboard placeholder (shown during drag)
-        let [x1, y1] = toWidget(...this.start);
-        let [x2, y2] = toWidget(...this.end);
+        const [x1, y1] = toWidget(...this.start);
+        const [x2, y2] = toWidget(...this.end);
 
         const x = Math.min(x1, x2);
         const y = Math.min(y1, y2);
@@ -525,7 +546,7 @@ export class CensorAction extends RectAction {
                     x + bx * blockSize,
                     y + by * blockSize,
                     blockSize,
-                    blockSize
+                    blockSize,
                 );
                 cr.fill();
             }
@@ -534,8 +555,8 @@ export class CensorAction extends RectAction {
     }
 
     _drawOpaqueLiveMask(cr, toWidget) {
-        let [x1, y1] = toWidget(...this.start);
-        let [x2, y2] = toWidget(...this.end);
+        const [x1, y1] = toWidget(...this.start);
+        const [x2, y2] = toWidget(...this.end);
 
         const x = Math.min(x1, x2);
         const y = Math.min(y1, y2);
@@ -560,7 +581,7 @@ export class CensorAction extends RectAction {
                     x + bx * blockSize,
                     y + by * blockSize,
                     blockSize,
-                    blockSize
+                    blockSize,
                 );
                 cr.fill();
             }
@@ -650,8 +671,8 @@ export class CensorAction extends RectAction {
      * Apply real pixelation on GdkPixbuf at save time.
      */
     drawReal(pixbuf, GdkPixbuf, GLib, toWidget, scale) {
-        let [x1, y1] = toWidget(...this.start);
-        let [x2, y2] = toWidget(...this.end);
+        const [x1, y1] = toWidget(...this.start);
+        const [x2, y2] = toWidget(...this.end);
 
         const imgW = pixbuf.get_width();
         const imgH = pixbuf.get_height();
@@ -716,7 +737,7 @@ export class CensorAction extends RectAction {
         return GdkPixbuf.Pixbuf.new_from_bytes(
             newBytes, pixbuf.get_colorspace(),
             pixbuf.get_has_alpha(), pixbuf.get_bits_per_sample(),
-            imgW, imgH, rowstride
+            imgW, imgH, rowstride,
         );
     }
 }
@@ -743,8 +764,8 @@ export class BlurAction extends RectAction {
      * or falls back to frosted/hatched overlay during drag.
      */
     draw(cr, toWidget, scale) {
-        let [x1, y1] = toWidget(...this.start);
-        let [x2, y2] = toWidget(...this.end);
+        const [x1, y1] = toWidget(...this.start);
+        const [x2, y2] = toWidget(...this.end);
 
         const x = Math.min(x1, x2);
         const y = Math.min(y1, y2);
@@ -878,7 +899,7 @@ export class BlurAction extends RectAction {
                         rSum / count / 255,
                         gSum / count / 255,
                         bSum / count / 255,
-                        1.0
+                        1.0,
                     );
                     scr.rectangle(sx, sy, 1, 1);
                     scr.fill();
@@ -903,8 +924,8 @@ export class BlurAction extends RectAction {
      * @returns {object} modified GdkPixbuf.Pixbuf
      */
     drawReal(pixbuf, GdkPixbuf, GLib, toWidget, scale) {
-        let [x1, y1] = toWidget(...this.start);
-        let [x2, y2] = toWidget(...this.end);
+        const [x1, y1] = toWidget(...this.start);
+        const [x2, y2] = toWidget(...this.end);
 
         const imgW = pixbuf.get_width();
         const imgH = pixbuf.get_height();
@@ -999,7 +1020,7 @@ export class BlurAction extends RectAction {
         return GdkPixbuf.Pixbuf.new_from_bytes(
             newBytes, pixbuf.get_colorspace(),
             pixbuf.get_has_alpha(), pixbuf.get_bits_per_sample(),
-            imgW, imgH, rowstride
+            imgW, imgH, rowstride,
         );
     }
 }
@@ -1015,8 +1036,8 @@ export class InvertAction extends RectAction {
      * during drag.
      */
     draw(cr, toWidget, _scale) {
-        let [x1, y1] = toWidget(...this.start);
-        let [x2, y2] = toWidget(...this.end);
+        const [x1, y1] = toWidget(...this.start);
+        const [x2, y2] = toWidget(...this.end);
 
         const x = Math.min(x1, x2);
         const y = Math.min(y1, y2);
@@ -1157,8 +1178,8 @@ export class InvertAction extends RectAction {
      * Alpha channel is preserved.
      */
     drawReal(pixbuf, GdkPixbuf, GLib, toWidget, _scale) {
-        let [x1, y1] = toWidget(...this.start);
-        let [x2, y2] = toWidget(...this.end);
+        const [x1, y1] = toWidget(...this.start);
+        const [x2, y2] = toWidget(...this.end);
 
         const imgW = pixbuf.get_width();
         const imgH = pixbuf.get_height();
@@ -1194,7 +1215,7 @@ export class InvertAction extends RectAction {
         return GdkPixbuf.Pixbuf.new_from_bytes(
             newBytes, pixbuf.get_colorspace(),
             pixbuf.get_has_alpha(), pixbuf.get_bits_per_sample(),
-            imgW, imgH, rowstride
+            imgW, imgH, rowstride,
         );
     }
 }

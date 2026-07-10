@@ -195,7 +195,7 @@ export class PartToolbar extends PartUI {
 
         // Color swatch
         this._colorSwatch = new St.Widget({
-            style: `background: ${this._currentColorHex}; border-radius: 50%; min-width: 16px; min-height: 16px; border: 2px solid rgba(255,255,255,0.3);`,
+            style: `background: ${this._currentColorHex}; border-radius: 8px; min-width: 16px; min-height: 16px; border: 2px solid rgba(255,255,255,0.3);`,
         });
         this._colorButton = new St.Button({
             style_class: 'big-shot-edit-tool-btn',
@@ -210,7 +210,7 @@ export class PartToolbar extends PartUI {
 
         // Fill swatch
         this._fillSwatch = new St.Widget({
-            style: 'background: transparent; border: 2px dashed rgba(255,255,255,0.5); border-radius: 50%; min-width: 16px; min-height: 16px;',
+            style: 'background: transparent; border: 2px dashed rgba(255,255,255,0.5); border-radius: 8px; min-width: 16px; min-height: 16px;',
         });
         this._fillButton = new St.Button({
             style_class: 'big-shot-edit-tool-btn',
@@ -1510,17 +1510,17 @@ export class PartToolbar extends PartUI {
         if (target === 'stroke') {
             this._currentColorHex = color;
             this._colorSwatch.set_style(
-                `background: ${color}; border-radius: 50%; min-width: 24px; min-height: 24px; border: 2px solid rgba(255,255,255,0.3);`
+                `background: ${color}; border-radius: 8px; min-width: 16px; min-height: 16px; border: 2px solid rgba(255,255,255,0.3);`,
             );
         } else {
             this._fillColorHex = color;
             if (color) {
                 this._fillSwatch.set_style(
-                    `background: ${color}; border-radius: 50%; min-width: 24px; min-height: 24px; border: 2px solid rgba(255,255,255,0.3);`
+                    `background: ${color}; border-radius: 8px; min-width: 16px; min-height: 16px; border: 2px solid rgba(255,255,255,0.3);`,
                 );
             } else {
                 this._fillSwatch.set_style(
-                    'background: transparent; border: 2px dashed rgba(255,255,255,0.5); border-radius: 50%; min-width: 24px; min-height: 24px;'
+                    'background: transparent; border: 2px dashed rgba(255,255,255,0.5); border-radius: 8px; min-width: 16px; min-height: 16px;',
                 );
             }
         }
@@ -1710,8 +1710,16 @@ export class PartToolbar extends PartUI {
     }
 
     _populateVideoCodecs() {
-        // Trigger lazy pipeline detection
-        this._ext._detectPipelines();
+        this._ext._detectPipelines().then(() => {
+            if (!this._destroyed)
+                this._refreshVideoCodecs();
+        }).catch(e => {
+            console.warn(`[Big Shot] Codec list unavailable: ${e.message}`);
+        });
+        this._refreshVideoCodecs();
+    }
+
+    _refreshVideoCodecs() {
         const configs = this._ext._availableConfigs;
         if (!configs) return;
 
