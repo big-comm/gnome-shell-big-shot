@@ -16,6 +16,24 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: attranslate\n"
 #: NEEDS WORK
+msgid "BigShot from %d %t"
+msgstr "BigShot de %d %t"
+#: NEEDS WORK
+msgid "Screenshot taken"
+msgstr "Capture d’écran prise"
+#: NEEDS WORK
+msgid "Screenshots"
+msgstr "Captures d’écran"
+#: NEEDS WORK
+msgid "Screenshot from %s"
+msgstr "Capture d’écran de %s"
+#: NEEDS WORK
+msgid "Screenshot copied"
+msgstr "Capture d’écran copiée"
+#: NEEDS WORK
+msgid "Save Screenshot"
+msgstr "Enregistrer la capture d’écran"
+#: NEEDS WORK
 msgid "Drawing canvas"
 msgstr "Toile de dessin"
 #: NEEDS WORK
@@ -37,18 +55,6 @@ msgstr "Légende (↑/↓ = taille)…"
 msgid "Zoom caption"
 msgstr "Sous-titre Zoom"
 #: NEEDS WORK
-msgid "Webcam"
-msgstr "Webcam"
-#: NEEDS WORK
-msgid "Webcam Overlay"
-msgstr "Superposition Webcam"
-#: NEEDS WORK
-msgid "Gradient Angle"
-msgstr "Angle du dégradé"
-#: NEEDS WORK
-msgid "Border Radius"
-msgstr "Rayon de bordure"
-#: NEEDS WORK
 msgid "Desktop"
 msgstr "Bureau"
 #: NEEDS WORK
@@ -61,11 +67,23 @@ msgstr "Enregistrer l’audio du bureau"
 msgid "Record Microphone"
 msgstr "Enregistrer le microphone"
 #: NEEDS WORK
-msgid "Recording resolution"
-msgstr "Résolution d'enregistrement"
+msgid "Webcam"
+msgstr "Webcam"
+#: NEEDS WORK
+msgid "Webcam Overlay"
+msgstr "Superposition Webcam"
+#: NEEDS WORK
+msgid "Edit live"
+msgstr "Modifier en direct"
+#: NEEDS WORK
+msgid "Clear annotations"
+msgstr "Effacer les annotations"
 #: NEEDS WORK
 msgid "Frames per second"
 msgstr "Images par seconde"
+#: NEEDS WORK
+msgid "Recording resolution"
+msgstr "Résolution d'enregistrement"
 #: NEEDS WORK
 msgid "Select / Move"
 msgstr "Sélectionner / Déplacer"
@@ -209,27 +227,3 @@ msgstr "Utiliser le meilleur codec disponible"
 #: NEEDS WORK
 msgid "Video codec"
 msgstr "Codec vidéo"
-#: NEEDS WORK
-msgid "Edit live"
-msgstr "Modifier en direct"
-#: NEEDS WORK
-msgid "Clear annotations"
-msgstr "Effacer les annotations"
-#: NEEDS WORK
-msgid "BigShot from %d %t"
-msgstr "BigShot de %d %t"
-#: NEEDS WORK
-msgid "Screenshot taken"
-msgstr "Capture d’écran prise"
-#: NEEDS WORK
-msgid "Screenshots"
-msgstr "Captures d’écran"
-#: NEEDS WORK
-msgid "Screenshot from %s"
-msgstr "Capture d’écran de %s"
-#: NEEDS WORK
-msgid "Screenshot copied"
-msgstr "Capture d’écran copiée"
-#: NEEDS WORK
-msgid "Save Screenshot"
-msgstr "Enregistrer la capture d’écran"
