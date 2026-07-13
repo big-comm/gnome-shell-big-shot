@@ -88,12 +88,6 @@ msgstr "Webcam"
 msgid "Webcam Overlay"
 msgstr "Superposition Webcam"
 #: NEEDS WORK
-msgid "Gradient Angle"
-msgstr "Angle du dégradé"
-#: NEEDS WORK
-msgid "Border Radius"
-msgstr "Rayon de bordure"
-#: NEEDS WORK
 msgid "Edit live"
 msgstr "Modifier en direct"
 #: NEEDS WORK

@@ -87,12 +87,6 @@ msgstr  ""
 msgid   "Webcam Overlay"
 msgstr  ""
 
-msgid   "Gradient Angle"
-msgstr  ""
-
-msgid   "Border Radius"
-msgstr  ""
-
 msgid   "Edit live"
 msgstr  ""
 
