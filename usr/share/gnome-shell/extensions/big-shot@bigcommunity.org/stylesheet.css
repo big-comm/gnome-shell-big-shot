@@ -90,38 +90,6 @@
     font-variant-numeric: tabular-nums;
 }
 
-/* ===== Gradient Picker ===== */
-.big-shot-gradient-picker {
-    background-color: rgba(30, 30, 30, 0.92);
-    border-radius: 12px;
-    padding: 6px;
-    spacing: 4px;
-}
-
-.big-shot-gradient-swatch {
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
-    border: 2px solid transparent;
-}
-
-.big-shot-gradient-swatch:hover {
-    border-color: rgba(255, 255, 255, 0.4);
-}
-
-.big-shot-gradient-swatch:checked {
-    border-color: rgba(255, 255, 255, 0.8);
-}
-
-/* ===== Crop Handles ===== */
-.big-shot-crop-handle {
-    width: 12px;
-    height: 12px;
-    border-radius: 6px;
-    background-color: white;
-    border: 2px solid rgba(0, 0, 0, 0.5);
-}
-
 /* ===== Hidden native panel when editing ===== */
 .big-shot-panel-hidden {
     opacity: 0;

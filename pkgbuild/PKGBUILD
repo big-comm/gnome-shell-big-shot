@@ -5,6 +5,11 @@ pkgdesc="Enhanced Screenshot & Screencast for GNOME Shell — annotation tools, 
 depends=('gnome-shell>=46' 'gstreamer' 'gst-plugins-base' 'gst-plugins-good' 'gst-plugins-bad' 'gst-plugin-va' 'pciutils' 'ffmpeg')
 optdepends=(
     'gst-plugins-ugly: additional GStreamer codecs (x264, mpeg2, a52)'
+    'gst-libav: fallback AAC encoder for MP4 audio'
+    'tesseract: OCR support'
+    'tesseract-data-eng: English OCR language data'
+    'tesseract-data-por: Portuguese OCR language data'
+    'tesseract-data-spa: Spanish OCR language data'
 )
 makedepends=('gettext')
 #conflicts=('')

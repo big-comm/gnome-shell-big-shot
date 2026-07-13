@@ -3,7 +3,6 @@
 
 # Color definitions for status messages
 blueDark="\e[1;38;5;33m"     # Bold dark blue
-mediumBlue="\e[1;38;5;32m"   # Bold medium blue
 lightBlue="\e[1;38;5;39m"    # Bold light blue
 cyan="\e[1;38;5;45m"         # Bold cyan
 white="\e[1;97m"             # Bold white

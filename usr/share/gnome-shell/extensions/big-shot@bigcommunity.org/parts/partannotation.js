@@ -51,13 +51,18 @@ export class PartAnnotation extends PartUI {
 
         this._overlay = new DrawingOverlay(this._ui, this._toolbar);
 
-        // Size the overlay to the full monitor — the ScreenshotUI covers the
-        // entire screen regardless of selection mode (fullscreen/window/area).
-        // Coordinate mapping to the actual captured region is handled by
-        // DrawingOverlay._toImageCoords().
-        const monitor = global.display.get_current_monitor();
-        const rect = global.display.get_monitor_geometry(monitor);
-        this._overlay.show(rect.width, rect.height);
+        // Cover the complete logical monitor layout, including monitors placed
+        // left/above the primary one (negative stage coordinates).
+        const monitors = global.display.get_n_monitors();
+        let minX = 0, minY = 0, maxX = 1, maxY = 1;
+        for (let index = 0; index < monitors; index++) {
+            const rect = global.display.get_monitor_geometry(index);
+            minX = Math.min(minX, rect.x);
+            minY = Math.min(minY, rect.y);
+            maxX = Math.max(maxX, rect.x + rect.width);
+            maxY = Math.max(maxY, rect.y + rect.height);
+        }
+        this._overlay.show(maxX - minX, maxY - minY, minX, minY);
     }
 
     _destroyOverlay() {

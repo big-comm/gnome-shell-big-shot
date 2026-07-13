@@ -11,6 +11,7 @@ import Clutter from 'gi://Clutter';
 import St from 'gi://St';
 import GLib from 'gi://GLib';
 import Gio from 'gi://Gio';
+import GObject from 'gi://GObject';
 import Shell from 'gi://Shell';
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 import { gettext as _ } from 'resource:///org/gnome/shell/extensions/extension.js';
@@ -48,21 +49,31 @@ const TOOL_TO_MODE = {
     'select': DrawingMode.SELECT,
 };
 
+const MultilineEntry = GObject.registerClass(
+class MultilineEntry extends St.Entry {
+    vfunc_allocate(box) {
+        super.vfunc_allocate(box);
+        const contentBox = this.get_theme_node().get_content_box(box);
+        this.clutter_text.allocate(contentBox);
+        this.get_hint_actor()?.allocate(contentBox);
+    }
+});
+
 export class DrawingOverlay {
     constructor(screenshotUI, toolbar, options = {}) {
         this._ui = screenshotUI;
         this._toolbar = toolbar;
         this._parentActor = options.parentActor ?? screenshotUI;
         this._keyActor = options.keyActor ?? screenshotUI;
-        this._useTopChrome = !!options.useTopChrome;
-        this._liveVideo = !!options.liveVideo;
+        this._useTopChrome = Boolean(options.useTopChrome);
+        this._liveVideo = Boolean(options.liveVideo);
         this._enableEffectPreview = options.enableEffectPreview ?? !this._liveVideo;
         this._onCancel = options.onCancel ?? null;
-        this._useStageEvents = !!options.useStageEvents;
-        this._captureInputWithActor = !!options.captureInputWithActor;
+        this._useStageEvents = Boolean(options.useStageEvents);
+        this._captureInputWithActor = Boolean(options.captureInputWithActor);
         this._eventActor = options.eventActor ?? global.stage;
         this._shouldIgnoreEvent = options.shouldIgnoreEvent ?? null;
-        this._captureStageForPreview = !!options.captureStageForPreview;
+        this._captureStageForPreview = Boolean(options.captureStageForPreview);
         this._shouldCaptureStagePreview = options.shouldCaptureStagePreview ?? (() => this._captureStageForPreview);
         this._getPreviewHiddenActors = options.getPreviewHiddenActors ?? (() => []);
         this._eventsActive = false;
@@ -495,43 +506,43 @@ export class DrawingOverlay {
             case DrawingMode.HIGHLIGHTER:
                 if (this._currentStroke?.length > 1) {
                     action = createAction(DrawingMode.HIGHLIGHTER, {
-                        stroke: this._currentStroke, shift
+                        stroke: this._currentStroke, shift,
                     }, options);
                 }
                 break;
             case DrawingMode.ARROW:
                 action = createAction(DrawingMode.ARROW, {
-                    start: this._startPoint, end: [ix, iy], shift
+                    start: this._startPoint, end: [ix, iy], shift,
                 }, options);
                 break;
             case DrawingMode.LINE:
                 action = createAction(DrawingMode.LINE, {
-                    start: this._startPoint, end: [ix, iy], shift
+                    start: this._startPoint, end: [ix, iy], shift,
                 }, options);
                 break;
             case DrawingMode.RECT:
                 action = createAction(DrawingMode.RECT, {
-                    start: this._startPoint, end: [ix, iy], shift
+                    start: this._startPoint, end: [ix, iy], shift,
                 }, options);
                 break;
             case DrawingMode.CIRCLE:
                 action = createAction(DrawingMode.CIRCLE, {
-                    start: this._startPoint, end: [ix, iy], shift
+                    start: this._startPoint, end: [ix, iy], shift,
                 }, options);
                 break;
             case DrawingMode.CENSOR:
                 action = createAction(DrawingMode.CENSOR, {
-                    start: this._startPoint, end: [ix, iy]
+                    start: this._startPoint, end: [ix, iy],
                 }, options);
                 break;
             case DrawingMode.BLUR:
                 action = createAction(DrawingMode.BLUR, {
-                    start: this._startPoint, end: [ix, iy]
+                    start: this._startPoint, end: [ix, iy],
                 }, options);
                 break;
             case DrawingMode.INVERT:
                 action = createAction(DrawingMode.INVERT, {
-                    start: this._startPoint, end: [ix, iy]
+                    start: this._startPoint, end: [ix, iy],
                 }, options);
                 break;
             case DrawingMode.ZOOM_CALLOUT: {
@@ -598,7 +609,7 @@ export class DrawingOverlay {
                 if (this._liveVideo && this._captureStageForPreview)
                     this.clearPreviewCache();
                 this._generateEffectPreview(action).catch(e =>
-                    console.error(`[Big Shot] Preview generation failed: ${e.message}`)
+                    console.error(`[Big Shot] Preview generation failed: ${e.message}`),
                 );
             }
         }
@@ -763,12 +774,21 @@ export class DrawingOverlay {
             reactive: true,
         });
 
-        this._textEntry = new St.Entry({
+        const EntryClass = custom ? St.Entry : MultilineEntry;
+        this._textEntry = new EntryClass({
             hint_text: custom?.hint ?? _('Text…'),
-            style: 'width: 200px; min-height: 28px; font-size: 14px;',
+            style: custom
+                ? 'width: 200px; min-height: 28px; font-size: 14px;'
+                : 'width: 320px; min-height: 96px; border-radius: 10px; font-size: 14px;',
             can_focus: true,
             accessible_name: custom?.accessibleName ?? _('Annotation text'),
         });
+
+        const textActor = this._textEntry.clutter_text;
+        const multiline = !custom;
+        textActor.set_single_line_mode(!multiline);
+        textActor.set_line_wrap(multiline);
+        textActor.set_activatable(!multiline);
 
         // Pre-fill: custom flow supplies its own initial text; otherwise editing.
         if (custom) {
@@ -788,6 +808,7 @@ export class DrawingOverlay {
             style_class: 'screenshot-ui-show-pointer-button',
             child: new St.Icon({ icon_name: 'object-select-symbolic', icon_size: 16 }),
             can_focus: true,
+            y_align: Clutter.ActorAlign.CENTER,
             accessible_name: _('Confirm'),
         });
 
@@ -823,14 +844,38 @@ export class DrawingOverlay {
         };
 
         confirmBtn.connect('clicked', confirmAction);
-        this._textEntry.clutter_text.connect('activate', confirmAction);
+        if (!multiline)
+            textActor.connect('activate', confirmAction);
 
-        // Escape closes without adding; custom flows may consume other keys
-        // (e.g. ↑/↓ to change caption size).
-        this._textEntry.clutter_text.connect('key-press-event', (_actor, event) => {
-            if (event.get_key_symbol() === Clutter.KEY_Escape) {
+        // Multiline text: Enter inserts a line break; Ctrl+Enter confirms.
+        // Custom single-line flows retain Enter-to-confirm behavior.
+        textActor.connect('key-press-event', (_actor, event) => {
+            const key = event.get_key_symbol();
+            if (key === Clutter.KEY_Escape) {
                 custom?.onCancel?.();
                 this._closeTextPopover();
+                return Clutter.EVENT_STOP;
+            }
+            if (multiline &&
+                (key === Clutter.KEY_Return || key === Clutter.KEY_KP_Enter)) {
+                if (event.get_state() & Clutter.ModifierType.CONTROL_MASK) {
+                    confirmAction();
+                    return Clutter.EVENT_STOP;
+                }
+
+                let cursor = textActor.cursor_position;
+                const selection = textActor.selection_bound;
+                if (cursor < 0)
+                    cursor = textActor.get_text().length;
+                if (selection >= 0 && selection !== cursor) {
+                    const start = Math.min(cursor, selection);
+                    const end = Math.max(cursor, selection);
+                    textActor.delete_text(start, end);
+                    cursor = start;
+                }
+                textActor.insert_text('\n', cursor);
+                textActor.set_cursor_position(cursor + 1);
+                textActor.set_selection_bound(cursor + 1);
                 return Clutter.EVENT_STOP;
             }
             if (custom?.onKey && custom.onKey(event))
@@ -846,7 +891,7 @@ export class DrawingOverlay {
         this._addFloatingChild(this._textPopover);
         this._textPopover.set_position(
             Math.max(0, wx - 100),
-            Math.max(0, wy - 44)
+            Math.max(0, wy - 44),
         );
 
         // Focus the entry after a frame
@@ -982,7 +1027,7 @@ export class DrawingOverlay {
     // RENDERING
     // =========================================================================
 
-    _onDraw(cr, width, height) {
+    _onDraw(cr, _width, _height) {
         // Clear (Cairo.Operator.CLEAR = 0)
         cr.save();
         cr.setOperator(0);
@@ -1070,7 +1115,7 @@ export class DrawingOverlay {
                 cr.setDash([5, 4], 0);
                 cr.rectangle(
                     Math.min(wx1, wx2), Math.min(wy1, wy2),
-                    Math.abs(wx2 - wx1), Math.abs(wy2 - wy1)
+                    Math.abs(wx2 - wx1), Math.abs(wy2 - wy1),
                 );
                 cr.stroke();
                 cr.restore();
@@ -1136,7 +1181,7 @@ export class DrawingOverlay {
         const pixbuf = await Shell.Screenshot.composite_to_stream(
             texture, 0, 0, -1, -1, bufScale,
             null, 0, 0, 1,
-            stream
+            stream,
         );
         stream.close(null);
 
@@ -1177,7 +1222,7 @@ export class DrawingOverlay {
             const pixbuf = await Shell.Screenshot.composite_to_stream(
                 texture, 0, 0, -1, -1, bufScale,
                 null, 0, 0, 1,
-                stream
+                stream,
             );
             stream.close(null);
 

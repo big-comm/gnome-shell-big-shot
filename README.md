@@ -4,7 +4,7 @@
 
 **Enhanced Screenshot & Screencast for GNOME Shell**
 
-A GNOME Shell extension that transforms the native Print Screen UI into a powerful annotation and recording tool — with drawing tools, gradient backgrounds, webcam overlay, audio capture, and GPU-accelerated screencasting.
+A GNOME Shell extension that transforms the native Print Screen UI into a powerful annotation and recording tool — with drawing tools, webcam overlay, audio capture, and GPU-accelerated screencasting.
 
 <img src="usr/share/icons/hicolor/scalable/apps/big-shot.svg" width="128" alt="Big Shot icon">
 
@@ -19,7 +19,6 @@ A GNOME Shell extension that transforms the native Print Screen UI into a powerf
 **Big Shot** hooks into GNOME Shell's built-in Screenshot UI (activated by `Print Screen`) and extends it with:
 
 - **15 annotation tools** for marking up screenshots in real-time
-- **Gradient backgrounds, crop, padding & drop-shadow** for professional-looking captures
 - **Desktop + Microphone audio** recording via PulseAudio/PipeWire
 - **GPU-accelerated screencasting** with automatic hardware detection (NVIDIA NVENC, AMD/Intel VA-API)
 - **Live webcam overlay** with 7 mask effects and 5 size presets
@@ -69,16 +68,6 @@ No separate windows. No external apps. Everything lives inside the native GNOME 
 - **Floating draggable toolbar** with opacity animation (90% → 100% on hover)
 - **Toggle native panel** visibility (show/hide GNOME's bottom panel while editing)
 - **Tooltips** on hover for all toolbar buttons
-
-### 🖼️ Screenshot Beautification
-
-- **8 gradient background presets:** Red Flame, Sunset Orange, Golden Hour, Mint Fresh, Ocean Breeze, Purple Dream, Night Sky, Coral Pink — plus "None"
-- **Gradient angle:** 8 directions (0°, 45°, 90°, 135°, 180°, 225°, 270°, 315°)
-- **Border radius:** 0 / 8 / 16 / 24 / 32 px
-- **Crop** with 8 draggable handles (4 corners + 4 edges) + drag the whole region to move
-- **Keyboard crop:** Arrow keys with 8px step when handle is focused
-- **Padding:** cycle through 0 / 16 / 32 / 48 / 64 px
-- **Drop shadow** rendering (8 layers with decreasing opacity)
 
 ### 🎬 Screencast Mode
 
@@ -304,7 +293,6 @@ To add a new language, copy `locale/gnome-shell-big-shot.pot` to `locale/<LANG>.
 
 Big Shot was inspired by and based on the following projects:
 
-- **[Gradia](https://github.com/AlexanderVanhee/Gradia)** — Screenshot beautification tool for GNOME that inspired the gradient backgrounds, crop, padding, and drop-shadow features.
 - **[GNOME Shell Screencast Extra Feature](https://github.com/WSID/gnome-shell-screencast-extra-feature)** — GNOME Shell extension for enhanced screencast recording that served as the foundation for the audio capture, GPU pipeline detection, and screencast monkey-patching approach.
 
 ---

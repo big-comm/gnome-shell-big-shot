@@ -15,7 +15,7 @@ export class PartDownsize extends PartPopupSelect {
             [1.00, 0.75, 0.50, 0.33],
             1.00,
             (v) => `${Math.round(v * 100)}%`,
-            _('Recording resolution')
+            _('Recording resolution'),
         );
     }
 }

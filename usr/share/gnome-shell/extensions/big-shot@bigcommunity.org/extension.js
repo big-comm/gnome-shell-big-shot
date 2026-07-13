@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: MIT
  */
 
-export const APP_VERSION = '26.8.6';
+export const APP_VERSION = '26.8.7';
 
 // Top-level imports are intentionally minimal. Anything imported here runs
 // synchronously inside GNOME's serial extension load loop and delays every
