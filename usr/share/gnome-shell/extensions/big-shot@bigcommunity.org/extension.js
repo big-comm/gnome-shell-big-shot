@@ -338,8 +338,6 @@ const SCREENCAST_DBUS_TIMEOUT_MS = 30000;
 /**
  * Check if a GStreamer element exists on the system
  */
-<<<<<<< Updated upstream
-=======
 function waitSubprocessAsync(proc) {
     return new Promise((resolve, reject) => {
         proc.wait_async(null, (source, result) => {
@@ -353,18 +351,13 @@ function waitSubprocessAsync(proc) {
     });
 }
 
->>>>>>> Stashed changes
 async function checkElement(name) {
     try {
         const proc = Gio.Subprocess.new(
             ['gst-inspect-1.0', '--exists', name],
             Gio.SubprocessFlags.NONE,
         );
-<<<<<<< Updated upstream
-        await proc.wait_async(null);
-=======
         await waitSubprocessAsync(proc);
->>>>>>> Stashed changes
         return proc.get_successful();
     } catch {
         return false;
@@ -600,13 +593,9 @@ export default class BigShotExtension extends Extension {
         this._deferredReadySerial = 0;
         this._parts = [];
         this._availableConfigs = null; // null = not yet detected (lazy)
-<<<<<<< Updated upstream
         this._availableElements = new Set();
         this._pipelineDetectionPromise = null;
         this._pipelineDetectionGeneration = (this._pipelineDetectionGeneration ?? 0) + 1;
-=======
-        this._pipelineDetectionPromise = null;
->>>>>>> Stashed changes
         this._currentConfigIndex = 0;
 
         // Pause/resume recording state
@@ -684,17 +673,11 @@ export default class BigShotExtension extends Extension {
         // Intercept _saveScreenshot to composite annotations onto the image
         this._safeStep('patchSaveScreenshot', () => this._patchSaveScreenshot());
 
-<<<<<<< Updated upstream
-        // Warm the registry without blocking the Shell main loop.
-        this._detectPipelines().catch(e => {
-            console.warn(`[Big Shot] Pipeline detection failed: ${e.message}`);
-=======
         // Warm the codec cache without blocking the Shell main loop. If the
         // user starts recording immediately, that call awaits the same promise.
         this._detectPipelines().catch(e => {
             if (this._activeEnableSerial === enableSerial)
                 console.warn(`[Big Shot] Pipeline detection failed: ${e.message}`);
->>>>>>> Stashed changes
         });
     }
 
@@ -712,14 +695,10 @@ export default class BigShotExtension extends Extension {
     }
 
     disable() {
-<<<<<<< Updated upstream
         this._pipelineDetectionGeneration++;
         this._pipelineDetectionPromise = null;
-
-=======
         this._activeEnableSerial = 0;
         this._deferredReadySerial = 0;
->>>>>>> Stashed changes
         // Cancel deferred enable if it hasn't fired yet (extension disabled
         // before the idle callback ran). Without this, the parts/patches would
         // be created against a screenshotUI we no longer track. The async
@@ -1235,8 +1214,6 @@ export default class BigShotExtension extends Extension {
         }
     }
 
-<<<<<<< Updated upstream
-=======
     // =========================================================================
     // OCR — Optical Character Recognition via Tesseract
     // =========================================================================
@@ -1491,7 +1468,6 @@ export default class BigShotExtension extends Extension {
         });
     }
 
->>>>>>> Stashed changes
     /**
      * Handle action button clicks from the toolbar.
      */
@@ -1547,8 +1523,6 @@ export default class BigShotExtension extends Extension {
                 break;
             }
 
-<<<<<<< Updated upstream
-=======
             case 'ocr': {
                 // Determine language
                 const selectedLang = this._toolbar?.ocrLanguage;
@@ -1592,7 +1566,6 @@ export default class BigShotExtension extends Extension {
                 break;
             }
 
->>>>>>> Stashed changes
             }
         } catch (e) {
             console.error(`[Big Shot] Action '${action}' failed: ${e.message}\n${e.stack}`);
@@ -1708,7 +1681,6 @@ export default class BigShotExtension extends Extension {
         }
     }
 
-<<<<<<< Updated upstream
     _detectPipelines() {
         if (this._availableConfigs !== null)
             return Promise.resolve(this._availableConfigs);
@@ -1763,56 +1735,6 @@ export default class BigShotExtension extends Extension {
             console.log(`[Big Shot] Pipeline detection ready in ${Math.round((GLib.get_monotonic_time() - startedAt) / 1000)} ms: ${this._availableConfigs.map(config => config.id).join(', ')}`);
 
         return this._availableConfigs;
-=======
-    async _detectPipelines() {
-        // Already detected — skip
-        if (this._availableConfigs !== null)
-            return this._availableConfigs;
-        if (this._pipelineDetectionPromise)
-            return this._pipelineDetectionPromise;
-
-        const enableSerial = this._activeEnableSerial;
-        const detection = (async () => {
-            const elementNames = [...new Set(VIDEO_PIPELINES.flatMap(config => config.elements))];
-            const [gpuVendors, elementResults] = await Promise.all([
-                detectGpuVendors(),
-                Promise.all(elementNames.map(async name => [name, await checkElement(name)])),
-            ]);
-
-            if (!enableSerial || this._activeEnableSerial !== enableSerial)
-                return [];
-
-            const availableElements = new Map(elementResults);
-            const vendorSet = new Set(gpuVendors);
-            const gpuConfigs = [];
-            const swConfigs = [];
-
-            for (const config of VIDEO_PIPELINES) {
-                if (!config.elements.every(element => availableElements.get(element)))
-                    continue;
-
-                if (config.vendors.length === 0) {
-                    swConfigs.push(config);
-                } else if (config.vendors.some(vendor => vendorSet.has(vendor))) {
-                    gpuConfigs.push(config);
-                }
-            }
-
-            this._gpuVendors = gpuVendors;
-            this._availableConfigs = [...gpuConfigs, ...swConfigs];
-            if (this._availableConfigs.length === 0)
-                console.warn('[Big Shot] No compatible GStreamer pipeline found!');
-            return this._availableConfigs;
-        })();
-
-        this._pipelineDetectionPromise = detection;
-        try {
-            return await detection;
-        } finally {
-            if (this._pipelineDetectionPromise === detection)
-                this._pipelineDetectionPromise = null;
-        }
->>>>>>> Stashed changes
     }
 
     _getAutoPipelineConfigs() {
@@ -1866,14 +1788,11 @@ export default class BigShotExtension extends Extension {
             this._handleAction(action);
         });
 
-<<<<<<< Updated upstream
-=======
         // Detect Tesseract and populate OCR languages (async — won't block UI)
         this._refreshOcrLanguages().catch(e => {
             console.log(`[Big Shot] Tesseract detection skipped: ${e.message}`);
         });
 
->>>>>>> Stashed changes
         // Audio — Desktop + Mic toggle buttons
         this._audio = new PartAudio(ui, ext);
         this._parts.push(this._audio);
@@ -1986,39 +1905,24 @@ export default class BigShotExtension extends Extension {
             // Patch ScreencastAsync
             if (this._origScreencast) {
                 screencastProxy.ScreencastAsync = function (filePath, options) {
-<<<<<<< Updated upstream
-                    const geometry = screenshotUI._getSelectedGeometry?.(true);
-                    const captureSize = geometry
-                        ? { width: geometry[2], height: geometry[3] }
-                        : null;
-                    return ext._screencastCommonAsync(
-                        filePath, options, ext._origScreencast, captureSize);
-=======
                     return ext._screencastCommonAsync(
                         filePath,
                         options,
                         ext._origScreencast,
                         { width: global.stage.width, height: global.stage.height },
                     );
->>>>>>> Stashed changes
                 };
             }
 
             // Patch ScreencastAreaAsync
             if (this._origScreencastArea) {
                 screencastProxy.ScreencastAreaAsync = function (x, y, width, height, filePath, options) {
-<<<<<<< Updated upstream
-                    return ext._screencastCommonAsync(filePath, options, (fp, opts) => {
-                        return ext._origScreencastArea(x, y, width, height, fp, opts);
-                    }, { width, height });
-=======
                     return ext._screencastCommonAsync(
                         filePath,
                         options,
                         (fp, opts) => ext._origScreencastArea(x, y, width, height, fp, opts),
                         { width, height },
                     );
->>>>>>> Stashed changes
                 };
             }
 
@@ -2275,11 +2179,7 @@ export default class BigShotExtension extends Extension {
     }
 
     async _screencastCommonAsync(filePath, options, originalMethod, captureSize = null) {
-<<<<<<< Updated upstream
         // Share the background probe when it is still finishing.
-=======
-        // Lazy pipeline detection on first use (avoids blocking enable())
->>>>>>> Stashed changes
         await this._detectPipelines();
 
         // Force every recording (full-screen and area) into ~/Videos/BigShot/
@@ -2287,14 +2187,6 @@ export default class BigShotExtension extends Extension {
         filePath = buildBigShotRecordingPath();
         ensureRecordingFolder();
 
-<<<<<<< Updated upstream
-        if (!this._availableConfigs?.length) {
-            return this._startNativeFallback(
-                filePath, options, originalMethod, captureSize);
-        }
-
-=======
->>>>>>> Stashed changes
         const framerate = this._framerate?.value ?? 30;
         const downsize = this._downsize?.value ?? 1.0;
         const quality = this._toolbar?.videoQuality ?? 'high';
@@ -2323,16 +2215,12 @@ export default class BigShotExtension extends Extension {
         for (let i = 0; i < configs.length; i++) {
             const config = configs[i];
             const pipeline = this._makePipelineString(
-<<<<<<< Updated upstream
-                config, framerateCaps, downsize, quality, captureSize);
-=======
                 config,
                 framerateCaps,
                 downsize,
                 quality,
                 captureSize,
             );
->>>>>>> Stashed changes
             const pipelineOptions = {
                 ...options,
                 pipeline: new GLib.Variant('s', pipeline),
@@ -2382,14 +2270,6 @@ export default class BigShotExtension extends Extension {
 
         // All custom pipelines exhausted — clean up indicator and fall back
         console.warn('[Big Shot] All pipelines failed, falling back to GNOME default');
-<<<<<<< Updated upstream
-        this._indicator?.onPipelineReady();
-        return this._startNativeFallback(
-            filePath, options, originalMethod, captureSize);
-    }
-
-    async _startNativeFallback(filePath, options, originalMethod, captureSize) {
-=======
         return this._startDefaultRecording({
             filePath,
             options: baseOptions,
@@ -2410,7 +2290,6 @@ export default class BigShotExtension extends Extension {
         quality,
         captureSize,
     }) {
->>>>>>> Stashed changes
         this._recordingState = 'starting';
         try {
             const result = await originalMethod(filePath, options);
@@ -2418,27 +2297,6 @@ export default class BigShotExtension extends Extension {
                 throw new Error('Screencast service returned failure');
 
             const actualPath = result?.[1] ?? filePath;
-<<<<<<< Updated upstream
-            const extensionMatch = typeof actualPath === 'string'
-                ? actualPath.match(/\.([A-Za-z0-9]+)$/)
-                : null;
-            const ext = extensionMatch?.[1] ?? 'webm';
-            return this._registerRecordingStarted({
-                result,
-                config: {
-                    id: 'gnome-default',
-                    label: 'GNOME Default',
-                    ext,
-                    native: true,
-                },
-                originalMethod,
-                baseOptions: { ...options },
-                framerateCaps: `${this._framerate?.value ?? 30}/1`,
-                downsize: 1.0,
-                quality: 'high',
-                captureSize,
-                fallbackPath: actualPath,
-=======
             const config = {
                 id: 'gnome-default',
                 label: 'GNOME default',
@@ -2456,7 +2314,6 @@ export default class BigShotExtension extends Extension {
                 captureSize,
                 fallbackPath: filePath,
                 defaultPipeline: true,
->>>>>>> Stashed changes
             });
         } catch (e) {
             this._recordingState = 'idle';
@@ -2501,10 +2358,7 @@ export default class BigShotExtension extends Extension {
             downsize,
             quality,
             captureSize,
-<<<<<<< Updated upstream
-=======
             defaultPipeline,
->>>>>>> Stashed changes
             ext: config.ext,
             segments: [],
             finalPath: correctedPath,
@@ -2727,13 +2581,8 @@ export default class BigShotExtension extends Extension {
         const filePath = buildBigShotSegmentPath(session.id, index);
         GLib.mkdir_with_parents(getSegmentSessionFolder(session.id), 0o755);
 
-<<<<<<< Updated upstream
-        let pipelineOptions = { ...session.baseOptions };
-        if (!session.config.native) {
-=======
         const pipelineOptions = { ...session.baseOptions };
         if (!session.defaultPipeline) {
->>>>>>> Stashed changes
             const pipeline = this._makePipelineString(
                 session.config,
                 session.framerateCaps,
@@ -2741,14 +2590,7 @@ export default class BigShotExtension extends Extension {
                 session.quality,
                 session.captureSize,
             );
-<<<<<<< Updated upstream
-            pipelineOptions = {
-                ...pipelineOptions,
-                pipeline: new GLib.Variant('s', pipeline),
-            };
-=======
             pipelineOptions.pipeline = new GLib.Variant('s', pipeline);
->>>>>>> Stashed changes
         }
 
         const startedAtUnix = GLib.DateTime.new_now_local().to_unix();
@@ -3022,7 +2864,6 @@ export default class BigShotExtension extends Extension {
         });
     }
 
-<<<<<<< Updated upstream
     _selectAudioPipeline(ext) {
         const type = ext === 'mp4' ? 'aac' : 'vorbis';
         return AUDIO_PIPELINES[type]
@@ -3033,9 +2874,6 @@ export default class BigShotExtension extends Extension {
     _makePipelineString(
         config, framerateCaps, downsize, quality = 'high', captureSize = null,
     ) {
-=======
-    _makePipelineString(config, framerateCaps, downsize, quality = 'high', captureSize = null) {
->>>>>>> Stashed changes
         let video = config.src.replace('FRAMERATE_CAPS', framerateCaps);
 
         // Resolve quality preset and build encoder string
@@ -3044,22 +2882,6 @@ export default class BigShotExtension extends Extension {
 
         // Downsize — insert videoscale between videoconvert and encoder
         if (downsize < 1.0) {
-<<<<<<< Updated upstream
-            let sourceWidth = captureSize?.width;
-            let sourceHeight = captureSize?.height;
-            if (!sourceWidth || !sourceHeight) {
-                const monitor = global.display.get_current_monitor();
-                const geo = global.display.get_monitor_geometry(monitor);
-                sourceWidth = geo.width;
-                sourceHeight = geo.height;
-            }
-            const targetW = Math.max(2, Math.round(sourceWidth * downsize)) & ~1;
-            const targetH = Math.max(2, Math.round(sourceHeight * downsize)) & ~1;
-            // Insert videoscale after the first "queue" in the video chain
-            video = video.replace(
-                /queue/,
-                `queue ! videoscale ! video/x-raw,width=${targetW},height=${targetH}`,
-=======
             const sourceSize = captureSize ?? (() => {
                 const monitor = global.display.get_current_monitor();
                 const geo = global.display.get_monitor_geometry(monitor);
@@ -3069,7 +2891,6 @@ export default class BigShotExtension extends Extension {
                 sourceSize.width,
                 sourceSize.height,
                 downsize,
->>>>>>> Stashed changes
             );
             if (target) {
                 // Even output dimensions are required by common H.264/H.265 encoders.

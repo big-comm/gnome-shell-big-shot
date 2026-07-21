@@ -1822,8 +1822,6 @@ export class PartToolbar extends PartUI {
         this._actionCallback = callback;
     }
 
-<<<<<<< Updated upstream
-=======
     /** @returns {string|null} selected OCR language string (e.g. 'por+eng') or null for auto */
     get ocrLanguage() { return this._ocrSelectedLang; }
 
@@ -2058,7 +2056,6 @@ export class PartToolbar extends PartUI {
         this._ocrLangPopup = null;
     }
 
->>>>>>> Stashed changes
     /**
      * Show a brief inline status message on the toolbar.
      */
@@ -2178,11 +2175,8 @@ export class PartToolbar extends PartUI {
         this._closeSizePopup();
         this._closeFontPopup();
         this._closeIntensityPopup();
-<<<<<<< Updated upstream
-=======
         this._closeOcrLangPopup();
         this._finishOcrInstallPrompt(false);
->>>>>>> Stashed changes
         this._hideTooltip();
         this._clearInlineMessage();
 
