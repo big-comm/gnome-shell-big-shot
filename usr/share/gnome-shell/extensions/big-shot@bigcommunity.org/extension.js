@@ -116,13 +116,13 @@ const GpuVendor = Object.freeze({
  * Detect GPU vendor using lspci output.
  * Returns an array of detected vendors in priority order.
  */
-function detectGpuVendors() {
+async function detectGpuVendors() {
     try {
         const proc = Gio.Subprocess.new(
             ['lspci'],
             Gio.SubprocessFlags.STDOUT_PIPE | Gio.SubprocessFlags.STDERR_SILENCE
         );
-        const [, stdout] = proc.communicate_utf8(null, null);
+        const [, stdout] = await proc.communicate_utf8_async(null, null);
         if (!stdout) return [GpuVendor.UNKNOWN];
 
         const vendors = [];
@@ -309,9 +309,15 @@ const VIDEO_PIPELINES = [
     },
 ];
 
-const AUDIO_PIPELINE = {
-    vorbis: 'vorbisenc ! queue',
-    aac: 'fdkaacenc ! queue',
+const AUDIO_PIPELINES = {
+    vorbis: [
+        { element: 'vorbisenc', pipeline: 'vorbisenc ! queue' },
+    ],
+    aac: [
+        { element: 'fdkaacenc', pipeline: 'fdkaacenc ! queue' },
+        { element: 'avenc_aac', pipeline: 'avenc_aac ! queue' },
+        { element: 'voaacenc', pipeline: 'voaacenc ! queue' },
+    ],
 };
 
 const MUXERS = {
@@ -328,24 +334,17 @@ const SCREENCAST_DBUS_TIMEOUT_MS = 30000;
 /**
  * Check if a GStreamer element exists on the system
  */
-function checkElement(name) {
+async function checkElement(name) {
     try {
         const proc = Gio.Subprocess.new(
             ['gst-inspect-1.0', '--exists', name],
             Gio.SubprocessFlags.NONE
         );
-        proc.wait(null);
+        await proc.wait_async(null);
         return proc.get_successful();
     } catch {
         return false;
     }
-}
-
-/**
- * Check if all elements in a pipeline config are available
- */
-function checkPipeline(config) {
-    return config.elements.every(el => checkElement(el));
 }
 
 /**
@@ -574,6 +573,9 @@ export default class BigShotExtension extends Extension {
     enable() {
         this._parts = [];
         this._availableConfigs = null; // null = not yet detected (lazy)
+        this._availableElements = new Set();
+        this._pipelineDetectionPromise = null;
+        this._pipelineDetectionGeneration = (this._pipelineDetectionGeneration ?? 0) + 1;
         this._currentConfigIndex = 0;
 
         // Pause/resume recording state
@@ -646,6 +648,11 @@ export default class BigShotExtension extends Extension {
 
         // Intercept _saveScreenshot to composite annotations onto the image
         this._safeStep('patchSaveScreenshot', () => this._patchSaveScreenshot());
+
+        // Warm the registry without blocking the Shell main loop.
+        this._detectPipelines().catch(e => {
+            console.warn(`[Big Shot] Pipeline detection failed: ${e.message}`);
+        });
     }
 
     /**
@@ -682,6 +689,9 @@ export default class BigShotExtension extends Extension {
     }
 
     disable() {
+        this._pipelineDetectionGeneration++;
+        this._pipelineDetectionPromise = null;
+
         // Cancel deferred enable if it hasn't fired yet (extension disabled
         // before the idle callback ran). Without this, the parts/patches would
         // be created against a screenshotUI we no longer track. The async
@@ -734,6 +744,7 @@ export default class BigShotExtension extends Extension {
 
         this._screenshotUI = null;
         this._availableConfigs = null;
+        this._availableElements?.clear();
     }
 
     _forceEnableScreencast() {
@@ -1354,43 +1365,59 @@ export default class BigShotExtension extends Extension {
     }
 
     _detectPipelines() {
-        // Already detected — skip
         if (this._availableConfigs !== null)
-            return;
+            return Promise.resolve(this._availableConfigs);
+        if (this._pipelineDetectionPromise)
+            return this._pipelineDetectionPromise;
 
-        // 1. Detect GPU vendor(s) via lspci (same as big-video-converter)
-        this._gpuVendors = detectGpuVendors();
+        const generation = this._pipelineDetectionGeneration;
+        this._pipelineDetectionPromise = this._runPipelineDetection(generation)
+            .finally(() => {
+                if (generation === this._pipelineDetectionGeneration)
+                    this._pipelineDetectionPromise = null;
+            });
+        return this._pipelineDetectionPromise;
+    }
 
-        const vendorSet = new Set(this._gpuVendors);
+    async _runPipelineDetection(generation) {
+        const startedAt = GLib.get_monotonic_time();
+        const gpuVendors = await detectGpuVendors();
+        const vendorSet = new Set(gpuVendors);
 
-        // 2. Build ordered config list:
-        //    - First: configs matching detected GPU (NVIDIA, AMD, or Intel — all equal priority)
-        //    - Last: software fallbacks (vendors=[])
-        const gpuConfigs = []; // Hardware-accelerated for detected GPU
-        const swConfigs = [];  // Software fallbacks
-
-        for (const config of VIDEO_PIPELINES) {
-            if (!checkPipeline(config))
-                continue;
-
-            // Software config (vendors is empty array)
-            if (config.vendors.length === 0) {
-                swConfigs.push(config);
-                continue;
-            }
-
-            // GPU config — add if ANY detected vendor matches
-            const matches = config.vendors.some(v => vendorSet.has(v));
-            if (matches)
-                gpuConfigs.push(config);
+        const candidates = VIDEO_PIPELINES.filter(config =>
+            config.vendors.length === 0 ||
+            config.vendors.some(vendor => vendorSet.has(vendor)));
+        const elementNames = new Set(candidates.flatMap(config => config.elements));
+        elementNames.add('mp4mux');
+        elementNames.add('webmmux');
+        for (const choices of Object.values(AUDIO_PIPELINES)) {
+            for (const choice of choices)
+                elementNames.add(choice.element);
         }
 
-        // Final order: GPU hardware (your detected vendor) → Software fallback
+        const checks = await Promise.all([...elementNames].map(async name =>
+            [name, await checkElement(name)]));
+        const availableElements = new Set(
+            checks.filter(([, available]) => available).map(([name]) => name));
+
+        if (generation !== this._pipelineDetectionGeneration || !this._screenshotUI)
+            return [];
+
+        const available = candidates.filter(config =>
+            config.elements.every(element => availableElements.has(element)) &&
+            availableElements.has(config.ext === 'mp4' ? 'mp4mux' : 'webmmux'));
+        const gpuConfigs = available.filter(config => config.vendors.length > 0);
+        const swConfigs = available.filter(config => config.vendors.length === 0);
+
+        this._gpuVendors = gpuVendors;
+        this._availableElements = availableElements;
         this._availableConfigs = [...gpuConfigs, ...swConfigs];
-
-        if (this._availableConfigs.length === 0) {
+        if (this._availableConfigs.length === 0)
             console.warn('[Big Shot] No compatible GStreamer pipeline found!');
-        }
+        else
+            console.log(`[Big Shot] Pipeline detection ready in ${Math.round((GLib.get_monotonic_time() - startedAt) / 1000)} ms: ${this._availableConfigs.map(config => config.id).join(', ')}`);
+
+        return this._availableConfigs;
     }
 
     _getAutoPipelineConfigs() {
@@ -1556,7 +1583,12 @@ export default class BigShotExtension extends Extension {
             // Patch ScreencastAsync
             if (this._origScreencast) {
                 screencastProxy.ScreencastAsync = function (filePath, options) {
-                    return ext._screencastCommonAsync(filePath, options, ext._origScreencast);
+                    const geometry = screenshotUI._getSelectedGeometry?.(true);
+                    const captureSize = geometry
+                        ? { width: geometry[2], height: geometry[3] }
+                        : null;
+                    return ext._screencastCommonAsync(
+                        filePath, options, ext._origScreencast, captureSize);
                 };
             }
 
@@ -1565,7 +1597,7 @@ export default class BigShotExtension extends Extension {
                 screencastProxy.ScreencastAreaAsync = function (x, y, width, height, filePath, options) {
                     return ext._screencastCommonAsync(filePath, options, (fp, opts) => {
                         return ext._origScreencastArea(x, y, width, height, fp, opts);
-                    });
+                    }, { width, height });
                 };
             }
 
@@ -1821,17 +1853,18 @@ export default class BigShotExtension extends Extension {
         this._origScreencastProxyTimeout = null;
     }
 
-    async _screencastCommonAsync(filePath, options, originalMethod) {
-        // Lazy pipeline detection on first use (avoids blocking enable())
-        this._detectPipelines();
+    async _screencastCommonAsync(filePath, options, originalMethod, captureSize = null) {
+        // Share the background probe when it is still finishing.
+        await this._detectPipelines();
 
         // Force every recording (full-screen and area) into ~/Videos/BigShot/
         // with the localized "BigShot from %d %t" filename.
         filePath = buildBigShotRecordingPath();
         ensureRecordingFolder();
 
-        if (this._availableConfigs.length === 0) {
-            return originalMethod(filePath, options);
+        if (!this._availableConfigs?.length) {
+            return this._startNativeFallback(
+                filePath, options, originalMethod, captureSize);
         }
 
         const framerate = this._framerate?.value ?? 30;
@@ -1861,7 +1894,8 @@ export default class BigShotExtension extends Extension {
         // Try each config in cascade: preferred → GPU hw → VAAPI → Software
         for (let i = 0; i < configs.length; i++) {
             const config = configs[i];
-            const pipeline = this._makePipelineString(config, framerateCaps, downsize, quality);
+            const pipeline = this._makePipelineString(
+                config, framerateCaps, downsize, quality, captureSize);
             const pipelineOptions = {
                 ...options,
                 pipeline: new GLib.Variant('s', pipeline),
@@ -1885,6 +1919,7 @@ export default class BigShotExtension extends Extension {
                     framerateCaps,
                     downsize,
                     quality,
+                    captureSize,
                     fallbackPath: filePath,
                 });
             } catch (e) {
@@ -1896,6 +1931,7 @@ export default class BigShotExtension extends Extension {
                     framerateCaps,
                     downsize,
                     quality,
+                    captureSize,
                     startedAtUnix,
                 });
                 if (recovered)
@@ -1910,7 +1946,43 @@ export default class BigShotExtension extends Extension {
         // All custom pipelines exhausted — clean up indicator and fall back
         console.warn('[Big Shot] All pipelines failed, falling back to GNOME default');
         this._indicator?.onPipelineReady();
-        return originalMethod(filePath, options);
+        return this._startNativeFallback(
+            filePath, options, originalMethod, captureSize);
+    }
+
+    async _startNativeFallback(filePath, options, originalMethod, captureSize) {
+        this._recordingState = 'starting';
+        try {
+            const result = await originalMethod(filePath, options);
+            if (result && result[0] === false)
+                throw new Error('Screencast service returned failure');
+
+            const actualPath = result?.[1] ?? filePath;
+            const extensionMatch = typeof actualPath === 'string'
+                ? actualPath.match(/\.([A-Za-z0-9]+)$/)
+                : null;
+            const ext = extensionMatch?.[1] ?? 'webm';
+            return this._registerRecordingStarted({
+                result,
+                config: {
+                    id: 'gnome-default',
+                    label: 'GNOME Default',
+                    ext,
+                    native: true,
+                },
+                originalMethod,
+                baseOptions: { ...options },
+                framerateCaps: `${this._framerate?.value ?? 30}/1`,
+                downsize: 1.0,
+                quality: 'high',
+                captureSize,
+                fallbackPath: actualPath,
+            });
+        } catch (e) {
+            this._recordingState = 'idle';
+            this._indicator?.onPipelineReady();
+            throw e;
+        }
     }
 
     _registerRecordingStarted({
@@ -1921,11 +1993,13 @@ export default class BigShotExtension extends Extension {
         framerateCaps,
         downsize,
         quality,
+        captureSize,
         fallbackPath,
     }) {
         this._indicator?.onPipelineReady();
 
         this._recordingState = 'recording';
+        console.log(`[Big Shot] Recording started with ${config.id}`);
         this._recordingContext = {
             config,
             originalMethod,
@@ -1945,6 +2019,7 @@ export default class BigShotExtension extends Extension {
             framerateCaps,
             downsize,
             quality,
+            captureSize,
             ext: config.ext,
             segments: [],
             finalPath: correctedPath,
@@ -1989,6 +2064,7 @@ export default class BigShotExtension extends Extension {
         framerateCaps,
         downsize,
         quality,
+        captureSize,
         startedAtUnix,
     }) {
         if (!this._isStartupTimeout(error))
@@ -2009,6 +2085,7 @@ export default class BigShotExtension extends Extension {
             framerateCaps,
             downsize,
             quality,
+            captureSize,
             fallbackPath: activePath,
         });
     }
@@ -2136,7 +2213,7 @@ export default class BigShotExtension extends Extension {
 
         this._suppressPauseStopFailure = true;
         const result = await this._origStopScreencastAsync();
-        return Array.isArray(result) ? !!result[0] : !!result;
+        return Array.isArray(result) ? Boolean(result[0]) : Boolean(result);
     }
 
     _finalizeCurrentSegment() {
@@ -2165,16 +2242,20 @@ export default class BigShotExtension extends Extension {
         const filePath = buildBigShotSegmentPath(session.id, index);
         GLib.mkdir_with_parents(getSegmentSessionFolder(session.id), 0o755);
 
-        const pipeline = this._makePipelineString(
-            session.config,
-            session.framerateCaps,
-            session.downsize,
-            session.quality
-        );
-        const pipelineOptions = {
-            ...session.baseOptions,
-            pipeline: new GLib.Variant('s', pipeline),
-        };
+        let pipelineOptions = { ...session.baseOptions };
+        if (!session.config.native) {
+            const pipeline = this._makePipelineString(
+                session.config,
+                session.framerateCaps,
+                session.downsize,
+                session.quality,
+                session.captureSize,
+            );
+            pipelineOptions = {
+                ...pipelineOptions,
+                pipeline: new GLib.Variant('s', pipeline),
+            };
+        }
 
         const startedAtUnix = GLib.DateTime.new_now_local().to_unix();
         let result;
@@ -2447,7 +2528,16 @@ export default class BigShotExtension extends Extension {
         });
     }
 
-    _makePipelineString(config, framerateCaps, downsize, quality = 'high') {
+    _selectAudioPipeline(ext) {
+        const type = ext === 'mp4' ? 'aac' : 'vorbis';
+        return AUDIO_PIPELINES[type]
+            .find(choice => this._availableElements?.has(choice.element))
+            ?.pipeline ?? null;
+    }
+
+    _makePipelineString(
+        config, framerateCaps, downsize, quality = 'high', captureSize = null,
+    ) {
         let video = config.src.replace('FRAMERATE_CAPS', framerateCaps);
 
         // Resolve quality preset and build encoder string
@@ -2456,14 +2546,20 @@ export default class BigShotExtension extends Extension {
 
         // Downsize — insert videoscale between videoconvert and encoder
         if (downsize < 1.0) {
-            const monitor = global.display.get_current_monitor();
-            const geo = global.display.get_monitor_geometry(monitor);
-            const targetW = Math.round(geo.width * downsize);
-            const targetH = Math.round(geo.height * downsize);
+            let sourceWidth = captureSize?.width;
+            let sourceHeight = captureSize?.height;
+            if (!sourceWidth || !sourceHeight) {
+                const monitor = global.display.get_current_monitor();
+                const geo = global.display.get_monitor_geometry(monitor);
+                sourceWidth = geo.width;
+                sourceHeight = geo.height;
+            }
+            const targetW = Math.max(2, Math.round(sourceWidth * downsize)) & ~1;
+            const targetH = Math.max(2, Math.round(sourceHeight * downsize)) & ~1;
             // Insert videoscale after the first "queue" in the video chain
             video = video.replace(
                 /queue/,
-                `queue ! videoscale ! video/x-raw,width=${targetW},height=${targetH}`
+                `queue ! videoscale ! video/x-raw,width=${targetW},height=${targetH}`,
             );
         }
 
@@ -2476,7 +2572,11 @@ export default class BigShotExtension extends Extension {
             // GStreamer multi-branch pipeline for audio+video:
             //   pipewiresrc ! video_chain ! queue ! mux.  pulsesrc ! audio_chain ! queue ! mux.  muxer name=mux ! filesink
             // The screencast service prepends pipewiresrc and appends ! filesink
-            const audioPipeline = ext === 'mp4' ? AUDIO_PIPELINE.aac : AUDIO_PIPELINE.vorbis;
+            const audioPipeline = this._selectAudioPipeline(ext);
+            if (!audioPipeline) {
+                console.warn(`[Big Shot] No ${ext === 'mp4' ? 'AAC' : 'Vorbis'} encoder; recording without audio`);
+                return `${video} ! ${muxer}`;
+            }
             const videoSeg = `${video} ! queue ! mux.`;
             const audioSeg = `${audioInput} ! ${audioPipeline} ! mux.`;
             const muxDef = `${muxer} name=mux`;
