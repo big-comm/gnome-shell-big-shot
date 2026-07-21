@@ -14,24 +14,6 @@ msgstr  "Project-Id-Version: gnome-shell-big-shot\n"
         "Content-Type: text/plain; charset=UTF-8\n"
         "Content-Transfer-Encoding: 8bit\n"
 
-msgid   "BigShot from %d %t"
-msgstr  ""
-
-msgid   "Screenshot taken"
-msgstr  ""
-
-msgid   "Screenshots"
-msgstr  ""
-
-msgid   "Screenshot from %s"
-msgstr  ""
-
-msgid   "Screenshot copied"
-msgstr  ""
-
-msgid   "Save Screenshot"
-msgstr  ""
-
 msgid   "Drawing canvas"
 msgstr  ""
 
@@ -53,6 +35,12 @@ msgstr  ""
 msgid   "Zoom caption"
 msgstr  ""
 
+msgid   "Edit live"
+msgstr  ""
+
+msgid   "Clear annotations"
+msgstr  ""
+
 msgid   "Desktop"
 msgstr  ""
 
@@ -71,167 +59,8 @@ msgstr  ""
 msgid   "Webcam Overlay"
 msgstr  ""
 
-msgid   "Edit live"
-msgstr  ""
-
-msgid   "Clear annotations"
-msgstr  ""
-
 msgid   "Frames per second"
 msgstr  ""
 
 msgid   "Recording resolution"
-msgstr  ""
-
-msgid   "Select / Move"
-msgstr  ""
-
-msgid   "Pen"
-msgstr  ""
-
-msgid   "Arrow"
-msgstr  ""
-
-msgid   "Line"
-msgstr  ""
-
-msgid   "Rectangle"
-msgstr  ""
-
-msgid   "Oval"
-msgstr  ""
-
-msgid   "Text"
-msgstr  ""
-
-msgid   "Highlighter"
-msgstr  ""
-
-msgid   "Censor"
-msgstr  ""
-
-msgid   "Blur"
-msgstr  ""
-
-msgid   "Invert Colors"
-msgstr  ""
-
-msgid   "Magnify / Zoom"
-msgstr  ""
-
-msgid   "Number"
-msgstr  ""
-
-msgid   "Number with Arrow"
-msgstr  ""
-
-msgid   "Number with Pointer"
-msgstr  ""
-
-msgid   "Eraser"
-msgstr  ""
-
-msgid   "Show screenshot panel"
-msgstr  ""
-
-msgid   "Hide screenshot panel"
-msgstr  ""
-
-msgid   "Color"
-msgstr  ""
-
-msgid   "Fill"
-msgstr  ""
-
-msgid   "Decrease Size"
-msgstr  ""
-
-msgid   "Brush Size"
-msgstr  ""
-
-msgid   "Increase Size"
-msgstr  ""
-
-msgid   "Font"
-msgstr  ""
-
-msgid   "Intensity"
-msgstr  ""
-
-msgid   "Undo"
-msgstr  ""
-
-msgid   "Redo"
-msgstr  ""
-
-msgid   "Copy to Clipboard"
-msgstr  ""
-
-msgid   "Save As…"
-msgstr  ""
-
-msgid   "Extract Text (OCR)"
-msgstr  ""
-
-msgid   "OCR Language"
-msgstr  ""
-
-msgid   "Select OCR Language"
-msgstr  ""
-
-msgid   "Close"
-msgstr  ""
-
-msgid   "Done"
-msgstr  ""
-
-msgid   "Video Settings"
-msgstr  ""
-
-msgid   "Quality"
-msgstr  ""
-
-msgid   "High"
-msgstr  ""
-
-msgid   "Medium"
-msgstr  ""
-
-msgid   "Low"
-msgstr  ""
-
-msgid   "Recording quality (bitrate)"
-msgstr  ""
-
-msgid   "Codec"
-msgstr  ""
-
-msgid   "Camera"
-msgstr  ""
-
-msgid   "Mask"
-msgstr  ""
-
-msgid   "Size"
-msgstr  ""
-
-msgid   "Edit"
-msgstr  ""
-
-msgid   "Edit Screenshot"
-msgstr  ""
-
-msgid   "Custom"
-msgstr  ""
-
-msgid   "No Fill"
-msgstr  ""
-
-msgid   "Auto"
-msgstr  ""
-
-msgid   "Use best available codec"
-msgstr  ""
-
-msgid   "Video codec"
 msgstr  ""

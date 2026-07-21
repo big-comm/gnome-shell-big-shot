@@ -15,24 +15,6 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-msgid "BigShot from %d %t"
-msgstr "BigShot from %d %t"
-
-msgid "Screenshot taken"
-msgstr "Screenshot taken"
-
-msgid "Screenshots"
-msgstr "Screenshots"
-
-msgid "Screenshot from %s"
-msgstr "Screenshot from %s"
-
-msgid "Screenshot copied"
-msgstr "Screenshot copied"
-
-msgid "Save Screenshot"
-msgstr "Save Screenshot"
-
 msgid "Drawing canvas"
 msgstr "Drawing canvas"
 
@@ -54,6 +36,12 @@ msgstr "Caption (↑/↓ = size)…"
 msgid "Zoom caption"
 msgstr "Zoom caption"
 
+msgid "Edit live"
+msgstr "Edit live"
+
+msgid "Clear annotations"
+msgstr "Clear annotations"
+
 msgid "Desktop"
 msgstr "Desktop"
 
@@ -72,167 +60,8 @@ msgstr "Webcam"
 msgid "Webcam Overlay"
 msgstr "Webcam Overlay"
 
-msgid "Edit live"
-msgstr "Edit live"
-
-msgid "Clear annotations"
-msgstr "Clear annotations"
-
 msgid "Frames per second"
 msgstr "Frames per second"
 
 msgid "Recording resolution"
 msgstr "Recording resolution"
-
-msgid "Select / Move"
-msgstr "Select / Move"
-
-msgid "Pen"
-msgstr "Pen"
-
-msgid "Arrow"
-msgstr "Arrow"
-
-msgid "Line"
-msgstr "Line"
-
-msgid "Rectangle"
-msgstr "Rectangle"
-
-msgid "Oval"
-msgstr "Oval"
-
-msgid "Text"
-msgstr "Text"
-
-msgid "Highlighter"
-msgstr "Highlighter"
-
-msgid "Censor"
-msgstr "Censor"
-
-msgid "Blur"
-msgstr "Blur"
-
-msgid "Invert Colors"
-msgstr "Invert Colors"
-
-msgid "Magnify / Zoom"
-msgstr "Magnify / Zoom"
-
-msgid "Number"
-msgstr "Number"
-
-msgid "Number with Arrow"
-msgstr "Number with Arrow"
-
-msgid "Number with Pointer"
-msgstr "Number with Pointer"
-
-msgid "Eraser"
-msgstr "Eraser"
-
-msgid "Show screenshot panel"
-msgstr "Show screenshot panel"
-
-msgid "Hide screenshot panel"
-msgstr "Hide screenshot panel"
-
-msgid "Color"
-msgstr "Color"
-
-msgid "Fill"
-msgstr "Fill"
-
-msgid "Decrease Size"
-msgstr "Decrease Size"
-
-msgid "Brush Size"
-msgstr "Brush Size"
-
-msgid "Increase Size"
-msgstr "Increase Size"
-
-msgid "Font"
-msgstr "Font"
-
-msgid "Intensity"
-msgstr "Intensity"
-
-msgid "Undo"
-msgstr "Undo"
-
-msgid "Redo"
-msgstr "Redo"
-
-msgid "Copy to Clipboard"
-msgstr "Copy to Clipboard"
-
-msgid "Save As…"
-msgstr "Save As…"
-
-msgid "Extract Text (OCR)"
-msgstr "Extract Text (OCR)"
-
-msgid "OCR Language"
-msgstr "OCR Language"
-
-msgid "Select OCR Language"
-msgstr "Select OCR Language"
-
-msgid "Close"
-msgstr "Close"
-
-msgid "Done"
-msgstr "Done"
-
-msgid "Video Settings"
-msgstr "Video Settings"
-
-msgid "Quality"
-msgstr "Quality"
-
-msgid "High"
-msgstr "High"
-
-msgid "Medium"
-msgstr "Medium"
-
-msgid "Low"
-msgstr "Low"
-
-msgid "Recording quality (bitrate)"
-msgstr "Recording quality (bitrate)"
-
-msgid "Codec"
-msgstr "Codec"
-
-msgid "Camera"
-msgstr "Camera"
-
-msgid "Mask"
-msgstr "Mask"
-
-msgid "Size"
-msgstr "Size"
-
-msgid "Edit"
-msgstr "Edit"
-
-msgid "Edit Screenshot"
-msgstr "Edit Screenshot"
-
-msgid "Custom"
-msgstr "Custom"
-
-msgid "No Fill"
-msgstr "No Fill"
-
-msgid "Auto"
-msgstr "Auto"
-
-msgid "Use best available codec"
-msgstr "Use best available codec"
-
-msgid "Video codec"
-msgstr "Video codec"
