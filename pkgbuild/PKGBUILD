@@ -11,7 +11,7 @@ optdepends=(
     'tesseract-data-por: Portuguese OCR language data'
     'tesseract-data-spa: Spanish OCR language data'
 )
-makedepends=('gettext')
+makedepends=('gettext' 'nodejs')
 #conflicts=('')
 #provides=('')
 #replaces=('')
@@ -45,6 +45,7 @@ build() {
     local _podir="${_extdir}/po"
     local _localedir="${_extdir}/locale"
 
+    rm -rf "${_localedir}"
     for po_file in "${_podir}"/*.po; do
         [ -f "$po_file" ] || continue
         local lang=$(basename "$po_file" .po)
@@ -56,8 +57,10 @@ build() {
 
 check() {
     cd "${srcdir}/${pkgname}"
-    # Add check/test steps here, if needed
-    # For example: make check
+    find usr/share/gnome-shell/extensions/big-shot@bigcommunity.org \
+        -name '*.js' -print0 | xargs -0 -n1 node --check
+    node --test tests/*.test.js
+    bash -n usr/share/libalpm/scripts/gnome-shell-big-shot-screencast-fix.sh
 }
 
 package() {
@@ -77,6 +80,11 @@ package() {
             cp -a "${srcdir}/${dir}" "${pkgdir}/"
         fi
     done
+
+    # Extension-local gettext catalogs are the single runtime source. Do not
+    # ship source PO files or the obsolete duplicate global locale tree.
+    rm -rf "${pkgdir}/usr/share/locale"
+    rm -rf "${pkgdir}/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/po"
 
     # Install license file if present
     if [ -f "LICENSE" ]; then

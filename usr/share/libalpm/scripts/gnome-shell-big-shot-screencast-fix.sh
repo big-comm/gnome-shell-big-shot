@@ -10,9 +10,11 @@
 
 set -euo pipefail
 
-TARGET="/usr/share/gnome-shell/org.gnome.Shell.Screencast"
+TARGET="${BIG_SHOT_SCREENCAST_TARGET:-/usr/share/gnome-shell/org.gnome.Shell.Screencast}"
 BACKUP="${TARGET}.big-shot-backup"
 MARKER="Workaround GNOME 49 bug"
+GJS_BIN="${BIG_SHOT_GJS_BIN:-/usr/bin/gjs}"
+TIMEOUT_BIN="${BIG_SHOT_TIMEOUT_BIN:-/usr/bin/timeout}"
 
 msg() { echo "[Big Shot] $*"; }
 
@@ -38,12 +40,18 @@ try {
 }
 TESTEOF
 
-    local has_bug=1
-    if ! timeout 5 /usr/bin/gjs -m "$test_file" &>/dev/null; then
-        has_bug=0  # Bug confirmed
-    fi
+    local output status=0
+    output=$("$TIMEOUT_BIN" 5 "$GJS_BIN" -m "$test_file" 2>&1) || status=$?
     rm -f "$test_file"
-    return "$has_bug"
+
+    if grep -q "Expected type utf8.*null" <<< "$output"; then
+        return 0
+    fi
+
+    if (( status != 0 )); then
+        msg "GStreamer probe failed for an unrelated reason; leaving the service untouched"
+    fi
+    return 1
 }
 
 apply_patch() {
@@ -64,8 +72,9 @@ apply_patch() {
 
     msg "Applying screencast Gst.init fix..."
 
-    # Backup original (only if no previous backup exists)
-    [[ -f "$BACKUP" ]] || cp -f "$TARGET" "$BACKUP"
+    # This is a fresh, unpatched package file. Replace any stale backup from a
+    # previous GNOME version so uninstall never restores obsolete service code.
+    cp -f "$TARGET" "$BACKUP"
 
     # Insert workaround after the imports.package.init({...}); block
     local tmpfile inserted=false
@@ -106,12 +115,15 @@ PATCH
 }
 
 remove_patch() {
-    if [[ -f "$BACKUP" ]]; then
+    if is_patched && [[ -f "$BACKUP" ]]; then
         mv -f "$BACKUP" "$TARGET"
         chmod 644 "$TARGET"
         msg "Screencast fix removed, original restored"
     elif is_patched; then
         msg "Warning: backup not found, cannot restore original file"
+    elif [[ -f "$BACKUP" ]]; then
+        rm -f "$BACKUP"
+        msg "Removed stale backup; current service was already unpatched"
     else
         msg "No patch to remove"
     fi

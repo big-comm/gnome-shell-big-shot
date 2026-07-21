@@ -63,6 +63,7 @@ No separate windows. No external apps. Everything lives inside the native GNOME 
 - **Intensity** for Censor/Blur: 1–5, scroll adjustable, Ctrl+Scroll support
 - **Font selector** for Text tool (lists all system fonts)
 - **Undo / Redo** (full action history)
+- **OCR text extraction** with automatic language selection and one-click Tesseract setup for the current system language on Arch-based systems
 - **Copy to Clipboard** — composites annotations onto the image as PNG
 - **Save As…** — file chooser via xdg-desktop-portal with annotations composited
 - **Floating draggable toolbar** with opacity animation (90% → 100% on hover)
@@ -255,6 +256,8 @@ gnome-extensions install --force big-shot.zip
 | Package | Purpose |
 |---------|---------|
 | `gst-plugins-ugly` | Additional GStreamer codecs (x264, mpeg2, a52) |
+| `tesseract` | OCR text extraction; Big Shot can install it on first use |
+| `tesseract-data-*` | OCR data matching the current system language |
 
 ### Build
 
