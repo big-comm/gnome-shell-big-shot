@@ -15,6 +15,53 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: attranslate\n"
+#: NEEDS WORK
+msgid "BigShot from %d %t"
+msgstr "ביגשוט מ-%d %t"
+#: NEEDS WORK
+msgid "Screenshot taken"
+msgstr "צילום מסך נלקח"
+#: NEEDS WORK
+msgid "Screenshots"
+msgstr "צילומי מסך"
+#: NEEDS WORK
+msgid "Screenshot from %s"
+msgstr "צילום מסך מ-%s"
+#: NEEDS WORK
+msgid ""
+"Automatic installation is unavailable. Install Tesseract and its language packs with your package "
+"manager."
+msgstr "התקנה אוטומטית אינה זמינה. התקן את Tesseract וחבילות השפה שלו באמצעות מנהל החבילות שלך."
+#: NEEDS WORK
+msgid "Installing OCR support..."
+msgstr "מתקין תמיכת OCR..."
+#: NEEDS WORK
+msgid "Could not install OCR support. Check the package manager and try again."
+msgstr "לא ניתן להתקין תמיכה ב-OCR. בדוק את מנהל החבילות ונסה שוב."
+#: NEEDS WORK
+msgid "OCR was installed, but no language packs were found."
+msgstr "ה-OCR הותקן, אך לא נמצאו חבילות שפה."
+#: NEEDS WORK
+msgid "OCR support installed successfully."
+msgstr "תמיכת OCR הותקנה בהצלחה."
+#: NEEDS WORK
+msgid "Screenshot copied"
+msgstr "צילום מסך הועתק"
+#: NEEDS WORK
+msgid "Extracting text..."
+msgstr "מוציא טקסט..."
+#: NEEDS WORK
+msgid "Text copied to clipboard! (%d chars)"
+msgstr "טקסט הועתק ללוח! (%d תווים)"
+#: NEEDS WORK
+msgid "No text found in selection"
+msgstr "לא נמצא טקסט בבחירה"
+#: NEEDS WORK
+msgid "OCR failed: %s"
+msgstr "OCR נכשל: %s"
+#: NEEDS WORK
+msgid "Save Screenshot"
+msgstr "שמור צילום מסך"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/drawing/overlay.js:74
 msgid "Drawing canvas"
 msgstr "קנבס ציור"
@@ -65,6 +112,187 @@ msgstr "שכבת מצלמת רשת"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partframerate.js:18
 msgid "Frames per second"
 msgstr "פריימים לשנייה"
+#: NEEDS WORK
+msgid "Select / Move"
+msgstr "בחר / הזז"
+#: NEEDS WORK
+msgid "Pen"
+msgstr "עט"
+#: NEEDS WORK
+msgid "Arrow"
+msgstr "חץ"
+#: NEEDS WORK
+msgid "Line"
+msgstr "שורה"
+#: NEEDS WORK
+msgid "Rectangle"
+msgstr "מלבן"
+#: NEEDS WORK
+msgid "Oval"
+msgstr "אליפסה"
+#: NEEDS WORK
+msgid "Text"
+msgstr "טקסט"
+#: NEEDS WORK
+msgid "Highlighter"
+msgstr "סמן"
+#: NEEDS WORK
+msgid "Censor"
+msgstr "צנזור"
+#: NEEDS WORK
+msgid "Blur"
+msgstr "טשטוש"
+#: NEEDS WORK
+msgid "Invert Colors"
+msgstr "הפוך צבעים"
+#: NEEDS WORK
+msgid "Magnify / Zoom"
+msgstr "הגדלה / זום"
+#: NEEDS WORK
+msgid "Number"
+msgstr "מספר"
+#: NEEDS WORK
+msgid "Number with Arrow"
+msgstr "מספר עם חץ"
+#: NEEDS WORK
+msgid "Number with Pointer"
+msgstr "מספר עם מצביע"
+#: NEEDS WORK
+msgid "Eraser"
+msgstr "מחק"
+#: NEEDS WORK
+msgid "Show screenshot panel"
+msgstr "הצג פאנל צילומי מסך"
+#: NEEDS WORK
+msgid "Hide screenshot panel"
+msgstr "הסתרת לוח הצילומים"
+#: NEEDS WORK
+msgid "Color"
+msgstr "צבע"
+#: NEEDS WORK
+msgid "Fill"
+msgstr "מלא"
+#: NEEDS WORK
+msgid "Decrease Size"
+msgstr "הקטן גודל"
+#: NEEDS WORK
+msgid "Brush Size"
+msgstr "גודל מברשת"
+#: NEEDS WORK
+msgid "Increase Size"
+msgstr "הגדל גודל"
+#: NEEDS WORK
+msgid "Font"
+msgstr "גופן"
+#: NEEDS WORK
+msgid "Intensity"
+msgstr "עוצמה"
+#: NEEDS WORK
+msgid "Undo"
+msgstr "ביטול"
+#: NEEDS WORK
+msgid "Redo"
+msgstr "שחזר"
+#: NEEDS WORK
+msgid "Copy to Clipboard"
+msgstr "העתק ללוח שנה"
+#: NEEDS WORK
+msgid "Save As…"
+msgstr "שמור בשם…"
+#: NEEDS WORK
+msgid "Extract Text (OCR)"
+msgstr "חלץ טקסט (OCR)"
+#: NEEDS WORK
+msgid "OCR Language"
+msgstr "שפת OCR"
+#: NEEDS WORK
+msgid "Select OCR Language"
+msgstr "בחר שפת OCR"
+#: NEEDS WORK
+msgid "Close"
+msgstr "סגור"
+#: NEEDS WORK
+msgid "Done"
+msgstr "בוצע"
+#: NEEDS WORK
+msgid "Video Settings"
+msgstr "הגדרות וידאו"
+#: NEEDS WORK
+msgid "Quality"
+msgstr "איכות"
+#: NEEDS WORK
+msgid "High"
+msgstr "גבוה"
+#: NEEDS WORK
+msgid "Medium"
+msgstr "בינוני"
+#: NEEDS WORK
+msgid "Low"
+msgstr "נמוך"
+#: NEEDS WORK
+msgid "Recording quality (bitrate)"
+msgstr "איכות הקלטה (קצב סיביות)"
+#: NEEDS WORK
+msgid "Codec"
+msgstr "קודקוד"
+#: NEEDS WORK
+msgid "Camera"
+msgstr "מצלמה"
+#: NEEDS WORK
+msgid "Mask"
+msgstr "מסכה"
+#: NEEDS WORK
+msgid "Size"
+msgstr "גודל"
+#: NEEDS WORK
+msgid "Edit"
+msgstr "ערוך"
+#: NEEDS WORK
+msgid "Edit Screenshot"
+msgstr "ערוך צילום מסך"
+#: NEEDS WORK
+msgid "Custom"
+msgstr "מותאם אישית"
+#: NEEDS WORK
+msgid "No Fill"
+msgstr "אין מילוי"
+#: NEEDS WORK
+msgid "Auto"
+msgstr "אוטומטי"
+#: NEEDS WORK
+msgid "Use best available codec"
+msgstr "השתמש בקודק הטוב ביותר הזמין"
+#: NEEDS WORK
+msgid "Video codec"
+msgstr "קודקוד וידאו"
+#: NEEDS WORK
+msgid "Install OCR support?"
+msgstr "האם להתקין תמיכה ב-OCR?"
+#: NEEDS WORK
+msgid ""
+"Text extraction requires Tesseract and the OCR language pack for your system language.\n"
+"\n"
+"Packages: %s\n"
+"\n"
+"Install them now?"
+msgstr ""
+"הפקת טקסט דורשת את Tesseract וחבילת השפה של OCR עבור שפת המערכת שלך.\n"
+"\n"
+"חבילות: %s\n"
+"\n"
+"האם להתקין אותן עכשיו?"
+#: NEEDS WORK
+msgid "Cancel"
+msgstr "ביטול"
+#: NEEDS WORK
+msgid "Install"
+msgstr "התקן"
+#: NEEDS WORK
+msgid "OCR Languages"
+msgstr "שפות OCR"
+#: NEEDS WORK
+msgid "Auto (system)"
+msgstr "אוטומטי (מערכת)"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partdownsize.js:18
 msgid "Recording resolution"
 msgstr "רזולוציית הקלטה"

@@ -15,6 +15,53 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: attranslate\n"
+#: NEEDS WORK
+msgid "BigShot from %d %t"
+msgstr "%d %t'den BigShot"
+#: NEEDS WORK
+msgid "Screenshot taken"
+msgstr "Ekran görüntüsü alındı"
+#: NEEDS WORK
+msgid "Screenshots"
+msgstr "Ekran Görüntüleri"
+#: NEEDS WORK
+msgid "Screenshot from %s"
+msgstr "%s'den Ekran Görüntüsü"
+#: NEEDS WORK
+msgid ""
+"Automatic installation is unavailable. Install Tesseract and its language packs with your package "
+"manager."
+msgstr "Otomatik kurulum mevcut değil. Tesseract'ı ve dil paketlerini paket yöneticinizle kurun."
+#: NEEDS WORK
+msgid "Installing OCR support..."
+msgstr "OCR desteği kuruluyor..."
+#: NEEDS WORK
+msgid "Could not install OCR support. Check the package manager and try again."
+msgstr "OCR desteği kurulamadı. Paket yöneticisini kontrol edin ve tekrar deneyin."
+#: NEEDS WORK
+msgid "OCR was installed, but no language packs were found."
+msgstr "OCR yüklendi, ancak dil paketleri bulunamadı."
+#: NEEDS WORK
+msgid "OCR support installed successfully."
+msgstr "OCR desteği başarıyla yüklendi."
+#: NEEDS WORK
+msgid "Screenshot copied"
+msgstr "Ekran görüntüsü kopyalandı"
+#: NEEDS WORK
+msgid "Extracting text..."
+msgstr "Metin çıkarılıyor..."
+#: NEEDS WORK
+msgid "Text copied to clipboard! (%d chars)"
+msgstr "Metin panoya kopyalandı! (%d karakter)"
+#: NEEDS WORK
+msgid "No text found in selection"
+msgstr "Seçimde metin bulunamadı"
+#: NEEDS WORK
+msgid "OCR failed: %s"
+msgstr "OCR başarısız: %s"
+#: NEEDS WORK
+msgid "Save Screenshot"
+msgstr "Ekran Görüntüsünü Kaydet"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/drawing/overlay.js:74
 msgid "Drawing canvas"
 msgstr "Çizim tuvali"
@@ -65,6 +112,187 @@ msgstr "Webcam Üstü"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partframerate.js:18
 msgid "Frames per second"
 msgstr "Kare/saniye"
+#: NEEDS WORK
+msgid "Select / Move"
+msgstr "Seç / Taşı"
+#: NEEDS WORK
+msgid "Pen"
+msgstr "Kalem"
+#: NEEDS WORK
+msgid "Arrow"
+msgstr "Okçular"
+#: NEEDS WORK
+msgid "Line"
+msgstr "Satır"
+#: NEEDS WORK
+msgid "Rectangle"
+msgstr "Dikdörtgen"
+#: NEEDS WORK
+msgid "Oval"
+msgstr "Oval"
+#: NEEDS WORK
+msgid "Text"
+msgstr "Metin"
+#: NEEDS WORK
+msgid "Highlighter"
+msgstr "Vurgulayıcı"
+#: NEEDS WORK
+msgid "Censor"
+msgstr "Sansür"
+#: NEEDS WORK
+msgid "Blur"
+msgstr "Bulanıklaştırma"
+#: NEEDS WORK
+msgid "Invert Colors"
+msgstr "Renkleri Tersine Çevir"
+#: NEEDS WORK
+msgid "Magnify / Zoom"
+msgstr "Büyüt / Yakınlaştır"
+#: NEEDS WORK
+msgid "Number"
+msgstr "Numara"
+#: NEEDS WORK
+msgid "Number with Arrow"
+msgstr "Ok ile Sayı"
+#: NEEDS WORK
+msgid "Number with Pointer"
+msgstr "Pointer ile Sayı"
+#: NEEDS WORK
+msgid "Eraser"
+msgstr "Silgi"
+#: NEEDS WORK
+msgid "Show screenshot panel"
+msgstr "Ekran görüntüsü panelini göster"
+#: NEEDS WORK
+msgid "Hide screenshot panel"
+msgstr "Ekran görüntüsü panelini gizle"
+#: NEEDS WORK
+msgid "Color"
+msgstr "Renk"
+#: NEEDS WORK
+msgid "Fill"
+msgstr "Doldur"
+#: NEEDS WORK
+msgid "Decrease Size"
+msgstr "Boyut Azalt"
+#: NEEDS WORK
+msgid "Brush Size"
+msgstr "Fırça Boyutu"
+#: NEEDS WORK
+msgid "Increase Size"
+msgstr "Boyutu Artır"
+#: NEEDS WORK
+msgid "Font"
+msgstr "Yazı Tipi"
+#: NEEDS WORK
+msgid "Intensity"
+msgstr "Yoğunluk"
+#: NEEDS WORK
+msgid "Undo"
+msgstr "Geri Al"
+#: NEEDS WORK
+msgid "Redo"
+msgstr "Yeniden Yap"
+#: NEEDS WORK
+msgid "Copy to Clipboard"
+msgstr "Panoza Kopyala"
+#: NEEDS WORK
+msgid "Save As…"
+msgstr "Farklı Kaydet…"
+#: NEEDS WORK
+msgid "Extract Text (OCR)"
+msgstr "Metin Çıkar (OCR)"
+#: NEEDS WORK
+msgid "OCR Language"
+msgstr "OCR Dili"
+#: NEEDS WORK
+msgid "Select OCR Language"
+msgstr "OCR Dili Seçin"
+#: NEEDS WORK
+msgid "Close"
+msgstr "Kapat"
+#: NEEDS WORK
+msgid "Done"
+msgstr "Tamam"
+#: NEEDS WORK
+msgid "Video Settings"
+msgstr "Video Ayarları"
+#: NEEDS WORK
+msgid "Quality"
+msgstr "Kalite"
+#: NEEDS WORK
+msgid "High"
+msgstr "Yüksek"
+#: NEEDS WORK
+msgid "Medium"
+msgstr "Orta"
+#: NEEDS WORK
+msgid "Low"
+msgstr "Düşük"
+#: NEEDS WORK
+msgid "Recording quality (bitrate)"
+msgstr "Kayıt kalitesi (bit hızı)"
+#: NEEDS WORK
+msgid "Codec"
+msgstr "Kodek"
+#: NEEDS WORK
+msgid "Camera"
+msgstr "Kamera"
+#: NEEDS WORK
+msgid "Mask"
+msgstr "Maske"
+#: NEEDS WORK
+msgid "Size"
+msgstr "Boyut"
+#: NEEDS WORK
+msgid "Edit"
+msgstr "Düzenle"
+#: NEEDS WORK
+msgid "Edit Screenshot"
+msgstr "Ekran Görüntüsünü Düzenle"
+#: NEEDS WORK
+msgid "Custom"
+msgstr "Özel"
+#: NEEDS WORK
+msgid "No Fill"
+msgstr "Doldurulmadı"
+#: NEEDS WORK
+msgid "Auto"
+msgstr "Otomatik"
+#: NEEDS WORK
+msgid "Use best available codec"
+msgstr "En iyi mevcut kodeği kullanın"
+#: NEEDS WORK
+msgid "Video codec"
+msgstr "Video kodek"
+#: NEEDS WORK
+msgid "Install OCR support?"
+msgstr "OCR desteği kurulsun mu?"
+#: NEEDS WORK
+msgid ""
+"Text extraction requires Tesseract and the OCR language pack for your system language.\n"
+"\n"
+"Packages: %s\n"
+"\n"
+"Install them now?"
+msgstr ""
+"Metin çıkarımı, Tesseract ve sistem diliniz için OCR dil paketini gerektirir.\n"
+"\n"
+"Paketler: %s\n"
+"\n"
+"Şimdi yüklemek ister misiniz?"
+#: NEEDS WORK
+msgid "Cancel"
+msgstr "İptal"
+#: NEEDS WORK
+msgid "Install"
+msgstr "Kurulum"
+#: NEEDS WORK
+msgid "OCR Languages"
+msgstr "OCR Dilleri"
+#: NEEDS WORK
+msgid "Auto (system)"
+msgstr "Otomatik (sistem)"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partdownsize.js:18
 msgid "Recording resolution"
 msgstr "Kayıt çözünürlüğü"

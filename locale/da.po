@@ -15,6 +15,55 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: attranslate\n"
+#: NEEDS WORK
+msgid "BigShot from %d %t"
+msgstr "BigShot fra %d %t"
+#: NEEDS WORK
+msgid "Screenshot taken"
+msgstr "Skærmbillede taget"
+#: NEEDS WORK
+msgid "Screenshots"
+msgstr "Skærmbilleder"
+#: NEEDS WORK
+msgid "Screenshot from %s"
+msgstr "Skærmbillede fra %s"
+#: NEEDS WORK
+msgid ""
+"Automatic installation is unavailable. Install Tesseract and its language packs with your package "
+"manager."
+msgstr ""
+"Automatisk installation er ikke tilgængelig. Installer Tesseract og dets sprogpakker med din "
+"pakkehåndtering."
+#: NEEDS WORK
+msgid "Installing OCR support..."
+msgstr "Installerer OCR-understøttelse..."
+#: NEEDS WORK
+msgid "Could not install OCR support. Check the package manager and try again."
+msgstr "Kunne ikke installere OCR-support. Tjek pakkehåndtereren og prøv igen."
+#: NEEDS WORK
+msgid "OCR was installed, but no language packs were found."
+msgstr "OCR blev installeret, men der blev ikke fundet sprogpakker."
+#: NEEDS WORK
+msgid "OCR support installed successfully."
+msgstr "OCR-support installeret med succes."
+#: NEEDS WORK
+msgid "Screenshot copied"
+msgstr "Skærmbillede kopieret"
+#: NEEDS WORK
+msgid "Extracting text..."
+msgstr "Uddragning af tekst..."
+#: NEEDS WORK
+msgid "Text copied to clipboard! (%d chars)"
+msgstr "Tekst kopieret til udklipsholder! (%d tegn)"
+#: NEEDS WORK
+msgid "No text found in selection"
+msgstr "Ingen tekst fundet i markeringen"
+#: NEEDS WORK
+msgid "OCR failed: %s"
+msgstr "OCR mislykkedes: %s"
+#: NEEDS WORK
+msgid "Save Screenshot"
+msgstr "Gem billede af skærm"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/drawing/overlay.js:74
 msgid "Drawing canvas"
 msgstr "Tegne lærred"
@@ -65,6 +114,187 @@ msgstr "Webcam-overlay"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partframerate.js:18
 msgid "Frames per second"
 msgstr "Billeder pr. sekund"
+#: NEEDS WORK
+msgid "Select / Move"
+msgstr "Vælg / Flyt"
+#: NEEDS WORK
+msgid "Pen"
+msgstr "Pen"
+#: NEEDS WORK
+msgid "Arrow"
+msgstr "Pil"
+#: NEEDS WORK
+msgid "Line"
+msgstr "Linje"
+#: NEEDS WORK
+msgid "Rectangle"
+msgstr "Rektangel"
+#: NEEDS WORK
+msgid "Oval"
+msgstr "Oval"
+#: NEEDS WORK
+msgid "Text"
+msgstr "Tekst"
+#: NEEDS WORK
+msgid "Highlighter"
+msgstr "Marker"
+#: NEEDS WORK
+msgid "Censor"
+msgstr "Censor"
+#: NEEDS WORK
+msgid "Blur"
+msgstr "Sløring"
+#: NEEDS WORK
+msgid "Invert Colors"
+msgstr "Inverter farver"
+#: NEEDS WORK
+msgid "Magnify / Zoom"
+msgstr "Forstør / Zoom"
+#: NEEDS WORK
+msgid "Number"
+msgstr "Nummer"
+#: NEEDS WORK
+msgid "Number with Arrow"
+msgstr "Nummer med pil"
+#: NEEDS WORK
+msgid "Number with Pointer"
+msgstr "Nummer med pegepind"
+#: NEEDS WORK
+msgid "Eraser"
+msgstr "Viskelæder"
+#: NEEDS WORK
+msgid "Show screenshot panel"
+msgstr "Vis skærmbillede panel"
+#: NEEDS WORK
+msgid "Hide screenshot panel"
+msgstr "Skjul skærmbilledepanel"
+#: NEEDS WORK
+msgid "Color"
+msgstr "Farve"
+#: NEEDS WORK
+msgid "Fill"
+msgstr "Udfyld"
+#: NEEDS WORK
+msgid "Decrease Size"
+msgstr "Formindsk størrelse"
+#: NEEDS WORK
+msgid "Brush Size"
+msgstr "Penselstørrelse"
+#: NEEDS WORK
+msgid "Increase Size"
+msgstr "Forøg størrelse"
+#: NEEDS WORK
+msgid "Font"
+msgstr "Skrifttype"
+#: NEEDS WORK
+msgid "Intensity"
+msgstr "Intensitet"
+#: NEEDS WORK
+msgid "Undo"
+msgstr "Fortryd"
+#: NEEDS WORK
+msgid "Redo"
+msgstr "Gendan"
+#: NEEDS WORK
+msgid "Copy to Clipboard"
+msgstr "Kopier til udklipsholder"
+#: NEEDS WORK
+msgid "Save As…"
+msgstr "Gem som…"
+#: NEEDS WORK
+msgid "Extract Text (OCR)"
+msgstr "Uddrag tekst (OCR)"
+#: NEEDS WORK
+msgid "OCR Language"
+msgstr "OCR-sprog"
+#: NEEDS WORK
+msgid "Select OCR Language"
+msgstr "Vælg OCR-sprog"
+#: NEEDS WORK
+msgid "Close"
+msgstr "Luk"
+#: NEEDS WORK
+msgid "Done"
+msgstr "Færdig"
+#: NEEDS WORK
+msgid "Video Settings"
+msgstr "Videoindstillinger"
+#: NEEDS WORK
+msgid "Quality"
+msgstr "Kvalitet"
+#: NEEDS WORK
+msgid "High"
+msgstr "Høj"
+#: NEEDS WORK
+msgid "Medium"
+msgstr "Medium"
+#: NEEDS WORK
+msgid "Low"
+msgstr "Lav"
+#: NEEDS WORK
+msgid "Recording quality (bitrate)"
+msgstr "Optagelseskvalitet (bitrate)"
+#: NEEDS WORK
+msgid "Codec"
+msgstr "Kodek"
+#: NEEDS WORK
+msgid "Camera"
+msgstr "Kamera"
+#: NEEDS WORK
+msgid "Mask"
+msgstr "Maske"
+#: NEEDS WORK
+msgid "Size"
+msgstr "Størrelse"
+#: NEEDS WORK
+msgid "Edit"
+msgstr "Rediger"
+#: NEEDS WORK
+msgid "Edit Screenshot"
+msgstr "Rediger skærmbillede"
+#: NEEDS WORK
+msgid "Custom"
+msgstr "Brugerdefineret"
+#: NEEDS WORK
+msgid "No Fill"
+msgstr "Ingen udfyldning"
+#: NEEDS WORK
+msgid "Auto"
+msgstr "Auto"
+#: NEEDS WORK
+msgid "Use best available codec"
+msgstr "Brug den bedste tilgængelige codec"
+#: NEEDS WORK
+msgid "Video codec"
+msgstr "Video codec"
+#: NEEDS WORK
+msgid "Install OCR support?"
+msgstr "Installer OCR-support?"
+#: NEEDS WORK
+msgid ""
+"Text extraction requires Tesseract and the OCR language pack for your system language.\n"
+"\n"
+"Packages: %s\n"
+"\n"
+"Install them now?"
+msgstr ""
+"Tekstudtrækning kræver Tesseract og OCR-sprogpakken til dit system sprog.\n"
+"\n"
+"Pakker: %s\n"
+"\n"
+"Installer dem nu?"
+#: NEEDS WORK
+msgid "Cancel"
+msgstr "Annuller"
+#: NEEDS WORK
+msgid "Install"
+msgstr "Installer"
+#: NEEDS WORK
+msgid "OCR Languages"
+msgstr "OCR-sprog"
+#: NEEDS WORK
+msgid "Auto (system)"
+msgstr "Auto (system)"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partdownsize.js:18
 msgid "Recording resolution"
 msgstr "Optagelsesopløsning"

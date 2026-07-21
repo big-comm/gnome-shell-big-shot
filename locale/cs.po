@@ -15,6 +15,55 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: attranslate\n"
+#: NEEDS WORK
+msgid "BigShot from %d %t"
+msgstr "BigShot z %d %t"
+#: NEEDS WORK
+msgid "Screenshot taken"
+msgstr "Snímek obrazovky pořízen"
+#: NEEDS WORK
+msgid "Screenshots"
+msgstr "Snímky obrazovky"
+#: NEEDS WORK
+msgid "Screenshot from %s"
+msgstr "Snímek obrazovky z %s"
+#: NEEDS WORK
+msgid ""
+"Automatic installation is unavailable. Install Tesseract and its language packs with your package "
+"manager."
+msgstr ""
+"Automatická instalace není k dispozici. Nainstalujte Tesseract a jeho jazykové balíčky pomocí "
+"správce balíčků."
+#: NEEDS WORK
+msgid "Installing OCR support..."
+msgstr "Instalace podpory OCR..."
+#: NEEDS WORK
+msgid "Could not install OCR support. Check the package manager and try again."
+msgstr "Nepodařilo se nainstalovat podporu OCR. Zkontrolujte správce balíčků a zkuste to znovu."
+#: NEEDS WORK
+msgid "OCR was installed, but no language packs were found."
+msgstr "OCR byl nainstalován, ale nebyly nalezeny žádné jazykové balíčky."
+#: NEEDS WORK
+msgid "OCR support installed successfully."
+msgstr "Podpora OCR byla úspěšně nainstalována."
+#: NEEDS WORK
+msgid "Screenshot copied"
+msgstr "Snímek obrazovky zkopírován"
+#: NEEDS WORK
+msgid "Extracting text..."
+msgstr "Extrahování textu..."
+#: NEEDS WORK
+msgid "Text copied to clipboard! (%d chars)"
+msgstr "Text zkopírován do schránky! (%d znaků)"
+#: NEEDS WORK
+msgid "No text found in selection"
+msgstr "Nebyly nalezeny žádné texty v výběru"
+#: NEEDS WORK
+msgid "OCR failed: %s"
+msgstr "OCR se nezdařilo: %s"
+#: NEEDS WORK
+msgid "Save Screenshot"
+msgstr "Uložit snímek obrazovky"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/drawing/overlay.js:74
 msgid "Drawing canvas"
 msgstr "Kreslicí plátno"
@@ -65,6 +114,187 @@ msgstr "Překryv webkamery"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partframerate.js:18
 msgid "Frames per second"
 msgstr "Snímky za sekundu"
+#: NEEDS WORK
+msgid "Select / Move"
+msgstr "Vybrat / Přesunout"
+#: NEEDS WORK
+msgid "Pen"
+msgstr "Pero"
+#: NEEDS WORK
+msgid "Arrow"
+msgstr "Šipka"
+#: NEEDS WORK
+msgid "Line"
+msgstr "Čára"
+#: NEEDS WORK
+msgid "Rectangle"
+msgstr "Obdélník"
+#: NEEDS WORK
+msgid "Oval"
+msgstr "Oválný"
+#: NEEDS WORK
+msgid "Text"
+msgstr "Text"
+#: NEEDS WORK
+msgid "Highlighter"
+msgstr "Zvýrazňovač"
+#: NEEDS WORK
+msgid "Censor"
+msgstr "Cenzor"
+#: NEEDS WORK
+msgid "Blur"
+msgstr "Rozostření"
+#: NEEDS WORK
+msgid "Invert Colors"
+msgstr "Invertovat barvy"
+#: NEEDS WORK
+msgid "Magnify / Zoom"
+msgstr "Zvětšit / Přiblížit"
+#: NEEDS WORK
+msgid "Number"
+msgstr "Číslo"
+#: NEEDS WORK
+msgid "Number with Arrow"
+msgstr "Číslo se šipkou"
+#: NEEDS WORK
+msgid "Number with Pointer"
+msgstr "Číslo s ukazatelem"
+#: NEEDS WORK
+msgid "Eraser"
+msgstr "Guma"
+#: NEEDS WORK
+msgid "Show screenshot panel"
+msgstr "Zobrazit panel snímků obrazovky"
+#: NEEDS WORK
+msgid "Hide screenshot panel"
+msgstr "Skrýt panel snímků obrazovky"
+#: NEEDS WORK
+msgid "Color"
+msgstr "Barva"
+#: NEEDS WORK
+msgid "Fill"
+msgstr "Vyplnit"
+#: NEEDS WORK
+msgid "Decrease Size"
+msgstr "Zmenšit velikost"
+#: NEEDS WORK
+msgid "Brush Size"
+msgstr "Velikost štětce"
+#: NEEDS WORK
+msgid "Increase Size"
+msgstr "Zvětšit velikost"
+#: NEEDS WORK
+msgid "Font"
+msgstr "Písmo"
+#: NEEDS WORK
+msgid "Intensity"
+msgstr "Intenzita"
+#: NEEDS WORK
+msgid "Undo"
+msgstr "Zpět"
+#: NEEDS WORK
+msgid "Redo"
+msgstr "Znovu provést"
+#: NEEDS WORK
+msgid "Copy to Clipboard"
+msgstr "Kopírovat do schránky"
+#: NEEDS WORK
+msgid "Save As…"
+msgstr "Uložit jako…"
+#: NEEDS WORK
+msgid "Extract Text (OCR)"
+msgstr "Extrahovat text (OCR)"
+#: NEEDS WORK
+msgid "OCR Language"
+msgstr "Jazyk OCR"
+#: NEEDS WORK
+msgid "Select OCR Language"
+msgstr "Vyberte jazyk OCR"
+#: NEEDS WORK
+msgid "Close"
+msgstr "Zavřít"
+#: NEEDS WORK
+msgid "Done"
+msgstr "Hotovo"
+#: NEEDS WORK
+msgid "Video Settings"
+msgstr "Nastavení videa"
+#: NEEDS WORK
+msgid "Quality"
+msgstr "Kvalita"
+#: NEEDS WORK
+msgid "High"
+msgstr "Vysoký"
+#: NEEDS WORK
+msgid "Medium"
+msgstr "Střední"
+#: NEEDS WORK
+msgid "Low"
+msgstr "Nízký"
+#: NEEDS WORK
+msgid "Recording quality (bitrate)"
+msgstr "Kvalita záznamu (bitrate)"
+#: NEEDS WORK
+msgid "Codec"
+msgstr "Kodek"
+#: NEEDS WORK
+msgid "Camera"
+msgstr "Kamera"
+#: NEEDS WORK
+msgid "Mask"
+msgstr "Maska"
+#: NEEDS WORK
+msgid "Size"
+msgstr "Velikost"
+#: NEEDS WORK
+msgid "Edit"
+msgstr "Upravit"
+#: NEEDS WORK
+msgid "Edit Screenshot"
+msgstr "Upravit snímek obrazovky"
+#: NEEDS WORK
+msgid "Custom"
+msgstr "Vlastní"
+#: NEEDS WORK
+msgid "No Fill"
+msgstr "Žádné vyplnění"
+#: NEEDS WORK
+msgid "Auto"
+msgstr "Automaticky"
+#: NEEDS WORK
+msgid "Use best available codec"
+msgstr "Použijte nejlepší dostupný kodek"
+#: NEEDS WORK
+msgid "Video codec"
+msgstr "Video kodek"
+#: NEEDS WORK
+msgid "Install OCR support?"
+msgstr "Nainstalovat podporu OCR?"
+#: NEEDS WORK
+msgid ""
+"Text extraction requires Tesseract and the OCR language pack for your system language.\n"
+"\n"
+"Packages: %s\n"
+"\n"
+"Install them now?"
+msgstr ""
+"Extrakce textu vyžaduje Tesseract a jazykový balíček OCR pro váš systémový jazyk.\n"
+"\n"
+"Balíčky: %s\n"
+"\n"
+"Nainstalovat je nyní?"
+#: NEEDS WORK
+msgid "Cancel"
+msgstr "Zrušit"
+#: NEEDS WORK
+msgid "Install"
+msgstr "Nainstalovat"
+#: NEEDS WORK
+msgid "OCR Languages"
+msgstr "Jazyky OCR"
+#: NEEDS WORK
+msgid "Auto (system)"
+msgstr "Automatický (systém)"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partdownsize.js:18
 msgid "Recording resolution"
 msgstr "Rozlišení nahrávání"

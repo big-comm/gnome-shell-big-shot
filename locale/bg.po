@@ -15,6 +15,55 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: attranslate\n"
+#: NEEDS WORK
+msgid "BigShot from %d %t"
+msgstr "BigShot от %d %t"
+#: NEEDS WORK
+msgid "Screenshot taken"
+msgstr "Скриншот направен"
+#: NEEDS WORK
+msgid "Screenshots"
+msgstr "Снимки на екрана"
+#: NEEDS WORK
+msgid "Screenshot from %s"
+msgstr "Скриншот от %s"
+#: NEEDS WORK
+msgid ""
+"Automatic installation is unavailable. Install Tesseract and its language packs with your package "
+"manager."
+msgstr ""
+"Автоматичната инсталация не е налична. Инсталирайте Tesseract и езиковите му пакети с вашия пакетен "
+"мениджър."
+#: NEEDS WORK
+msgid "Installing OCR support..."
+msgstr "Инсталиране на поддръжка за OCR..."
+#: NEEDS WORK
+msgid "Could not install OCR support. Check the package manager and try again."
+msgstr "Не можа да инсталира OCR поддръжка. Проверете мениджъра на пакети и опитайте отново."
+#: NEEDS WORK
+msgid "OCR was installed, but no language packs were found."
+msgstr "OCR е инсталиран, но не бяха намерени езикови пакети."
+#: NEEDS WORK
+msgid "OCR support installed successfully."
+msgstr "Поддръжката на OCR е инсталирана успешно."
+#: NEEDS WORK
+msgid "Screenshot copied"
+msgstr "Скриншотът е копиран"
+#: NEEDS WORK
+msgid "Extracting text..."
+msgstr "Извличане на текст..."
+#: NEEDS WORK
+msgid "Text copied to clipboard! (%d chars)"
+msgstr "Текстът е копиран в клипборда! (%d знака)"
+#: NEEDS WORK
+msgid "No text found in selection"
+msgstr "Няма намерен текст в избора"
+#: NEEDS WORK
+msgid "OCR failed: %s"
+msgstr "OCR неуспешен: %s"
+#: NEEDS WORK
+msgid "Save Screenshot"
+msgstr "Запази екранна снимка"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/drawing/overlay.js:74
 msgid "Drawing canvas"
 msgstr "Рисувателна платформа"
@@ -65,6 +114,187 @@ msgstr "Наслагване на уебкамера"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partframerate.js:18
 msgid "Frames per second"
 msgstr "Кадри в секунда"
+#: NEEDS WORK
+msgid "Select / Move"
+msgstr "Избор / Преместване"
+#: NEEDS WORK
+msgid "Pen"
+msgstr "Писалка"
+#: NEEDS WORK
+msgid "Arrow"
+msgstr "Стрелка"
+#: NEEDS WORK
+msgid "Line"
+msgstr "Ред."
+#: NEEDS WORK
+msgid "Rectangle"
+msgstr "Правоъгълник"
+#: NEEDS WORK
+msgid "Oval"
+msgstr "Овал"
+#: NEEDS WORK
+msgid "Text"
+msgstr "Текст"
+#: NEEDS WORK
+msgid "Highlighter"
+msgstr "Маркер"
+#: NEEDS WORK
+msgid "Censor"
+msgstr "Цензор"
+#: NEEDS WORK
+msgid "Blur"
+msgstr "Замъгляване"
+#: NEEDS WORK
+msgid "Invert Colors"
+msgstr "Обърни цветовете"
+#: NEEDS WORK
+msgid "Magnify / Zoom"
+msgstr "Увеличаване / Мащабиране"
+#: NEEDS WORK
+msgid "Number"
+msgstr "Номер"
+#: NEEDS WORK
+msgid "Number with Arrow"
+msgstr "Число с стрелка"
+#: NEEDS WORK
+msgid "Number with Pointer"
+msgstr "Число с указател."
+#: NEEDS WORK
+msgid "Eraser"
+msgstr "Гумка"
+#: NEEDS WORK
+msgid "Show screenshot panel"
+msgstr "Покажи панела за екранна снимка"
+#: NEEDS WORK
+msgid "Hide screenshot panel"
+msgstr "Скрий панела за екранни снимки"
+#: NEEDS WORK
+msgid "Color"
+msgstr "Цвят"
+#: NEEDS WORK
+msgid "Fill"
+msgstr "Запълване"
+#: NEEDS WORK
+msgid "Decrease Size"
+msgstr "Намали размер"
+#: NEEDS WORK
+msgid "Brush Size"
+msgstr "Размер на четката"
+#: NEEDS WORK
+msgid "Increase Size"
+msgstr "Увеличи размер"
+#: NEEDS WORK
+msgid "Font"
+msgstr "Шрифт"
+#: NEEDS WORK
+msgid "Intensity"
+msgstr "Интензивност"
+#: NEEDS WORK
+msgid "Undo"
+msgstr "Отмяна"
+#: NEEDS WORK
+msgid "Redo"
+msgstr "Повтори"
+#: NEEDS WORK
+msgid "Copy to Clipboard"
+msgstr "Копирай в клипборда"
+#: NEEDS WORK
+msgid "Save As…"
+msgstr "Запази като…"
+#: NEEDS WORK
+msgid "Extract Text (OCR)"
+msgstr "Извличане на текст (OCR)"
+#: NEEDS WORK
+msgid "OCR Language"
+msgstr "OCR език"
+#: NEEDS WORK
+msgid "Select OCR Language"
+msgstr "Изберете език за OCR"
+#: NEEDS WORK
+msgid "Close"
+msgstr "Затвори"
+#: NEEDS WORK
+msgid "Done"
+msgstr "Готово"
+#: NEEDS WORK
+msgid "Video Settings"
+msgstr "Настройки на видеото"
+#: NEEDS WORK
+msgid "Quality"
+msgstr "Качество"
+#: NEEDS WORK
+msgid "High"
+msgstr "Висок"
+#: NEEDS WORK
+msgid "Medium"
+msgstr "Среден"
+#: NEEDS WORK
+msgid "Low"
+msgstr "Нисък"
+#: NEEDS WORK
+msgid "Recording quality (bitrate)"
+msgstr "Качество на запис (битрейт)"
+#: NEEDS WORK
+msgid "Codec"
+msgstr "Кодек"
+#: NEEDS WORK
+msgid "Camera"
+msgstr "Камера"
+#: NEEDS WORK
+msgid "Mask"
+msgstr "Маска"
+#: NEEDS WORK
+msgid "Size"
+msgstr "Размер"
+#: NEEDS WORK
+msgid "Edit"
+msgstr "Редактиране"
+#: NEEDS WORK
+msgid "Edit Screenshot"
+msgstr "Редактиране на екранна снимка"
+#: NEEDS WORK
+msgid "Custom"
+msgstr "Персонализиран"
+#: NEEDS WORK
+msgid "No Fill"
+msgstr "Без запълване"
+#: NEEDS WORK
+msgid "Auto"
+msgstr "Авто"
+#: NEEDS WORK
+msgid "Use best available codec"
+msgstr "Използвайте най-добрия наличен кодек"
+#: NEEDS WORK
+msgid "Video codec"
+msgstr "Видео кодек"
+#: NEEDS WORK
+msgid "Install OCR support?"
+msgstr "Инсталиране на поддръжка за OCR?"
+#: NEEDS WORK
+msgid ""
+"Text extraction requires Tesseract and the OCR language pack for your system language.\n"
+"\n"
+"Packages: %s\n"
+"\n"
+"Install them now?"
+msgstr ""
+"Извличането на текст изисква Tesseract и езиковия пакет за OCR за вашата системна езикова версия.\n"
+"\n"
+"Пакети: %s\n"
+"\n"
+"Инсталирате ли ги сега?"
+#: NEEDS WORK
+msgid "Cancel"
+msgstr "Отмяна"
+#: NEEDS WORK
+msgid "Install"
+msgstr "Инсталирай"
+#: NEEDS WORK
+msgid "OCR Languages"
+msgstr "OCR езици"
+#: NEEDS WORK
+msgid "Auto (system)"
+msgstr "Авто (система)"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partdownsize.js:18
 msgid "Recording resolution"
 msgstr "Разделителна способност на записа"

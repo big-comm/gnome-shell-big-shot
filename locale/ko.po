@@ -15,6 +15,53 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: attranslate\n"
+#: NEEDS WORK
+msgid "BigShot from %d %t"
+msgstr "%d %t에서 BigShot"
+#: NEEDS WORK
+msgid "Screenshot taken"
+msgstr "스크린샷이 찍혔습니다"
+#: NEEDS WORK
+msgid "Screenshots"
+msgstr "스크린샷"
+#: NEEDS WORK
+msgid "Screenshot from %s"
+msgstr "%s의 스크린샷"
+#: NEEDS WORK
+msgid ""
+"Automatic installation is unavailable. Install Tesseract and its language packs with your package "
+"manager."
+msgstr "자동 설치를 사용할 수 없습니다. 패키지 관리자를 사용하여 Tesseract 및 해당 언어 팩을 설치하십시오."
+#: NEEDS WORK
+msgid "Installing OCR support..."
+msgstr "OCR 지원 설치 중..."
+#: NEEDS WORK
+msgid "Could not install OCR support. Check the package manager and try again."
+msgstr "OCR 지원을 설치할 수 없습니다. 패키지 관리자를 확인하고 다시 시도하십시오."
+#: NEEDS WORK
+msgid "OCR was installed, but no language packs were found."
+msgstr "OCR이 설치되었지만 언어 팩이 발견되지 않았습니다."
+#: NEEDS WORK
+msgid "OCR support installed successfully."
+msgstr "OCR 지원이 성공적으로 설치되었습니다."
+#: NEEDS WORK
+msgid "Screenshot copied"
+msgstr "스크린샷이 복사되었습니다."
+#: NEEDS WORK
+msgid "Extracting text..."
+msgstr "텍스트 추출 중..."
+#: NEEDS WORK
+msgid "Text copied to clipboard! (%d chars)"
+msgstr "클립보드에 복사된 텍스트! (%d자)"
+#: NEEDS WORK
+msgid "No text found in selection"
+msgstr "선택한 항목에서 텍스트를 찾을 수 없습니다."
+#: NEEDS WORK
+msgid "OCR failed: %s"
+msgstr "OCR 실패: %s"
+#: NEEDS WORK
+msgid "Save Screenshot"
+msgstr "스크린샷 저장"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/drawing/overlay.js:74
 msgid "Drawing canvas"
 msgstr "드로잉 캔버스"
@@ -65,6 +112,187 @@ msgstr "웹캠 오버레이"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partframerate.js:18
 msgid "Frames per second"
 msgstr "초당 프레임"
+#: NEEDS WORK
+msgid "Select / Move"
+msgstr "선택 / 이동"
+#: NEEDS WORK
+msgid "Pen"
+msgstr "펜"
+#: NEEDS WORK
+msgid "Arrow"
+msgstr "화살표"
+#: NEEDS WORK
+msgid "Line"
+msgstr "라인"
+#: NEEDS WORK
+msgid "Rectangle"
+msgstr "사각형"
+#: NEEDS WORK
+msgid "Oval"
+msgstr "타원"
+#: NEEDS WORK
+msgid "Text"
+msgstr "텍스트"
+#: NEEDS WORK
+msgid "Highlighter"
+msgstr "형광펜"
+#: NEEDS WORK
+msgid "Censor"
+msgstr "검열자"
+#: NEEDS WORK
+msgid "Blur"
+msgstr "블러"
+#: NEEDS WORK
+msgid "Invert Colors"
+msgstr "색상 반전"
+#: NEEDS WORK
+msgid "Magnify / Zoom"
+msgstr "확대 / 줌"
+#: NEEDS WORK
+msgid "Number"
+msgstr "번호"
+#: NEEDS WORK
+msgid "Number with Arrow"
+msgstr "화살표가 있는 숫자"
+#: NEEDS WORK
+msgid "Number with Pointer"
+msgstr "포인터가 있는 숫자"
+#: NEEDS WORK
+msgid "Eraser"
+msgstr "지우개"
+#: NEEDS WORK
+msgid "Show screenshot panel"
+msgstr "스크린샷 패널 표시"
+#: NEEDS WORK
+msgid "Hide screenshot panel"
+msgstr "스크린샷 패널 숨기기"
+#: NEEDS WORK
+msgid "Color"
+msgstr "색상"
+#: NEEDS WORK
+msgid "Fill"
+msgstr "채우기"
+#: NEEDS WORK
+msgid "Decrease Size"
+msgstr "크기 줄이기"
+#: NEEDS WORK
+msgid "Brush Size"
+msgstr "브러시 크기"
+#: NEEDS WORK
+msgid "Increase Size"
+msgstr "크기 늘리기"
+#: NEEDS WORK
+msgid "Font"
+msgstr "글꼴"
+#: NEEDS WORK
+msgid "Intensity"
+msgstr "강도"
+#: NEEDS WORK
+msgid "Undo"
+msgstr "실행 취소"
+#: NEEDS WORK
+msgid "Redo"
+msgstr "다시 실행"
+#: NEEDS WORK
+msgid "Copy to Clipboard"
+msgstr "클립보드에 복사"
+#: NEEDS WORK
+msgid "Save As…"
+msgstr "다른 이름으로 저장…"
+#: NEEDS WORK
+msgid "Extract Text (OCR)"
+msgstr "텍스트 추출 (OCR)"
+#: NEEDS WORK
+msgid "OCR Language"
+msgstr "OCR 언어"
+#: NEEDS WORK
+msgid "Select OCR Language"
+msgstr "OCR 언어 선택"
+#: NEEDS WORK
+msgid "Close"
+msgstr "닫기"
+#: NEEDS WORK
+msgid "Done"
+msgstr "완료"
+#: NEEDS WORK
+msgid "Video Settings"
+msgstr "비디오 설정"
+#: NEEDS WORK
+msgid "Quality"
+msgstr "품질"
+#: NEEDS WORK
+msgid "High"
+msgstr "높음"
+#: NEEDS WORK
+msgid "Medium"
+msgstr "중간"
+#: NEEDS WORK
+msgid "Low"
+msgstr "낮음"
+#: NEEDS WORK
+msgid "Recording quality (bitrate)"
+msgstr "녹음 품질 (비트 전송률)"
+#: NEEDS WORK
+msgid "Codec"
+msgstr "코덱"
+#: NEEDS WORK
+msgid "Camera"
+msgstr "카메라"
+#: NEEDS WORK
+msgid "Mask"
+msgstr "마스크"
+#: NEEDS WORK
+msgid "Size"
+msgstr "크기"
+#: NEEDS WORK
+msgid "Edit"
+msgstr "편집"
+#: NEEDS WORK
+msgid "Edit Screenshot"
+msgstr "스크린샷 편집"
+#: NEEDS WORK
+msgid "Custom"
+msgstr "사용자 정의"
+#: NEEDS WORK
+msgid "No Fill"
+msgstr "채우기 없음"
+#: NEEDS WORK
+msgid "Auto"
+msgstr "자동"
+#: NEEDS WORK
+msgid "Use best available codec"
+msgstr "최고의 사용 가능한 코덱 사용"
+#: NEEDS WORK
+msgid "Video codec"
+msgstr "비디오 코덱"
+#: NEEDS WORK
+msgid "Install OCR support?"
+msgstr "OCR 지원 설치하시겠습니까?"
+#: NEEDS WORK
+msgid ""
+"Text extraction requires Tesseract and the OCR language pack for your system language.\n"
+"\n"
+"Packages: %s\n"
+"\n"
+"Install them now?"
+msgstr ""
+"텍스트 추출을 위해서는 Tesseract와 시스템 언어에 대한 OCR 언어 팩이 필요합니다.\n"
+"\n"
+"패키지: %s\n"
+"\n"
+"지금 설치하시겠습니까?"
+#: NEEDS WORK
+msgid "Cancel"
+msgstr "취소"
+#: NEEDS WORK
+msgid "Install"
+msgstr "설치"
+#: NEEDS WORK
+msgid "OCR Languages"
+msgstr "OCR 언어"
+#: NEEDS WORK
+msgid "Auto (system)"
+msgstr "자동 (시스템)"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partdownsize.js:18
 msgid "Recording resolution"
 msgstr "녹화 해상도"

@@ -15,6 +15,55 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: attranslate\n"
+#: NEEDS WORK
+msgid "BigShot from %d %t"
+msgstr "BigShot %d %t:stä"
+#: NEEDS WORK
+msgid "Screenshot taken"
+msgstr "Näyttökuva otettu"
+#: NEEDS WORK
+msgid "Screenshots"
+msgstr "Näyttökuvat"
+#: NEEDS WORK
+msgid "Screenshot from %s"
+msgstr "Näyttökuva %s:stä"
+#: NEEDS WORK
+msgid ""
+"Automatic installation is unavailable. Install Tesseract and its language packs with your package "
+"manager."
+msgstr ""
+"Automaattista asennusta ei ole saatavilla. Asenna Tesseract ja sen kielipaketit "
+"pakettienhallintatyökalullasi."
+#: NEEDS WORK
+msgid "Installing OCR support..."
+msgstr "Asennetaan OCR-tukea..."
+#: NEEDS WORK
+msgid "Could not install OCR support. Check the package manager and try again."
+msgstr "OCR-tukea ei voitu asentaa. Tarkista pakettien hallinta ja yritä uudelleen."
+#: NEEDS WORK
+msgid "OCR was installed, but no language packs were found."
+msgstr "OCR on asennettu, mutta kielipaketteja ei löytynyt."
+#: NEEDS WORK
+msgid "OCR support installed successfully."
+msgstr "OCR-tuki asennettu onnistuneesti."
+#: NEEDS WORK
+msgid "Screenshot copied"
+msgstr "Näyttökuva kopioitu"
+#: NEEDS WORK
+msgid "Extracting text..."
+msgstr "Tekstin purkaminen..."
+#: NEEDS WORK
+msgid "Text copied to clipboard! (%d chars)"
+msgstr "Teksti kopioitu leikepöydälle! (%d merkkiä)"
+#: NEEDS WORK
+msgid "No text found in selection"
+msgstr "Valintaa ei löytynyt tekstiä."
+#: NEEDS WORK
+msgid "OCR failed: %s"
+msgstr "OCR epäonnistui: %s"
+#: NEEDS WORK
+msgid "Save Screenshot"
+msgstr "Tallenna kuvakaappaus"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/drawing/overlay.js:74
 msgid "Drawing canvas"
 msgstr "Piirtoalusta"
@@ -65,6 +114,187 @@ msgstr "Verkkokameran peittokuva"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partframerate.js:18
 msgid "Frames per second"
 msgstr "Kuvakehyksiä sekunnissa"
+#: NEEDS WORK
+msgid "Select / Move"
+msgstr "Valitse / Siirrä"
+#: NEEDS WORK
+msgid "Pen"
+msgstr "kynä"
+#: NEEDS WORK
+msgid "Arrow"
+msgstr "Nuoli"
+#: NEEDS WORK
+msgid "Line"
+msgstr "Rivi"
+#: NEEDS WORK
+msgid "Rectangle"
+msgstr "Suorakulmio"
+#: NEEDS WORK
+msgid "Oval"
+msgstr "Soikio"
+#: NEEDS WORK
+msgid "Text"
+msgstr "Teksti"
+#: NEEDS WORK
+msgid "Highlighter"
+msgstr "Korostin"
+#: NEEDS WORK
+msgid "Censor"
+msgstr "Sensuuri"
+#: NEEDS WORK
+msgid "Blur"
+msgstr "Sumea"
+#: NEEDS WORK
+msgid "Invert Colors"
+msgstr "Värit käänteiset"
+#: NEEDS WORK
+msgid "Magnify / Zoom"
+msgstr "Suurennus / Zoom"
+#: NEEDS WORK
+msgid "Number"
+msgstr "Numero"
+#: NEEDS WORK
+msgid "Number with Arrow"
+msgstr "Numero nuolella"
+#: NEEDS WORK
+msgid "Number with Pointer"
+msgstr "Numero osoittimella"
+#: NEEDS WORK
+msgid "Eraser"
+msgstr "Pyyhekumi"
+#: NEEDS WORK
+msgid "Show screenshot panel"
+msgstr "Näytä kuvakaappauspaneeli"
+#: NEEDS WORK
+msgid "Hide screenshot panel"
+msgstr "Piilota kuvakaappauspaneeli"
+#: NEEDS WORK
+msgid "Color"
+msgstr "Väri"
+#: NEEDS WORK
+msgid "Fill"
+msgstr "Täytä"
+#: NEEDS WORK
+msgid "Decrease Size"
+msgstr "Vähennä kokoa"
+#: NEEDS WORK
+msgid "Brush Size"
+msgstr "Harjan koko"
+#: NEEDS WORK
+msgid "Increase Size"
+msgstr "Suurennus"
+#: NEEDS WORK
+msgid "Font"
+msgstr "Fontti"
+#: NEEDS WORK
+msgid "Intensity"
+msgstr "Intensiteetti"
+#: NEEDS WORK
+msgid "Undo"
+msgstr "Kumoa"
+#: NEEDS WORK
+msgid "Redo"
+msgstr "Uudelleen tehdä"
+#: NEEDS WORK
+msgid "Copy to Clipboard"
+msgstr "Kopioi leikepöydälle"
+#: NEEDS WORK
+msgid "Save As…"
+msgstr "Tallenna nimellä…"
+#: NEEDS WORK
+msgid "Extract Text (OCR)"
+msgstr "Poista teksti (OCR)"
+#: NEEDS WORK
+msgid "OCR Language"
+msgstr "OCR-kieli"
+#: NEEDS WORK
+msgid "Select OCR Language"
+msgstr "Valitse OCR-kieli"
+#: NEEDS WORK
+msgid "Close"
+msgstr "Sulje"
+#: NEEDS WORK
+msgid "Done"
+msgstr "Valmis"
+#: NEEDS WORK
+msgid "Video Settings"
+msgstr "Videon asetukset"
+#: NEEDS WORK
+msgid "Quality"
+msgstr "Laatu"
+#: NEEDS WORK
+msgid "High"
+msgstr "Korkea"
+#: NEEDS WORK
+msgid "Medium"
+msgstr "Keskikokoinen"
+#: NEEDS WORK
+msgid "Low"
+msgstr "Alhainen"
+#: NEEDS WORK
+msgid "Recording quality (bitrate)"
+msgstr "Tallennuslaatu (bitrate)"
+#: NEEDS WORK
+msgid "Codec"
+msgstr "Koodekki"
+#: NEEDS WORK
+msgid "Camera"
+msgstr "Kamera"
+#: NEEDS WORK
+msgid "Mask"
+msgstr "Maski"
+#: NEEDS WORK
+msgid "Size"
+msgstr "Koko"
+#: NEEDS WORK
+msgid "Edit"
+msgstr "Muokkaa"
+#: NEEDS WORK
+msgid "Edit Screenshot"
+msgstr "Muokkaa näyttökuvaa"
+#: NEEDS WORK
+msgid "Custom"
+msgstr "Mukautettu"
+#: NEEDS WORK
+msgid "No Fill"
+msgstr "Ei täyttöä"
+#: NEEDS WORK
+msgid "Auto"
+msgstr "Auto"
+#: NEEDS WORK
+msgid "Use best available codec"
+msgstr "Käytä parasta saatavilla olevaa koodekkia"
+#: NEEDS WORK
+msgid "Video codec"
+msgstr "Videokoodekki"
+#: NEEDS WORK
+msgid "Install OCR support?"
+msgstr "Asenna OCR-tuki?"
+#: NEEDS WORK
+msgid ""
+"Text extraction requires Tesseract and the OCR language pack for your system language.\n"
+"\n"
+"Packages: %s\n"
+"\n"
+"Install them now?"
+msgstr ""
+"Tekstin poiminta vaatii Tesseractin ja OCR-kielipaketin järjestelmäkielesi varten. \n"
+"\n"
+"Pakettit: %s\n"
+"\n"
+"Asennetaanko ne nyt?"
+#: NEEDS WORK
+msgid "Cancel"
+msgstr "Peruuta"
+#: NEEDS WORK
+msgid "Install"
+msgstr "Asenna"
+#: NEEDS WORK
+msgid "OCR Languages"
+msgstr "OCR-kielet"
+#: NEEDS WORK
+msgid "Auto (system)"
+msgstr "Auto (järjestelmä)"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partdownsize.js:18
 msgid "Recording resolution"
 msgstr "Tallennusresoluutio"

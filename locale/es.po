@@ -15,6 +15,55 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: attranslate\n"
+#: NEEDS WORK
+msgid "BigShot from %d %t"
+msgstr "BigShot de %d %t"
+#: NEEDS WORK
+msgid "Screenshot taken"
+msgstr "Captura de pantalla realizada"
+#: NEEDS WORK
+msgid "Screenshots"
+msgstr "Capturas de pantalla"
+#: NEEDS WORK
+msgid "Screenshot from %s"
+msgstr "Captura de pantalla de %s"
+#: NEEDS WORK
+msgid ""
+"Automatic installation is unavailable. Install Tesseract and its language packs with your package "
+"manager."
+msgstr ""
+"La instalación automática no está disponible. Instala Tesseract y sus paquetes de idioma con tu "
+"gestor de paquetes."
+#: NEEDS WORK
+msgid "Installing OCR support..."
+msgstr "Instalando soporte OCR..."
+#: NEEDS WORK
+msgid "Could not install OCR support. Check the package manager and try again."
+msgstr "No se pudo instalar el soporte OCR. Verifique el gestor de paquetes e inténtelo de nuevo."
+#: NEEDS WORK
+msgid "OCR was installed, but no language packs were found."
+msgstr "OCR se instaló, pero no se encontraron paquetes de idioma."
+#: NEEDS WORK
+msgid "OCR support installed successfully."
+msgstr "Soporte OCR instalado con éxito."
+#: NEEDS WORK
+msgid "Screenshot copied"
+msgstr "Captura de pantalla copiada"
+#: NEEDS WORK
+msgid "Extracting text..."
+msgstr "Extrayendo texto..."
+#: NEEDS WORK
+msgid "Text copied to clipboard! (%d chars)"
+msgstr "¡Texto copiado al portapapeles! (%d caracteres)"
+#: NEEDS WORK
+msgid "No text found in selection"
+msgstr "No se encontró texto en la selección"
+#: NEEDS WORK
+msgid "OCR failed: %s"
+msgstr "OCR falló: %s"
+#: NEEDS WORK
+msgid "Save Screenshot"
+msgstr "Guardar captura de pantalla"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/drawing/overlay.js:74
 msgid "Drawing canvas"
 msgstr "Lienzo de dibujo"
@@ -65,6 +114,187 @@ msgstr "Superposición de cámara web"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partframerate.js:18
 msgid "Frames per second"
 msgstr "Cuadros por segundo"
+#: NEEDS WORK
+msgid "Select / Move"
+msgstr "Seleccionar / Mover"
+#: NEEDS WORK
+msgid "Pen"
+msgstr "Lápiz"
+#: NEEDS WORK
+msgid "Arrow"
+msgstr "Flecha"
+#: NEEDS WORK
+msgid "Line"
+msgstr "Línea"
+#: NEEDS WORK
+msgid "Rectangle"
+msgstr "Rectángulo"
+#: NEEDS WORK
+msgid "Oval"
+msgstr "Oval"
+#: NEEDS WORK
+msgid "Text"
+msgstr "Texto"
+#: NEEDS WORK
+msgid "Highlighter"
+msgstr "Resaltador"
+#: NEEDS WORK
+msgid "Censor"
+msgstr "Censurar"
+#: NEEDS WORK
+msgid "Blur"
+msgstr "Desenfoque"
+#: NEEDS WORK
+msgid "Invert Colors"
+msgstr "Invertir colores"
+#: NEEDS WORK
+msgid "Magnify / Zoom"
+msgstr "Ampliar / Acercar"
+#: NEEDS WORK
+msgid "Number"
+msgstr "Número"
+#: NEEDS WORK
+msgid "Number with Arrow"
+msgstr "Número con flecha"
+#: NEEDS WORK
+msgid "Number with Pointer"
+msgstr "Número con puntero"
+#: NEEDS WORK
+msgid "Eraser"
+msgstr "Borrador"
+#: NEEDS WORK
+msgid "Show screenshot panel"
+msgstr "Mostrar panel de captura de pantalla"
+#: NEEDS WORK
+msgid "Hide screenshot panel"
+msgstr "Ocultar panel de captura de pantalla"
+#: NEEDS WORK
+msgid "Color"
+msgstr "Color"
+#: NEEDS WORK
+msgid "Fill"
+msgstr "Rellenar"
+#: NEEDS WORK
+msgid "Decrease Size"
+msgstr "Disminuir tamaño"
+#: NEEDS WORK
+msgid "Brush Size"
+msgstr "Tamaño del pincel"
+#: NEEDS WORK
+msgid "Increase Size"
+msgstr "Aumentar tamaño"
+#: NEEDS WORK
+msgid "Font"
+msgstr "Fuente"
+#: NEEDS WORK
+msgid "Intensity"
+msgstr "Intensidad"
+#: NEEDS WORK
+msgid "Undo"
+msgstr "Deshacer"
+#: NEEDS WORK
+msgid "Redo"
+msgstr "Rehacer"
+#: NEEDS WORK
+msgid "Copy to Clipboard"
+msgstr "Copiar al portapapeles"
+#: NEEDS WORK
+msgid "Save As…"
+msgstr "Guardar como…"
+#: NEEDS WORK
+msgid "Extract Text (OCR)"
+msgstr "Extraer texto (OCR)"
+#: NEEDS WORK
+msgid "OCR Language"
+msgstr "Idioma OCR"
+#: NEEDS WORK
+msgid "Select OCR Language"
+msgstr "Seleccionar idioma OCR"
+#: NEEDS WORK
+msgid "Close"
+msgstr "Cerrar"
+#: NEEDS WORK
+msgid "Done"
+msgstr "Hecho"
+#: NEEDS WORK
+msgid "Video Settings"
+msgstr "Configuración de video"
+#: NEEDS WORK
+msgid "Quality"
+msgstr "Calidad"
+#: NEEDS WORK
+msgid "High"
+msgstr "Alto"
+#: NEEDS WORK
+msgid "Medium"
+msgstr "Medio"
+#: NEEDS WORK
+msgid "Low"
+msgstr "Bajo"
+#: NEEDS WORK
+msgid "Recording quality (bitrate)"
+msgstr "Calidad de grabación (tasa de bits)"
+#: NEEDS WORK
+msgid "Codec"
+msgstr "Códec"
+#: NEEDS WORK
+msgid "Camera"
+msgstr "Cámara"
+#: NEEDS WORK
+msgid "Mask"
+msgstr "Máscara"
+#: NEEDS WORK
+msgid "Size"
+msgstr "Tamaño"
+#: NEEDS WORK
+msgid "Edit"
+msgstr "Editar"
+#: NEEDS WORK
+msgid "Edit Screenshot"
+msgstr "Editar captura de pantalla"
+#: NEEDS WORK
+msgid "Custom"
+msgstr "Personalizado"
+#: NEEDS WORK
+msgid "No Fill"
+msgstr "Sin Relleno"
+#: NEEDS WORK
+msgid "Auto"
+msgstr "Automático"
+#: NEEDS WORK
+msgid "Use best available codec"
+msgstr "Usar el códec disponible más adecuado"
+#: NEEDS WORK
+msgid "Video codec"
+msgstr "Códec de video"
+#: NEEDS WORK
+msgid "Install OCR support?"
+msgstr "¿Instalar soporte OCR?"
+#: NEEDS WORK
+msgid ""
+"Text extraction requires Tesseract and the OCR language pack for your system language.\n"
+"\n"
+"Packages: %s\n"
+"\n"
+"Install them now?"
+msgstr ""
+"La extracción de texto requiere Tesseract y el paquete de idioma OCR para el idioma de su sistema.\n"
+"\n"
+"Paquetes: %s\n"
+"\n"
+"¿Instalarlos ahora?"
+#: NEEDS WORK
+msgid "Cancel"
+msgstr "Cancelar"
+#: NEEDS WORK
+msgid "Install"
+msgstr "Instalar"
+#: NEEDS WORK
+msgid "OCR Languages"
+msgstr "Idiomas OCR"
+#: NEEDS WORK
+msgid "Auto (system)"
+msgstr "Automático (sistema)"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partdownsize.js:18
 msgid "Recording resolution"
 msgstr "Resolución de grabación"

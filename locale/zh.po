@@ -15,6 +15,53 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: attranslate\n"
+#: NEEDS WORK
+msgid "BigShot from %d %t"
+msgstr "来自 %d %t 的 BigShot"
+#: NEEDS WORK
+msgid "Screenshot taken"
+msgstr "截图已保存"
+#: NEEDS WORK
+msgid "Screenshots"
+msgstr "截图"
+#: NEEDS WORK
+msgid "Screenshot from %s"
+msgstr "来自 %s 的截图"
+#: NEEDS WORK
+msgid ""
+"Automatic installation is unavailable. Install Tesseract and its language packs with your package "
+"manager."
+msgstr "自动安装不可用。请使用您的包管理器安装 Tesseract 及其语言包。"
+#: NEEDS WORK
+msgid "Installing OCR support..."
+msgstr "正在安装OCR支持..."
+#: NEEDS WORK
+msgid "Could not install OCR support. Check the package manager and try again."
+msgstr "无法安装OCR支持。请检查软件包管理器并重试。"
+#: NEEDS WORK
+msgid "OCR was installed, but no language packs were found."
+msgstr "OCR已安装，但未找到语言包。"
+#: NEEDS WORK
+msgid "OCR support installed successfully."
+msgstr "OCR 支持已成功安装。"
+#: NEEDS WORK
+msgid "Screenshot copied"
+msgstr "截图已复制"
+#: NEEDS WORK
+msgid "Extracting text..."
+msgstr "提取文本..."
+#: NEEDS WORK
+msgid "Text copied to clipboard! (%d chars)"
+msgstr "文本已复制到剪贴板！(%d 个字符)"
+#: NEEDS WORK
+msgid "No text found in selection"
+msgstr "在选择中未找到文本"
+#: NEEDS WORK
+msgid "OCR failed: %s"
+msgstr "OCR 失败：%s"
+#: NEEDS WORK
+msgid "Save Screenshot"
+msgstr "保存截图"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/drawing/overlay.js:74
 msgid "Drawing canvas"
 msgstr "绘图画布"
@@ -65,6 +112,187 @@ msgstr "网络摄像头叠加"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partframerate.js:18
 msgid "Frames per second"
 msgstr "每秒帧数"
+#: NEEDS WORK
+msgid "Select / Move"
+msgstr "选择 / 移动"
+#: NEEDS WORK
+msgid "Pen"
+msgstr "笔"
+#: NEEDS WORK
+msgid "Arrow"
+msgstr "箭头"
+#: NEEDS WORK
+msgid "Line"
+msgstr "行"
+#: NEEDS WORK
+msgid "Rectangle"
+msgstr "矩形"
+#: NEEDS WORK
+msgid "Oval"
+msgstr "椭圆"
+#: NEEDS WORK
+msgid "Text"
+msgstr "文本"
+#: NEEDS WORK
+msgid "Highlighter"
+msgstr "高亮工具"
+#: NEEDS WORK
+msgid "Censor"
+msgstr "审查员"
+#: NEEDS WORK
+msgid "Blur"
+msgstr "模糊"
+#: NEEDS WORK
+msgid "Invert Colors"
+msgstr "反转颜色"
+#: NEEDS WORK
+msgid "Magnify / Zoom"
+msgstr "放大 / 缩放"
+#: NEEDS WORK
+msgid "Number"
+msgstr "数字"
+#: NEEDS WORK
+msgid "Number with Arrow"
+msgstr "带箭头的数字"
+#: NEEDS WORK
+msgid "Number with Pointer"
+msgstr "带指针的数字"
+#: NEEDS WORK
+msgid "Eraser"
+msgstr "橡皮擦"
+#: NEEDS WORK
+msgid "Show screenshot panel"
+msgstr "显示截图面板"
+#: NEEDS WORK
+msgid "Hide screenshot panel"
+msgstr "隐藏截图面板"
+#: NEEDS WORK
+msgid "Color"
+msgstr "颜色"
+#: NEEDS WORK
+msgid "Fill"
+msgstr "填充"
+#: NEEDS WORK
+msgid "Decrease Size"
+msgstr "减小尺寸"
+#: NEEDS WORK
+msgid "Brush Size"
+msgstr "画笔大小"
+#: NEEDS WORK
+msgid "Increase Size"
+msgstr "增大尺寸"
+#: NEEDS WORK
+msgid "Font"
+msgstr "字体"
+#: NEEDS WORK
+msgid "Intensity"
+msgstr "强度"
+#: NEEDS WORK
+msgid "Undo"
+msgstr "撤销"
+#: NEEDS WORK
+msgid "Redo"
+msgstr "重做"
+#: NEEDS WORK
+msgid "Copy to Clipboard"
+msgstr "复制到剪贴板"
+#: NEEDS WORK
+msgid "Save As…"
+msgstr "另存为…"
+#: NEEDS WORK
+msgid "Extract Text (OCR)"
+msgstr "提取文本（OCR）"
+#: NEEDS WORK
+msgid "OCR Language"
+msgstr "OCR语言"
+#: NEEDS WORK
+msgid "Select OCR Language"
+msgstr "选择OCR语言"
+#: NEEDS WORK
+msgid "Close"
+msgstr "关闭"
+#: NEEDS WORK
+msgid "Done"
+msgstr "完成"
+#: NEEDS WORK
+msgid "Video Settings"
+msgstr "视频设置"
+#: NEEDS WORK
+msgid "Quality"
+msgstr "质量"
+#: NEEDS WORK
+msgid "High"
+msgstr "高"
+#: NEEDS WORK
+msgid "Medium"
+msgstr "中等"
+#: NEEDS WORK
+msgid "Low"
+msgstr "低"
+#: NEEDS WORK
+msgid "Recording quality (bitrate)"
+msgstr "录音质量（比特率）"
+#: NEEDS WORK
+msgid "Codec"
+msgstr "编解码器"
+#: NEEDS WORK
+msgid "Camera"
+msgstr "相机"
+#: NEEDS WORK
+msgid "Mask"
+msgstr "掩码"
+#: NEEDS WORK
+msgid "Size"
+msgstr "大小"
+#: NEEDS WORK
+msgid "Edit"
+msgstr "编辑"
+#: NEEDS WORK
+msgid "Edit Screenshot"
+msgstr "编辑截图"
+#: NEEDS WORK
+msgid "Custom"
+msgstr "自定义"
+#: NEEDS WORK
+msgid "No Fill"
+msgstr "无填充"
+#: NEEDS WORK
+msgid "Auto"
+msgstr "自动"
+#: NEEDS WORK
+msgid "Use best available codec"
+msgstr "使用最佳可用编解码器"
+#: NEEDS WORK
+msgid "Video codec"
+msgstr "视频编码器"
+#: NEEDS WORK
+msgid "Install OCR support?"
+msgstr "安装 OCR 支持？"
+#: NEEDS WORK
+msgid ""
+"Text extraction requires Tesseract and the OCR language pack for your system language.\n"
+"\n"
+"Packages: %s\n"
+"\n"
+"Install them now?"
+msgstr ""
+"文本提取需要 Tesseract 和适用于您系统语言的 OCR 语言包。\n"
+"\n"
+"软件包：%s\n"
+"\n"
+"现在安装它们吗？"
+#: NEEDS WORK
+msgid "Cancel"
+msgstr "取消"
+#: NEEDS WORK
+msgid "Install"
+msgstr "安装"
+#: NEEDS WORK
+msgid "OCR Languages"
+msgstr "OCR语言"
+#: NEEDS WORK
+msgid "Auto (system)"
+msgstr "自动（系统）"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partdownsize.js:18
 msgid "Recording resolution"
 msgstr "录制分辨率"

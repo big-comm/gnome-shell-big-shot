@@ -15,6 +15,55 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: attranslate\n"
+#: NEEDS WORK
+msgid "BigShot from %d %t"
+msgstr "BigShot iz %d %t"
+#: NEEDS WORK
+msgid "Screenshot taken"
+msgstr "Snimka zaslona napravljena"
+#: NEEDS WORK
+msgid "Screenshots"
+msgstr "Snimke zaslona"
+#: NEEDS WORK
+msgid "Screenshot from %s"
+msgstr "Snimka zaslona iz %s"
+#: NEEDS WORK
+msgid ""
+"Automatic installation is unavailable. Install Tesseract and its language packs with your package "
+"manager."
+msgstr ""
+"Automatska instalacija nije dostupna. Instalirajte Tesseract i njegove jezične pakete pomoću "
+"upravitelja paketa."
+#: NEEDS WORK
+msgid "Installing OCR support..."
+msgstr "Instaliranje podrške za OCR..."
+#: NEEDS WORK
+msgid "Could not install OCR support. Check the package manager and try again."
+msgstr "Nije moguće instalirati podršku za OCR. Provjerite upravitelja paketa i pokušajte ponovo."
+#: NEEDS WORK
+msgid "OCR was installed, but no language packs were found."
+msgstr "OCR je instaliran, ali nisu pronađeni jezični paketi."
+#: NEEDS WORK
+msgid "OCR support installed successfully."
+msgstr "Podrška za OCR uspješno je instalirana."
+#: NEEDS WORK
+msgid "Screenshot copied"
+msgstr "Snimka zaslona kopirana"
+#: NEEDS WORK
+msgid "Extracting text..."
+msgstr "Izdvajanje teksta..."
+#: NEEDS WORK
+msgid "Text copied to clipboard! (%d chars)"
+msgstr "Tekst kopiran u međuspremnik! (%d znakova)"
+#: NEEDS WORK
+msgid "No text found in selection"
+msgstr "Nema teksta u odabiru"
+#: NEEDS WORK
+msgid "OCR failed: %s"
+msgstr "OCR nije uspio: %s"
+#: NEEDS WORK
+msgid "Save Screenshot"
+msgstr "Spremi snimku zaslona"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/drawing/overlay.js:74
 msgid "Drawing canvas"
 msgstr "Platno za crtanje"
@@ -65,6 +114,187 @@ msgstr "Preklop web kamere"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partframerate.js:18
 msgid "Frames per second"
 msgstr "Okviri po sekundi"
+#: NEEDS WORK
+msgid "Select / Move"
+msgstr "Odaberi / Premjesti"
+#: NEEDS WORK
+msgid "Pen"
+msgstr "Olovka"
+#: NEEDS WORK
+msgid "Arrow"
+msgstr "Strelica"
+#: NEEDS WORK
+msgid "Line"
+msgstr "Linija"
+#: NEEDS WORK
+msgid "Rectangle"
+msgstr "Pravokutnik"
+#: NEEDS WORK
+msgid "Oval"
+msgstr "Ovalna"
+#: NEEDS WORK
+msgid "Text"
+msgstr "Tekst"
+#: NEEDS WORK
+msgid "Highlighter"
+msgstr "Marker"
+#: NEEDS WORK
+msgid "Censor"
+msgstr "Cenzor"
+#: NEEDS WORK
+msgid "Blur"
+msgstr "Zamućenje"
+#: NEEDS WORK
+msgid "Invert Colors"
+msgstr "Invertiraj boje"
+#: NEEDS WORK
+msgid "Magnify / Zoom"
+msgstr "Uvećaj / Povećaj"
+#: NEEDS WORK
+msgid "Number"
+msgstr "Broj"
+#: NEEDS WORK
+msgid "Number with Arrow"
+msgstr "Broj s strelicom"
+#: NEEDS WORK
+msgid "Number with Pointer"
+msgstr "Broj s pokazivačem"
+#: NEEDS WORK
+msgid "Eraser"
+msgstr "Gumica"
+#: NEEDS WORK
+msgid "Show screenshot panel"
+msgstr "Prikaži panel za snimku zaslona"
+#: NEEDS WORK
+msgid "Hide screenshot panel"
+msgstr "Sakrij panel za snimke zaslona"
+#: NEEDS WORK
+msgid "Color"
+msgstr "Boja"
+#: NEEDS WORK
+msgid "Fill"
+msgstr "Ispuni"
+#: NEEDS WORK
+msgid "Decrease Size"
+msgstr "Smanji veličinu"
+#: NEEDS WORK
+msgid "Brush Size"
+msgstr "Veličina četkice"
+#: NEEDS WORK
+msgid "Increase Size"
+msgstr "Povećaj veličinu"
+#: NEEDS WORK
+msgid "Font"
+msgstr "Font"
+#: NEEDS WORK
+msgid "Intensity"
+msgstr "Intenzitet"
+#: NEEDS WORK
+msgid "Undo"
+msgstr "Poništi"
+#: NEEDS WORK
+msgid "Redo"
+msgstr "Ponovi"
+#: NEEDS WORK
+msgid "Copy to Clipboard"
+msgstr "Kopiraj u međuspremnik"
+#: NEEDS WORK
+msgid "Save As…"
+msgstr "Spremi kao…"
+#: NEEDS WORK
+msgid "Extract Text (OCR)"
+msgstr "Izvuci tekst (OCR)"
+#: NEEDS WORK
+msgid "OCR Language"
+msgstr "OCR jezik"
+#: NEEDS WORK
+msgid "Select OCR Language"
+msgstr "Odaberite OCR jezik"
+#: NEEDS WORK
+msgid "Close"
+msgstr "Zatvori"
+#: NEEDS WORK
+msgid "Done"
+msgstr "Završeno"
+#: NEEDS WORK
+msgid "Video Settings"
+msgstr "Postavke videa"
+#: NEEDS WORK
+msgid "Quality"
+msgstr "Kvaliteta"
+#: NEEDS WORK
+msgid "High"
+msgstr "Visok"
+#: NEEDS WORK
+msgid "Medium"
+msgstr "Srednji"
+#: NEEDS WORK
+msgid "Low"
+msgstr "Nizak"
+#: NEEDS WORK
+msgid "Recording quality (bitrate)"
+msgstr "Kvaliteta snimanja (bitrate)"
+#: NEEDS WORK
+msgid "Codec"
+msgstr "Kodek"
+#: NEEDS WORK
+msgid "Camera"
+msgstr "Kamera"
+#: NEEDS WORK
+msgid "Mask"
+msgstr "Maska"
+#: NEEDS WORK
+msgid "Size"
+msgstr "Veličina"
+#: NEEDS WORK
+msgid "Edit"
+msgstr "Uredi"
+#: NEEDS WORK
+msgid "Edit Screenshot"
+msgstr "Uredi Snimku Ekrana"
+#: NEEDS WORK
+msgid "Custom"
+msgstr "Prilagođeno"
+#: NEEDS WORK
+msgid "No Fill"
+msgstr "Bez ispunjavanja"
+#: NEEDS WORK
+msgid "Auto"
+msgstr "Automatski"
+#: NEEDS WORK
+msgid "Use best available codec"
+msgstr "Koristi najbolji dostupni kodek"
+#: NEEDS WORK
+msgid "Video codec"
+msgstr "Video kodek"
+#: NEEDS WORK
+msgid "Install OCR support?"
+msgstr "Instaliraj podršku za OCR?"
+#: NEEDS WORK
+msgid ""
+"Text extraction requires Tesseract and the OCR language pack for your system language.\n"
+"\n"
+"Packages: %s\n"
+"\n"
+"Install them now?"
+msgstr ""
+"Ekstrakcija teksta zahtijeva Tesseract i OCR jezični paket za vaš jezik sustava.\n"
+"\n"
+"Paketi: %s\n"
+"\n"
+"Želite li ih sada instalirati?"
+#: NEEDS WORK
+msgid "Cancel"
+msgstr "Otkaži"
+#: NEEDS WORK
+msgid "Install"
+msgstr "Instaliraj"
+#: NEEDS WORK
+msgid "OCR Languages"
+msgstr "OCR jezici"
+#: NEEDS WORK
+msgid "Auto (system)"
+msgstr "Auto (sustav)"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partdownsize.js:18
 msgid "Recording resolution"
 msgstr "Rezolucija snimanja"
