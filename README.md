@@ -288,7 +288,7 @@ Big Shot ships with **29 languages**, all 100% translated:
 ████████████████████████████████████████ 100% — All 29 languages fully translated
 ```
 
-To add a new language, copy `locale/gnome-shell-big-shot.pot` to `locale/<LANG>.po` and translate the strings. Run `update-pot.sh` to regenerate the template from source.
+To add a new language, copy `usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/po/big-shot.pot` to a new PO file in the same directory and translate the strings. Runtime MO catalogs are generated from this directory during packaging.
 
 ---
 

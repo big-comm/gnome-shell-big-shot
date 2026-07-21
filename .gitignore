@@ -1,6 +1,8 @@
 # Build artifacts
 big-shot.zip
 *.zip
+/locale/
+/usr/share/locale/
 
 # Development files
 PLAN.md
