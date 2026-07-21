@@ -33,21 +33,6 @@ msgstr "Скриншот с %s"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:740
 msgid "Screenshot copied"
 msgstr "Скриншот скопирован"
-#: NEEDS WORK
-msgid "Tesseract not found. Please install the ‘tesseract’ package for your distribution."
-msgstr "Tesseract не найден. Пожалуйста, установите пакет «tesseract» для вашего дистрибутива."
-#: NEEDS WORK
-msgid "Extracting text..."
-msgstr "Извлечение текста..."
-#: NEEDS WORK
-msgid "Text copied to clipboard! (%d chars)"
-msgstr "Текст скопирован в буфер обмена! (%d символов)"
-#: NEEDS WORK
-msgid "No text found in selection"
-msgstr "В выбранном фрагменте текста ничего не найдено"
-#: NEEDS WORK
-msgid "OCR failed: %s"
-msgstr "Ошибка OCR: %s"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:789
 msgid "Save Screenshot"
 msgstr "Сохранить скриншот"
@@ -270,12 +255,3 @@ msgstr "Использовать лучший доступный кодек"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:1297
 msgid "Video codec"
 msgstr "Видеокодек"
-#: NEEDS WORK
-msgid "Tesseract not found. Install: sudo pacman -S tesseract tesseract-data-por"
-msgstr "Tesseract не найден. Установите: sudo pacman -S tesseract tesseract-data-por"
-#: NEEDS WORK
-msgid "OCR Languages"
-msgstr "Языки OCR"
-#: NEEDS WORK
-msgid "Auto (system)"
-msgstr "Авто (система)"

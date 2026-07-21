@@ -1742,13 +1742,14 @@ export class PartToolbar extends PartUI {
     }
 
     _populateVideoCodecs() {
-        this._ext._detectPipelines().then(() => {
-            if (!this._destroyed)
-                this._refreshVideoCodecs();
-        }).catch(e => {
-            console.warn(`[Big Shot] Codec list unavailable: ${e.message}`);
-        });
-        this._refreshVideoCodecs();
+        this._ext._detectPipelines()
+            .then(() => {
+                if (!this._destroyed)
+                    this._refreshVideoCodecs();
+            })
+            .catch(e => {
+                console.warn(`[Big Shot] Codec list unavailable: ${e.message}`);
+            });
     }
 
     _refreshVideoCodecs() {
@@ -1821,6 +1822,8 @@ export class PartToolbar extends PartUI {
         this._actionCallback = callback;
     }
 
+<<<<<<< Updated upstream
+=======
     /** @returns {string|null} selected OCR language string (e.g. 'por+eng') or null for auto */
     get ocrLanguage() { return this._ocrSelectedLang; }
 
@@ -1833,7 +1836,91 @@ export class PartToolbar extends PartUI {
      * @param {string[]} langs - e.g. ['por', 'eng', 'spa', 'deu']
      */
     setOcrLanguages(langs) {
-        this._ocrAvailableLangs = langs;
+        this._ocrAvailableLangs = langs.filter(lang => lang !== 'osd');
+        if (this._ocrSelectedLang && !this._ocrAvailableLangs.includes(this._ocrSelectedLang))
+            this._ocrSelectedLang = null;
+    }
+
+    confirmOcrInstall(packages) {
+        this._finishOcrInstallPrompt(false);
+        this._closeOcrLangPopup();
+        this._closeColorPopup();
+        this._closeSizePopup();
+
+        return new Promise(resolve => {
+            this._ocrInstallResolve = resolve;
+            this._ocrInstallPopup = new St.BoxLayout({
+                style_class: 'big-shot-edit-popup',
+                vertical: true,
+                reactive: true,
+                style: 'spacing: 10px; padding: 14px; max-width: 520px;',
+            });
+
+            const title = new St.Label({
+                text: _('Install OCR support?'),
+                style: 'font-weight: bold; font-size: 14px;',
+                x_align: Clutter.ActorAlign.START,
+            });
+            this._ocrInstallPopup.add_child(title);
+
+            const description = new St.Label({
+                // TRANSLATORS: %s is a comma-separated list of package names.
+                text: _(
+                    'Text extraction requires Tesseract and the OCR language pack for your system language.\n\nPackages: %s\n\nInstall them now?',
+                ).format(packages),
+                style: 'font-size: 12px;',
+                x_align: Clutter.ActorAlign.START,
+                x_expand: true,
+            });
+            description.clutter_text.line_wrap = true;
+            this._ocrInstallPopup.add_child(description);
+
+            const buttons = new St.BoxLayout({
+                style: 'spacing: 8px;',
+                x_align: Clutter.ActorAlign.END,
+            });
+            const cancelButton = new St.Button({
+                style_class: 'screenshot-ui-show-pointer-button',
+                label: _('Cancel'),
+                can_focus: true,
+            });
+            cancelButton.connect('clicked', () => this._finishOcrInstallPrompt(false));
+            buttons.add_child(cancelButton);
+
+            const installButton = new St.Button({
+                style_class: 'screenshot-ui-show-pointer-button',
+                label: _('Install'),
+                can_focus: true,
+            });
+            installButton.connect('clicked', () => this._finishOcrInstallPrompt(true));
+            buttons.add_child(installButton);
+            this._ocrInstallPopup.add_child(buttons);
+
+            this._ui.add_child(this._ocrInstallPopup);
+            GLib.idle_add(GLib.PRIORITY_DEFAULT, () => {
+                if (!this._ocrInstallPopup)
+                    return GLib.SOURCE_REMOVE;
+                const [bx, by] = this._ocrButton.get_transformed_position();
+                const monitor = global.display.get_current_monitor();
+                const geo = global.display.get_monitor_geometry(monitor);
+                let x = bx + this._ocrButton.width - this._ocrInstallPopup.width;
+                let y = by - this._ocrInstallPopup.height - 8;
+                x = Math.max(geo.x, Math.min(x,
+                    geo.x + geo.width - this._ocrInstallPopup.width));
+                y = Math.max(geo.y, y);
+                this._ocrInstallPopup.set_position(x, y);
+                installButton.grab_key_focus();
+                return GLib.SOURCE_REMOVE;
+            });
+        });
+    }
+
+    _finishOcrInstallPrompt(accepted) {
+        const resolve = this._ocrInstallResolve;
+        this._ocrInstallResolve = null;
+        this._ocrInstallPopup?.destroy();
+        this._ocrInstallPopup = null;
+        resolve?.(accepted);
     }
 
     _showOcrLangPopup() {
@@ -1843,7 +1930,7 @@ export class PartToolbar extends PartUI {
 
         const langs = this._ocrAvailableLangs;
         if (!langs || langs.length === 0) {
-            this.showInlineMessage(_('Tesseract not found. Install: sudo pacman -S tesseract tesseract-data-por'));
+            this._actionCallback?.('install-ocr');
             return;
         }
 
@@ -1971,6 +2058,7 @@ export class PartToolbar extends PartUI {
         this._ocrLangPopup = null;
     }
 
+>>>>>>> Stashed changes
     /**
      * Show a brief inline status message on the toolbar.
      */
@@ -2062,6 +2150,7 @@ export class PartToolbar extends PartUI {
                 this._detachVideoFromPanel();
             }
         } else {
+            this._finishOcrInstallPrompt(false);
             this._editButton.checked = false;
             this._editMode = false;
             this._detachEditFromPanel();
@@ -2089,7 +2178,11 @@ export class PartToolbar extends PartUI {
         this._closeSizePopup();
         this._closeFontPopup();
         this._closeIntensityPopup();
+<<<<<<< Updated upstream
+=======
         this._closeOcrLangPopup();
+        this._finishOcrInstallPrompt(false);
+>>>>>>> Stashed changes
         this._hideTooltip();
         this._clearInlineMessage();
 

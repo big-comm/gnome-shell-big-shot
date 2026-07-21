@@ -4,8 +4,6 @@
  * SPDX-License-Identifier: MIT
  */
 
-export const APP_VERSION = '26.8.7';
-
 // Top-level imports are intentionally minimal. Anything imported here runs
 // synchronously inside GNOME's serial extension load loop and delays every
 // other extension's enable() — including Dash to Dock, which in turn lets
@@ -33,6 +31,8 @@ let PartIndicator = null;
 let PartQuickStop = null;
 let PartWebcam = null;
 let PartVideoAnnotation = null;
+let computeScaledDimensions = null;
+let recordingExtension = null;
 
 /**
  * Deferred load of every heavy dependency.
@@ -63,6 +63,7 @@ const heavyDepsReady = (async () => {
         msgTrayMod,
         toolbarMod, annotationMod, magnifierMod, audioMod, framerateMod,
         downsizeMod, indicatorMod, quickstopMod, webcamMod, videoAnnotationMod,
+        coreMod,
     ] = await Promise.all([
         import('gi://Gio'),
         import('gi://Shell'),
@@ -80,6 +81,7 @@ const heavyDepsReady = (async () => {
         import('./parts/partquickstop.js'),
         import('./parts/partwebcam.js'),
         import('./parts/partvideoannotation.js'),
+        import('./lib/core.js'),
     ]);
 
     Gio = gioMod.default;
@@ -98,6 +100,8 @@ const heavyDepsReady = (async () => {
     PartQuickStop = quickstopMod.PartQuickStop;
     PartWebcam = webcamMod.PartWebcam;
     PartVideoAnnotation = videoAnnotationMod.PartVideoAnnotation;
+    computeScaledDimensions = coreMod.computeScaledDimensions;
+    recordingExtension = coreMod.recordingExtension;
 })();
 
 // =============================================================================
@@ -116,13 +120,13 @@ const GpuVendor = Object.freeze({
  * Detect GPU vendor using lspci output.
  * Returns an array of detected vendors in priority order.
  */
-function detectGpuVendors() {
+async function detectGpuVendors() {
     try {
         const proc = Gio.Subprocess.new(
             ['lspci'],
-            Gio.SubprocessFlags.STDOUT_PIPE | Gio.SubprocessFlags.STDERR_SILENCE
+            Gio.SubprocessFlags.STDOUT_PIPE | Gio.SubprocessFlags.STDERR_SILENCE,
         );
-        const [, stdout] = proc.communicate_utf8(null, null);
+        const [, stdout] = await proc.communicate_utf8_async(null, null);
         if (!stdout) return [GpuVendor.UNKNOWN];
 
         const vendors = [];
@@ -309,9 +313,15 @@ const VIDEO_PIPELINES = [
     },
 ];
 
-const AUDIO_PIPELINE = {
-    vorbis: 'vorbisenc ! queue',
-    aac: 'fdkaacenc ! queue',
+const AUDIO_PIPELINES = {
+    vorbis: [
+        { element: 'vorbisenc', pipeline: 'vorbisenc ! queue' },
+    ],
+    aac: [
+        { element: 'fdkaacenc', pipeline: 'fdkaacenc ! queue' },
+        { element: 'avenc_aac', pipeline: 'avenc_aac ! queue' },
+        { element: 'voaacenc', pipeline: 'voaacenc ! queue' },
+    ],
 };
 
 const MUXERS = {
@@ -328,24 +338,37 @@ const SCREENCAST_DBUS_TIMEOUT_MS = 30000;
 /**
  * Check if a GStreamer element exists on the system
  */
-function checkElement(name) {
+<<<<<<< Updated upstream
+=======
+function waitSubprocessAsync(proc) {
+    return new Promise((resolve, reject) => {
+        proc.wait_async(null, (source, result) => {
+            try {
+                source.wait_finish(result);
+                resolve();
+            } catch (e) {
+                reject(e);
+            }
+        });
+    });
+}
+
+>>>>>>> Stashed changes
+async function checkElement(name) {
     try {
         const proc = Gio.Subprocess.new(
             ['gst-inspect-1.0', '--exists', name],
-            Gio.SubprocessFlags.NONE
+            Gio.SubprocessFlags.NONE,
         );
-        proc.wait(null);
+<<<<<<< Updated upstream
+        await proc.wait_async(null);
+=======
+        await waitSubprocessAsync(proc);
+>>>>>>> Stashed changes
         return proc.get_successful();
     } catch {
         return false;
     }
-}
-
-/**
- * Check if all elements in a pipeline config are available
- */
-function checkPipeline(config) {
-    return config.elements.every(el => checkElement(el));
 }
 
 /**
@@ -460,7 +483,7 @@ function findRecentFileInDirectory(dirPath, prefix, ext, startedAtUnix) {
         enumerator = dir.enumerate_children(
             'standard::name,standard::type,standard::size,time::modified',
             Gio.FileQueryInfoFlags.NONE,
-            null
+            null,
         );
 
         let info;
@@ -505,7 +528,7 @@ function findRecentSegmentFile(sessionId, index, ext, startedAtUnix) {
         getSegmentSessionFolder(sessionId),
         `segment-${String(index).padStart(3, '0')}`,
         ext,
-        startedAtUnix
+        startedAtUnix,
     );
 }
 
@@ -572,8 +595,18 @@ function escapeFfmpegConcatPath(path) {
 
 export default class BigShotExtension extends Extension {
     enable() {
+        this._enableSerial = (this._enableSerial ?? 0) + 1;
+        this._activeEnableSerial = this._enableSerial;
+        this._deferredReadySerial = 0;
         this._parts = [];
         this._availableConfigs = null; // null = not yet detected (lazy)
+<<<<<<< Updated upstream
+        this._availableElements = new Set();
+        this._pipelineDetectionPromise = null;
+        this._pipelineDetectionGeneration = (this._pipelineDetectionGeneration ?? 0) + 1;
+=======
+        this._pipelineDetectionPromise = null;
+>>>>>>> Stashed changes
         this._currentConfigIndex = 0;
 
         // Pause/resume recording state
@@ -584,6 +617,7 @@ export default class BigShotExtension extends Extension {
         this._suppressPauseStopFailure = false;
         this._stopWatcherId = 0;
         this._origScreencastProxyTimeout = null;
+        this._ocrInstallPromise = null;
 
         const screenshotUI = Main.screenshotUI;
         if (!screenshotUI) {
@@ -593,8 +627,6 @@ export default class BigShotExtension extends Extension {
 
         this._screenshotUI = screenshotUI;
 
-        // Detect Shell version once for version-conditional code paths.
-        this._shellVersion = this._detectShellVersion();
         // Initialize translations (must be before _createParts so _() works)
         this.initTranslations();
 
@@ -604,10 +636,10 @@ export default class BigShotExtension extends Extension {
         // Defer the heavy UI/patch work until the shell finishes startup, so
         // other extensions (Dash to Dock in particular) can replace the default
         // dash before our synchronous widget construction runs.
-        this._scheduleDeferredEnable();
+        this._scheduleDeferredEnable(this._activeEnableSerial);
     }
 
-    _scheduleDeferredEnable() {
+    _scheduleDeferredEnable(enableSerial) {
         // `heavyDepsReady` already waits for `startup-complete` internally,
         // so we don't need to gate on it again here. Just schedule a low-
         // priority idle that awaits the lazy import chain and then runs the
@@ -615,12 +647,12 @@ export default class BigShotExtension extends Extension {
         // await) is what lets every later extension's enable() run promptly.
         this._enableDeferredId = GLib.idle_add(GLib.PRIORITY_LOW, () => {
             this._enableDeferredId = 0;
-            this._runDeferredEnable();
+            this._runDeferredEnable(enableSerial);
             return GLib.SOURCE_REMOVE;
         });
     }
 
-    async _runDeferredEnable() {
+    async _runDeferredEnable(enableSerial) {
         try {
             await heavyDepsReady;
         } catch (e) {
@@ -628,8 +660,13 @@ export default class BigShotExtension extends Extension {
             return;
         }
 
-        // disable() may have run while we were awaiting; bail out if so.
-        if (!this._screenshotUI) return;
+        // The same extension instance can be disabled and re-enabled while
+        // imports are pending. A screenshotUI null check alone cannot tell an
+        // old invocation from the current generation.
+        if (!this._screenshotUI || this._activeEnableSerial !== enableSerial ||
+            this._deferredReadySerial === enableSerial)
+            return;
+        this._deferredReadySerial = enableSerial;
 
         // Each patch is wrapped so a future API change in one area doesn't
         // prevent the rest of the extension from loading. Better partial
@@ -646,6 +683,19 @@ export default class BigShotExtension extends Extension {
 
         // Intercept _saveScreenshot to composite annotations onto the image
         this._safeStep('patchSaveScreenshot', () => this._patchSaveScreenshot());
+
+<<<<<<< Updated upstream
+        // Warm the registry without blocking the Shell main loop.
+        this._detectPipelines().catch(e => {
+            console.warn(`[Big Shot] Pipeline detection failed: ${e.message}`);
+=======
+        // Warm the codec cache without blocking the Shell main loop. If the
+        // user starts recording immediately, that call awaits the same promise.
+        this._detectPipelines().catch(e => {
+            if (this._activeEnableSerial === enableSerial)
+                console.warn(`[Big Shot] Pipeline detection failed: ${e.message}`);
+>>>>>>> Stashed changes
+        });
     }
 
     /**
@@ -661,27 +711,15 @@ export default class BigShotExtension extends Extension {
         }
     }
 
-    /**
-     * Detect the running GNOME Shell major version. Returns a number or null.
-     * Used to gate version-specific code paths instead of relying on
-     * presence/absence of internal properties (which is also done as
-     * a secondary defence in helpers like _stopActiveRecording).
-     */
-    _detectShellVersion() {
-        try {
-            // imports.misc.config exists across all supported GNOME versions
-            // and exposes PACKAGE_VERSION as a string like "50.1".
-            const cfg = globalThis.imports?.misc?.config;
-            const ver = cfg?.PACKAGE_VERSION;
-            if (typeof ver === 'string') {
-                const major = parseInt(ver.split('.')[0], 10);
-                return Number.isFinite(major) ? major : null;
-            }
-        } catch (_e) { /* */ }
-        return null;
-    }
-
     disable() {
+<<<<<<< Updated upstream
+        this._pipelineDetectionGeneration++;
+        this._pipelineDetectionPromise = null;
+
+=======
+        this._activeEnableSerial = 0;
+        this._deferredReadySerial = 0;
+>>>>>>> Stashed changes
         // Cancel deferred enable if it hasn't fired yet (extension disabled
         // before the idle callback ran). Without this, the parts/patches would
         // be created against a screenshotUI we no longer track. The async
@@ -715,6 +753,9 @@ export default class BigShotExtension extends Extension {
             this._renameTimerId = 0;
         }
         this._pendingRename = null;
+        this._pipelineDetectionPromise = null;
+
+        this._ocrInstallPromise = null;
 
         // Destroy all parts
         for (const part of this._parts) {
@@ -734,6 +775,7 @@ export default class BigShotExtension extends Extension {
 
         this._screenshotUI = null;
         this._availableConfigs = null;
+        this._availableElements?.clear();
     }
 
     _forceEnableScreencast() {
@@ -851,7 +893,7 @@ export default class BigShotExtension extends Extension {
             const pixbuf = await Shell.Screenshot.composite_to_stream(
                 texture, gx, gy, gw, gh, bufScale,
                 cursorTexture ?? null, cursorX ?? 0, cursorY ?? 0, cursorScale ?? 1,
-                stream
+                stream,
             );
             stream.close(null);
 
@@ -888,7 +930,7 @@ export default class BigShotExtension extends Extension {
                     if (typeof action.drawReal === 'function') {
                         try {
                             const result = action.drawReal(
-                                workPixbuf, GdkPixbuf, GLib, toWidget, drawScale
+                                workPixbuf, GdkPixbuf, GLib, toWidget, drawScale,
                             );
                             if (result) {
                                 workPixbuf = result;
@@ -983,7 +1025,7 @@ export default class BigShotExtension extends Extension {
     /**
      * Store screenshot to clipboard + file (mirrors GNOME's _storeScreenshot)
      */
-    _storeScreenshotBytes(bytes, pixbuf) {
+    _storeScreenshotBytes(bytes, _pixbuf) {
         // Clipboard
         const clipboard = St.Clipboard.get_default();
         clipboard.set_content(St.ClipboardType.CLIPBOARD, 'image/png', bytes);
@@ -1111,7 +1153,7 @@ export default class BigShotExtension extends Extension {
         const pixbuf = await Shell.Screenshot.composite_to_stream(
             texture, gx, gy, gw, gh, bufScale,
             cursorTexture ?? null, cursorX ?? 0, cursorY ?? 0, cursorScale ?? 1,
-            stream
+            stream,
         );
         stream.close(null);
 
@@ -1193,25 +1235,40 @@ export default class BigShotExtension extends Extension {
         }
     }
 
+<<<<<<< Updated upstream
+=======
     // =========================================================================
     // OCR — Optical Character Recognition via Tesseract
     // =========================================================================
+
+    _getInstalledTessdataLanguages() {
+        const languages = [];
+        let enumerator = null;
+
+        try {
+            enumerator = Gio.File.new_for_path('/usr/share/tessdata').enumerate_children(
+                'standard::name', Gio.FileQueryInfoFlags.NONE, null);
+            let info = null;
+            while ((info = enumerator.next_file(null)) !== null) {
+                const name = info.get_name();
+                if (name.endsWith('.traineddata'))
+                    languages.push(name.slice(0, -'.traineddata'.length));
+            }
+        } catch {
+            // Tesseract may use a non-standard data directory.
+        } finally {
+            try { enumerator?.close(null); } catch { /* */ }
+        }
+
+        return languages;
+    }
 
     /**
      * Check if Tesseract OCR is installed on the system.
      * @returns {Promise<boolean>}
      */
     async _checkTesseractAvailable() {
-        try {
-            const proc = Gio.Subprocess.new(
-                ['tesseract', '--version'],
-                Gio.SubprocessFlags.STDOUT_PIPE | Gio.SubprocessFlags.STDERR_PIPE
-            );
-            await proc.communicate_utf8_async(null, null);
-            return proc.get_successful();
-        } catch {
-            return false;
-        }
+        return GLib.file_test('/usr/bin/tesseract', GLib.FileTest.IS_EXECUTABLE);
     }
 
     /**
@@ -1221,17 +1278,21 @@ export default class BigShotExtension extends Extension {
     async _getTesseractLanguages() {
         try {
             const proc = Gio.Subprocess.new(
-                ['tesseract', '--list-langs'],
-                Gio.SubprocessFlags.STDOUT_PIPE | Gio.SubprocessFlags.STDERR_PIPE
+                ['/usr/bin/tesseract', '--list-langs'],
+                Gio.SubprocessFlags.STDOUT_PIPE | Gio.SubprocessFlags.STDERR_PIPE,
             );
             const [, stdout, stderr] = await proc.communicate_utf8_async(null, null);
             // Tesseract outputs to stderr on some versions, stdout on others
             const output = (stdout || '') + (stderr || '');
-            const lines = output.trim().split('\n');
-            // First line is always a header — skip it explicitly
-            return lines.slice(1).map(l => l.trim()).filter(l => l.length > 0);
+            const reported = output.split(/\r?\n/)
+                .map(line => line.trim())
+                .filter(line => /^[a-z][a-z0-9_]*$/i.test(line));
+            return [...new Set([
+                ...reported,
+                ...this._getInstalledTessdataLanguages(),
+            ])];
         } catch {
-            return [];
+            return this._getInstalledTessdataLanguages();
         }
     }
 
@@ -1239,26 +1300,167 @@ export default class BigShotExtension extends Extension {
      * Detect system locale and map to Tesseract language code.
      * @returns {string} Tesseract language string e.g. 'por+eng+spa'
      */
-    _getOcrDefaultLang() {
-        // Map system locale to Tesseract lang codes
+    _getOcrSystemLanguage() {
         const LOCALE_MAP = {
-            'pt': 'por', 'en': 'eng', 'es': 'spa', 'fr': 'fra',
-            'de': 'deu', 'it': 'ita', 'ja': 'jpn', 'ko': 'kor',
-            'zh': 'chi_sim', 'ru': 'rus', 'ar': 'ara', 'hi': 'hin',
-            'nl': 'nld', 'pl': 'pol',
+            'ar': 'ara', 'bg': 'bul', 'cs': 'ces', 'da': 'dan',
+            'de': 'deu', 'el': 'ell', 'en': 'eng', 'es': 'spa',
+            'et': 'est', 'fi': 'fin', 'fr': 'fra', 'he': 'heb',
+            'hi': 'hin', 'hr': 'hrv', 'hu': 'hun', 'is': 'isl',
+            'it': 'ita', 'ja': 'jpn', 'ko': 'kor', 'nb': 'nor',
+            'nl': 'nld', 'nn': 'nor', 'no': 'nor', 'pl': 'pol',
+            'pt': 'por', 'ro': 'ron', 'ru': 'rus', 'sk': 'slk',
+            'sv': 'swe', 'tr': 'tur', 'uk': 'ukr', 'zh': 'chi_sim',
         };
 
-        // Get system locale (e.g. "pt_BR.UTF-8" -> "pt")
-        const locale = GLib.getenv('LANG') || 'en_US.UTF-8';
-        const langCode = locale.split('_')[0].toLowerCase();
-        const sysLang = LOCALE_MAP[langCode] || 'eng';
+        for (const locale of GLib.get_language_names()) {
+            const normalized = locale.toLowerCase().replace('-', '_');
+            if (/^zh_(tw|hk|mo)/.test(normalized))
+                return 'chi_tra';
+            const langCode = locale.split(/[_.@]/, 1)[0].toLowerCase();
+            if (LOCALE_MAP[langCode])
+                return LOCALE_MAP[langCode];
+        }
+        return 'eng';
+    }
+
+    async _getOcrDefaultLang(availableLanguages = null) {
+        const sysLang = this._getOcrSystemLanguage();
 
         // Build default: system lang + por + eng + spa (deduped)
         const defaults = [sysLang, 'por', 'eng', 'spa'];
-        const available = this._getTesseractLanguages();
+        const available = availableLanguages || await this._getTesseractLanguages();
         const filtered = [...new Set(defaults)].filter(l => available.includes(l));
 
-        return filtered.length > 0 ? filtered.join('+') : 'eng';
+        return filtered.length > 0 ? filtered.join('+') : available[0];
+    }
+
+    _getOcrInstallPackages() {
+        return ['tesseract', `tesseract-data-${this._getOcrSystemLanguage()}`];
+    }
+
+    async _refreshOcrLanguages() {
+        if (!await this._checkTesseractAvailable()) {
+            this._toolbar?.setOcrLanguages([]);
+            return [];
+        }
+
+        const languages = (await this._getTesseractLanguages())
+            .filter(language => language !== 'osd');
+        this._toolbar?.setOcrLanguages(languages);
+        return languages;
+    }
+
+    _confirmOcrInstall() {
+        return this._toolbar?.confirmOcrInstall(this._getOcrInstallPackages().join(', ')) ??
+            Promise.resolve(false);
+    }
+
+    async _closeScreenshotUiForAuthentication() {
+        const ui = this._screenshotUI;
+        if (!ui?.visible)
+            return;
+
+        ui.close();
+        await new Promise(resolve => {
+            GLib.timeout_add(GLib.PRIORITY_DEFAULT, 300, () => {
+                resolve();
+                return GLib.SOURCE_REMOVE;
+            });
+        });
+    }
+
+    _showOcrMessage(message) {
+        if (this._screenshotUI?.visible)
+            this._toolbar?.showInlineMessage(message);
+        else
+            this._showNotification('OCR', message);
+    }
+
+    async _installOcrSupport() {
+        const pkexec = '/usr/bin/pkexec';
+        const pacman = '/usr/bin/pacman';
+        if (!GLib.file_test(pkexec, GLib.FileTest.IS_EXECUTABLE) ||
+            !GLib.file_test(pacman, GLib.FileTest.IS_EXECUTABLE)) {
+            this._toolbar?.showInlineMessage(
+                _('Automatic installation is unavailable. Install Tesseract and its language packs with your package manager.'));
+            return false;
+        }
+
+        try {
+            if (!await this._confirmOcrInstall())
+                return false;
+        } catch (e) {
+            console.error(`[Big Shot] Could not open OCR installation dialog: ${e.message}`);
+            this._toolbar?.showInlineMessage(
+                _('Automatic installation is unavailable. Install Tesseract and its language packs with your package manager.'));
+            return false;
+        }
+
+        await this._closeScreenshotUiForAuthentication();
+        this._showOcrMessage(_('Installing OCR support...'));
+
+        try {
+            const packages = this._getOcrInstallPackages();
+            const proc = Gio.Subprocess.new([
+                pkexec,
+                pacman,
+                '-S',
+                '--needed',
+                '--noconfirm',
+                ...packages,
+            ], Gio.SubprocessFlags.STDOUT_PIPE | Gio.SubprocessFlags.STDERR_PIPE);
+            const [, stdout, stderr] = await proc.communicate_utf8_async(null, null);
+
+            if (!proc.get_successful()) {
+                const details = (stderr || stdout || '').trim();
+                if (details)
+                    console.error(`[Big Shot] OCR package installation failed: ${details}`);
+                this._showOcrMessage(
+                    _('Could not install OCR support. Check the package manager and try again.'));
+                return false;
+            }
+
+            const requiredLanguage = this._getOcrSystemLanguage();
+            let languages = [];
+            for (let attempt = 0; attempt < 3; attempt++) {
+                languages = await this._refreshOcrLanguages();
+                if (languages.includes(requiredLanguage))
+                    break;
+                await new Promise(resolve => {
+                    GLib.timeout_add(GLib.PRIORITY_DEFAULT, 200, () => {
+                        resolve();
+                        return GLib.SOURCE_REMOVE;
+                    });
+                });
+            }
+            if (!languages.includes(requiredLanguage)) {
+                this._showOcrMessage(
+                    _('OCR was installed, but no language packs were found.'));
+                return false;
+            }
+
+            this._showOcrMessage(_('OCR support installed successfully.'));
+            return true;
+        } catch (e) {
+            console.error(`[Big Shot] OCR package installation failed: ${e.message}`);
+            this._showOcrMessage(
+                _('Could not install OCR support. Check the package manager and try again.'));
+            return false;
+        }
+    }
+
+    async _ensureOcrSupport() {
+        const languages = await this._refreshOcrLanguages();
+        const requiredLanguage = this._toolbar?.ocrLanguage || this._getOcrSystemLanguage();
+        if (languages.includes(requiredLanguage))
+            return true;
+
+        if (!this._ocrInstallPromise) {
+            this._ocrInstallPromise = this._installOcrSupport().finally(() => {
+                this._ocrInstallPromise = null;
+            });
+        }
+        return await this._ocrInstallPromise;
     }
 
     /**
@@ -1269,8 +1471,8 @@ export default class BigShotExtension extends Extension {
      */
     async _runOCR(imagePath, lang) {
         const proc = Gio.Subprocess.new(
-            ['tesseract', imagePath, 'stdout', '-l', lang],
-            Gio.SubprocessFlags.STDOUT_PIPE | Gio.SubprocessFlags.STDERR_PIPE
+            ['/usr/bin/tesseract', imagePath, 'stdout', '-l', lang],
+            Gio.SubprocessFlags.STDOUT_PIPE | Gio.SubprocessFlags.STDERR_PIPE,
         );
 
         return new Promise((resolve, reject) => {
@@ -1289,6 +1491,7 @@ export default class BigShotExtension extends Extension {
         });
     }
 
+>>>>>>> Stashed changes
     /**
      * Handle action button clicks from the toolbar.
      */
@@ -1296,6 +1499,11 @@ export default class BigShotExtension extends Extension {
         const ui = this._screenshotUI;
 
         try {
+            if (action === 'install-ocr') {
+                await this._ensureOcrSupport();
+                return;
+            }
+
             const result = await this._captureAnnotatedBytes();
             if (!result) {
                 console.error('[Big Shot] Failed to capture screenshot');
@@ -1303,6 +1511,11 @@ export default class BigShotExtension extends Extension {
             }
 
             const { bytes, pixbuf } = result;
+
+            // Preserve the selected pixels before closing Screenshot UI for
+            // the PolicyKit authentication dialog.
+            if (action === 'ocr' && !await this._ensureOcrSupport())
+                return;
 
             switch (action) {
             case 'copy': {
@@ -1334,20 +1547,15 @@ export default class BigShotExtension extends Extension {
                 break;
             }
 
+<<<<<<< Updated upstream
+=======
             case 'ocr': {
-                // Check if Tesseract is available
-                if (!await this._checkTesseractAvailable()) {
-                    this._toolbar?.showInlineMessage(
-                        _('Tesseract not found. Please install the \u2018tesseract\u2019 package for your distribution.'));
-                    return;
-                }
-
                 // Determine language
                 const selectedLang = this._toolbar?.ocrLanguage;
-                const lang = selectedLang || this._getOcrDefaultLang();
+                const lang = selectedLang || await this._getOcrDefaultLang();
 
                 // Show processing message
-                this._toolbar?.showInlineMessage(_('Extracting text...'));
+                this._showOcrMessage(_('Extracting text...'));
 
                 // Save screenshot to temp file for Tesseract
                 const tmpOcrPath = GLib.build_filenamev([
@@ -1366,17 +1574,17 @@ export default class BigShotExtension extends Extension {
                         const clipboard = St.Clipboard.get_default();
                         clipboard.set_text(St.ClipboardType.CLIPBOARD, text);
 
-                        this._toolbar?.showInlineMessage(
+                        this._showOcrMessage(
                             _('Text copied to clipboard! (%d chars)').format(text.length));
 
                         console.log(`[Big Shot] OCR extracted ${text.length} chars (lang=${lang})`);
                     } else {
-                        this._toolbar?.showInlineMessage(
+                        this._showOcrMessage(
                             _('No text found in selection'));
                     }
                 } catch (e) {
                     console.error(`[Big Shot] OCR failed: ${e.message}`);
-                    this._toolbar?.showInlineMessage(
+                    this._showOcrMessage(
                         _('OCR failed: %s').format(e.message));
                 } finally {
                     try { Gio.File.new_for_path(tmpOcrPath).delete(null); } catch (_e) { /* */ }
@@ -1384,6 +1592,7 @@ export default class BigShotExtension extends Extension {
                 break;
             }
 
+>>>>>>> Stashed changes
             }
         } catch (e) {
             console.error(`[Big Shot] Action '${action}' failed: ${e.message}\n${e.stack}`);
@@ -1393,7 +1602,7 @@ export default class BigShotExtension extends Extension {
     /**
      * Open a Save As dialog via xdg-desktop-portal FileChooser.
      */
-    _openSaveDialog(tmpPath, pixbuf) {
+    _openSaveDialog(tmpPath, _pixbuf) {
         try {
             const time = GLib.DateTime.new_now_local();
             const suggestedName = _('Screenshot from %s').format(
@@ -1414,7 +1623,7 @@ export default class BigShotExtension extends Extension {
                         'current_folder': new GLib.Variant('ay',
                             new TextEncoder().encode(
                                 GLib.get_user_special_dir(GLib.UserDirectory.DIRECTORY_PICTURES) ||
-                                GLib.get_home_dir()
+                                GLib.get_home_dir(),
                             )),
                         'filters': new GLib.Variant('a(sa(us))', [
                             ['PNG Images', [
@@ -1457,14 +1666,14 @@ export default class BigShotExtension extends Extension {
                                 }
                                 // Clean up temp file
                                 try { Gio.File.new_for_path(tmpPath).delete(null); } catch (_e) { /* */ }
-                            }
+                            },
                         );
                     } catch (e) {
                         console.error(`[Big Shot] Portal SaveFile failed: ${e.message}`);
                         // Fallback: just open file manager at the temp location
                         try { Gio.File.new_for_path(tmpPath).delete(null); } catch (_e) { /* */ }
                     }
-                }
+                },
             );
         } catch (e) {
             console.error(`[Big Shot] Save dialog failed: ${e.message}`);
@@ -1488,7 +1697,7 @@ export default class BigShotExtension extends Extension {
                 body,
             });
             source.addNotification(notification);
-        } catch (e) {
+        } catch (_e) {
             // Fallback: show as OSD via Main.osdWindowManager
             try {
                 const monitor = global.display.get_current_monitor();
@@ -1499,44 +1708,111 @@ export default class BigShotExtension extends Extension {
         }
     }
 
+<<<<<<< Updated upstream
     _detectPipelines() {
+        if (this._availableConfigs !== null)
+            return Promise.resolve(this._availableConfigs);
+        if (this._pipelineDetectionPromise)
+            return this._pipelineDetectionPromise;
+
+        const generation = this._pipelineDetectionGeneration;
+        this._pipelineDetectionPromise = this._runPipelineDetection(generation)
+            .finally(() => {
+                if (generation === this._pipelineDetectionGeneration)
+                    this._pipelineDetectionPromise = null;
+            });
+        return this._pipelineDetectionPromise;
+    }
+
+    async _runPipelineDetection(generation) {
+        const startedAt = GLib.get_monotonic_time();
+        const gpuVendors = await detectGpuVendors();
+        const vendorSet = new Set(gpuVendors);
+
+        const candidates = VIDEO_PIPELINES.filter(config =>
+            config.vendors.length === 0 ||
+            config.vendors.some(vendor => vendorSet.has(vendor)));
+        const elementNames = new Set(candidates.flatMap(config => config.elements));
+        elementNames.add('mp4mux');
+        elementNames.add('webmmux');
+        for (const choices of Object.values(AUDIO_PIPELINES)) {
+            for (const choice of choices)
+                elementNames.add(choice.element);
+        }
+
+        const checks = await Promise.all([...elementNames].map(async name =>
+            [name, await checkElement(name)]));
+        const availableElements = new Set(
+            checks.filter(([, available]) => available).map(([name]) => name));
+
+        if (generation !== this._pipelineDetectionGeneration || !this._screenshotUI)
+            return [];
+
+        const available = candidates.filter(config =>
+            config.elements.every(element => availableElements.has(element)) &&
+            availableElements.has(config.ext === 'mp4' ? 'mp4mux' : 'webmmux'));
+        const gpuConfigs = available.filter(config => config.vendors.length > 0);
+        const swConfigs = available.filter(config => config.vendors.length === 0);
+
+        this._gpuVendors = gpuVendors;
+        this._availableElements = availableElements;
+        this._availableConfigs = [...gpuConfigs, ...swConfigs];
+        if (this._availableConfigs.length === 0)
+            console.warn('[Big Shot] No compatible GStreamer pipeline found!');
+        else
+            console.log(`[Big Shot] Pipeline detection ready in ${Math.round((GLib.get_monotonic_time() - startedAt) / 1000)} ms: ${this._availableConfigs.map(config => config.id).join(', ')}`);
+
+        return this._availableConfigs;
+=======
+    async _detectPipelines() {
         // Already detected — skip
         if (this._availableConfigs !== null)
-            return;
+            return this._availableConfigs;
+        if (this._pipelineDetectionPromise)
+            return this._pipelineDetectionPromise;
 
-        // 1. Detect GPU vendor(s) via lspci (same as big-video-converter)
-        this._gpuVendors = detectGpuVendors();
+        const enableSerial = this._activeEnableSerial;
+        const detection = (async () => {
+            const elementNames = [...new Set(VIDEO_PIPELINES.flatMap(config => config.elements))];
+            const [gpuVendors, elementResults] = await Promise.all([
+                detectGpuVendors(),
+                Promise.all(elementNames.map(async name => [name, await checkElement(name)])),
+            ]);
 
-        const vendorSet = new Set(this._gpuVendors);
+            if (!enableSerial || this._activeEnableSerial !== enableSerial)
+                return [];
 
-        // 2. Build ordered config list:
-        //    - First: configs matching detected GPU (NVIDIA, AMD, or Intel — all equal priority)
-        //    - Last: software fallbacks (vendors=[])
-        const gpuConfigs = []; // Hardware-accelerated for detected GPU
-        const swConfigs = [];  // Software fallbacks
+            const availableElements = new Map(elementResults);
+            const vendorSet = new Set(gpuVendors);
+            const gpuConfigs = [];
+            const swConfigs = [];
 
-        for (const config of VIDEO_PIPELINES) {
-            if (!checkPipeline(config))
-                continue;
+            for (const config of VIDEO_PIPELINES) {
+                if (!config.elements.every(element => availableElements.get(element)))
+                    continue;
 
-            // Software config (vendors is empty array)
-            if (config.vendors.length === 0) {
-                swConfigs.push(config);
-                continue;
+                if (config.vendors.length === 0) {
+                    swConfigs.push(config);
+                } else if (config.vendors.some(vendor => vendorSet.has(vendor))) {
+                    gpuConfigs.push(config);
+                }
             }
 
-            // GPU config — add if ANY detected vendor matches
-            const matches = config.vendors.some(v => vendorSet.has(v));
-            if (matches)
-                gpuConfigs.push(config);
-        }
+            this._gpuVendors = gpuVendors;
+            this._availableConfigs = [...gpuConfigs, ...swConfigs];
+            if (this._availableConfigs.length === 0)
+                console.warn('[Big Shot] No compatible GStreamer pipeline found!');
+            return this._availableConfigs;
+        })();
 
-        // Final order: GPU hardware (your detected vendor) → Software fallback
-        this._availableConfigs = [...gpuConfigs, ...swConfigs];
-
-        if (this._availableConfigs.length === 0) {
-            console.warn('[Big Shot] No compatible GStreamer pipeline found!');
+        this._pipelineDetectionPromise = detection;
+        try {
+            return await detection;
+        } finally {
+            if (this._pipelineDetectionPromise === detection)
+                this._pipelineDetectionPromise = null;
         }
+>>>>>>> Stashed changes
     }
 
     _getAutoPipelineConfigs() {
@@ -1590,16 +1866,14 @@ export default class BigShotExtension extends Extension {
             this._handleAction(action);
         });
 
+<<<<<<< Updated upstream
+=======
         // Detect Tesseract and populate OCR languages (async — won't block UI)
-        this._checkTesseractAvailable().then(available => {
-            if (!available) return;
-            this._getTesseractLanguages().then(langs => {
-                this._toolbar.setOcrLanguages(langs);
-            }).catch(() => {});
-        }).catch(e => {
+        this._refreshOcrLanguages().catch(e => {
             console.log(`[Big Shot] Tesseract detection skipped: ${e.message}`);
         });
 
+>>>>>>> Stashed changes
         // Audio — Desktop + Mic toggle buttons
         this._audio = new PartAudio(ui, ext);
         this._parts.push(this._audio);
@@ -1712,16 +1986,39 @@ export default class BigShotExtension extends Extension {
             // Patch ScreencastAsync
             if (this._origScreencast) {
                 screencastProxy.ScreencastAsync = function (filePath, options) {
-                    return ext._screencastCommonAsync(filePath, options, ext._origScreencast);
+<<<<<<< Updated upstream
+                    const geometry = screenshotUI._getSelectedGeometry?.(true);
+                    const captureSize = geometry
+                        ? { width: geometry[2], height: geometry[3] }
+                        : null;
+                    return ext._screencastCommonAsync(
+                        filePath, options, ext._origScreencast, captureSize);
+=======
+                    return ext._screencastCommonAsync(
+                        filePath,
+                        options,
+                        ext._origScreencast,
+                        { width: global.stage.width, height: global.stage.height },
+                    );
+>>>>>>> Stashed changes
                 };
             }
 
             // Patch ScreencastAreaAsync
             if (this._origScreencastArea) {
                 screencastProxy.ScreencastAreaAsync = function (x, y, width, height, filePath, options) {
+<<<<<<< Updated upstream
                     return ext._screencastCommonAsync(filePath, options, (fp, opts) => {
                         return ext._origScreencastArea(x, y, width, height, fp, opts);
-                    });
+                    }, { width, height });
+=======
+                    return ext._screencastCommonAsync(
+                        filePath,
+                        options,
+                        (fp, opts) => ext._origScreencastArea(x, y, width, height, fp, opts),
+                        { width, height },
+                    );
+>>>>>>> Stashed changes
                 };
             }
 
@@ -1911,7 +2208,7 @@ export default class BigShotExtension extends Extension {
 
         try {
             const [success, path] = await proxy.ScreencastAreaAsync(
-                x, y, width, height, filePath, options
+                x, y, width, height, filePath, options,
             );
             if (success) {
                 ui._screencastPath = path;
@@ -1977,19 +2274,27 @@ export default class BigShotExtension extends Extension {
         this._origScreencastProxyTimeout = null;
     }
 
-    async _screencastCommonAsync(filePath, options, originalMethod) {
+    async _screencastCommonAsync(filePath, options, originalMethod, captureSize = null) {
+<<<<<<< Updated upstream
+        // Share the background probe when it is still finishing.
+=======
         // Lazy pipeline detection on first use (avoids blocking enable())
-        this._detectPipelines();
+>>>>>>> Stashed changes
+        await this._detectPipelines();
 
         // Force every recording (full-screen and area) into ~/Videos/BigShot/
         // with the localized "BigShot from %d %t" filename.
         filePath = buildBigShotRecordingPath();
         ensureRecordingFolder();
 
-        if (this._availableConfigs.length === 0) {
-            return originalMethod(filePath, options);
+<<<<<<< Updated upstream
+        if (!this._availableConfigs?.length) {
+            return this._startNativeFallback(
+                filePath, options, originalMethod, captureSize);
         }
 
+=======
+>>>>>>> Stashed changes
         const framerate = this._framerate?.value ?? 30;
         const downsize = this._downsize?.value ?? 1.0;
         const quality = this._toolbar?.videoQuality ?? 'high';
@@ -2017,7 +2322,17 @@ export default class BigShotExtension extends Extension {
         // Try each config in cascade: preferred → GPU hw → VAAPI → Software
         for (let i = 0; i < configs.length; i++) {
             const config = configs[i];
-            const pipeline = this._makePipelineString(config, framerateCaps, downsize, quality);
+            const pipeline = this._makePipelineString(
+<<<<<<< Updated upstream
+                config, framerateCaps, downsize, quality, captureSize);
+=======
+                config,
+                framerateCaps,
+                downsize,
+                quality,
+                captureSize,
+            );
+>>>>>>> Stashed changes
             const pipelineOptions = {
                 ...options,
                 pipeline: new GLib.Variant('s', pipeline),
@@ -2041,6 +2356,7 @@ export default class BigShotExtension extends Extension {
                     framerateCaps,
                     downsize,
                     quality,
+                    captureSize,
                     fallbackPath: filePath,
                 });
             } catch (e) {
@@ -2052,6 +2368,7 @@ export default class BigShotExtension extends Extension {
                     framerateCaps,
                     downsize,
                     quality,
+                    captureSize,
                     startedAtUnix,
                 });
                 if (recovered)
@@ -2065,8 +2382,87 @@ export default class BigShotExtension extends Extension {
 
         // All custom pipelines exhausted — clean up indicator and fall back
         console.warn('[Big Shot] All pipelines failed, falling back to GNOME default');
+<<<<<<< Updated upstream
         this._indicator?.onPipelineReady();
-        return originalMethod(filePath, options);
+        return this._startNativeFallback(
+            filePath, options, originalMethod, captureSize);
+    }
+
+    async _startNativeFallback(filePath, options, originalMethod, captureSize) {
+=======
+        return this._startDefaultRecording({
+            filePath,
+            options: baseOptions,
+            originalMethod,
+            framerateCaps,
+            downsize,
+            quality,
+            captureSize,
+        });
+    }
+
+    async _startDefaultRecording({
+        filePath,
+        options,
+        originalMethod,
+        framerateCaps,
+        downsize,
+        quality,
+        captureSize,
+    }) {
+>>>>>>> Stashed changes
+        this._recordingState = 'starting';
+        try {
+            const result = await originalMethod(filePath, options);
+            if (result && result[0] === false)
+                throw new Error('Screencast service returned failure');
+
+            const actualPath = result?.[1] ?? filePath;
+<<<<<<< Updated upstream
+            const extensionMatch = typeof actualPath === 'string'
+                ? actualPath.match(/\.([A-Za-z0-9]+)$/)
+                : null;
+            const ext = extensionMatch?.[1] ?? 'webm';
+            return this._registerRecordingStarted({
+                result,
+                config: {
+                    id: 'gnome-default',
+                    label: 'GNOME Default',
+                    ext,
+                    native: true,
+                },
+                originalMethod,
+                baseOptions: { ...options },
+                framerateCaps: `${this._framerate?.value ?? 30}/1`,
+                downsize: 1.0,
+                quality: 'high',
+                captureSize,
+                fallbackPath: actualPath,
+=======
+            const config = {
+                id: 'gnome-default',
+                label: 'GNOME default',
+                ext: recordingExtension(actualPath),
+                vendors: [],
+            };
+            return this._registerRecordingStarted({
+                result,
+                config,
+                originalMethod,
+                baseOptions: options,
+                framerateCaps,
+                downsize,
+                quality,
+                captureSize,
+                fallbackPath: filePath,
+                defaultPipeline: true,
+>>>>>>> Stashed changes
+            });
+        } catch (e) {
+            this._recordingState = 'idle';
+            this._indicator?.onPipelineReady();
+            throw e;
+        }
     }
 
     _registerRecordingStarted({
@@ -2077,11 +2473,14 @@ export default class BigShotExtension extends Extension {
         framerateCaps,
         downsize,
         quality,
+        captureSize,
         fallbackPath,
+        defaultPipeline = false,
     }) {
         this._indicator?.onPipelineReady();
 
         this._recordingState = 'recording';
+        console.log(`[Big Shot] Recording started with ${config.id}`);
         this._recordingContext = {
             config,
             originalMethod,
@@ -2101,6 +2500,11 @@ export default class BigShotExtension extends Extension {
             framerateCaps,
             downsize,
             quality,
+            captureSize,
+<<<<<<< Updated upstream
+=======
+            defaultPipeline,
+>>>>>>> Stashed changes
             ext: config.ext,
             segments: [],
             finalPath: correctedPath,
@@ -2145,6 +2549,7 @@ export default class BigShotExtension extends Extension {
         framerateCaps,
         downsize,
         quality,
+        captureSize,
         startedAtUnix,
     }) {
         if (!this._isStartupTimeout(error))
@@ -2165,6 +2570,7 @@ export default class BigShotExtension extends Extension {
             framerateCaps,
             downsize,
             quality,
+            captureSize,
             fallbackPath: activePath,
         });
     }
@@ -2292,7 +2698,7 @@ export default class BigShotExtension extends Extension {
 
         this._suppressPauseStopFailure = true;
         const result = await this._origStopScreencastAsync();
-        return Array.isArray(result) ? !!result[0] : !!result;
+        return Array.isArray(result) ? Boolean(result[0]) : Boolean(result);
     }
 
     _finalizeCurrentSegment() {
@@ -2321,16 +2727,29 @@ export default class BigShotExtension extends Extension {
         const filePath = buildBigShotSegmentPath(session.id, index);
         GLib.mkdir_with_parents(getSegmentSessionFolder(session.id), 0o755);
 
-        const pipeline = this._makePipelineString(
-            session.config,
-            session.framerateCaps,
-            session.downsize,
-            session.quality
-        );
-        const pipelineOptions = {
-            ...session.baseOptions,
-            pipeline: new GLib.Variant('s', pipeline),
-        };
+<<<<<<< Updated upstream
+        let pipelineOptions = { ...session.baseOptions };
+        if (!session.config.native) {
+=======
+        const pipelineOptions = { ...session.baseOptions };
+        if (!session.defaultPipeline) {
+>>>>>>> Stashed changes
+            const pipeline = this._makePipelineString(
+                session.config,
+                session.framerateCaps,
+                session.downsize,
+                session.quality,
+                session.captureSize,
+            );
+<<<<<<< Updated upstream
+            pipelineOptions = {
+                ...pipelineOptions,
+                pipeline: new GLib.Variant('s', pipeline),
+            };
+=======
+            pipelineOptions.pipeline = new GLib.Variant('s', pipeline);
+>>>>>>> Stashed changes
+        }
 
         const startedAtUnix = GLib.DateTime.new_now_local().to_unix();
         let result;
@@ -2508,7 +2927,7 @@ export default class BigShotExtension extends Extension {
                 null,
                 false,
                 Gio.FileCreateFlags.NONE,
-                null
+                null,
             );
 
             const proc = Gio.Subprocess.new([
@@ -2534,7 +2953,7 @@ export default class BigShotExtension extends Extension {
                         Gio.File.new_for_path(finalPath),
                         Gio.FileCopyFlags.OVERWRITE,
                         null,
-                        null
+                        null,
                     );
                     this._cleanupMergedSegments(session, listPath, tmpPath);
                 } catch (e) {
@@ -2603,7 +3022,20 @@ export default class BigShotExtension extends Extension {
         });
     }
 
-    _makePipelineString(config, framerateCaps, downsize, quality = 'high') {
+<<<<<<< Updated upstream
+    _selectAudioPipeline(ext) {
+        const type = ext === 'mp4' ? 'aac' : 'vorbis';
+        return AUDIO_PIPELINES[type]
+            .find(choice => this._availableElements?.has(choice.element))
+            ?.pipeline ?? null;
+    }
+
+    _makePipelineString(
+        config, framerateCaps, downsize, quality = 'high', captureSize = null,
+    ) {
+=======
+    _makePipelineString(config, framerateCaps, downsize, quality = 'high', captureSize = null) {
+>>>>>>> Stashed changes
         let video = config.src.replace('FRAMERATE_CAPS', framerateCaps);
 
         // Resolve quality preset and build encoder string
@@ -2612,15 +3044,40 @@ export default class BigShotExtension extends Extension {
 
         // Downsize — insert videoscale between videoconvert and encoder
         if (downsize < 1.0) {
-            const monitor = global.display.get_current_monitor();
-            const geo = global.display.get_monitor_geometry(monitor);
-            const targetW = Math.round(geo.width * downsize);
-            const targetH = Math.round(geo.height * downsize);
+<<<<<<< Updated upstream
+            let sourceWidth = captureSize?.width;
+            let sourceHeight = captureSize?.height;
+            if (!sourceWidth || !sourceHeight) {
+                const monitor = global.display.get_current_monitor();
+                const geo = global.display.get_monitor_geometry(monitor);
+                sourceWidth = geo.width;
+                sourceHeight = geo.height;
+            }
+            const targetW = Math.max(2, Math.round(sourceWidth * downsize)) & ~1;
+            const targetH = Math.max(2, Math.round(sourceHeight * downsize)) & ~1;
             // Insert videoscale after the first "queue" in the video chain
             video = video.replace(
                 /queue/,
-                `queue ! videoscale ! video/x-raw,width=${targetW},height=${targetH}`
+                `queue ! videoscale ! video/x-raw,width=${targetW},height=${targetH}`,
+=======
+            const sourceSize = captureSize ?? (() => {
+                const monitor = global.display.get_current_monitor();
+                const geo = global.display.get_monitor_geometry(monitor);
+                return { width: geo.width, height: geo.height };
+            })();
+            const target = computeScaledDimensions(
+                sourceSize.width,
+                sourceSize.height,
+                downsize,
+>>>>>>> Stashed changes
             );
+            if (target) {
+                // Even output dimensions are required by common H.264/H.265 encoders.
+                video = video.replace(
+                    /queue/,
+                    `queue ! videoscale ! video/x-raw,width=${target.width},height=${target.height}`,
+                );
+            }
         }
 
         const audioInput = this._audio?.makeAudioInput();
@@ -2632,7 +3089,11 @@ export default class BigShotExtension extends Extension {
             // GStreamer multi-branch pipeline for audio+video:
             //   pipewiresrc ! video_chain ! queue ! mux.  pulsesrc ! audio_chain ! queue ! mux.  muxer name=mux ! filesink
             // The screencast service prepends pipewiresrc and appends ! filesink
-            const audioPipeline = ext === 'mp4' ? AUDIO_PIPELINE.aac : AUDIO_PIPELINE.vorbis;
+            const audioPipeline = this._selectAudioPipeline(ext);
+            if (!audioPipeline) {
+                console.warn(`[Big Shot] No ${ext === 'mp4' ? 'AAC' : 'Vorbis'} encoder; recording without audio`);
+                return `${video} ! ${muxer}`;
+            }
             const videoSeg = `${video} ! queue ! mux.`;
             const audioSeg = `${audioInput} ! ${audioPipeline} ! mux.`;
             const muxDef = `${muxer} name=mux`;

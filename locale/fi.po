@@ -33,21 +33,6 @@ msgstr "Kuvakaappaus kohteesta %s"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:740
 msgid "Screenshot copied"
 msgstr "Kuvakaappaus kopioitu"
-#: NEEDS WORK
-msgid "Tesseract not found. Please install the ‘tesseract’ package for your distribution."
-msgstr "Tesseractia ei löytynyt. Asenna 'tesseract'-paketti jakeluasi varten."
-#: NEEDS WORK
-msgid "Extracting text..."
-msgstr "Tekstin purkaminen..."
-#: NEEDS WORK
-msgid "Text copied to clipboard! (%d chars)"
-msgstr "Teksti kopioitu leikepöydälle! (%d merkkiä)"
-#: NEEDS WORK
-msgid "No text found in selection"
-msgstr "Ei tekstiä löytynyt valinnasta"
-#: NEEDS WORK
-msgid "OCR failed: %s"
-msgstr "OCR epäonnistui: %s"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:789
 msgid "Save Screenshot"
 msgstr "Tallenna kuvakaappaus"
@@ -270,12 +255,3 @@ msgstr "Käytä parasta saatavilla olevaa koodekkia"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:1297
 msgid "Video codec"
 msgstr "Videokoodekki"
-#: NEEDS WORK
-msgid "Tesseract not found. Install: sudo pacman -S tesseract tesseract-data-por"
-msgstr "Tesseractia ei löytynyt. Asenna: sudo pacman -S tesseract tesseract-data-por"
-#: NEEDS WORK
-msgid "OCR Languages"
-msgstr "OCR-kielet"
-#: NEEDS WORK
-msgid "Auto (system)"
-msgstr "Auto (järjestelmä)"

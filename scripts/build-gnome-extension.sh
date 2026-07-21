@@ -43,6 +43,7 @@ gnome-extensions pack -f -o "${DIST_DIR}" \
     --extra-source=parts \
     --extra-source=drawing \
     --extra-source=data \
+    --extra-source=lib \
     --podir=po \
     "${STAGE_EXT}"
 

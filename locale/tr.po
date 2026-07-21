@@ -33,21 +33,6 @@ msgstr "%s ekran görüntüsü"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:740
 msgid "Screenshot copied"
 msgstr "Ekran görüntüsü kopyalandı"
-#: NEEDS WORK
-msgid "Tesseract not found. Please install the ‘tesseract’ package for your distribution."
-msgstr "Tesseract bulunamadı. Lütfen dağıtımınız için ‘tesseract’ paketini kurun."
-#: NEEDS WORK
-msgid "Extracting text..."
-msgstr "Metin çıkarılıyor..."
-#: NEEDS WORK
-msgid "Text copied to clipboard! (%d chars)"
-msgstr "Metin panoya kopyalandı! (%d karakter)"
-#: NEEDS WORK
-msgid "No text found in selection"
-msgstr "Seçimde metin bulunamadı"
-#: NEEDS WORK
-msgid "OCR failed: %s"
-msgstr "OCR başarısız: %s"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:789
 msgid "Save Screenshot"
 msgstr "Ekran Görüntüsünü Kaydet"
@@ -270,12 +255,3 @@ msgstr "En iyi mevcut kodeği kullanın"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:1297
 msgid "Video codec"
 msgstr "Video kodek"
-#: NEEDS WORK
-msgid "Tesseract not found. Install: sudo pacman -S tesseract tesseract-data-por"
-msgstr "Tesseract bulunamadı. Kurun: sudo pacman -S tesseract tesseract-data-por"
-#: NEEDS WORK
-msgid "OCR Languages"
-msgstr "OCR Dilleri"
-#: NEEDS WORK
-msgid "Auto (system)"
-msgstr "Otomatik (sistem)"

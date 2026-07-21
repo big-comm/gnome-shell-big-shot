@@ -31,21 +31,6 @@ msgstr "Capture d’écran de %s"
 msgid "Screenshot copied"
 msgstr "Capture d’écran copiée"
 #: NEEDS WORK
-msgid "Tesseract not found. Please install the ‘tesseract’ package for your distribution."
-msgstr "Tesseract non trouvé. Veuillez installer le paquet ‘tesseract’ pour votre distribution."
-#: NEEDS WORK
-msgid "Extracting text..."
-msgstr "Extraction de texte..."
-#: NEEDS WORK
-msgid "Text copied to clipboard! (%d chars)"
-msgstr "Texte copié dans le presse-papiers ! (%d caractères)"
-#: NEEDS WORK
-msgid "No text found in selection"
-msgstr "Aucun texte trouvé dans la sélection"
-#: NEEDS WORK
-msgid "OCR failed: %s"
-msgstr "Échec de l'OCR : %s"
-#: NEEDS WORK
 msgid "Save Screenshot"
 msgstr "Enregistrer la capture d’écran"
 #: NEEDS WORK
@@ -251,12 +236,3 @@ msgstr "Utiliser le meilleur codec disponible"
 #: NEEDS WORK
 msgid "Video codec"
 msgstr "Codec vidéo"
-#: NEEDS WORK
-msgid "Tesseract not found. Install: sudo pacman -S tesseract tesseract-data-por"
-msgstr "Tesseract non trouvé. Installer : sudo pacman -S tesseract tesseract-data-por"
-#: NEEDS WORK
-msgid "OCR Languages"
-msgstr "Langues OCR"
-#: NEEDS WORK
-msgid "Auto (system)"
-msgstr "Auto (système)"

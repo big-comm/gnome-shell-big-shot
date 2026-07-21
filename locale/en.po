@@ -30,25 +30,6 @@ msgstr "Screenshot from %s"
 msgid "Screenshot copied"
 msgstr "Screenshot copied"
 
-msgid ""
-"Tesseract not found. Please install the ‘tesseract’ package for your "
-"distribution."
-msgstr ""
-"Tesseract not found. Please install the ‘tesseract’ package for your "
-"distribution."
-
-msgid "Extracting text..."
-msgstr "Extracting text..."
-
-msgid "Text copied to clipboard! (%d chars)"
-msgstr "Text copied to clipboard! (%d chars)"
-
-msgid "No text found in selection"
-msgstr "No text found in selection"
-
-msgid "OCR failed: %s"
-msgstr "OCR failed: %s"
-
 msgid "Save Screenshot"
 msgstr "Save Screenshot"
 
@@ -255,14 +236,3 @@ msgstr "Use best available codec"
 
 msgid "Video codec"
 msgstr "Video codec"
-
-msgid ""
-"Tesseract not found. Install: sudo pacman -S tesseract tesseract-data-por"
-msgstr ""
-"Tesseract not found. Install: sudo pacman -S tesseract tesseract-data-por"
-
-msgid "OCR Languages"
-msgstr "OCR Languages"
-
-msgid "Auto (system)"
-msgstr "Auto (system)"

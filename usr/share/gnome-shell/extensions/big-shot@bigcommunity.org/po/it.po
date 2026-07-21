@@ -1,7 +1,10 @@
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: big-shot 1.0\n"
-"Report-Msgid-Bugs-To: \n"
+"Report-Msgid-Bugs-To: https://github.com/BigCommunity/gnome-shell-big-shot/"
+"issues\n"
+"POT-Creation-Date: 2026-07-21 14:15-0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: it\n"
@@ -10,221 +13,406 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: attranslate\n"
 
-msgid "Annotation text"
-msgstr "Testo annotazione"
-
-msgid "Arrow"
-msgstr "Freccia"
-
-msgid "Auto"
-msgstr "Automatico"
-
-msgid "Blur"
-msgstr "Sfocatura"
-
-msgid "Border Radius"
-msgstr "Raggio del bordo"
-
-msgid "Brush Size"
-msgstr "Dimensione Pennello"
-
-msgid "Camera"
-msgstr "Fotocamera"
-
-msgid "Censor"
-msgstr "Censura"
-
-msgid "Checker"
-msgstr "Checker"
-
-msgid "Circle"
-msgstr "Circle"
-
-msgid "Close"
-msgstr "Chiudi"
-
-msgid "Codec"
-msgstr "Codec"
-
-msgid "Color"
-msgstr "Colore"
-
-msgid "Confirm"
-msgstr "Conferma"
-
-msgid "Copy to Clipboard"
-msgstr "Copia negli appunti"
-
-msgid "Custom"
-msgstr "Personalizzato"
-
-msgid "Decrease Size"
-msgstr "Riduci dimensione"
-
-msgid "Desktop"
-msgstr "Desktop"
-
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/drawing/overlay.js:124
 msgid "Drawing canvas"
 msgstr "Tavola da disegno"
 
-msgid "Edit"
-msgstr "Modifica"
-
-msgid "Edit Screenshot"
-msgstr "Modifica Screenshot"
-
-msgid "Eraser"
-msgstr "Cancellatore"
-
-msgid "Fill"
-msgstr "Riempi"
-
-msgid "Font"
-msgstr "Carattere"
-
-msgid "Frames per second"
-msgstr "Frame al secondo"
-
-msgid "Gradient Angle"
-msgstr "Angolo gradiente"
-
-msgid "Hide screenshot panel"
-msgstr "Nascondi pannello screenshot"
-
-msgid "High"
-msgstr "Alta"
-
-msgid "Highlighter"
-msgstr "Evidenziatore"
-
-msgid "Increase Size"
-msgstr "Aumenta Dimensione"
-
-msgid "Intensity"
-msgstr "Intensità"
-
-msgid "Line"
-msgstr "Linea"
-
-msgid "Low"
-msgstr "Basso"
-
-msgid "Mask"
-msgstr "Maschera"
-
-msgid "Medium"
-msgstr "Media"
-
-msgid "Mic"
-msgstr "Microfono"
-
-msgid "Neon"
-msgstr "Neon"
-
-msgid "No Fill"
-msgstr "Nessun riempimento"
-
-msgid "None"
-msgstr "None"
-
-msgid "Number"
-msgstr "Numero"
-
-msgid "Number with Arrow"
-msgstr "Numero con Freccia"
-
-msgid "Number with Pointer"
-msgstr "Numero con Puntatore"
-
-msgid "Ornate"
-msgstr "Ornate"
-
-msgid "Oval"
-msgstr "Oval"
-
-msgid "Pen"
-msgstr "Penna"
-
-msgid "Quality"
-msgstr "Qualità"
-
-msgid "Record Desktop Audio"
-msgstr "Registra audio desktop"
-
-msgid "Record Microphone"
-msgstr "Registra Microfono"
-
-msgid "Recording quality (bitrate)"
-msgstr "Qualità registrazione (bitrate)"
-
-msgid "Recording resolution"
-msgstr "Risoluzione di registrazione"
-
-msgid "Rectangle"
-msgstr "Rettangolo"
-
-msgid "Redo"
-msgstr "Ripeti"
-
-msgid "Save As…"
-msgstr "Salva con nome…"
-
-msgid "Save Screenshot"
-msgstr "Salva screenshot"
-
-msgid "Screenshot copied"
-msgstr "Screenshot copiato"
-
-msgid "Screenshot from %s"
-msgstr "Screenshot da %s"
-
-msgid "Screenshot taken"
-msgstr "Screenshot acquisito"
-
-msgid "Screenshots"
-msgstr "Screenshot"
-
-msgid "Select / Move"
-msgstr "Seleziona / Sposta"
-
-msgid "Show screenshot panel"
-msgstr "Mostra pannello screenshot"
-
-msgid "Size"
-msgstr "Dimensione"
-
-msgid "Soft"
-msgstr "Soft"
-
-msgid "Spot"
-msgstr "Spot"
-
-msgid "Text"
-msgstr "Testo"
-
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/drawing/overlay.js:779
 msgid "Text…"
 msgstr "Testo…"
 
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/drawing/overlay.js:784
+msgid "Annotation text"
+msgstr "Testo annotazione"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/drawing/overlay.js:812
+msgid "Confirm"
+msgstr "Conferma"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/drawing/overlay.js:933
+msgid "Caption style — click to toggle highlight / neutral"
+msgstr "Stile didascalia — clicca per alternare evidenziazione / neutro"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/drawing/overlay.js:949
+msgid "Caption (↑/↓ = size)…"
+msgstr "Didascalia (↑/↓ = dimensione)…"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/drawing/overlay.js:950
+msgid "Zoom caption"
+msgstr "Zoom didascalia"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:417
+msgid "BigShot from %d %t"
+msgstr "BigShot del %d %t"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:950
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:963
+msgid "Screenshot taken"
+msgstr "Screenshot acquisito"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:1005
+msgid "Screenshots"
+msgstr "Screenshot"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:1015
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:1534
+#, javascript-format
+msgid "Screenshot from %s"
+msgstr "Screenshot da %s"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:1327
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:1337
+msgid ""
+"Automatic installation is unavailable. Install Tesseract and its language "
+"packs with your package manager."
+msgstr ""
+"L'installazione automatica non è disponibile. Installa Tesseract e i suoi "
+"pacchetti linguistici con il gestore pacchetti."
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:1342
+msgid "Installing OCR support..."
+msgstr "Installazione del supporto OCR..."
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:1361
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:1377
+msgid "Could not install OCR support. Check the package manager and try again."
+msgstr ""
+"Impossibile installare il supporto OCR. Controlla il gestore pacchetti e "
+"riprova."
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:1368
+msgid "OCR was installed, but no language packs were found."
+msgstr ""
+"OCR è stato installato, ma non sono stati trovati pacchetti linguistici."
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:1372
+msgid "OCR support installed successfully."
+msgstr "Supporto OCR installato con successo."
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:1454
+msgid "Screenshot copied"
+msgstr "Screenshot copiato"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:1485
+msgid "Extracting text..."
+msgstr "Estrazione del testo..."
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:1505
+#, javascript-format
+msgid "Text copied to clipboard! (%d chars)"
+msgstr "Testo copiato negli appunti! (%d caratteri)"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:1510
+msgid "No text found in selection"
+msgstr "Nessun testo trovato nella selezione"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:1515
+#, javascript-format
+msgid "OCR failed: %s"
+msgstr "OCR non riuscito: %s"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:1546
+msgid "Save Screenshot"
+msgstr "Salva screenshot"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partaudio.js:96
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partaudio.js:158
+msgid "Desktop"
+msgstr "Desktop"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partaudio.js:108
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partaudio.js:166
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:572
+msgid "Mic"
+msgstr "Microfono"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partaudio.js:160
+msgid "Record Desktop Audio"
+msgstr "Registra audio desktop"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partaudio.js:168
+msgid "Record Microphone"
+msgstr "Registra Microfono"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partdownsize.js:18
+msgid "Recording resolution"
+msgstr "Risoluzione di registrazione"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partframerate.js:18
+msgid "Frames per second"
+msgstr "Frame al secondo"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:36
+msgid "Select / Move"
+msgstr "Seleziona / Sposta"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:37
+msgid "Pen"
+msgstr "Penna"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:38
+msgid "Arrow"
+msgstr "Freccia"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:39
+msgid "Line"
+msgstr "Linea"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:40
+msgid "Rectangle"
+msgstr "Rettangolo"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:41
+msgid "Oval"
+msgstr "Oval"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:42
+msgid "Text"
+msgstr "Testo"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:43
+msgid "Highlighter"
+msgstr "Evidenziatore"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:44
+msgid "Censor"
+msgstr "Censura"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:45
+msgid "Blur"
+msgstr "Sfocatura"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:46
+msgid "Invert Colors"
+msgstr "Inverti colori"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:47
+msgid "Magnify / Zoom"
+msgstr "Ingrandisci / Zoom"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:48
+msgid "Number"
+msgstr "Numero"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:49
+msgid "Number with Arrow"
+msgstr "Numero con Freccia"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:50
+msgid "Number with Pointer"
+msgstr "Numero con Puntatore"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:51
+msgid "Eraser"
+msgstr "Cancellatore"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:119
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:127
+msgid "Show screenshot panel"
+msgstr "Mostra pannello screenshot"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:127
+msgid "Hide screenshot panel"
+msgstr "Nascondi pannello screenshot"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:204
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:207
+msgid "Color"
+msgstr "Colore"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:219
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:222
+msgid "Fill"
+msgstr "Riempi"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:232
+msgid "Decrease Size"
+msgstr "Riduci dimensione"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:249
+msgid "Brush Size"
+msgstr "Dimensione Pennello"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:273
+msgid "Increase Size"
+msgstr "Aumenta Dimensione"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:292
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:296
+msgid "Font"
+msgstr "Carattere"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:319
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:339
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:1396
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:1416
+msgid "Intensity"
+msgstr "Intensità"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:351
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:354
 msgid "Undo"
 msgstr "Annulla"
 
-msgid "Use best available codec"
-msgstr "Usa il miglior codec disponibile"
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:363
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:366
+msgid "Redo"
+msgstr "Ripeti"
 
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:379
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:382
+msgid "Copy to Clipboard"
+msgstr "Copia negli appunti"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:391
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:394
+msgid "Save As…"
+msgstr "Salva con nome…"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:403
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:406
+msgid "Extract Text (OCR)"
+msgstr "Estrai testo (OCR)"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:419
+msgid "OCR Language"
+msgstr "Lingua OCR"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:422
+msgid "Select OCR Language"
+msgstr "Seleziona lingua OCR"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:446
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:452
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:1045
+msgid "Close"
+msgstr "Chiudi"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:452
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:1045
+msgid "Done"
+msgstr "Fatto"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:485
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:684
 msgid "Video Settings"
 msgstr "Impostazioni video"
 
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:529
+msgid "Quality"
+msgstr "Qualità"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:535
+msgid "High"
+msgstr "Alta"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:536
+msgid "Medium"
+msgstr "Media"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:537
+msgid "Low"
+msgstr "Basso"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:549
+msgid "Recording quality (bitrate)"
+msgstr "Qualità registrazione (bitrate)"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:559
+msgid "Codec"
+msgstr "Codec"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:586
+msgid "Camera"
+msgstr "Fotocamera"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:600
+msgid "Mask"
+msgstr "Maschera"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:638
+msgid "Size"
+msgstr "Dimensione"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:678
+msgid "Edit"
+msgstr "Modifica"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:684
+msgid "Edit Screenshot"
+msgstr "Modifica Screenshot"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:1258
+msgid "Custom"
+msgstr "Personalizzato"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:1501
+msgid "No Fill"
+msgstr "Nessun riempimento"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:1636
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:1698
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:1772
+msgid "Auto"
+msgstr "Automatico"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:1776
+msgid "Use best available codec"
+msgstr "Usa il miglior codec disponibile"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:1792
 msgid "Video codec"
 msgstr "Codec video"
 
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:1857
+msgid "Install OCR support?"
+msgstr "Installare il supporto OCR?"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:1866
+#, javascript-format
+msgid ""
+"Text extraction requires Tesseract and the OCR language pack for your system "
+"language.\n"
+"\n"
+"Packages: %s\n"
+"\n"
+"Install them now?"
+msgstr ""
+"L'estrazione del testo richiede Tesseract e il pacchetto della lingua OCR "
+"per la lingua del sistema.\n"
+"\n"
+"Pacchetti: %s\n"
+"\n"
+"Installarli ora?"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:1881
+msgid "Cancel"
+msgstr "Annulla"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:1889
+msgid "Install"
+msgstr "Installa"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:1943
+msgid "OCR Languages"
+msgstr "Lingue OCR"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:1955
+msgid "Auto (system)"
+msgstr "Automatico (sistema)"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partvideoannotation.js:296
+msgid "Edit live"
+msgstr "Modifica in tempo reale"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partvideoannotation.js:301
+msgid "Clear annotations"
+msgstr "Cancella annotazioni"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partwebcam.js:96
 msgid "Webcam"
 msgstr "Webcam"
 
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partwebcam.js:121
 msgid "Webcam Overlay"
 msgstr "Sovrapposizione webcam"
-
-#. TRANSLATORS: Recording filename template.
-#. %d expands to YYYY-MM-DD (date), %t expands to HH-MM-SS (time).
-#. Both placeholders MUST stay literally in the translation.
-msgid "BigShot from %d %t"
-msgstr "BigShot del %d %t"

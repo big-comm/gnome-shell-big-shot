@@ -33,21 +33,6 @@ msgstr "Skjámynd frá %s"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:740
 msgid "Screenshot copied"
 msgstr "Skjámynd afrituð"
-#: NEEDS WORK
-msgid "Tesseract not found. Please install the ‘tesseract’ package for your distribution."
-msgstr "Tesseract fannst ekki. Vinsamlegast settu upp ‘tesseract’ pakkann fyrir þinn dreifingu."
-#: NEEDS WORK
-msgid "Extracting text..."
-msgstr "Að draga út texta..."
-#: NEEDS WORK
-msgid "Text copied to clipboard! (%d chars)"
-msgstr "Texti afritaður í klippiborð! (%d stafir)"
-#: NEEDS WORK
-msgid "No text found in selection"
-msgstr "Engin text fannst í vali"
-#: NEEDS WORK
-msgid "OCR failed: %s"
-msgstr "OCR mistók: %s"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:789
 msgid "Save Screenshot"
 msgstr "Vista skjámynd"
@@ -270,12 +255,3 @@ msgstr "Notaðu besta tiltæka kóðara"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:1297
 msgid "Video codec"
 msgstr "Vöruvíddarkóðari"
-#: NEEDS WORK
-msgid "Tesseract not found. Install: sudo pacman -S tesseract tesseract-data-por"
-msgstr "Tesseract fannst ekki. Settu upp: sudo pacman -S tesseract tesseract-data-por"
-#: NEEDS WORK
-msgid "OCR Languages"
-msgstr "OCR tungumál"
-#: NEEDS WORK
-msgid "Auto (system)"
-msgstr "Sjálfvirkt (kerfi)"

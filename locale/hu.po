@@ -33,21 +33,6 @@ msgstr "Képernyőkép innen: %s"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:740
 msgid "Screenshot copied"
 msgstr "Képernyőkép másolva"
-#: NEEDS WORK
-msgid "Tesseract not found. Please install the ‘tesseract’ package for your distribution."
-msgstr "A Tesseract nem található. Kérjük, telepítse a ‘tesseract’ csomagot a disztribúciójához."
-#: NEEDS WORK
-msgid "Extracting text..."
-msgstr "Szöveg kinyerése..."
-#: NEEDS WORK
-msgid "Text copied to clipboard! (%d chars)"
-msgstr "Szöveg a vágólapra másolva! (%d karakter)"
-#: NEEDS WORK
-msgid "No text found in selection"
-msgstr "Nincs szöveg a kijelölésben."
-#: NEEDS WORK
-msgid "OCR failed: %s"
-msgstr "OCR hiba: %s"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:789
 msgid "Save Screenshot"
 msgstr "Képernyőkép mentése"
@@ -270,12 +255,3 @@ msgstr "Használja a legjobb elérhető kodeket"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:1297
 msgid "Video codec"
 msgstr "Videó kodek"
-#: NEEDS WORK
-msgid "Tesseract not found. Install: sudo pacman -S tesseract tesseract-data-por"
-msgstr "A Tesseract nem található. Telepítés: sudo pacman -S tesseract tesseract-data-por"
-#: NEEDS WORK
-msgid "OCR Languages"
-msgstr "OCR nyelvek"
-#: NEEDS WORK
-msgid "Auto (system)"
-msgstr "Automatikus (rendszer)"

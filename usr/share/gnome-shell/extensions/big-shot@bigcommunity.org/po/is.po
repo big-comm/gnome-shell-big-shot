@@ -1,7 +1,10 @@
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: big-shot 1.0\n"
-"Report-Msgid-Bugs-To: \n"
+"Report-Msgid-Bugs-To: https://github.com/BigCommunity/gnome-shell-big-shot/"
+"issues\n"
+"POT-Creation-Date: 2026-07-21 14:15-0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: is\n"
@@ -10,221 +13,405 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: attranslate\n"
 
-msgid "Annotation text"
-msgstr "Skýringartexti"
-
-msgid "Arrow"
-msgstr "Örvar"
-
-msgid "Auto"
-msgstr "Sjálfvirkt"
-
-msgid "Blur"
-msgstr "Ófærð"
-
-msgid "Border Radius"
-msgstr "Mörkurrúm"
-
-msgid "Brush Size"
-msgstr "Bursta stærð"
-
-msgid "Camera"
-msgstr "Myndavél"
-
-msgid "Censor"
-msgstr "Ritskoða"
-
-msgid "Checker"
-msgstr "Checker"
-
-msgid "Circle"
-msgstr "Circle"
-
-msgid "Close"
-msgstr "Lokaðu"
-
-msgid "Codec"
-msgstr "Kóði"
-
-msgid "Color"
-msgstr "Litur"
-
-msgid "Confirm"
-msgstr "Staðfesta"
-
-msgid "Copy to Clipboard"
-msgstr "Afrita í sk clipboard"
-
-msgid "Custom"
-msgstr "Sérsniðið"
-
-msgid "Decrease Size"
-msgstr "Minnka stærð"
-
-msgid "Desktop"
-msgstr "Skjáborð"
-
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/drawing/overlay.js:124
 msgid "Drawing canvas"
 msgstr "Teikniborð"
 
-msgid "Edit"
-msgstr "Breyta"
-
-msgid "Edit Screenshot"
-msgstr "Breyta skjáskotinu"
-
-msgid "Eraser"
-msgstr "Eyðingartæki"
-
-msgid "Fill"
-msgstr "Fylla"
-
-msgid "Font"
-msgstr "Letur"
-
-msgid "Frames per second"
-msgstr "Rammar á sekúndu"
-
-msgid "Gradient Angle"
-msgstr "Litaþrepahorn"
-
-msgid "Hide screenshot panel"
-msgstr "Fela skjámyndarspjaldið"
-
-msgid "High"
-msgstr "Há"
-
-msgid "Highlighter"
-msgstr "Merki"
-
-msgid "Increase Size"
-msgstr "Auka stærð"
-
-msgid "Intensity"
-msgstr "Þéttleiki"
-
-msgid "Line"
-msgstr "Lína"
-
-msgid "Low"
-msgstr "Lágur"
-
-msgid "Mask"
-msgstr "Gríma"
-
-msgid "Medium"
-msgstr "Miðlungs"
-
-msgid "Mic"
-msgstr "Míkrófón"
-
-msgid "Neon"
-msgstr "Neon"
-
-msgid "No Fill"
-msgstr "Engin fylling"
-
-msgid "None"
-msgstr "None"
-
-msgid "Number"
-msgstr "Tala"
-
-msgid "Number with Arrow"
-msgstr "Tala með örrow"
-
-msgid "Number with Pointer"
-msgstr "Tala með vísitölu"
-
-msgid "Ornate"
-msgstr "Ornate"
-
-msgid "Oval"
-msgstr "Oval"
-
-msgid "Pen"
-msgstr "Penna"
-
-msgid "Quality"
-msgstr "Gæði"
-
-msgid "Record Desktop Audio"
-msgstr "Taka upp hljóð af skjáborði"
-
-msgid "Record Microphone"
-msgstr "Skráðu hljóðnema"
-
-msgid "Recording quality (bitrate)"
-msgstr "Upptökugæði (bitahraði)"
-
-msgid "Recording resolution"
-msgstr "Upplausn fyrir upptöku"
-
-msgid "Rectangle"
-msgstr "Réttangli"
-
-msgid "Redo"
-msgstr "Endurtaka"
-
-msgid "Save As…"
-msgstr "Vista sem…"
-
-msgid "Save Screenshot"
-msgstr "Vista skjámynd"
-
-msgid "Screenshot copied"
-msgstr "Skjámynd afrituð"
-
-msgid "Screenshot from %s"
-msgstr "Skjámynd frá %s"
-
-msgid "Screenshot taken"
-msgstr "Skjámynd tekin"
-
-msgid "Screenshots"
-msgstr "Skjámyndir"
-
-msgid "Select / Move"
-msgstr "Velja / Hreyfa"
-
-msgid "Show screenshot panel"
-msgstr "Sýna skjámyndarspjaldið"
-
-msgid "Size"
-msgstr "Stærð"
-
-msgid "Soft"
-msgstr "Soft"
-
-msgid "Spot"
-msgstr "Spot"
-
-msgid "Text"
-msgstr "Text"
-
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/drawing/overlay.js:779
 msgid "Text…"
 msgstr "Text…"
 
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/drawing/overlay.js:784
+msgid "Annotation text"
+msgstr "Skýringartexti"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/drawing/overlay.js:812
+msgid "Confirm"
+msgstr "Staðfesta"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/drawing/overlay.js:933
+msgid "Caption style — click to toggle highlight / neutral"
+msgstr "Stíll skýringar — smelltu til að víxla á milli áherslu / hlutlaust"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/drawing/overlay.js:949
+msgid "Caption (↑/↓ = size)…"
+msgstr "Skýring (↑/↓ = stærð)…"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/drawing/overlay.js:950
+msgid "Zoom caption"
+msgstr "Aðdráttur skýringar"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:417
+msgid "BigShot from %d %t"
+msgstr "BigShot frá %d %t"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:950
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:963
+msgid "Screenshot taken"
+msgstr "Skjámynd tekin"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:1005
+msgid "Screenshots"
+msgstr "Skjámyndir"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:1015
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:1534
+#, javascript-format
+msgid "Screenshot from %s"
+msgstr "Skjámynd frá %s"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:1327
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:1337
+msgid ""
+"Automatic installation is unavailable. Install Tesseract and its language "
+"packs with your package manager."
+msgstr ""
+"Sjálfvirk uppsetning er ekki tiltæk. Settu upp Tesseract og tungumálapakka "
+"þess með pakkastjóranum þínum."
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:1342
+msgid "Installing OCR support..."
+msgstr "Set upp OCR-stuðning..."
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:1361
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:1377
+msgid "Could not install OCR support. Check the package manager and try again."
+msgstr ""
+"Ekki var hægt að setja upp OCR-stuðning. Athugaðu pakkastjórann og reyndu "
+"aftur."
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:1368
+msgid "OCR was installed, but no language packs were found."
+msgstr "OCR var uppsett en engir tungumálapakkar fundust."
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:1372
+msgid "OCR support installed successfully."
+msgstr "OCR-stuðningur settur upp með góðum árangri."
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:1454
+msgid "Screenshot copied"
+msgstr "Skjámynd afrituð"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:1485
+msgid "Extracting text..."
+msgstr "Útdráttur texta..."
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:1505
+#, javascript-format
+msgid "Text copied to clipboard! (%d chars)"
+msgstr "Texti afritaðist í klippispjald! (%d stafir)"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:1510
+msgid "No text found in selection"
+msgstr "Enginn texti fannst í völdu svæði"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:1515
+#, javascript-format
+msgid "OCR failed: %s"
+msgstr "OCR mistókst: %s"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:1546
+msgid "Save Screenshot"
+msgstr "Vista skjámynd"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partaudio.js:96
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partaudio.js:158
+msgid "Desktop"
+msgstr "Skjáborð"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partaudio.js:108
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partaudio.js:166
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:572
+msgid "Mic"
+msgstr "Míkrófón"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partaudio.js:160
+msgid "Record Desktop Audio"
+msgstr "Taka upp hljóð af skjáborði"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partaudio.js:168
+msgid "Record Microphone"
+msgstr "Skráðu hljóðnema"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partdownsize.js:18
+msgid "Recording resolution"
+msgstr "Upplausn fyrir upptöku"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partframerate.js:18
+msgid "Frames per second"
+msgstr "Rammar á sekúndu"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:36
+msgid "Select / Move"
+msgstr "Velja / Hreyfa"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:37
+msgid "Pen"
+msgstr "Penna"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:38
+msgid "Arrow"
+msgstr "Örvar"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:39
+msgid "Line"
+msgstr "Lína"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:40
+msgid "Rectangle"
+msgstr "Réttangli"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:41
+msgid "Oval"
+msgstr "Oval"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:42
+msgid "Text"
+msgstr "Text"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:43
+msgid "Highlighter"
+msgstr "Merki"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:44
+msgid "Censor"
+msgstr "Ritskoða"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:45
+msgid "Blur"
+msgstr "Ófærð"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:46
+msgid "Invert Colors"
+msgstr "Snúa litum við"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:47
+msgid "Magnify / Zoom"
+msgstr "Stækkun / Aðdráttur"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:48
+msgid "Number"
+msgstr "Tala"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:49
+msgid "Number with Arrow"
+msgstr "Tala með örrow"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:50
+msgid "Number with Pointer"
+msgstr "Tala með vísitölu"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:51
+msgid "Eraser"
+msgstr "Eyðingartæki"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:119
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:127
+msgid "Show screenshot panel"
+msgstr "Sýna skjámyndarspjaldið"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:127
+msgid "Hide screenshot panel"
+msgstr "Fela skjámyndarspjaldið"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:204
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:207
+msgid "Color"
+msgstr "Litur"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:219
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:222
+msgid "Fill"
+msgstr "Fylla"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:232
+msgid "Decrease Size"
+msgstr "Minnka stærð"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:249
+msgid "Brush Size"
+msgstr "Bursta stærð"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:273
+msgid "Increase Size"
+msgstr "Auka stærð"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:292
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:296
+msgid "Font"
+msgstr "Letur"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:319
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:339
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:1396
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:1416
+msgid "Intensity"
+msgstr "Þéttleiki"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:351
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:354
 msgid "Undo"
 msgstr "Afturkalla"
 
-msgid "Use best available codec"
-msgstr "Notaðu besta tiltæka kóðara"
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:363
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:366
+msgid "Redo"
+msgstr "Endurtaka"
 
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:379
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:382
+msgid "Copy to Clipboard"
+msgstr "Afrita í sk clipboard"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:391
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:394
+msgid "Save As…"
+msgstr "Vista sem…"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:403
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:406
+msgid "Extract Text (OCR)"
+msgstr "Draga út texta (OCR)"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:419
+msgid "OCR Language"
+msgstr "OCR tungumál"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:422
+msgid "Select OCR Language"
+msgstr "Velja OCR tungumál"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:446
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:452
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:1045
+msgid "Close"
+msgstr "Lokaðu"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:452
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:1045
+msgid "Done"
+msgstr "Lokið"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:485
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:684
 msgid "Video Settings"
 msgstr "Videóstillingar"
 
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:529
+msgid "Quality"
+msgstr "Gæði"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:535
+msgid "High"
+msgstr "Há"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:536
+msgid "Medium"
+msgstr "Miðlungs"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:537
+msgid "Low"
+msgstr "Lágur"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:549
+msgid "Recording quality (bitrate)"
+msgstr "Upptökugæði (bitahraði)"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:559
+msgid "Codec"
+msgstr "Kóði"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:586
+msgid "Camera"
+msgstr "Myndavél"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:600
+msgid "Mask"
+msgstr "Gríma"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:638
+msgid "Size"
+msgstr "Stærð"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:678
+msgid "Edit"
+msgstr "Breyta"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:684
+msgid "Edit Screenshot"
+msgstr "Breyta skjáskotinu"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:1258
+msgid "Custom"
+msgstr "Sérsniðið"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:1501
+msgid "No Fill"
+msgstr "Engin fylling"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:1636
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:1698
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:1772
+msgid "Auto"
+msgstr "Sjálfvirkt"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:1776
+msgid "Use best available codec"
+msgstr "Notaðu besta tiltæka kóðara"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:1792
 msgid "Video codec"
 msgstr "Vöruvíddarkóðari"
 
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:1857
+msgid "Install OCR support?"
+msgstr "Setja upp OCR-stuðning?"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:1866
+#, javascript-format
+msgid ""
+"Text extraction requires Tesseract and the OCR language pack for your system "
+"language.\n"
+"\n"
+"Packages: %s\n"
+"\n"
+"Install them now?"
+msgstr ""
+"Textaútdráttur krefst Tesseract og OCR tungumálapakka fyrir tungumál "
+"kerfisins.\n"
+"\n"
+"Pakkar: %s\n"
+"\n"
+"Setja þá upp núna?"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:1881
+msgid "Cancel"
+msgstr "Hætta við"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:1889
+msgid "Install"
+msgstr "Setja upp"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:1943
+msgid "OCR Languages"
+msgstr "OCR tungumál"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:1955
+msgid "Auto (system)"
+msgstr "Sjálfvirkt (kerfi)"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partvideoannotation.js:296
+msgid "Edit live"
+msgstr "Breyta í beinni"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partvideoannotation.js:301
+msgid "Clear annotations"
+msgstr "Hreinsa skýringar"
+
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partwebcam.js:96
 msgid "Webcam"
 msgstr "Vefmyndavél"
 
+#: usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/partwebcam.js:121
 msgid "Webcam Overlay"
 msgstr "Vefmyndavélarlag"
-
-#. TRANSLATORS: Recording filename template.
-#. %d expands to YYYY-MM-DD (date), %t expands to HH-MM-SS (time).
-#. Both placeholders MUST stay literally in the translation.
-msgid "BigShot from %d %t"
-msgstr "BigShot frá %d %t"

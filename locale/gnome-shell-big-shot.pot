@@ -29,22 +29,6 @@ msgstr  ""
 msgid   "Screenshot copied"
 msgstr  ""
 
-msgid   "Tesseract not found. Please install the ‘tesseract’ package for your "
-        "distribution."
-msgstr  ""
-
-msgid   "Extracting text..."
-msgstr  ""
-
-msgid   "Text copied to clipboard! (%d chars)"
-msgstr  ""
-
-msgid   "No text found in selection"
-msgstr  ""
-
-msgid   "OCR failed: %s"
-msgstr  ""
-
 msgid   "Save Screenshot"
 msgstr  ""
 
@@ -250,14 +234,4 @@ msgid   "Use best available codec"
 msgstr  ""
 
 msgid   "Video codec"
-msgstr  ""
-
-msgid   "Tesseract not found. Install: sudo pacman -S tesseract tesseract-"
-        "data-por"
-msgstr  ""
-
-msgid   "OCR Languages"
-msgstr  ""
-
-msgid   "Auto (system)"
 msgstr  ""

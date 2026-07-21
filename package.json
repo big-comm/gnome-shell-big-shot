@@ -4,7 +4,8 @@
   "type": "module",
   "scripts": {
     "lint": "eslint usr/share/gnome-shell/extensions/big-shot@bigcommunity.org",
-    "check": "npm run lint"
+    "test": "node --test tests/*.test.js",
+    "check": "npm run lint && npm test"
   },
   "devDependencies": {
     "eslint": "10.6.0",

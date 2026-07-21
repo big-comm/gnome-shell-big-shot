@@ -33,21 +33,6 @@ msgstr "Ekraanipilt %s"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:740
 msgid "Screenshot copied"
 msgstr "Ekraanipilt kopeeritud"
-#: NEEDS WORK
-msgid "Tesseract not found. Please install the ‘tesseract’ package for your distribution."
-msgstr "Tesseractit ei leitud. Palun installige oma jaotusele 'tesseract' pakett."
-#: NEEDS WORK
-msgid "Extracting text..."
-msgstr "Teksti väljavõtmine..."
-#: NEEDS WORK
-msgid "Text copied to clipboard! (%d chars)"
-msgstr "Tekst on kopeeritud lõikelauale! (%d tähemärki)"
-#: NEEDS WORK
-msgid "No text found in selection"
-msgstr "Valikut ei leitud teksti."
-#: NEEDS WORK
-msgid "OCR failed: %s"
-msgstr "OCR ebaõnnestus: %s"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:789
 msgid "Save Screenshot"
 msgstr "Salvesta ekraanipilt"
@@ -270,12 +255,3 @@ msgstr "Kasutage parimat saadaval olevat koodekit"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:1297
 msgid "Video codec"
 msgstr "Videokoodek"
-#: NEEDS WORK
-msgid "Tesseract not found. Install: sudo pacman -S tesseract tesseract-data-por"
-msgstr "Tesseractit ei leitud. Paigaldage: sudo pacman -S tesseract tesseract-data-por"
-#: NEEDS WORK
-msgid "OCR Languages"
-msgstr "OCR keeled."
-#: NEEDS WORK
-msgid "Auto (system)"
-msgstr "Automaatne (süsteem)"

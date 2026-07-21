@@ -15,6 +15,7 @@ import { gettext as _ } from 'resource:///org/gnome/shell/extensions/extension.j
 
 import { PartUI } from './partbase.js';
 import { DrawingOverlay } from '../drawing/overlay.js';
+import { computeOverlayRect } from '../lib/core.js';
 
 export class PartVideoAnnotation extends PartUI {
     constructor(screenshotUI, extension) {
@@ -262,8 +263,33 @@ export class PartVideoAnnotation extends PartUI {
 
         const width = global.stage.width || Main.layoutManager.primaryMonitor.width;
         const height = global.stage.height || Main.layoutManager.primaryMonitor.height;
-        const topInset = Main.panel?.visible ? Main.panel.height : 0;
-        this._overlay.show(width, Math.max(1, height - topInset), 0, topInset);
+        let panelRect = null;
+
+        // Layout extensions may place the panel on any screen edge. Assuming
+        // that a visible panel is always at the top makes a bottom panel part
+        // of the reactive drawing canvas and blocks its pause/resume controls.
+        const panelBox = Main.layoutManager.panelBox ?? Main.panel;
+        if (Main.panel?.visible && panelBox?.visible) {
+            try {
+                const [panelX, panelY] = panelBox.get_transformed_position();
+                panelRect = {
+                    x: panelX,
+                    y: panelY,
+                    width: panelBox.width,
+                    height: panelBox.height,
+                };
+            } catch (_e) {
+                // Keep the full-stage overlay if panel geometry is unavailable.
+            }
+        }
+
+        const rect = computeOverlayRect(
+            width,
+            height,
+            panelRect,
+            Boolean(Main.panel?.visible && panelBox?.visible),
+        );
+        this._overlay.show(rect.width, rect.height, rect.x, rect.y);
     }
 
     _destroyOverlay() {

@@ -33,21 +33,6 @@ msgstr "%s의 스크린샷"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:740
 msgid "Screenshot copied"
 msgstr "스크린샷이 복사되었습니다"
-#: NEEDS WORK
-msgid "Tesseract not found. Please install the ‘tesseract’ package for your distribution."
-msgstr "Tesseract를 찾을 수 없습니다. 배포판에 맞는 'tesseract' 패키지를 설치해 주십시오."
-#: NEEDS WORK
-msgid "Extracting text..."
-msgstr "텍스트 추출 중..."
-#: NEEDS WORK
-msgid "Text copied to clipboard! (%d chars)"
-msgstr "클립보드에 복사된 텍스트! (%d자)"
-#: NEEDS WORK
-msgid "No text found in selection"
-msgstr "선택한 항목에서 텍스트를 찾을 수 없습니다."
-#: NEEDS WORK
-msgid "OCR failed: %s"
-msgstr "OCR 실패: %s"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/extension.js:789
 msgid "Save Screenshot"
 msgstr "스크린샷 저장"
@@ -270,12 +255,3 @@ msgstr "최고의 사용 가능한 코덱 사용"
 #: /home/talesam/Servidor/GitHub/BigCommunity/gnome-shell-big-shot/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/parts/parttoolbar.js:1297
 msgid "Video codec"
 msgstr "비디오 코덱"
-#: NEEDS WORK
-msgid "Tesseract not found. Install: sudo pacman -S tesseract tesseract-data-por"
-msgstr "Tesseract를 찾을 수 없습니다. 설치: sudo pacman -S tesseract tesseract-data-por"
-#: NEEDS WORK
-msgid "OCR Languages"
-msgstr "OCR 언어"
-#: NEEDS WORK
-msgid "Auto (system)"
-msgstr "자동 (시스템)"
