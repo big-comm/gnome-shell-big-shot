@@ -2107,6 +2107,10 @@ export default class BigShotExtension extends Extension {
             ui._screencastInProgress = true;
         ui._screencastStarting = true;
 
+        // The indicator retains its previous area until explicitly updated.
+        // Keep it aligned with the window rect passed to the recorder.
+        ui._screencastAreaIndicator?.setSelectionRect(x, y, width, height);
+
         // Close the UI immediately so the fade-out doesn't get recorded.
         try { ui.close(true); } catch (_e) { /* */ }
 

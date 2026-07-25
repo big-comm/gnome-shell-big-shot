@@ -13,3 +13,15 @@ test('critical recording contracts remain wired', async () => {
     assert.match(source, /\{ width, height \}/);
     assert.doesNotMatch(source, /proc\.wait\(null\)/);
 });
+
+test('window recording updates its area indicator', async () => {
+    const source = await readFile(extensionPath, 'utf8');
+    const start = source.indexOf('async _startWindowScreencast(ui)');
+    const end = source.indexOf('\n    _unpatchScreencast()', start);
+    const method = source.slice(start, end);
+
+    assert.ok(start >= 0 && end > start);
+    assert.match(method,
+        /_screencastAreaIndicator\?\.setSelectionRect\(x, y, width, height\)/);
+    assert.ok(method.indexOf('setSelectionRect') < method.indexOf('ui.close(true)'));
+});
