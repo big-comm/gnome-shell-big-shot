@@ -1,0 +1,56 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install system build tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends gettext gnome-shell unzip
+
+      - name: Install JavaScript dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Run lint and tests
+        run: npm run check
+
+      - name: Check JavaScript syntax
+        run: |
+          find usr/share/gnome-shell/extensions/big-shot@communitybig.org \
+            -name '*.js' -print0 | xargs -0 -n1 node --check
+
+      - name: Check shell syntax
+        run: |
+          find scripts usr/share/libalpm/scripts \
+            -name '*.sh' -print0 | xargs -0 -n1 bash -n
+
+      - name: Validate gettext catalogs
+        run: ./scripts/update-translations.sh --check
+
+      - name: Build and validate EGO bundle
+        run: ./scripts/build-gnome-extension.sh

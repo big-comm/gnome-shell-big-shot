@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { chmod, mkdtemp, readFile, writeFile } from 'node:fs/promises';
+import { chmod, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
@@ -14,8 +14,9 @@ imports.package.init({
 print('service');
 `;
 
-async function fixture(probeBody) {
+async function fixture(t, probeBody) {
     const dir = await mkdtemp(path.join(tmpdir(), 'big-shot-patch-'));
+    t.after(() => rm(dir, { recursive: true, force: true }));
     const target = path.join(dir, 'org.gnome.Shell.Screencast');
     const probe = path.join(dir, 'gjs-probe');
     await writeFile(target, serviceSource);
@@ -35,8 +36,8 @@ function run(target, probe, action) {
     });
 }
 
-test('patches only the expected Gst null failure and restores current backup', async () => {
-    const { target, probe } = await fixture(
+test('patches only the expected Gst null failure and restores current backup', async t => {
+    const { target, probe } = await fixture(t,
         "echo \"Expected type utf8 for Argument 'argv' but got type 'null'\" >&2; exit 1");
     const applied = run(target, probe, '--apply');
     assert.equal(applied.status, 0, applied.stderr);
@@ -47,16 +48,16 @@ test('patches only the expected Gst null failure and restores current backup', a
     assert.equal(await readFile(target, 'utf8'), serviceSource);
 });
 
-test('does not patch on unrelated probe failures', async () => {
-    const { target, probe } = await fixture('echo unrelated >&2; exit 1');
+test('does not patch on unrelated probe failures', async t => {
+    const { target, probe } = await fixture(t, 'echo unrelated >&2; exit 1');
     const result = run(target, probe, '--apply');
     assert.equal(result.status, 0, result.stderr);
     assert.equal(await readFile(target, 'utf8'), serviceSource);
     assert.match(result.stdout, /unrelated reason/);
 });
 
-test('does not restore a stale backup over an unpatched service', async () => {
-    const { target, probe } = await fixture('exit 0');
+test('does not restore a stale backup over an unpatched service', async t => {
+    const { target, probe } = await fixture(t, 'exit 0');
     await writeFile(`${target}.big-shot-backup`, 'obsolete');
     const result = run(target, probe, '--remove');
     assert.equal(result.status, 0, result.stderr);

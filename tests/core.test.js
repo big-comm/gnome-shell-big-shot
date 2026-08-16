@@ -5,7 +5,7 @@ import {
     computeOverlayRect,
     computeScaledDimensions,
     recordingExtension,
-} from '../usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/lib/core.js';
+} from '../usr/share/gnome-shell/extensions/big-shot@communitybig.org/lib/core.js';
 
 test('scales area dimensions and keeps encoder-safe even values', () => {
     assert.deepEqual(computeScaledDimensions(1001, 701, 0.75), {

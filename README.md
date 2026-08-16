@@ -2,304 +2,352 @@
 
 # Big Shot
 
-**Enhanced Screenshot & Screencast for GNOME Shell**
+**Enhanced screenshots and screencasts for GNOME Shell**
 
-A GNOME Shell extension that transforms the native Print Screen UI into a powerful annotation and recording tool — with drawing tools, webcam overlay, audio capture, and GPU-accelerated screencasting.
+Big Shot extends GNOME's native `Print Screen` interface with screenshot
+annotation, OCR, audio recording, webcam overlays, live video annotation, and
+hardware-accelerated encoding.
 
 <img src="usr/share/icons/hicolor/scalable/apps/big-shot.svg" width="128" alt="Big Shot icon">
 
-[![GNOME Shell](https://img.shields.io/badge/GNOME_Shell-46--50-4A86CF?logo=gnome&logoColor=white)](https://extensions.gnome.org/) [![GJS](https://img.shields.io/badge/GJS-ES2022-F7DF1E?logo=javascript&logoColor=black)](https://gjs.guide/) [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE) [![Platform](https://img.shields.io/badge/platform-Linux-FCC624?logo=linux&logoColor=black)](https://www.gnome.org/) [![GStreamer](https://img.shields.io/badge/GStreamer-1.0-red)](https://gstreamer.freedesktop.org/) [![i18n](https://img.shields.io/badge/i18n-29_languages-green)](locale/)
+[![GNOME Shell](https://img.shields.io/badge/GNOME_Shell-46--50-4A86CF?logo=gnome&logoColor=white)](https://www.gnome.org/) [![GJS](https://img.shields.io/badge/GJS-ES2022-F7DF1E?logo=javascript&logoColor=black)](https://gjs.guide/) [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE) [![GStreamer](https://img.shields.io/badge/GStreamer-1.0-red)](https://gstreamer.freedesktop.org/) [![i18n](https://img.shields.io/badge/i18n-29_languages-green)](usr/share/gnome-shell/extensions/big-shot@communitybig.org/po/)
 
 </div>
 
----
+## Demo
 
-## Overview
+[![Watch the Big Shot demo](docs/media/big-shot-demo.jpg)](docs/media/big-shot-demo.mp4)
 
-**Big Shot** hooks into GNOME Shell's built-in Screenshot UI (activated by `Print Screen`) and extends it with:
+Click the image to watch the full H.264/MP4 demo.
 
-- **15 annotation tools** for marking up screenshots in real-time
-- **Desktop + Microphone audio** recording via PulseAudio/PipeWire
-- **GPU-accelerated screencasting** with automatic hardware detection (NVIDIA NVENC, AMD/Intel VA-API)
-- **Live webcam overlay** with 7 mask effects and 5 size presets
-- **Live video annotations** using the same drawing tools during recording or while paused
-- **Pause/Resume recording** with automatic segment merging, panel indicator, and timer
-- **Copy to Clipboard & Save As…** with annotations composited onto the image
+## Highlights
 
-No separate windows. No external apps. Everything lives inside the native GNOME UI.
+- 16 screenshot annotation tools in a draggable toolbar
+- OCR with automatic language detection and clipboard output
+- Full-screen, area, and window screencasts
+- Desktop audio and microphone capture, independently or mixed
+- 15, 24, 30, or 60 FPS and 100%, 75%, 50%, or 33% resolution
+- Automatic NVIDIA, AMD, and Intel hardware-encoder detection
+- H.264, H.265/HEVC, and VP9 codec choices with GNOME fallback
+- Draggable webcam preview with camera selection, 8 masks, and 5 sizes
+- Live and paused video annotation captured directly in the recording
+- Segment-based pause/resume with lossless `ffmpeg` concatenation
+- Screenshots and annotated screenshots while a screencast is active
 
----
+Everything is integrated into GNOME Shell's native screenshot UI; no separate
+editor window is required.
 
-## Features
+## Screenshot annotation
 
-### 🖊️ Screenshot Annotation Tools
+### Tools
 
-15 tools available via floating draggable toolbar:
+| Tool | Behavior |
+|---|---|
+| Select / Move | Select and drag an existing annotation; resize selected text |
+| Pen | Smoothed freehand stroke |
+| Arrow | Arrow with a proportional head and shadow; `Shift` snaps its axis |
+| Line | Straight line; `Shift` snaps horizontally or vertically |
+| Rectangle | Outlined or filled rectangle; `Shift` creates a square |
+| Oval | Outlined or filled ellipse; `Shift` creates a circle |
+| Text | Multiline text with any installed Pango font |
+| Highlighter | Semi-transparent marker; `Shift` keeps the stroke horizontal |
+| Censor | Mosaic pixelation using the captured image's real pixels |
+| Blur | Three-pass box blur using the captured image's real pixels |
+| Invert Colors | Inverts the selected image region |
+| Magnify / Zoom | Creates a movable magnified callout with an optional caption |
+| Number | Sequential numbered badge |
+| Number with Arrow | Sequential badge connected to an arrow |
+| Number with Pointer | Sequential badge connected to a dot pointer |
+| Eraser | Removes the annotation under the pointer |
 
-| Tool | Description |
-|------|-------------|
-| **Select / Move** | Select and drag existing annotations |
-| **Pen** | Freehand stroke with Bézier curve smoothing |
-| **Arrow** | Arrow with proportional head and shadow, Shift-snap to axis |
-| **Line** | Straight line, Shift-snap to horizontal/vertical |
-| **Rectangle** | Outlined or filled rectangle, Shift = square |
-| **Oval** | Outlined or filled ellipse, Shift = circle |
-| **Text** | Inline text entry with system font selector (PangoCairo rendering) |
-| **Highlighter** | Semi-transparent marker (45% opacity), Shift = horizontal |
-| **Censor (Pixelate)** | Real mosaic pixelation over sensitive areas — 5 intensity levels |
-| **Blur** | Gaussian-like blur (iterative box blur, 3 passes) — 5 intensity levels |
-| **Invert Colors** | Invert the selected region using real pixel data |
-| **Number Stamp** | Sequential numbered circles for step-by-step guides |
-| **Number + Arrow** | Numbered badge with arrow pointing to target |
-| **Number + Pointer** | Numbered badge with dot pointer line |
-| **Eraser** | Remove annotations |
+### Editing controls
 
-### 🎨 Annotation Controls
+- 12-color stroke palette and 5 semi-transparent highlighter colors
+- Independent fill color for rectangles and ovals
+- Brush size from 1 to 100, with buttons, scroll, and 1–14 presets
+- Five intensity levels for Censor and Blur
+- Font family picker for text
+- Undo and redo history
+- Movable annotations, text resizing, and editable zoom captions
+- Zoom-callout magnification adjustable by scrolling the selected callout
+- Copy composited PNG directly to the clipboard
+- Save As via the desktop portal file chooser
+- Toggle the native bottom panel while editing
+- Hover tooltips and toolbar opacity feedback
 
-- **12-color palette** (Red, Orange, Yellow, Green, Blue, Purple, White, Black, Light Gray, Dark Gray, Dark Red, Dark Orange)
-- **5 highlighter colors** with 50% opacity (Yellow, Green, Blue, Red, Purple)
-- **Separate fill color** selector (stroke and fill are independent)
-- **Brush size:** 1–100 with +/− buttons, popup presets (1–14), mouse scroll, or **Ctrl+Scroll anywhere** on canvas
-- **Intensity** for Censor/Blur: 1–5, scroll adjustable, Ctrl+Scroll support
-- **Font selector** for Text tool (lists all system fonts)
-- **Undo / Redo** (full action history)
-- **OCR text extraction** with automatic language selection and one-click Tesseract setup for the current system language on Arch-based systems
-- **Copy to Clipboard** — composites annotations onto the image as PNG
-- **Save As…** — file chooser via xdg-desktop-portal with annotations composited
-- **Floating draggable toolbar** with opacity animation (90% → 100% on hover)
-- **Toggle native panel** visibility (show/hide GNOME's bottom panel while editing)
-- **Tooltips** on hover for all toolbar buttons
+### OCR and selection magnifier
 
-### 🎬 Screencast Mode
+OCR runs Tesseract on the composited screenshot and copies extracted text to
+the clipboard. Big Shot discovers installed language data, chooses a language
+from the current locale, and offers a language selector. If Tesseract or its
+language data is missing, install it with the distribution's package manager.
 
-| Feature | Description |
-|---------|-------------|
-| **Desktop Audio** | Record system audio via PulseAudio monitor source, auto channel detection |
-| **Microphone** | Record microphone input via PulseAudio source, auto channel detection |
-| **Audio Mix** | Simultaneous desktop + mic recording via GStreamer `audiomixer` with latency compensation |
-| **Framerate** | 15 / 24 / 30 (default) / 60 FPS |
-| **Resolution** | 100% (default) / 75% / 50% / 33% downscaling |
-| **Quality** | High / Medium / Low (bitrate presets) |
-| **Codec selection** | Auto (best available) or manual selection from detected codecs |
-| **Live annotation** | Draw on top of open windows while recording; annotations are captured into the video |
-| **Paused annotation** | Pause recording and enter edit mode automatically; exit edit mode while staying paused |
-| **Privacy effects** | Censor, Blur, and Invert capture real pixels for video overlays in live and paused modes |
-| **Clear annotations** | Remove all active video annotations from the top-panel clear button |
-| **Pause / Resume** | Stop the current segment, keep the session paused, then resume into a new segment |
-| **Quick Stop** | Re-open screenshot UI while recording → stops recording instantly |
-| **Panel indicator** | Timer (MM:SS) + pause/play button in the top panel |
-| **Screenshot while recording** | Take screenshots during an active screencast (patched GNOME limitation) |
+While selecting a screenshot area, hold `Shift` to show the 300 px circular
+magnifier. Scroll while it is visible to change magnification from 2× to 6×.
 
-### 📷 Webcam Overlay
+## Screencast recording
 
-- **Live GStreamer webcam preview** captured by the screencast pipeline
-- **7 pixel-level mask effects** (no external SVGs — all computed per-pixel):
+Big Shot keeps GNOME's full-screen and area recording flows and adds window
+recording by passing the selected window rectangle to the screencast service.
+Recordings are stored under `~/Videos/BigShot/` with localized filenames.
+
+| Setting | Choices |
+|---|---|
+| Framerate | 15, 24, 30 (default), or 60 FPS |
+| Resolution | 100% (default), 75%, 50%, or 33% |
+| Quality | High (default), Medium, or Low |
+| Codec | Auto or any compatible detected pipeline |
+| Audio | Desktop, microphone, both mixed, or neither |
+| Camera | Auto or a detected V4L2 camera |
+| Webcam mask | None, Circle, Oval, Soft, Spot, Ornate, Checker, or Neon |
+| Webcam size | XS (120 px), S (200 px), M (320 px), L (480 px), or XL (640 px) |
+
+The floating Video Settings panel exposes quality and codec controls. Camera,
+mask, and size rows appear when the webcam is enabled; microphone selection
+appears when multiple inputs are available.
+
+### Audio
+
+Audio devices are discovered through `Gvc.MixerControl`, which works with
+PulseAudio and PipeWire's PulseAudio compatibility layer. Desktop monitor and
+microphone channel counts are detected at runtime. When both inputs are active,
+GStreamer combines them with `audiomixer` and latency compensation.
+
+MP4 pipelines choose the first available AAC encoder (`fdkaacenc`,
+`avenc_aac`, or `voaacenc`); WebM uses Vorbis. If the selected container has no
+compatible audio encoder, recording continues without audio.
+
+### Webcam overlay
+
+Big Shot probes `/dev/video0` through `/dev/video9`, removes duplicate device
+names, and falls back to `pipewiresrc` if needed. The preview preserves the
+camera's aspect ratio, mirrors it horizontally, and remains draggable when it
+moves from the screenshot UI to GNOME TopChrome for recording.
+
+All masks are generated from the webcam's RGBA pixels:
 
 | Mask | Effect |
-|------|--------|
-| **None** | Full rectangle, no mask |
-| **Circle** | Sharp circle with 4% soft edge |
-| **Oval** | Ellipse filling the entire frame |
-| **Soft** | Circle with 40% feathered edge (quadratic ease-in) |
-| **Spotlight** | Vignette effect — bright center, darkened edges |
-| **Ornate** | Circular gradient border (blue→purple→pink BigCommunity colors) |
-| **Checker** | Alternating transparent checkerboard pattern |
-
-- **5 size presets:** XS (120px), S (200px), M (320px, default), L (480px), XL (640px)
-- **Fully draggable** — position is preserved between sessions
-- **Smart reparenting** — preview lives inside screenshotUI; migrates to TopChrome during recording
-
-### 🎮 Video Settings Panel
-
-Floating draggable panel (visible in screencast mode) with:
-- **Quality row:** High / Medium / Low
-- **Codec row:** Dynamically populated from detected GPU pipelines + Auto option
-- **Mask row:** 7 mask options (visible when webcam is active)
-- **Size row:** XS / S / M / L / XL (visible when webcam is active)
-
-### ✏️ Video Annotation Workflow
-
-Video annotations reuse the screenshot drawing toolbar and are rendered as a GNOME Shell TopChrome overlay, so the screencast captures them directly.
-
-- Click the **pencil** icon while recording to enter or exit live edit mode.
-- Click **Pause** while recording to pause the current segment and enter paused edit mode automatically.
-- While paused, use the **Select / Move** tool to select, move, or edit existing annotations without resuming recording.
-- Click the top-panel **play** button to resume recording; if paused edit mode is active, it closes the edit overlay first and then starts the next recording segment.
-- Censor, Blur, and Invert generate pixel-based previews from the current screen frame in both live and paused modes. During live capture, only the current effect action is excluded from the frame capture so previous annotations stay visible.
-- ESC and the toolbar close button exit video edit mode without resuming a paused recording.
-
-### 🔍 GPU Detection & Pipeline Cascade
-
-Follows the same detection pattern as [big-video-converter](https://github.com/biglinux/big-video-converter):
-
-```
-lspci → detect GPU vendor(s) → check GStreamer elements → cascade fallback
-```
-
-| Detected GPU | Available Pipelines |
 |---|---|
-| **NVIDIA** | NVIDIA H.264 (`nvh264enc`, CBR-HQ 40 Mbps) → MP4 |
-| **AMD / Intel** | VA H.264 Low-Power (`vah264lpenc`) → VA H.264 (`vah264enc`) → VAAPI H.264 (`vaapih264enc`, legacy) → MP4 |
-| **Any (Software)** | Software H.264 (`openh264enc`, multi-thread) → MP4 |
-| **Any (Software)** | Software VP9 (`vp9enc`, CQ13, row-mt) → WebM |
+| None | Unmasked camera frame |
+| Circle | Circular crop with a soft edge |
+| Oval | Elliptical crop using the full frame |
+| Soft | Strong feathering around a circular frame |
+| Spot | Circular spotlight/vignette |
+| Ornate | BigCommunity blue-purple-pink gradient border |
+| Checker | Radial checkerboard border |
+| Neon | Magenta neon ring and glow |
 
-Pipeline ordering: GPU hardware-accelerated first → Software fallback. The GNOME screencast service automatically prepends `pipewiresrc ! capsfilter` and appends `filesink`, so the extension only provides the encoding/muxing chain.
+### Live annotation and pause/resume
 
-### ⌨️ Keyboard Shortcuts
+During recording, the top panel gains edit, clear, and pause/resume controls:
 
-| Key | Action |
-|-----|--------|
-| `1`–`9` | Select annotation tool (Pen, Arrow, Line, Rect, Oval, Text, Highlight, Censor, Number) |
-| `0` or `S` | Enter selection/move mode |
+1. Use the pencil button to enter live edit mode. Annotations are rendered in
+   TopChrome and captured by the screencast.
+2. Use the clear button to remove all active video annotations.
+3. Pause to finalize the current segment and automatically enter paused edit
+   mode. Exiting edit mode does not resume recording.
+4. Resume to close paused edit mode and start the next segment with the same
+   video, audio, and webcam settings.
+5. On final stop, multiple segments are concatenated with `ffmpeg -c copy` and
+   temporary files under `~/Videos/BigShot/.segments/` are removed. When
+   `ffmpeg` is unavailable, Big Shot keeps recording but omits pause/resume.
+
+Censor, Blur, and Invert capture the current stage for an accurate pixel-based
+preview in both live and paused modes. The recording toolbar and panel controls
+are excluded from those preview captures.
+
+Opening the UI directly in screencast mode stops an active recording quickly.
+Opening it in screenshot mode keeps the recording active, allowing screenshots
+and annotation during the screencast.
+
+## Encoder detection
+
+At startup Big Shot lazily detects GPU vendors with `lspci` and checks required
+GStreamer elements with `gst-inspect-1.0`. Auto mode tries compatible hardware
+pipelines first and then the lightweight software H.264 fallback. If every
+custom pipeline fails, recording falls back to GNOME's default pipeline.
+
+| Hardware | Detected pipelines | Container |
+|---|---|---|
+| NVIDIA | NVENC H.264, NVENC H.265 | MP4 |
+| AMD / Intel | VA H.264 Low-Power, VA H.264, VA H.265 Low-Power, VA H.265 | MP4 |
+| AMD / Intel legacy | VAAPI H.264, VAAPI H.265 | MP4 |
+| Software | OpenH264 | MP4 |
+| Software, manual | x264 H.264, x265 H.265 | MP4 |
+| Software, manual | VP9 | WebM |
+
+The GNOME screencast service supplies `pipewiresrc`, its framerate caps, and
+the output sink. Big Shot injects the conversion, scaling, encoder, audio, and
+muxer portions of the pipeline. Downscaled dimensions are rounded to even
+values for encoder compatibility.
+
+## Keyboard and pointer shortcuts
+
+| Shortcut | Action |
+|---|---|
+| `1`–`9` | Pen, Arrow, Line, Rectangle, Oval, Text, Highlighter, Censor, Number |
+| `B` | Blur |
+| `I` | Invert Colors |
+| `E` | Eraser |
+| `0` or `S` | Select / Move mode |
 | `Ctrl+Z` | Undo |
-| `Ctrl+Shift+Z` / `Ctrl+Y` | Redo |
-| `Delete` / `Backspace` | Remove selected or last object |
-| `Escape` | Deselect current object, or exit video edit mode |
-| `Ctrl+Scroll` | Adjust brush size (or intensity for Censor/Blur) |
-
----
-
-## Technical Notes
-
-### GNOME Screencast Service Integration
-
-Big Shot monkey-patches the GNOME Shell Screencast D-Bus proxy (`_screencastProxy`) to inject custom GStreamer pipelines. The GNOME screencast service (a separate process since GNOME 49) automatically prepends `pipewiresrc ! capsfilter` and appends `filesink` to the pipeline string, so the extension only provides the encoding/muxing portion.
-
-Key implementation details:
-- **No duplicate capsfilter** — the service already adds `capsfilter caps=video/x-raw,max-framerate=F/1`, so the extension's pipelines must NOT include their own capsfilter
-- **File extension fix** — custom pipelines result in `.undefined` extension; the extension renames the output file to the correct `.mp4` or `.webm`
-- **Screenshot during recording** — GNOME normally blocks `screenshotUI.open()` when `_screencastInProgress` is true; the extension temporarily clears this flag for screenshot mode
-- **Force-enable screencast button** — works around a GNOME 49 bug where `Gst.init_check(null)` crashes the native screencast service, hiding the cast button
-
-### Pause / Resume Recording
-
-Recording pause is segment-based:
-- **Pause:** stops and finalizes the current screencast segment, marks the recording session as paused, and keeps the GNOME UI in a recording-aware state.
-- **Paused edit:** opens the video annotation overlay automatically. Exiting the overlay does not resume recording.
-- **Resume:** starts the next screencast segment with the same codec, quality, framerate, downsize, audio, and webcam settings.
-- **Final stop:** if more than one segment exists, Big Shot merges the segments with `ffmpeg -f concat -c copy` and cleans up temporary segment files under `~/Videos/BigShot/.segments/`.
-- **Single-segment recordings:** no merge is needed; the original output file is kept.
-
-This avoids freezing the external screencast process with POSIX signals and keeps pause/resume independent from the process name used by GNOME Shell.
-
-### Live Video Annotation Overlay
-
-The video annotation overlay is separate from the screenshot preview overlay:
-- It uses TopChrome so annotations are visible above normal application windows and captured by the screencast.
-- The top panel is left clickable while editing, and the floating edit toolbar is kept above the drawing capture layer.
-- Live Censor/Blur/Invert previews capture a current stage frame and exclude only the in-progress effect action, preventing stale previews and avoiding a full overlay blink.
-- Paused Censor/Blur/Invert previews capture a paused stage frame for accurate pixel effects without adding extra recorded frames.
-
-### Audio Pipeline
-
-Audio capture works via `Gvc.MixerControl` to detect PulseAudio/PipeWire output monitors and microphone inputs:
-- `provide-clock=false` on `pulsesrc` prevents clock conflicts with `pipewiresrc`
-- Channel count is detected dynamically from the mixer device (not hardcoded)
-- `audiomixer latency=100000000` handles synchronization for simultaneous desktop + mic
-
-### Annotation Compositing
-
-Annotations are rendered onto the screenshot at save time:
-1. Pixel-manipulating effects (Censor/Blur/Invert) applied directly on `GdkPixbuf` pixel data
-2. Vector annotations (Pen, Arrow, Text, etc.) rendered via Cairo on an `ImageSurface`
-3. Final PNG written to clipboard + file with full annotation fidelity
-
----
+| `Ctrl+Shift+Z` or `Ctrl+Y` | Redo |
+| `Delete` or `Backspace` | Remove the selected or most recent annotation |
+| `Escape` | Deselect, or exit video edit mode |
+| `Ctrl+Scroll` | Change brush size, or Censor/Blur intensity |
+| Scroll selected text | Change font size |
+| Scroll selected zoom callout | Change callout magnification |
+| Hold `Shift` during area selection | Show the selection magnifier |
 
 ## Compatibility
 
-- **GNOME Shell:** 46, 47, 48, 49, 50
-- **Distribution:** Arch Linux (BigLinux / BigCommunity) — works on any Arch-based distro
-- **Audio:** PulseAudio / PipeWire (via PulseAudio compatibility)
-- **Video:** GStreamer 1.0
-- **Webcam:** Any V4L2 camera supported by GStreamer
+- GNOME Shell 46, 47, 48, 49, and 50
+- Arch Linux and Arch-based distributions
+- PulseAudio or PipeWire with PulseAudio compatibility
+- GStreamer 1.0
+- V4L2 or PipeWire webcam capture
 
----
+The package includes a guarded workaround for the GNOME 49
+`Gst.init_check(null)` screencast-service failure. The installation hook probes
+for the exact failure before patching the service, keeps a backup, reapplies the
+fix after GNOME Shell upgrades, and restores the original file on removal.
 
 ## Installation
 
-### Arch Linux (PKGBUILD)
+### Arch Linux package
+
+From a cloned repository:
 
 ```bash
 cd pkgbuild
 makepkg -si
 ```
 
-### Manual (for testing)
+The package builds gettext catalogs, installs the extension system-wide, runs
+focused checks, and enables the GNOME 49 workaround only when the system needs
+it.
+
+#### UUID migration
+
+Releases using `big-shot@bigcommunity.org` are a separate GNOME extension.
+After upgrading the system package, log out and back in, then enable
+`big-shot@communitybig.org`. If the legacy UUID was also installed per-user,
+remove that user copy first:
 
 ```bash
-chmod +x build.sh
-./build.sh
-gnome-extensions install --force big-shot.zip
-# Log out and back in, or restart GNOME Shell
+gnome-extensions disable big-shot@bigcommunity.org
+gnome-extensions uninstall big-shot@bigcommunity.org
+gnome-extensions enable big-shot@communitybig.org
 ```
 
----
+The package removes legacy system files but never edits a user's GNOME
+extension settings as root.
+
+### GNOME extension bundle
+
+Install `gnome-extensions` and `gettext`, then run:
+
+```bash
+./scripts/build-gnome-extension.sh
+gnome-extensions install --force \
+  dist/big-shot@communitybig.org.shell-extension.zip
+gnome-extensions enable big-shot@communitybig.org
+```
+
+Log out and back in so GNOME Shell loads the extension. The build script stages
+the source in a temporary directory, compiles translations, and writes the
+upload-ready archive to `dist/` without modifying extension sources.
 
 ## Dependencies
 
-### Required
+### Runtime
 
-| Package | Purpose |
-|---------|---------|
-| `gnome-shell` >= 46 | Host shell |
-| `gstreamer` | Video pipeline framework + `gst-inspect-1.0` |
-| `gst-plugins-base` | Base elements (`videoconvert`, `audiomixer`, `capsfilter`, `queue`) |
-| `gst-plugins-good` | `pulsesrc`, `vp9enc`, `mp4mux`, `webmmux` |
-| `gst-plugins-bad` | `openh264enc`, VA-API plugins |
-| `gst-plugin-va` | Modern VA H.264 encoding (`vah264enc`, `vah264lpenc`) |
-| `pciutils` | GPU detection via `lspci` |
-| `ffmpeg` | Merge pause/resume recording segments |
+| Arch package | Purpose |
+|---|---|
+| `gnome-shell >= 46` | Extension host and native screenshot UI |
+| `gstreamer` | Pipeline framework and `gst-inspect-1.0` |
+| `gst-plugins-base` | Conversion, scaling, app sink, mixing, and base elements |
+| `gst-plugins-good` | PulseAudio, VP9, Vorbis, MP4, and WebM elements |
+| `gst-plugins-bad` | OpenH264, VA-related, and additional codec elements |
+| `gst-plugin-va` | Modern VA H.264/H.265 hardware encoders |
+| `pciutils` | GPU detection with `lspci` |
+| `ffmpeg` | Pause/resume segment concatenation |
 
 ### Optional
 
+| Arch package | Purpose |
+|---|---|
+| `gst-plugins-ugly` | x264 and other additional codecs |
+| `gst-libav` | AAC encoder fallback for MP4 audio |
+| `tesseract` | OCR engine |
+| `tesseract-data-*` | OCR language data |
+
+### Build and development
+
 | Package | Purpose |
-|---------|---------|
-| `gst-plugins-ugly` | Additional GStreamer codecs (x264, mpeg2, a52) |
-| `tesseract` | OCR text extraction; Big Shot can install it on first use |
-| `tesseract-data-*` | OCR data matching the current system language |
+|---|---|
+| `gettext` | Compile `.po` catalogs to runtime `.mo` files |
+| `nodejs` and `npm` | ESLint and Node test runner |
+| `gnome-extensions` | Build and install the extension bundle |
 
-### Build
+## Development
 
-| Package | Purpose |
-|---------|---------|
-| `gettext` | Compile `.po` → `.mo` translations |
+```bash
+npm install
+npm run check
+```
 
----
+`npm run check` runs ESLint and the Node test suite. The tests cover dimension
+scaling, overlay geometry, recording extension handling, pipeline integration
+contracts, window recording, and the guarded GNOME screencast patch. The
+PKGBUILD additionally syntax-checks every JavaScript file and the patch script.
+
+After changing user-visible text, regenerate the gettext template and merge
+all catalogs with `./scripts/update-translations.sh`. Use
+`./scripts/update-translations.sh --check` to detect stale catalogs without
+changing files.
+
+Main source layout:
+
+```text
+usr/share/gnome-shell/extensions/big-shot@communitybig.org/
+├── extension.js           Extension lifecycle, screenshots, OCR, recording
+├── drawing/               Annotation actions, colors, and drawing overlay
+├── parts/                 Toolbar, audio, webcam, indicators, and UI modules
+├── lib/core.js            Pure geometry and path helpers
+├── data/icons/            Symbolic toolbar icons
+├── po/                    Gettext source catalogs
+└── locale/                Compiled runtime catalogs
+```
+
+Use `./scripts/build-gnome-extension.sh` to create a clean bundle for
+extensions.gnome.org. `scripts/vm-setup.sh` is available for a disposable GNOME
+development VM.
 
 ## Translations
 
-Big Shot ships with **29 languages**, all 100% translated:
-
-<div align="center">
+Big Shot ships gettext catalogs for 29 languages:
 
 | | | | | |
 |:---:|:---:|:---:|:---:|:---:|
-| 🇧🇬 Búlgaro | 🇨🇿 Tcheco | 🇩🇰 Dinamarquês | 🇩🇪 Alemão | 🇬🇷 Grego |
-| 🇬🇧 Inglês | 🇪🇸 Espanhol | 🇪🇪 Estoniano | 🇫🇮 Finlandês | 🇫🇷 Francês |
-| 🇮🇱 Hebraico | 🇭🇷 Croata | 🇭🇺 Húngaro | 🇮🇸 Islandês | 🇮🇹 Italiano |
-| 🇯🇵 Japonês | 🇰🇷 Coreano | 🇳🇱 Holandês | 🇳🇴 Norueguês | 🇵🇱 Polonês |
-| 🇵🇹 Português | 🇧🇷 Português (BR) | 🇷🇴 Romeno | 🇷🇺 Russo | 🇸🇰 Eslovaco |
-| 🇸🇪 Sueco | 🇹🇷 Turco | 🇺🇦 Ucraniano | 🇨🇳 Chinês | |
+| Bulgarian | Czech | Danish | German | Greek |
+| English | Spanish | Estonian | Finnish | French |
+| Hebrew | Croatian | Hungarian | Icelandic | Italian |
+| Japanese | Korean | Dutch | Norwegian | Polish |
+| Portuguese | Brazilian Portuguese | Romanian | Russian | Slovak |
+| Swedish | Turkish | Ukrainian | Chinese | |
 
-</div>
-
-```
-████████████████████████████████████████ 100% — All 29 languages fully translated
-```
-
-To add a new language, copy `usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/po/big-shot.pot` to a new PO file in the same directory and translate the strings. Runtime MO catalogs are generated from this directory during packaging.
-
----
+To add a language, copy
+`usr/share/gnome-shell/extensions/big-shot@communitybig.org/po/big-shot.pot`
+to a new `.po` file in the same directory, translate it, and rebuild the
+extension bundle.
 
 ## Acknowledgments
 
-Big Shot was inspired by and based on the following projects:
-
-- **[GNOME Shell Screencast Extra Feature](https://github.com/WSID/gnome-shell-screencast-extra-feature)** — GNOME Shell extension for enhanced screencast recording that served as the foundation for the audio capture, GPU pipeline detection, and screencast monkey-patching approach.
-
----
+Big Shot was inspired by
+[GNOME Shell Screencast Extra Feature](https://github.com/WSID/gnome-shell-screencast-extra-feature),
+whose screencast integration informed the original audio and pipeline work.
 
 ## License
 
-[MIT](LICENSE) — Copyright © 2024–2026 BigCommunity
+[MIT](LICENSE) — Copyright © 2024 Community Big

@@ -7,7 +7,7 @@
 
 set -euo pipefail
 
-UUID="big-shot@bigcommunity.org"
+UUID="big-shot@communitybig.org"
 EXT_REL="usr/share/gnome-shell/extensions/${UUID}"
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -31,8 +31,14 @@ command -v msgfmt >/dev/null || {
     exit 1
 }
 
+command -v unzip >/dev/null || {
+    echo "unzip not found" >&2
+    exit 1
+}
+
 mkdir -p "${STAGE_EXT}" "${DIST_DIR}"
 cp -a "${EXT_DIR}/." "${STAGE_EXT}/"
+cp "${ROOT_DIR}/LICENSE" "${STAGE_EXT}/LICENSE"
 
 # Keep generated translations and metadata version out of source changes.
 rm -rf "${STAGE_EXT}/locale"
@@ -44,7 +50,11 @@ gnome-extensions pack -f -o "${DIST_DIR}" \
     --extra-source=drawing \
     --extra-source=data \
     --extra-source=lib \
+    --extra-source=LICENSE \
     --podir=po \
     "${STAGE_EXT}"
+
+"${ROOT_DIR}/scripts/check-gnome-extension-bundle.sh" \
+    "${DIST_DIR}/${UUID}.shell-extension.zip"
 
 echo "Built: ${DIST_DIR}/${UUID}.shell-extension.zip"

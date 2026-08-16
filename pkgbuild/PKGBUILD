@@ -40,7 +40,7 @@ build() {
     cd "${srcdir}/${pkgname}"
 
     # Compile .po → .mo translations
-    local _uuid="big-shot@bigcommunity.org"
+    local _uuid="big-shot@communitybig.org"
     local _extdir="usr/share/gnome-shell/extensions/${_uuid}"
     local _podir="${_extdir}/po"
     local _localedir="${_extdir}/locale"
@@ -57,7 +57,7 @@ build() {
 
 check() {
     cd "${srcdir}/${pkgname}"
-    find usr/share/gnome-shell/extensions/big-shot@bigcommunity.org \
+    find usr/share/gnome-shell/extensions/big-shot@communitybig.org \
         -name '*.js' -print0 | xargs -0 -n1 node --check
     node --test tests/*.test.js
     bash -n usr/share/libalpm/scripts/gnome-shell-big-shot-screencast-fix.sh
@@ -77,14 +77,14 @@ package() {
     local dirs=("usr" "etc" "opt")
     for dir in "${dirs[@]}"; do
         if [ -d "${srcdir}/${dir}" ]; then
-            cp -a "${srcdir}/${dir}" "${pkgdir}/"
+            cp -a --no-preserve=ownership "${srcdir}/${dir}" "${pkgdir}/"
         fi
     done
 
     # Extension-local gettext catalogs are the single runtime source. Do not
     # ship source PO files or the obsolete duplicate global locale tree.
     rm -rf "${pkgdir}/usr/share/locale"
-    rm -rf "${pkgdir}/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/po"
+    rm -rf "${pkgdir}/usr/share/gnome-shell/extensions/big-shot@communitybig.org/po"
 
     # Install license file if present
     if [ -f "LICENSE" ]; then
