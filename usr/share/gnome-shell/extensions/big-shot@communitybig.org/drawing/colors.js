@@ -1,7 +1,7 @@
 /**
  * Big Shot — Color palette and utilities
  *
- * SPDX-License-Identifier: MIT
+ * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
 export const PALETTE = [

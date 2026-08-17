@@ -48,11 +48,12 @@ test('dependency loading starts only from the enabled lifecycle', async () => {
     assert.match(disableMethod, /this\._disconnectStartupComplete\(\)/);
     for (const field of [
         '_toolbar', '_annotation', '_videoAnnotation', '_magnifier', '_audio',
-        '_framerate', '_downsize', '_indicator', '_quickstop', '_webcam',
+        '_framerate', '_downsize', '_indicator', '_webcam',
         '_availableElements', '_gpuVendors', '_currentSegmentPath',
     ]) {
         assert.match(disableMethod, new RegExp(`this\\.${field} = null`));
     }
+    assert.doesNotMatch(source, /PartQuickStop|partquickstop/);
 });
 
 test('extension deferred callbacks are centrally owned', async () => {
@@ -152,6 +153,10 @@ test('screenshot storage restores the native notification contract', async () =>
     assert.match(storageMethods,
         /this\._showScreenshotNotification\(pixbuf, time, file, disableSaveToDisk\)/);
     assert.match(storageMethods, /St\.ImageContent\.new_with_preferred_size/);
+    assert.match(storageMethods, /pixbuf\.get_has_alpha\(\)/);
+    assert.match(storageMethods, /pixbuf\.add_alpha\(false, 0, 0, 0\)/);
+    assert.match(storageMethods, /iconPixbuf\.read_pixel_bytes\(\)/);
+    assert.match(storageMethods, /Cogl\.PixelFormat\.RGBA_8888/);
     assert.match(storageMethods, /gicon: content/);
     assert.match(storageMethods, /isTransient: true/);
     assert.match(storageMethods, /notification\.addAction\(_\('Show in Files'\)/);
@@ -339,4 +344,29 @@ test('drawing overlay owns and cancels deferred callbacks', async () => {
     assert.match(overlay, /if \(!await this\._waitForIdle\(\)\)/);
     assert.match(destroyMethod, /this\._destroyed = true/);
     assert.match(destroyMethod, /this\._cancelSources\(\)/);
+});
+
+test('screenshot open restores recording state after synchronous failures', async () => {
+    const source = await readFile(extensionPath, 'utf8');
+    const patchStart = source.indexOf('    _patchScreencast()');
+    const patchEnd = source.indexOf('    async _startWindowScreencast(', patchStart);
+    const patchMethod = source.slice(patchStart, patchEnd);
+
+    assert.ok(patchStart >= 0 && patchEnd > patchStart);
+    assert.match(patchMethod,
+        /this\._screencastInProgress = false;\s*try \{\s*return ext\._origOpen\.call\(this, mode\);\s*\} finally \{\s*this\._screencastInProgress = saved;/s);
+});
+
+test('toolbar font cache is released on disable', async () => {
+    const [source, toolbar] = await Promise.all([
+        readFile(extensionPath, 'utf8'),
+        readFile(`${partsDir}/parttoolbar.js`, 'utf8'),
+    ]);
+    const disableStart = source.indexOf('    disable() {');
+    const disableEnd = source.indexOf('    _forceEnableScreencast()', disableStart);
+    const disableMethod = source.slice(disableStart, disableEnd);
+
+    assert.match(toolbar, /export function clearFontCache\(\)/);
+    assert.match(source, /clearToolbarFontCache = toolbarMod\.clearFontCache/);
+    assert.match(disableMethod, /clearToolbarFontCache\?\.\(\)/);
 });

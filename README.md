@@ -10,7 +10,7 @@ hardware-accelerated encoding.
 
 <img src="usr/share/icons/hicolor/scalable/apps/big-shot.svg" width="128" alt="Big Shot icon">
 
-[![GNOME Shell](https://img.shields.io/badge/GNOME_Shell-46--50-4A86CF?logo=gnome&logoColor=white)](https://www.gnome.org/) [![GJS](https://img.shields.io/badge/GJS-ES2022-F7DF1E?logo=javascript&logoColor=black)](https://gjs.guide/) [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE) [![GStreamer](https://img.shields.io/badge/GStreamer-1.0-red)](https://gstreamer.freedesktop.org/) [![i18n](https://img.shields.io/badge/i18n-29_languages-green)](usr/share/gnome-shell/extensions/big-shot@communitybig.org/po/)
+[![GNOME Shell](https://img.shields.io/badge/GNOME_Shell-46--50-4A86CF?logo=gnome&logoColor=white)](https://www.gnome.org/) [![GJS](https://img.shields.io/badge/GJS-ES2022-F7DF1E?logo=javascript&logoColor=black)](https://gjs.guide/) [![License](https://img.shields.io/badge/license-GPL--2.0--or--later-blue)](LICENSE) [![GStreamer](https://img.shields.io/badge/GStreamer-1.0-red)](https://gstreamer.freedesktop.org/) [![i18n](https://img.shields.io/badge/i18n-29_languages-green)](usr/share/gnome-shell/extensions/big-shot@communitybig.org/po/)
 
 </div>
 
@@ -258,6 +258,10 @@ Log out and back in so GNOME Shell loads the extension. The build script stages
 the source in a temporary directory, compiles translations, and writes the
 upload-ready archive to `dist/` without modifying extension sources.
 
+The first EGO bundle declares GNOME Shell 50 only, matching the release tested
+end to end. The source metadata used by the distribution package retains its
+broader compatibility list and package-specific GNOME 49 workaround.
+
 ## Dependencies
 
 ### Runtime
@@ -344,10 +348,14 @@ extension bundle.
 
 ## Acknowledgments
 
-Big Shot was inspired by
-[GNOME Shell Screencast Extra Feature](https://github.com/WSID/gnome-shell-screencast-extra-feature),
-whose screencast integration informed the original audio and pipeline work.
+Big Shot contains modified portions derived from
+[GNOME Shell Screencast Extra Feature](https://github.com/WSID/gnome-shell-screencast-extra-feature)
+by Wissle/WSID, licensed under GPL-2.0-or-later. Its screencast integration is
+the foundation of the original audio, adjustment, indicator, quick-stop, and
+pipeline work. See [NOTICE](NOTICE) for the distributed attribution.
 
 ## License
 
-[MIT](LICENSE) — Copyright © 2024 Community Big
+[GPL-2.0-or-later](LICENSE) — Copyright © 2024–2026 BigCommunity contributors.
+The historical MIT notice for independently authored portions is retained in
+[LICENSE.MIT](LICENSE.MIT).

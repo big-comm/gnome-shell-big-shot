@@ -13,6 +13,7 @@ const extensionDir = path.join(
     'usr', 'share', 'gnome-shell', 'extensions', uuid);
 const metadataPath = path.join(extensionDir, 'metadata.json');
 const packageInstallPath = path.join('pkgbuild', 'pkgbuild.install');
+const packageBuildPath = path.join('pkgbuild', 'PKGBUILD');
 
 test('metadata identity and declarations stay consistent', async () => {
     const metadata = JSON.parse(await readFile(metadataPath, 'utf8'));
@@ -31,6 +32,32 @@ test('metadata declares stable GNOME Shell releases', async () => {
     assert.ok(metadata['shell-version'].length > 0);
     for (const version of metadata['shell-version'])
         assert.match(version, /^\d+$/);
+});
+
+test('distribution preserves compatible licensing and upstream attribution', async () => {
+    const [license, legacyLicense, notice, packageManifest, packageLock,
+        packageBuild, bundleBuild] =
+        await Promise.all([
+            readFile('LICENSE', 'utf8'),
+            readFile('LICENSE.MIT', 'utf8'),
+            readFile('NOTICE', 'utf8'),
+            readFile('package.json', 'utf8'),
+            readFile('package-lock.json', 'utf8'),
+            readFile(packageBuildPath, 'utf8'),
+            readFile(path.join('scripts', 'build-gnome-extension.sh'), 'utf8'),
+        ]);
+
+    assert.match(license, /GNU GENERAL PUBLIC LICENSE/);
+    assert.match(license, /Version 2, June 1991/);
+    assert.match(legacyLicense, /MIT License/);
+    assert.match(notice, /WSID\/gnome-shell-screencast-extra-feature/);
+    assert.match(notice, /GPL-2\.0-or-later/);
+    assert.equal(JSON.parse(packageManifest).license, 'GPL-2.0-or-later');
+    assert.equal(JSON.parse(packageLock).packages[''].license,
+        'GPL-2.0-or-later');
+    assert.match(packageBuild, /license=\('GPL-2\.0-or-later'\)/);
+    assert.match(bundleBuild, /--extra-source=NOTICE/);
+    assert.match(bundleBuild, /--extra-source=LICENSE\.MIT/);
 });
 
 test('package migration removes only the legacy system identity', async t => {

@@ -1,7 +1,7 @@
 /**
  * Big Shot — Enhanced Screenshot & Screencast for GNOME Shell
  *
- * SPDX-License-Identifier: MIT
+ * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
 // Top-level imports are intentionally minimal. Anything imported here runs
@@ -23,13 +23,13 @@ let GdkPixbuf = null;
 let cairo = null;
 let MessageTray = null;
 let PartToolbar = null;
+let clearToolbarFontCache = null;
 let PartAnnotation = null;
 let PartMagnifier = null;
 let PartAudio = null;
 let PartFramerate = null;
 let PartDownsize = null;
 let PartIndicator = null;
-let PartQuickStop = null;
 let PartWebcam = null;
 let PartVideoAnnotation = null;
 let computeScaledDimensions = null;
@@ -58,7 +58,7 @@ function loadHeavyDeps() {
                 gioMod, shellMod, stMod, coglMod, pixbufMod, cairoMod,
                 msgTrayMod,
                 toolbarMod, annotationMod, magnifierMod, audioMod, framerateMod,
-                downsizeMod, indicatorMod, quickstopMod, webcamMod, videoAnnotationMod,
+                downsizeMod, indicatorMod, webcamMod, videoAnnotationMod,
                 coreMod,
             ] = await Promise.all([
                 import('gi://Gio'),
@@ -75,7 +75,6 @@ function loadHeavyDeps() {
                 import('./parts/partframerate.js'),
                 import('./parts/partdownsize.js'),
                 import('./parts/partindicator.js'),
-                import('./parts/partquickstop.js'),
                 import('./parts/partwebcam.js'),
                 import('./parts/partvideoannotation.js'),
                 import('./lib/core.js'),
@@ -89,13 +88,13 @@ function loadHeavyDeps() {
             cairo = cairoMod.default;
             MessageTray = msgTrayMod;
             PartToolbar = toolbarMod.PartToolbar;
+            clearToolbarFontCache = toolbarMod.clearFontCache;
             PartAnnotation = annotationMod.PartAnnotation;
             PartMagnifier = magnifierMod.PartMagnifier;
             PartAudio = audioMod.PartAudio;
             PartFramerate = framerateMod.PartFramerate;
             PartDownsize = downsizeMod.PartDownsize;
             PartIndicator = indicatorMod.PartIndicator;
-            PartQuickStop = quickstopMod.PartQuickStop;
             PartWebcam = webcamMod.PartWebcam;
             PartVideoAnnotation = videoAnnotationMod.PartVideoAnnotation;
             computeScaledDimensions = coreMod.computeScaledDimensions;
@@ -872,6 +871,7 @@ export default class BigShotExtension extends Extension {
         }
         this._parts = [];
         this._toolbar = null;
+        clearToolbarFontCache?.();
         this._annotation = null;
         this._videoAnnotation = null;
         this._magnifier = null;
@@ -879,7 +879,6 @@ export default class BigShotExtension extends Extension {
         this._framerate = null;
         this._downsize = null;
         this._indicator = null;
-        this._quickstop = null;
         this._webcam = null;
 
         // Revert monkey-patches — each isolated so one failure doesn't
@@ -1238,16 +1237,23 @@ export default class BigShotExtension extends Extension {
 
     _showScreenshotNotification(pixbuf, time, file, disableSaveToDisk) {
         try {
+            // Cogl must not read RGB rows as RGBA. That can overrun the
+            // pixbuf buffer and crash GNOME Shell in native memcpy code.
+            const iconPixbuf = pixbuf.get_has_alpha()
+                ? pixbuf
+                : pixbuf.add_alpha(false, 0, 0, 0);
+            if (!iconPixbuf)
+                throw new Error('Failed to convert notification image to RGBA');
             const coglContext = global.stage.context.get_backend().get_cogl_context();
             const content = St.ImageContent.new_with_preferred_size(
-                pixbuf.width, pixbuf.height);
+                iconPixbuf.width, iconPixbuf.height);
             content.set_bytes(
                 coglContext,
-                pixbuf.read_pixel_bytes(),
+                iconPixbuf.read_pixel_bytes(),
                 Cogl.PixelFormat.RGBA_8888,
-                pixbuf.width,
-                pixbuf.height,
-                pixbuf.rowstride,
+                iconPixbuf.width,
+                iconPixbuf.height,
+                iconPixbuf.rowstride,
             );
 
             const source = this._getNotificationSource();
@@ -2083,10 +2089,6 @@ export default class BigShotExtension extends Extension {
         this._indicator = new PartIndicator(ui, ext);
         this._parts.push(this._indicator);
 
-        // Quick Stop
-        this._quickstop = new PartQuickStop(ui, ext);
-        this._parts.push(this._quickstop);
-
         // Webcam overlay
         this._webcam = new PartWebcam(ui, ext);
         this._parts.push(this._webcam);
@@ -2249,9 +2251,11 @@ export default class BigShotExtension extends Extension {
             if (this._screencastInProgress && mode !== 1) {
                 const saved = this._screencastInProgress;
                 this._screencastInProgress = false;
-                const result = ext._origOpen.call(this, mode);
-                this._screencastInProgress = saved;
-                return result;
+                try {
+                    return ext._origOpen.call(this, mode);
+                } finally {
+                    this._screencastInProgress = saved;
+                }
             }
             return ext._origOpen.call(this, mode);
         };

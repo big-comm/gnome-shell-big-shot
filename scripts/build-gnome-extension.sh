@@ -3,7 +3,7 @@
 #
 # Creates a clean upload zip without changing source files.
 #
-# SPDX-License-Identifier: MIT
+# SPDX-License-Identifier: GPL-2.0-or-later
 
 set -euo pipefail
 
@@ -39,11 +39,17 @@ command -v unzip >/dev/null || {
 mkdir -p "${STAGE_EXT}" "${DIST_DIR}"
 cp -a "${EXT_DIR}/." "${STAGE_EXT}/"
 cp "${ROOT_DIR}/LICENSE" "${STAGE_EXT}/LICENSE"
+cp "${ROOT_DIR}/LICENSE.MIT" "${STAGE_EXT}/LICENSE.MIT"
+cp "${ROOT_DIR}/NOTICE" "${STAGE_EXT}/NOTICE"
 
 # Keep generated translations and metadata version out of source changes.
 rm -rf "${STAGE_EXT}/locale"
 rm -f "${STAGE_EXT}/po/"*~
 sed -i '/^[[:space:]]*"version"[[:space:]]*:/d' "${STAGE_EXT}/metadata.json"
+# Only claim the Shell release validated for the first EGO submission. The
+# distro package keeps the broader metadata and its separate workaround.
+sed -i -E 's/^([[:space:]]*)"shell-version"[[:space:]]*:.*/\1"shell-version": ["50"],/' \
+    "${STAGE_EXT}/metadata.json"
 
 gnome-extensions pack -f -o "${DIST_DIR}" \
     --extra-source=parts \
@@ -51,6 +57,8 @@ gnome-extensions pack -f -o "${DIST_DIR}" \
     --extra-source=data \
     --extra-source=lib \
     --extra-source=LICENSE \
+    --extra-source=LICENSE.MIT \
+    --extra-source=NOTICE \
     --podir=po \
     "${STAGE_EXT}"
 

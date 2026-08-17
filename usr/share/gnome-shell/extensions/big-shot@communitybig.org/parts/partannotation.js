@@ -4,7 +4,7 @@
  * Connects the toolbar (tool/color/size selection) to the drawing overlay.
  * Manages the overlay lifecycle tied to the screenshot UI.
  *
- * SPDX-License-Identifier: MIT
+ * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
 import { PartUI } from './partbase.js';

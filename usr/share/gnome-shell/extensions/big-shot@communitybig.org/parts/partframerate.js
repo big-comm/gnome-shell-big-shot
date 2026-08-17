@@ -1,7 +1,7 @@
 /**
  * Big Shot — Framerate selector
  *
- * SPDX-License-Identifier: MIT
+ * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
 import { PartPopupSelect } from './partbase.js';

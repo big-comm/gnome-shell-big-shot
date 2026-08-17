@@ -1,0 +1,21 @@
+Big Shot
+========
+
+Copyright (C) 2024-2026 BigCommunity contributors.
+
+This project contains modified portions derived from GNOME Shell Screencast
+Extra Feature, including the original audio, adjustment, recording indicator,
+quick-stop, and screencast pipeline integration:
+
+  Copyright (C) 2025-2026 Wissle (WSID)
+  https://github.com/WSID/gnome-shell-screencast-extra-feature
+  SPDX-License-Identifier: GPL-2.0-or-later
+
+Some screenshot UI integration follows GNOME Shell implementation patterns:
+
+  Copyright (C) GNOME Shell contributors
+  https://gitlab.gnome.org/GNOME/gnome-shell
+  SPDX-License-Identifier: GPL-2.0-or-later
+
+Big Shot is distributed under GPL-2.0-or-later. The historical MIT notice for
+independently authored portions is retained in LICENSE.MIT.

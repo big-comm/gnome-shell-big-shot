@@ -4,7 +4,7 @@
  * Reuses the screenshot drawing tools on a TopChrome overlay so annotations
  * can be captured by the active screencast.
  *
- * SPDX-License-Identifier: MIT
+ * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
 import Clutter from 'gi://Clutter';

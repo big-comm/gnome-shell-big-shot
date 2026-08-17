@@ -4,7 +4,7 @@
  * A transparent Clutter.Actor overlay on top of the screenshot preview.
  * Handles mouse/touch input for drawing annotations using Cairo.
  *
- * SPDX-License-Identifier: MIT
+ * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
 import Clutter from 'gi://Clutter';

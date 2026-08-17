@@ -7,7 +7,7 @@
  * Based on gnome-shell-screencast-extra-feature approach:
  * buttons are injected into the native _typeButtonContainer.
  *
- * SPDX-License-Identifier: MIT
+ * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
 import St from 'gi://St';

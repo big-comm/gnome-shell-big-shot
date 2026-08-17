@@ -27,7 +27,7 @@ command -v unzip >/dev/null || {
 unzip -tqq "${BUNDLE}"
 unzip -Z1 "${BUNDLE}" > "${LIST_FILE}"
 
-for required in extension.js metadata.json stylesheet.css LICENSE; do
+for required in extension.js metadata.json stylesheet.css LICENSE LICENSE.MIT NOTICE; do
     grep -Fxq "${required}" "${LIST_FILE}" || {
         echo "Missing bundle file: ${required}" >&2
         exit 1
@@ -63,6 +63,16 @@ fi
 
 if ! unzip -p "${BUNDLE}" metadata.json | grep -Fq "\"uuid\": \"${UUID}\""; then
     echo "Bundle metadata UUID mismatch" >&2
+    exit 1
+fi
+
+if ! unzip -p "${BUNDLE}" metadata.json | grep -Fq '"shell-version": ["50"]'; then
+    echo "Bundle must target only the validated GNOME 50 release" >&2
+    exit 1
+fi
+
+if ! unzip -p "${BUNDLE}" NOTICE | grep -Fq 'WSID/gnome-shell-screencast-extra-feature'; then
+    echo "Bundle attribution is missing" >&2
     exit 1
 fi
 

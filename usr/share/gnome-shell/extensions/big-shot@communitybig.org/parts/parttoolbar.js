@@ -6,7 +6,7 @@
  * additional rows INSIDE the native screenshot panel — keeping
  * everything in a single unified box.
  *
- * SPDX-License-Identifier: MIT
+ * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
 import St from 'gi://St';
@@ -22,6 +22,10 @@ import { PALETTE } from '../drawing/colors.js';
 
 // Cached font list (loaded once, shared across instances)
 let _cachedFontNames = null;
+
+export function clearFontCache() {
+    _cachedFontNames = null;
+}
 
 function _getFontNames() {
     if (!_cachedFontNames) {

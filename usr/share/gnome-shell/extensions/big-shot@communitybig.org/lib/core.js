@@ -1,7 +1,7 @@
 /**
  * Pure helpers shared by the GNOME integration and Node.js tests.
  *
- * SPDX-License-Identifier: MIT
+ * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
 function _evenDimension(value) {
