@@ -16,7 +16,7 @@ hardware-accelerated encoding.
 
 ## Demo
 
-[![Watch the Big Shot demo](docs/media/big-shot-demo.jpg)](docs/media/big-shot-demo.mp4)
+<video src="https://github.com/user-attachments/assets/b45ed6c9-5f62-48cf-b2dd-1e9dedafe571" controls width="100%"></video>
 
 Click the image to watch the full H.264/MP4 demo.
 
