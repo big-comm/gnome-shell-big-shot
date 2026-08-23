@@ -370,3 +370,37 @@ test('toolbar font cache is released on disable', async () => {
     assert.match(source, /clearToolbarFontCache = toolbarMod\.clearFontCache/);
     assert.match(disableMethod, /clearToolbarFontCache\?\.\(\)/);
 });
+
+test('shell API generations are selected by version, not assumed', async () => {
+    const source = await readFile(extensionPath, 'utf8');
+    const notifyStart = source.indexOf('    _showScreenshotNotification(');
+    const notifyEnd = source.indexOf('    _unpatchSaveScreenshot(', notifyStart);
+    const notifyMethod = source.slice(notifyStart, notifyEnd);
+
+    assert.ok(notifyStart >= 0 && notifyEnd > notifyStart);
+    assert.match(source,
+        /shellMajor = coreMod\.shellMajorVersion\(configMod\.PACKAGE_VERSION\)/);
+    // StImageContent.set_bytes() gained a CoglContext in GNOME 48, and
+    // ClutterActor:context only exists from 47 on. Both must stay behind the
+    // version guard so 46/47 keep the ClutterImage arity.
+    assert.match(notifyMethod, /if \(shellMajor >= 48\) \{/);
+    assert.doesNotMatch(
+        notifyMethod.slice(0, notifyMethod.indexOf('if (shellMajor >= 48)')),
+        /global\.stage\.context/);
+});
+
+test('widget properties stay available on every declared shell version', async () => {
+    const sources = await Promise.all([
+        'extension.js', 'drawing/overlay.js', 'drawing/actions.js',
+        'parts/partaudio.js', 'parts/partbase.js', 'parts/partdownsize.js',
+        'parts/partframerate.js', 'parts/partindicator.js',
+        'parts/partmagnifier.js', 'parts/parttoolbar.js',
+        'parts/partvideoannotation.js', 'parts/partwebcam.js',
+    ].map(name => readFile(
+        `usr/share/gnome-shell/extensions/big-shot@communitybig.org/${name}`,
+        'utf8')));
+
+    // St.BoxLayout:orientation landed in GNOME 48; `vertical` spans 46-50.
+    for (const source of sources)
+        assert.doesNotMatch(source, /orientation:\s*Clutter\.Orientation/);
+});

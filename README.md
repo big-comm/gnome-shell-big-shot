@@ -258,9 +258,10 @@ Log out and back in so GNOME Shell loads the extension. The build script stages
 the source in a temporary directory, compiles translations, and writes the
 upload-ready archive to `dist/` without modifying extension sources.
 
-The first EGO bundle declares GNOME Shell 50 only, matching the release tested
-end to end. The source metadata used by the distribution package retains its
-broader compatibility list and package-specific GNOME 49 workaround.
+The bundle declares the same GNOME Shell releases as the source metadata,
+46 through 50. Every Shell API whose shape changed inside that range is
+selected at runtime from `Config.PACKAGE_VERSION`; GNOME 50 is the release
+tested end to end. The distribution package keeps its own GNOME 49 workaround.
 
 ## Dependencies
 

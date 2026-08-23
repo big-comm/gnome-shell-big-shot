@@ -66,8 +66,15 @@ if ! unzip -p "${BUNDLE}" metadata.json | grep -Fq "\"uuid\": \"${UUID}\""; then
     exit 1
 fi
 
-if ! unzip -p "${BUNDLE}" metadata.json | grep -Fq '"shell-version": ["50"]'; then
-    echo "Bundle must target only the validated GNOME 50 release" >&2
+bundle_versions="$(unzip -p "${BUNDLE}" metadata.json |
+    tr -d ' \n' | grep -oE '"shell-version":\[[^]]*\]')"
+source_versions="$(tr -d ' \n' < "${EXT_DIR}/metadata.json" |
+    grep -oE '"shell-version":\[[^]]*\]')"
+
+if [[ "${bundle_versions}" != "${source_versions}" ]]; then
+    echo "Bundle shell-version differs from source metadata" >&2
+    echo "  bundle: ${bundle_versions}" >&2
+    echo "  source: ${source_versions}" >&2
     exit 1
 fi
 

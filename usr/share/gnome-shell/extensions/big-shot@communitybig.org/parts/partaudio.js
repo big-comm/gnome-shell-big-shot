@@ -44,8 +44,10 @@ export const IconLabelButton = GObject.registerClass(
         _init(icon, label, params) {
             super._init(params);
 
+        // St.BoxLayout only gained the `orientation` property in GNOME 48;
+        // `vertical` is the spelling that works on every supported release.
         this._container = new St.BoxLayout({
-            orientation: Clutter.Orientation.VERTICAL,
+            vertical: true,
             style_class: 'icon-label-button-container',
         });
         this.set_child(this._container);

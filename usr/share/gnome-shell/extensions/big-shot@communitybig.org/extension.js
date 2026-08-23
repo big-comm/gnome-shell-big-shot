@@ -34,6 +34,7 @@ let PartWebcam = null;
 let PartVideoAnnotation = null;
 let computeScaledDimensions = null;
 let recordingExtension = null;
+let shellMajor = 0;
 
 /**
  * Load every heavy dependency on first use.
@@ -56,7 +57,7 @@ function loadHeavyDeps() {
         heavyDepsPromise = (async () => {
             const [
                 gioMod, shellMod, stMod, coglMod, pixbufMod, cairoMod,
-                msgTrayMod,
+                msgTrayMod, configMod,
                 toolbarMod, annotationMod, magnifierMod, audioMod, framerateMod,
                 downsizeMod, indicatorMod, webcamMod, videoAnnotationMod,
                 coreMod,
@@ -68,6 +69,7 @@ function loadHeavyDeps() {
                 import('gi://GdkPixbuf'),
                 import('gi://cairo'),
                 import('resource:///org/gnome/shell/ui/messageTray.js'),
+                import('resource:///org/gnome/shell/misc/config.js'),
                 import('./parts/parttoolbar.js'),
                 import('./parts/partannotation.js'),
                 import('./parts/partmagnifier.js'),
@@ -99,6 +101,7 @@ function loadHeavyDeps() {
             PartVideoAnnotation = videoAnnotationMod.PartVideoAnnotation;
             computeScaledDimensions = coreMod.computeScaledDimensions;
             recordingExtension = coreMod.recordingExtension;
+            shellMajor = coreMod.shellMajorVersion(configMod.PACKAGE_VERSION);
         })();
     }
 
@@ -1244,17 +1247,31 @@ export default class BigShotExtension extends Extension {
                 : pixbuf.add_alpha(false, 0, 0, 0);
             if (!iconPixbuf)
                 throw new Error('Failed to convert notification image to RGBA');
-            const coglContext = global.stage.context.get_backend().get_cogl_context();
             const content = St.ImageContent.new_with_preferred_size(
                 iconPixbuf.width, iconPixbuf.height);
-            content.set_bytes(
-                coglContext,
-                iconPixbuf.read_pixel_bytes(),
-                Cogl.PixelFormat.RGBA_8888,
-                iconPixbuf.width,
-                iconPixbuf.height,
-                iconPixbuf.rowstride,
-            );
+            // GNOME 48 detached StImageContent from ClutterImage and added a
+            // leading CoglContext to set_bytes(). GNOME 46/47 inherit
+            // ClutterImage.set_bytes(), which takes no context, and 46 has no
+            // ClutterActor:context property to read one from. Same method
+            // name, different arity, so only the version tells them apart.
+            if (shellMajor >= 48) {
+                content.set_bytes(
+                    global.stage.context.get_backend().get_cogl_context(),
+                    iconPixbuf.read_pixel_bytes(),
+                    Cogl.PixelFormat.RGBA_8888,
+                    iconPixbuf.width,
+                    iconPixbuf.height,
+                    iconPixbuf.rowstride,
+                );
+            } else {
+                content.set_bytes(
+                    iconPixbuf.read_pixel_bytes(),
+                    Cogl.PixelFormat.RGBA_8888,
+                    iconPixbuf.width,
+                    iconPixbuf.height,
+                    iconPixbuf.rowstride,
+                );
+            }
 
             const source = this._getNotificationSource();
             const notification = new MessageTray.Notification({

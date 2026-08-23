@@ -53,6 +53,21 @@ export function computeOverlayRect(stageWidth, stageHeight, panelRect = null,
     return result;
 }
 
+/**
+ * Major GNOME Shell version from a `Config.PACKAGE_VERSION` string.
+ *
+ * Used to pick between API generations that changed shape rather than name,
+ * where feature detection cannot tell them apart. Returns 0 when the version
+ * is unusable so callers fall back to the oldest supported code path.
+ */
+export function shellMajorVersion(packageVersion) {
+    if (typeof packageVersion !== 'string')
+        return 0;
+
+    const major = Number.parseInt(packageVersion.split('.')[0], 10);
+    return Number.isInteger(major) && major > 0 ? major : 0;
+}
+
 export function recordingExtension(path, fallback = 'webm') {
     if (typeof path !== 'string')
         return fallback;

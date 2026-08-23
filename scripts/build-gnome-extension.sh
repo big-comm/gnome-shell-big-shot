@@ -46,10 +46,9 @@ cp "${ROOT_DIR}/NOTICE" "${STAGE_EXT}/NOTICE"
 rm -rf "${STAGE_EXT}/locale"
 rm -f "${STAGE_EXT}/po/"*~
 sed -i '/^[[:space:]]*"version"[[:space:]]*:/d' "${STAGE_EXT}/metadata.json"
-# Only claim the Shell release validated for the first EGO submission. The
-# distro package keeps the broader metadata and its separate workaround.
-sed -i -E 's/^([[:space:]]*)"shell-version"[[:space:]]*:.*/\1"shell-version": ["50"],/' \
-    "${STAGE_EXT}/metadata.json"
+# The bundle declares the same Shell releases as the source metadata. Every
+# API used is guarded for that whole range (see shellMajorVersion), so there
+# is no reason for the EGO bundle to claim less than the package.
 
 gnome-extensions pack -f -o "${DIST_DIR}" \
     --extra-source=parts \
