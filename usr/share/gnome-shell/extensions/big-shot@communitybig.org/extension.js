@@ -2482,7 +2482,7 @@ export default class BigShotExtension extends Extension {
         this._origScreencastProxyTimeout = null;
     }
 
-    async _screencastCommonAsync(filePath, options, originalMethod, captureSize = null) {
+    async _screencastCommonAsync(_requestedPath, options, originalMethod, captureSize = null) {
         const enableSerial = this._activeEnableSerial;
         const stopMethod = this._origStopScreencastAsync;
         // Share the background probe when it is still finishing.
@@ -2491,8 +2491,9 @@ export default class BigShotExtension extends Extension {
             return [false];
 
         // Force every recording (full-screen and area) into ~/Videos/BigShot/
-        // with the localized "BigShot from %d %t" filename.
-        filePath = buildBigShotRecordingPath();
+        // with the localized "BigShot from %d %t" filename. The path GNOME
+        // asked for is deliberately discarded.
+        const filePath = buildBigShotRecordingPath();
         ensureRecordingFolder();
 
         const framerate = this._framerate?.value ?? 30;
