@@ -18,7 +18,7 @@ makedepends=('gettext' 'nodejs')
 pkgver=$(date +%y.%m.%d)
 pkgrel=$(date +%H%M)
 arch=('any')
-license=('MIT')
+license=('GPL-2.0-or-later')
 url="https://github.com/big-comm/${pkgname}"
 source=("git+${url}.git")
 md5sums=('SKIP')
@@ -40,7 +40,7 @@ build() {
     cd "${srcdir}/${pkgname}"
 
     # Compile .po → .mo translations
-    local _uuid="big-shot@bigcommunity.org"
+    local _uuid="big-shot@communitybig.org"
     local _extdir="usr/share/gnome-shell/extensions/${_uuid}"
     local _podir="${_extdir}/po"
     local _localedir="${_extdir}/locale"
@@ -57,7 +57,7 @@ build() {
 
 check() {
     cd "${srcdir}/${pkgname}"
-    find usr/share/gnome-shell/extensions/big-shot@bigcommunity.org \
+    find usr/share/gnome-shell/extensions/big-shot@communitybig.org \
         -name '*.js' -print0 | xargs -0 -n1 node --check
     node --test tests/*.test.js
     bash -n usr/share/libalpm/scripts/gnome-shell-big-shot-screencast-fix.sh
@@ -77,18 +77,24 @@ package() {
     local dirs=("usr" "etc" "opt")
     for dir in "${dirs[@]}"; do
         if [ -d "${srcdir}/${dir}" ]; then
-            cp -a "${srcdir}/${dir}" "${pkgdir}/"
+            cp -a --no-preserve=ownership "${srcdir}/${dir}" "${pkgdir}/"
         fi
     done
 
     # Extension-local gettext catalogs are the single runtime source. Do not
     # ship source PO files or the obsolete duplicate global locale tree.
     rm -rf "${pkgdir}/usr/share/locale"
-    rm -rf "${pkgdir}/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/po"
+    rm -rf "${pkgdir}/usr/share/gnome-shell/extensions/big-shot@communitybig.org/po"
 
     # Install license file if present
     if [ -f "LICENSE" ]; then
         install -Dm644 LICENSE "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+    fi
+    if [ -f "LICENSE.MIT" ]; then
+        install -Dm644 LICENSE.MIT "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE.MIT"
+    fi
+    if [ -f "NOTICE" ]; then
+        install -Dm644 NOTICE "${pkgdir}/usr/share/doc/${pkgname}/NOTICE"
     fi
 
     # Ensure patch script is executable

@@ -1,0 +1,455 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: big-shot 1.0\n"
+"Report-Msgid-Bugs-To: https://github.com/BigCommunity/gnome-shell-big-shot/"
+"issues\n"
+"POT-Creation-Date: 2026-08-15 18:23-0300\n"
+"PO-Revision-Date: 2026-08-15 18:02-0300\n"
+"Last-Translator: Tales A. Mendonça <talesam@gmail.com>\n"
+"Language-Team: Chinese\n"
+"Language: zh\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: attranslate\n"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/drawing/overlay.js:177
+msgid "Drawing canvas"
+msgstr "绘图画布"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/drawing/overlay.js:832
+msgid "Text…"
+msgstr "文本…"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/drawing/overlay.js:837
+msgid "Annotation text"
+msgstr "注释文本"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/drawing/overlay.js:865
+msgid "Confirm"
+msgstr "确认"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/drawing/overlay.js:986
+msgid "Caption style — click to toggle highlight / neutral"
+msgstr "标题样式 — 点击在高亮 / 中性之间切换"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/drawing/overlay.js:1002
+msgid "Caption (↑/↓ = size)…"
+msgstr "标题（↑/↓ = 大小）…"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/drawing/overlay.js:1003
+msgid "Zoom caption"
+msgstr "缩放标题"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:378
+msgid "BigShot from %d %t"
+msgstr "BigShot %d %t"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1111
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1126
+msgid "Screenshot taken"
+msgstr "截图已保存"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1168
+msgid "Screenshots"
+msgstr "截图"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1178
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1816
+#, javascript-format
+msgid "Screenshot from %s"
+msgstr "来自 %s 的截图"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1227
+msgid "Screen Capture"
+msgstr "屏幕捕获"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1256
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1288
+msgid "Screenshot captured"
+msgstr "已获取截图"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1257
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1289
+msgid "You can paste the image from the clipboard"
+msgstr "您可以从剪贴板粘贴该图像"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1264
+msgid "Show in Files"
+msgstr "显示文件"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1574
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1588
+msgid ""
+"Automatic installation is unavailable. Install Tesseract and its language "
+"packs with your package manager."
+msgstr "无法自动安装。请使用软件包管理器安装 Tesseract 及其语言包。"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1637
+msgid "Screenshot copied"
+msgstr "截图已复制"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1669
+msgid "Extracting text..."
+msgstr "正在提取文本..."
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1691
+#, javascript-format
+msgid "Text copied to clipboard! (%d chars)"
+msgstr "文本已复制到剪贴板！(%d 个字符)"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1694
+msgid "No text found in selection"
+msgstr "未在选区中找到文本"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1700
+#, javascript-format
+msgid "OCR failed: %s"
+msgstr "OCR 失败：%s"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1841
+msgid "Save Screenshot"
+msgstr "保存截图"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1847
+msgid "PNG Images"
+msgstr ""
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:2609
+msgid "GNOME default"
+msgstr ""
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partaudio.js:96
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partaudio.js:158
+msgid "Desktop"
+msgstr "桌面"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partaudio.js:108
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partaudio.js:166
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:581
+msgid "Mic"
+msgstr "麦克风"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partaudio.js:160
+msgid "Record Desktop Audio"
+msgstr "录制桌面音频"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partaudio.js:168
+msgid "Record Microphone"
+msgstr "录制麦克风"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partdownsize.js:18
+msgid "Recording resolution"
+msgstr "录制分辨率"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partframerate.js:18
+msgid "Frames per second"
+msgstr "每秒帧数"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partindicator.js:94
+msgid "Pause recording"
+msgstr ""
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partindicator.js:95
+msgid "Screen recording"
+msgstr ""
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:36
+msgid "Select / Move"
+msgstr "选择 / 移动"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:37
+msgid "Pen"
+msgstr "笔"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:38
+msgid "Arrow"
+msgstr "箭头"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:39
+msgid "Line"
+msgstr "行"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:40
+msgid "Rectangle"
+msgstr "矩形"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:41
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:620
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partwebcam.js:45
+msgid "Oval"
+msgstr "Oval"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:42
+msgid "Text"
+msgstr "文本"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:43
+msgid "Highlighter"
+msgstr "高亮工具"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:44
+msgid "Censor"
+msgstr "马赛克"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:45
+msgid "Blur"
+msgstr "模糊"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:46
+msgid "Invert Colors"
+msgstr "反转颜色"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:47
+msgid "Magnify / Zoom"
+msgstr "放大 / 缩放"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:48
+msgid "Number"
+msgstr "数字"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:49
+msgid "Number with Arrow"
+msgstr "带箭头的数字"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:50
+msgid "Number with Pointer"
+msgstr "带指针的数字"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:51
+msgid "Eraser"
+msgstr "橡皮擦"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:57
+#, javascript-format
+msgid "Software %s"
+msgstr ""
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:60
+#, javascript-format
+msgid "%s Low-Power"
+msgstr ""
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:128
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:136
+msgid "Show screenshot panel"
+msgstr "显示截图面板"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:136
+msgid "Hide screenshot panel"
+msgstr "隐藏截图面板"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:213
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:216
+msgid "Color"
+msgstr "颜色"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:228
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:231
+msgid "Fill"
+msgstr "填充"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:241
+msgid "Decrease Size"
+msgstr "减小尺寸"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:258
+msgid "Brush Size"
+msgstr "画笔大小"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:282
+msgid "Increase Size"
+msgstr "增大尺寸"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:301
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:305
+msgid "Font"
+msgstr "字体"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:328
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:348
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1434
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1454
+msgid "Intensity"
+msgstr "强度"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:360
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:363
+msgid "Undo"
+msgstr "撤销"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:372
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:375
+msgid "Redo"
+msgstr "重做"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:388
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:391
+msgid "Copy to Clipboard"
+msgstr "复制到剪贴板"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:400
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:403
+msgid "Save As…"
+msgstr "另存为…"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:412
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:415
+msgid "Extract Text (OCR)"
+msgstr "提取文本（OCR）"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:428
+msgid "OCR Language"
+msgstr "OCR 语言"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:431
+msgid "Select OCR Language"
+msgstr "选择 OCR 语言"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:455
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:461
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1059
+msgid "Close"
+msgstr "关闭"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:461
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1059
+msgid "Done"
+msgstr "完成"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:494
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:693
+msgid "Video Settings"
+msgstr "视频设置"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:538
+msgid "Quality"
+msgstr "质量"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:544
+msgid "High"
+msgstr "高"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:545
+msgid "Medium"
+msgstr "中"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:546
+msgid "Low"
+msgstr "低"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:558
+msgid "Recording quality (bitrate)"
+msgstr "录制质量（比特率）"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:568
+msgid "Codec"
+msgstr "编解码器"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:595
+msgid "Camera"
+msgstr "相机"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:609
+msgid "Mask"
+msgstr "遮罩"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:618
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partwebcam.js:43
+msgid "None"
+msgstr ""
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:619
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partwebcam.js:44
+msgid "Circle"
+msgstr ""
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:621
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partwebcam.js:46
+msgid "Soft"
+msgstr ""
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:622
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partwebcam.js:47
+msgid "Spot"
+msgstr ""
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:623
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partwebcam.js:48
+msgid "Ornate"
+msgstr ""
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:624
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partwebcam.js:49
+msgid "Checker"
+msgstr ""
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:625
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partwebcam.js:50
+msgid "Neon"
+msgstr ""
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:647
+msgid "Size"
+msgstr "大小"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:687
+msgid "Edit"
+msgstr "编辑"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:693
+msgid "Edit Screenshot"
+msgstr "编辑截图"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1282
+msgid "Custom"
+msgstr "自定义"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1544
+msgid "No Fill"
+msgstr "无填充"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1684
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1746
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1821
+msgid "Auto"
+msgstr "自动"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1825
+msgid "Use best available codec"
+msgstr "使用最佳可用编解码器"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1841
+msgid "Video codec"
+msgstr "视频编码器"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1910
+msgid "OCR Languages"
+msgstr "OCR 语言"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1922
+msgid "Auto (system)"
+msgstr "自动（系统）"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partvideoannotation.js:322
+msgid "Edit live"
+msgstr "实时编辑"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partvideoannotation.js:327
+msgid "Clear annotations"
+msgstr "清除标注"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partwebcam.js:96
+msgid "Webcam"
+msgstr "网络摄像头"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partwebcam.js:121
+msgid "Webcam Overlay"
+msgstr "网络摄像头叠加"
+
+#. TRANSLATORS: %d is the numeric camera device index.
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partwebcam.js:189
+#, javascript-format
+msgid "Camera %d"
+msgstr ""

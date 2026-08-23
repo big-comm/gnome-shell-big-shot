@@ -5,7 +5,8 @@ import {
     computeOverlayRect,
     computeScaledDimensions,
     recordingExtension,
-} from '../usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/lib/core.js';
+    shellMajorVersion,
+} from '../usr/share/gnome-shell/extensions/big-shot@communitybig.org/lib/core.js';
 
 test('scales area dimensions and keeps encoder-safe even values', () => {
     assert.deepEqual(computeScaledDimensions(1001, 701, 0.75), {
@@ -39,4 +40,12 @@ test('detects native recording extension safely', () => {
     assert.equal(recordingExtension('/tmp/video.MP4'), 'mp4');
     assert.equal(recordingExtension('/tmp/video.undefined'), 'webm');
     assert.equal(recordingExtension(null), 'webm');
+});
+
+test('parses the shell major version defensively', () => {
+    assert.equal(shellMajorVersion('46.0'), 46);
+    assert.equal(shellMajorVersion('50.4'), 50);
+    assert.equal(shellMajorVersion('49.rc'), 49);
+    assert.equal(shellMajorVersion('unknown'), 0);
+    assert.equal(shellMajorVersion(undefined), 0);
 });

@@ -14,6 +14,16 @@ printMsg() {
     echo -e "${blueDark}[${lightBlue}Big Shot${blueDark}]${reset} ${cyan}→${reset} ${white}${message}${reset}"
 }
 
+removeLegacyExtension() {
+    local rootDir="${1:-}"
+    local legacyDir="${rootDir}/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org"
+
+    if [[ -d "${legacyDir}" ]]; then
+        rm -rf -- "${legacyDir}"
+        printMsg "Removed the legacy big-shot@bigcommunity.org extension files"
+    fi
+}
+
 # Function executed before package installation
 # pre_install() {
 #     printMsg "Preparing to install the package..."
@@ -42,10 +52,14 @@ post_install() {
 
 # Function executed after package upgrade
 post_upgrade() {
+    removeLegacyExtension
+
     # Re-apply screencast fix if needed (gnome-shell update may have overwritten it)
     if [ -x /usr/share/libalpm/scripts/gnome-shell-big-shot-screencast-fix.sh ]; then
         /usr/share/libalpm/scripts/gnome-shell-big-shot-screencast-fix.sh --apply || true
     fi
+
+    printMsg "UUID changed to big-shot@communitybig.org; users with an explicit extension list must enable the new UUID after login"
 }
 
 # Function executed before package removal

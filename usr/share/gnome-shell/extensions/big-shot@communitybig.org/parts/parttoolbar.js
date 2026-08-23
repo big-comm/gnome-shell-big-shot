@@ -1,0 +1,2208 @@
+/**
+ * Big Shot — Integrated edit toolbar
+ *
+ * Adds a pencil ✏️ toggle button to the native bottom row.
+ * When toggled, drawing tools and style controls appear as
+ * additional rows INSIDE the native screenshot panel — keeping
+ * everything in a single unified box.
+ *
+ * SPDX-License-Identifier: GPL-2.0-or-later
+ */
+
+import St from 'gi://St';
+import Clutter from 'gi://Clutter';
+import GLib from 'gi://GLib';
+import Gio from 'gi://Gio';
+import PangoCairo from 'gi://PangoCairo';
+import * as Main from 'resource:///org/gnome/shell/ui/main.js';
+import { gettext as _ } from 'resource:///org/gnome/shell/extensions/extension.js';
+
+import { PartUI } from './partbase.js';
+import { PALETTE } from '../drawing/colors.js';
+
+// Cached font list (loaded once, shared across instances)
+let _cachedFontNames = null;
+
+export function clearFontCache() {
+    _cachedFontNames = null;
+}
+
+function _getFontNames() {
+    if (!_cachedFontNames) {
+        const fontMap = PangoCairo.FontMap.get_default();
+        const families = fontMap.list_families();
+        _cachedFontNames = families.map(f => f.get_name()).sort((a, b) => a.localeCompare(b));
+    }
+    return _cachedFontNames;
+}
+
+const SCREENSHOT_TOOLS = [
+    { id: 'select', icon: 'big-shot-select-symbolic', label: () => _('Select / Move') },
+    { id: 'pen', icon: 'big-shot-pen-symbolic', label: () => _('Pen') },
+    { id: 'arrow', icon: 'big-shot-arrow-symbolic', label: () => _('Arrow') },
+    { id: 'line', icon: 'big-shot-line-symbolic', label: () => _('Line') },
+    { id: 'rect', icon: 'big-shot-rect-symbolic', label: () => _('Rectangle') },
+    { id: 'circle', icon: 'big-shot-circle-symbolic', label: () => _('Oval') },
+    { id: 'text', icon: 'big-shot-text-symbolic', label: () => _('Text') },
+    { id: 'highlight', icon: 'big-shot-highlight-symbolic', label: () => _('Highlighter') },
+    { id: 'censor', icon: 'big-shot-censor-symbolic', label: () => _('Censor') },
+    { id: 'blur', icon: 'big-shot-blur-symbolic', label: () => _('Blur') },
+    { id: 'invert', icon: 'big-shot-invert-symbolic', label: () => _('Invert Colors') },
+    { id: 'zoom', icon: 'big-shot-zoom-symbolic', label: () => _('Magnify / Zoom') },
+    { id: 'number', icon: 'big-shot-number-symbolic', label: () => _('Number') },
+    { id: 'number-arrow', icon: 'big-shot-number-arrow-symbolic', label: () => _('Number with Arrow') },
+    { id: 'number-pointer', icon: 'big-shot-number-pointer-symbolic', label: () => _('Number with Pointer') },
+    { id: 'eraser', icon: 'big-shot-eraser-symbolic', label: () => _('Eraser') },
+];
+
+function _pipelineDisplayLabel(label) {
+    // TRANSLATORS: %s is a codec name, for example H.264 x264.
+    if (label.startsWith('Software '))
+        return _('Software %s').format(label.slice('Software '.length));
+    // TRANSLATORS: %s is a codec backend and format, for example VA H.264.
+    if (label.endsWith(' Low-Power'))
+        return _('%s Low-Power').format(label.slice(0, -' Low-Power'.length));
+    return label;
+}
+
+
+export class PartToolbar extends PartUI {
+    constructor(screenshotUI, extension) {
+        super(screenshotUI, extension);
+
+        this._activeTool = null;
+        this._toolButtons = new Map();
+        this._editMode = false;
+        this._currentColorHex = '#ed333b';
+        this._fillColorHex = null;
+        this._currentFont = 'Sans';
+
+        // Video settings state
+        this._videoQuality = 'high';   // 'high', 'medium', 'low'
+        this._selectedPipelineId = null; // null = auto cascade
+
+        this._buildToolbar();
+    }
+
+    _getIcon(iconName) {
+        const iconsDir = this._ext.dir.get_child('data').get_child('icons');
+        return new Gio.FileIcon({ file: iconsDir.get_child(`${iconName}.svg`) });
+    }
+
+    _buildToolbar() {
+        const panel = this._ui._panel;
+        if (!panel) return;
+
+        // === Floating edit toolbar (added to _ui, draggable) ===
+        this._editContainer = new St.BoxLayout({
+            style_class: 'big-shot-edit-row big-shot-edit-floating',
+            reactive: true,
+            // Prevent BinLayout (screenshotUI) from stretching height
+            y_align: Clutter.ActorAlign.START,
+        });
+
+        // Drag handle — visible grippy area for dragging
+        this._dragHandle = new St.Bin({
+            child: new St.Icon({
+                icon_name: 'list-drag-handle-symbolic',
+                icon_size: 16,
+                style: 'color: rgba(255,255,255,0.5);',
+            }),
+            reactive: true,
+            track_hover: true,
+            style: 'padding: 4px 6px; cursor: grab;',
+        });
+        this._editContainer.add_child(this._dragHandle);
+
+        // Toggle native panel visibility — separator + button
+        const panelSep = new St.Widget({
+            style: 'background: rgba(255,255,255,0.15); min-width: 1px; margin: 4px 2px;',
+            y_align: Clutter.ActorAlign.FILL,
+        });
+        this._editContainer.add_child(panelSep);
+
+        this._panelToggleBtn = new St.Button({
+            style_class: 'big-shot-edit-tool-btn',
+            child: new St.Icon({
+                icon_name: 'view-reveal-symbolic',
+                icon_size: 16,
+                style: 'color: rgba(255,255,255,0.6);',
+            }),
+            can_focus: true,
+            accessible_name: _('Show screenshot panel'),
+        });
+        this._nativePanelHidden = false;
+        this._panelToggleBtn.connect('clicked', () => {
+            this._toggleNativePanel();
+        });
+        this._panelToggleBtn.connect('enter-event', () =>
+            this._showTooltip(this._panelToggleBtn,
+                this._nativePanelHidden ? _('Show screenshot panel') : _('Hide screenshot panel')));
+        this._panelToggleBtn.connect('leave-event', () => this._hideTooltip());
+        this._editContainer.add_child(this._panelToggleBtn);
+
+        // Drag state
+        this._dragging = false;
+        this._dragStartX = 0;
+        this._dragStartY = 0;
+        this._dragOffsetX = 0;
+        this._dragOffsetY = 0;
+
+        // Start drag from drag handle
+        this._dragHandle.connect('button-press-event', (_actor, event) => {
+            if (event.get_button() !== 1) return Clutter.EVENT_PROPAGATE;
+            const [mx, my] = event.get_coords();
+            const [ax, ay] = this._editContainer.get_transformed_position();
+            this._dragging = true;
+            this._dragStartX = mx;
+            this._dragStartY = my;
+            this._dragOffsetX = ax - mx;
+            this._dragOffsetY = ay - my;
+            return Clutter.EVENT_STOP;
+        });
+
+        // The native screenshot UI installs a grab, so movement must be
+        // captured from ScreenshotUI there. Recording mode reparents the
+        // toolbar to TopChrome, where stage capture is the right scope.
+        this._dragEventActor = null;
+        this._dragMotionId = 0;
+        this._connectDragEventActor(this._ui ?? global.stage);
+
+        // 90% opacity by default, fully opaque on hover
+        this._editContainer.opacity = 230;
+        this._editContainer.connect('enter-event', () => {
+            this._editContainer.ease({
+                opacity: 255,
+                duration: 150,
+                mode: Clutter.AnimationMode.EASE_OUT_QUAD,
+            });
+        });
+        this._editContainer.connect('leave-event', () => {
+            if (this._dragging) return;
+            this._editContainer.ease({
+                opacity: 230,
+                duration: 300,
+                mode: Clutter.AnimationMode.EASE_OUT_QUAD,
+            });
+        });
+
+        // Drawing tool icons
+        for (const tool of SCREENSHOT_TOOLS) {
+            const btn = new St.Button({
+                style_class: 'big-shot-edit-tool-btn',
+                toggle_mode: true,
+                can_focus: true,
+                child: new St.Icon({ gicon: this._getIcon(tool.icon), icon_size: 18 }),
+                accessible_name: tool.label(),
+            });
+            btn._toolId = tool.id;
+            btn.connect('clicked', () => this._onToolClicked(tool.id, btn));
+            btn.connect('enter-event', () => this._showTooltip(btn, tool.label()));
+            btn.connect('leave-event', () => this._hideTooltip());
+            this._editContainer.add_child(btn);
+            this._toolButtons.set(tool.id, btn);
+        }
+
+        // Separator between tools and style controls
+        this._editContainer.add_child(new St.Widget({ style_class: 'big-shot-edit-sep' }));
+
+        // Color swatch
+        this._colorSwatch = new St.Widget({
+            style: `background: ${this._currentColorHex}; border-radius: 8px; min-width: 16px; min-height: 16px; border: 2px solid rgba(255,255,255,0.3);`,
+        });
+        this._colorButton = new St.Button({
+            style_class: 'big-shot-edit-tool-btn',
+            child: this._colorSwatch,
+            can_focus: true,
+            accessible_name: _('Color'),
+        });
+        this._colorButton.connect('clicked', () => this._showColorPopup('stroke'));
+        this._colorButton.connect('enter-event', () => this._showTooltip(this._colorButton, _('Color')));
+        this._colorButton.connect('leave-event', () => this._hideTooltip());
+        this._editContainer.add_child(this._colorButton);
+
+        // Fill swatch
+        this._fillSwatch = new St.Widget({
+            style: 'background: transparent; border: 2px dashed rgba(255,255,255,0.5); border-radius: 8px; min-width: 16px; min-height: 16px;',
+        });
+        this._fillButton = new St.Button({
+            style_class: 'big-shot-edit-tool-btn',
+            child: this._fillSwatch,
+            can_focus: true,
+            accessible_name: _('Fill'),
+        });
+        this._fillButton.connect('clicked', () => this._showColorPopup('fill'));
+        this._fillButton.connect('enter-event', () => this._showTooltip(this._fillButton, _('Fill')));
+        this._fillButton.connect('leave-event', () => this._hideTooltip());
+        this._editContainer.add_child(this._fillButton);
+
+        // Brush size with +/- buttons
+        const sizeBox = new St.BoxLayout({ style: 'spacing: 0px;' });
+        const sizeDecBtn = new St.Button({
+            style_class: 'big-shot-edit-tool-btn',
+            child: new St.Label({ text: '−', style: 'color: #ffffff; font-size: 14px;', y_align: Clutter.ActorAlign.CENTER }),
+            can_focus: true,
+            accessible_name: _('Decrease Size'),
+        });
+        sizeDecBtn.connect('clicked', () => {
+            this._setBrushSize(Math.max(this.brushSize - 1, 1));
+        });
+        sizeBox.add_child(sizeDecBtn);
+
+        this._sizeLabel = new St.Label({
+            text: '3',
+            style: 'color: #ffffff; font-size: 12px; min-width: 20px; text-align: center;',
+            y_align: Clutter.ActorAlign.CENTER,
+            x_align: Clutter.ActorAlign.CENTER,
+        });
+        this._sizeButton = new St.Button({
+            style_class: 'big-shot-edit-tool-btn',
+            child: this._sizeLabel,
+            can_focus: true,
+            accessible_name: _('Brush Size'),
+        });
+        this._sizeButton.connect('clicked', () => this._showSizePopup());
+        this._sizeButton.connect('scroll-event', (_actor, event) => {
+            const dir = event.get_scroll_direction();
+            let sz = this.brushSize;
+            if (dir === Clutter.ScrollDirection.UP) {
+                sz = Math.min(sz + 1, 100);
+            } else if (dir === Clutter.ScrollDirection.DOWN) {
+                sz = Math.max(sz - 1, 1);
+            } else if (dir === Clutter.ScrollDirection.SMOOTH) {
+                const [, dy] = event.get_scroll_delta();
+                if (dy < 0) sz = Math.min(sz + 1, 100);
+                else if (dy > 0) sz = Math.max(sz - 1, 1);
+            }
+            this._setBrushSize(sz);
+            return Clutter.EVENT_STOP;
+        });
+        sizeBox.add_child(this._sizeButton);
+
+        const sizeIncBtn = new St.Button({
+            style_class: 'big-shot-edit-tool-btn',
+            child: new St.Label({ text: '+', style: 'color: #ffffff; font-size: 14px;', y_align: Clutter.ActorAlign.CENTER }),
+            can_focus: true,
+            accessible_name: _('Increase Size'),
+        });
+        sizeIncBtn.connect('clicked', () => {
+            this._setBrushSize(Math.min(this.brushSize + 1, 100));
+        });
+        sizeBox.add_child(sizeIncBtn);
+
+        this._editContainer.add_child(sizeBox);
+
+        // Font selector (visible only for Text tool)
+        this._fontLabel = new St.Label({
+            text: this._currentFont,
+            style: 'color: #ffffff; font-size: 10px;',
+            y_align: Clutter.ActorAlign.CENTER,
+        });
+        this._fontButton = new St.Button({
+            style_class: 'big-shot-edit-tool-btn',
+            child: this._fontLabel,
+            can_focus: true,
+            accessible_name: _('Font'),
+            visible: false,
+        });
+        this._fontButton.connect('clicked', () => this._showFontPopup());
+        this._fontButton.connect('enter-event', () => this._showTooltip(this._fontButton, _('Font')));
+        this._fontButton.connect('leave-event', () => this._hideTooltip());
+        this._editContainer.add_child(this._fontButton);
+
+        // Intensity (visible only for Censor / Blur)
+        this._intensityLevel = 3;
+        const intensityBox = new St.BoxLayout({ style: 'spacing: 2px;' });
+        this._intensityIcon = new St.Icon({
+            icon_name: 'view-grid-symbolic',
+            icon_size: 12,
+            style: 'color: #ffffff;',
+        });
+        this._intensityLabel = new St.Label({
+            text: '3',
+            style: 'color: #ffffff; font-size: 12px;',
+            y_align: Clutter.ActorAlign.CENTER,
+        });
+        intensityBox.add_child(this._intensityIcon);
+        intensityBox.add_child(this._intensityLabel);
+        this._intensityButton = new St.Button({
+            style_class: 'big-shot-edit-tool-btn',
+            child: intensityBox,
+            can_focus: true,
+            accessible_name: _('Intensity'),
+            visible: false,
+        });
+        this._intensityButton.connect('clicked', () => this._showIntensityPopup());
+        this._intensityButton.connect('scroll-event', (_actor, event) => {
+            const dir = event.get_scroll_direction();
+            let lvl = this._intensityLevel;
+            if (dir === Clutter.ScrollDirection.UP) {
+                lvl = Math.min(lvl + 1, 5);
+            } else if (dir === Clutter.ScrollDirection.DOWN) {
+                lvl = Math.max(lvl - 1, 1);
+            } else if (dir === Clutter.ScrollDirection.SMOOTH) {
+                const [, dy] = event.get_scroll_delta();
+                if (dy < 0) lvl = Math.min(lvl + 1, 5);
+                else if (dy > 0) lvl = Math.max(lvl - 1, 1);
+            }
+            this._intensityLevel = lvl;
+            this._intensityLabel.text = String(lvl);
+            return Clutter.EVENT_STOP;
+        });
+        this._intensityButton.connect('enter-event', () => this._showTooltip(this._intensityButton, _('Intensity')));
+        this._intensityButton.connect('leave-event', () => this._hideTooltip());
+        this._editContainer.add_child(this._intensityButton);
+
+        // Separator
+        this._editContainer.add_child(new St.Widget({ style_class: 'big-shot-edit-sep' }));
+
+        // Undo
+        this._undoButton = new St.Button({
+            style_class: 'big-shot-edit-tool-btn',
+            child: new St.Icon({ icon_name: 'edit-undo-symbolic', icon_size: 18 }),
+            can_focus: true,
+            accessible_name: _('Undo'),
+        });
+        this._undoButton.connect('clicked', () => this._onUndo());
+        this._undoButton.connect('enter-event', () => this._showTooltip(this._undoButton, _('Undo')));
+        this._undoButton.connect('leave-event', () => this._hideTooltip());
+        this._editContainer.add_child(this._undoButton);
+
+        // Redo
+        this._redoButton = new St.Button({
+            style_class: 'big-shot-edit-tool-btn',
+            child: new St.Icon({ icon_name: 'edit-redo-symbolic', icon_size: 18 }),
+            can_focus: true,
+            accessible_name: _('Redo'),
+        });
+        this._redoButton.connect('clicked', () => this._onRedo());
+        this._redoButton.connect('enter-event', () => this._showTooltip(this._redoButton, _('Redo')));
+        this._redoButton.connect('leave-event', () => this._hideTooltip());
+        this._editContainer.add_child(this._redoButton);
+
+        // Separator before action buttons
+        this._actionSep = new St.Widget({ style_class: 'big-shot-edit-sep' });
+        this._editContainer.add_child(this._actionSep);
+
+        // Copy to clipboard
+        this._copyButton = new St.Button({
+            style_class: 'big-shot-edit-tool-btn',
+            child: new St.Icon({ icon_name: 'edit-copy-symbolic', icon_size: 18 }),
+            can_focus: true,
+            accessible_name: _('Copy to Clipboard'),
+        });
+        this._copyButton.connect('clicked', () => this._onCopyClicked());
+        this._copyButton.connect('enter-event', () => this._showTooltip(this._copyButton, _('Copy to Clipboard')));
+        this._copyButton.connect('leave-event', () => this._hideTooltip());
+        this._editContainer.add_child(this._copyButton);
+
+        // Save As (file chooser via portal)
+        this._saveAsButton = new St.Button({
+            style_class: 'big-shot-edit-tool-btn',
+            child: new St.Icon({ icon_name: 'document-save-as-symbolic', icon_size: 18 }),
+            can_focus: true,
+            accessible_name: _('Save As…'),
+        });
+        this._saveAsButton.connect('clicked', () => this._onSaveAsClicked());
+        this._saveAsButton.connect('enter-event', () => this._showTooltip(this._saveAsButton, _('Save As…')));
+        this._saveAsButton.connect('leave-event', () => this._hideTooltip());
+        this._editContainer.add_child(this._saveAsButton);
+
+        // OCR — Extract text from screenshot
+        this._ocrButton = new St.Button({
+            style_class: 'big-shot-edit-tool-btn',
+            child: new St.Icon({ icon_name: 'big-shot-ocr-symbolic', icon_size: 18 }),
+            can_focus: true,
+            accessible_name: _('Extract Text (OCR)'),
+        });
+        this._ocrButton.connect('clicked', () => this._onOcrClicked());
+        this._ocrButton.connect('enter-event', () => this._showTooltip(this._ocrButton, _('Extract Text (OCR)')));
+        this._ocrButton.connect('leave-event', () => this._hideTooltip());
+        this._editContainer.add_child(this._ocrButton);
+
+        // OCR language selector button (gear icon next to OCR)
+        this._ocrLangButton = new St.Button({
+            style_class: 'big-shot-edit-tool-btn',
+            child: new St.Label({
+                text: 'OCR ▾',
+                style: 'color: #ffffff; font-size: 10px;',
+                y_align: Clutter.ActorAlign.CENTER,
+            }),
+            can_focus: true,
+            accessible_name: _('OCR Language'),
+        });
+        this._ocrLangButton.connect('clicked', () => this._showOcrLangPopup());
+        this._ocrLangButton.connect('enter-event', () => this._showTooltip(this._ocrLangButton, _('Select OCR Language')));
+        this._ocrLangButton.connect('leave-event', () => this._hideTooltip());
+        this._editContainer.add_child(this._ocrLangButton);
+
+        // OCR language state — default: system locale + por+eng+spa
+        this._ocrSelectedLang = null; // null = use auto-detect
+        this._ocrLangLabel = this._ocrLangButton.child;
+
+        // Close button — shown only when the native panel is hidden (no orphaned X at top)
+        this._toolbarCloseSep = new St.Widget({
+            style: 'background: rgba(255,255,255,0.15); min-width: 1px; margin: 4px 2px;',
+            y_align: Clutter.ActorAlign.FILL,
+            visible: false,
+        });
+        this._editContainer.add_child(this._toolbarCloseSep);
+
+        this._toolbarCloseBtn = new St.Button({
+            style_class: 'big-shot-edit-tool-btn',
+            child: new St.Icon({
+                icon_name: 'window-close-symbolic',
+                icon_size: 16,
+                style: 'color: rgba(255,255,255,0.6);',
+            }),
+            can_focus: true,
+            accessible_name: _('Close'),
+            visible: false,
+        });
+        this._toolbarCloseBtn.connect('clicked', () => this._onToolbarCloseClicked());
+        this._toolbarCloseBtn.connect('enter-event', () =>
+            this._showTooltip(this._toolbarCloseBtn,
+                this._recordingToolbarAttached ? _('Done') : _('Close')));
+        this._toolbarCloseBtn.connect('leave-event', () => this._hideTooltip());
+        this._editContainer.add_child(this._toolbarCloseBtn);
+
+        // NOTE: _editContainer is NOT added to a parent yet.
+        // It gets inserted into _panel when edit mode is toggled ON.
+
+        // === Video Settings Container (floating, like _editContainer) ===
+        this._videoContainer = new St.BoxLayout({
+            vertical: true,
+            style_class: 'big-shot-edit-container big-shot-edit-floating',
+            reactive: true,
+            style: 'spacing: 8px; padding: 8px 12px;',
+            // Prevent BinLayout (screenshotUI) from stretching height
+            y_align: Clutter.ActorAlign.START,
+        });
+
+        // Header row (drag handle + label)
+        const videoHeaderRow = new St.BoxLayout({ style: 'spacing: 6px;' });
+
+        this._videoDragHandle = new St.Bin({
+            child: new St.Icon({
+                icon_name: 'list-drag-handle-symbolic',
+                icon_size: 16,
+                style: 'color: rgba(255,255,255,0.5);',
+            }),
+            reactive: true,
+            track_hover: true,
+            style: 'padding: 4px 6px; cursor: grab;',
+        });
+        videoHeaderRow.add_child(this._videoDragHandle);
+
+        videoHeaderRow.add_child(new St.Label({
+            text: _('Video Settings'),
+            style: 'color: rgba(255,255,255,0.7); font-size: 12px; font-weight: bold;',
+            y_align: Clutter.ActorAlign.CENTER,
+            x_expand: true,
+        }));
+
+        this._videoContainer.add_child(videoHeaderRow);
+
+        // Video drag state
+        this._videoDragging = false;
+
+        this._videoDragHandle.connect('button-press-event', (_actor, event) => {
+            if (event.get_button() !== 1) return Clutter.EVENT_PROPAGATE;
+            const [mx, my] = event.get_coords();
+            const [ax, ay] = this._videoContainer.get_transformed_position();
+            this._videoDragging = true;
+            this._videoDragStartX = mx;
+            this._videoDragStartY = my;
+            this._videoDragOffsetX = ax - mx;
+            this._videoDragOffsetY = ay - my;
+            return Clutter.EVENT_STOP;
+        });
+
+        // Opacity hover effects
+        this._videoContainer.opacity = 230;
+        this._videoContainer.connect('enter-event', () => {
+            this._videoContainer.ease({
+                opacity: 255,
+                duration: 150,
+                mode: Clutter.AnimationMode.EASE_OUT_QUAD,
+            });
+        });
+        this._videoContainer.connect('leave-event', () => {
+            if (this._videoDragging) return;
+            this._videoContainer.ease({
+                opacity: 230,
+                duration: 300,
+                mode: Clutter.AnimationMode.EASE_OUT_QUAD,
+            });
+        });
+
+        // Row 1: Quality label + buttons
+        const qualityBox = new St.BoxLayout({ vertical: false, style: 'spacing: 8px;' });
+        qualityBox.add_child(new St.Label({
+            text: _('Quality'),
+            style: 'color: rgba(255,255,255,0.6); font-size: 12px; min-width: 50px;',
+            y_align: Clutter.ActorAlign.CENTER,
+        }));
+        this._qualityButtons = new Map();
+        const qualityOptions = [
+            { id: 'high', label: _('High') },
+            { id: 'medium', label: _('Medium') },
+            { id: 'low', label: _('Low') },
+        ];
+        for (const q of qualityOptions) {
+            const btn = new St.Button({
+                style_class: 'screenshot-ui-show-pointer-button',
+                toggle_mode: true,
+                can_focus: true,
+                label: q.label,
+            });
+            btn.checked = (q.id === this._videoQuality);
+            const qid = q.id;
+            btn.connect('clicked', () => this._onQualityClicked(qid));
+            btn.connect('enter-event', () => this._showTooltip(btn, _('Recording quality (bitrate)')));
+            btn.connect('leave-event', () => this._hideTooltip());
+            qualityBox.add_child(btn);
+            this._qualityButtons.set(q.id, btn);
+        }
+        this._videoContainer.add_child(qualityBox);
+
+        // Row 2: Codec label + buttons (populated dynamically)
+        const codecBox = new St.BoxLayout({ vertical: false, style: 'spacing: 8px;' });
+        codecBox.add_child(new St.Label({
+            text: _('Codec'),
+            style: 'color: rgba(255,255,255,0.6); font-size: 12px; min-width: 50px;',
+            y_align: Clutter.ActorAlign.CENTER,
+        }));
+        this._codecButtonsRow = new St.BoxLayout({ style: 'spacing: 4px;' });
+        codecBox.add_child(this._codecButtonsRow);
+        this._videoContainer.add_child(codecBox);
+        this._codecButtons = new Map();
+
+        // Row 3: Microphone selection (visible when >1 mic available and mic is active)
+        this._micRow = new St.BoxLayout({ vertical: false, style: 'spacing: 8px;' });
+        this._micRow.visible = false;
+        this._micRow.add_child(new St.Label({
+            text: _('Mic'),
+            style: 'color: rgba(255,255,255,0.6); font-size: 12px; min-width: 50px;',
+            y_align: Clutter.ActorAlign.CENTER,
+        }));
+        this._micButtonsRow = new St.BoxLayout({ style: 'spacing: 4px;' });
+        this._micSelButtons = new Map();
+        this._selectedMicDevice = null; // null = default
+        this._micRow.add_child(this._micButtonsRow);
+        this._videoContainer.add_child(this._micRow);
+
+        // Row 4: Camera selection (visible only when webcam is on)
+        this._cameraRow = new St.BoxLayout({ vertical: false, style: 'spacing: 8px;' });
+        this._cameraRow.visible = false;
+        this._cameraRow.add_child(new St.Label({
+            text: _('Camera'),
+            style: 'color: rgba(255,255,255,0.6); font-size: 12px; min-width: 50px;',
+            y_align: Clutter.ActorAlign.CENTER,
+        }));
+        this._cameraButtonsRow = new St.BoxLayout({ style: 'spacing: 4px;' });
+        this._cameraButtons = new Map();
+        this._selectedCameraDevice = null; // null = auto
+        this._cameraRow.add_child(this._cameraButtonsRow);
+        this._videoContainer.add_child(this._cameraRow);
+
+        // Row 4: Mask selection (visible only when webcam is on)
+        this._maskRow = new St.BoxLayout({ vertical: false, style: 'spacing: 8px;' });
+        this._maskRow.visible = false;
+        this._maskRow.add_child(new St.Label({
+            text: _('Mask'),
+            style: 'color: rgba(255,255,255,0.6); font-size: 12px; min-width: 50px;',
+            y_align: Clutter.ActorAlign.CENTER,
+        }));
+        this._maskButtonsRow = new St.BoxLayout({ style: 'spacing: 4px;' });
+        this._maskButtons = new Map();
+        this._selectedMaskId = 'circle';
+
+        const maskOptions = [
+            { id: 'none', label: () => _('None') },
+            { id: 'circle', label: () => _('Circle') },
+            { id: 'ellipse', label: () => _('Oval') },
+            { id: 'soft-circle', label: () => _('Soft') },
+            { id: 'spotlight', label: () => _('Spot') },
+            { id: 'ornate-frame', label: () => _('Ornate') },
+            { id: 'checker', label: () => _('Checker') },
+            { id: 'neon', label: () => _('Neon') },
+        ];
+        for (const m of maskOptions) {
+            const btn = new St.Button({
+                style_class: 'screenshot-ui-show-pointer-button',
+                toggle_mode: true,
+                can_focus: true,
+                label: m.label(),
+            });
+            btn.checked = (m.id === this._selectedMaskId);
+            const mid = m.id;
+            btn.connect('clicked', () => this._onMaskClicked(mid));
+            this._maskButtonsRow.add_child(btn);
+            this._maskButtons.set(m.id, btn);
+        }
+        this._maskRow.add_child(this._maskButtonsRow);
+        this._videoContainer.add_child(this._maskRow);
+
+        // Row 4: Webcam size selection (visible only when webcam is on)
+        this._sizeRow = new St.BoxLayout({ vertical: false, style: 'spacing: 8px;' });
+        this._sizeRow.visible = false;
+        this._sizeRow.add_child(new St.Label({
+            text: _('Size'),
+            style: 'color: rgba(255,255,255,0.6); font-size: 12px; min-width: 50px;',
+            y_align: Clutter.ActorAlign.CENTER,
+        }));
+        this._sizeButtonsRow = new St.BoxLayout({ style: 'spacing: 4px;' });
+        this._sizeButtons = new Map();
+        this._selectedSizeId = 'M';
+
+        const sizeOptions = [
+            { id: 'XS', label: 'XS', width: 120 },
+            { id: 'S', label: 'S', width: 200 },
+            { id: 'M', label: 'M', width: 320 },
+            { id: 'L', label: 'L', width: 480 },
+            { id: 'XL', label: 'XL', width: 640 },
+        ];
+        for (const s of sizeOptions) {
+            const btn = new St.Button({
+                style_class: 'screenshot-ui-show-pointer-button',
+                toggle_mode: true,
+                can_focus: true,
+                label: s.label,
+            });
+            btn.checked = (s.id === this._selectedSizeId);
+            const sid = s.id;
+            const swidth = s.width;
+            btn.connect('clicked', () => this._onSizeClicked(sid, swidth));
+            this._sizeButtonsRow.add_child(btn);
+            this._sizeButtons.set(s.id, btn);
+        }
+        this._sizeRow.add_child(this._sizeButtonsRow);
+        this._videoContainer.add_child(this._sizeRow);
+
+        // NOTE: _videoContainer is NOT added to a parent yet.
+
+        // === Edit toggle button — in _showPointerButtonContainer ===
+        this._editButton = new St.Button({
+            style_class: 'screenshot-ui-show-pointer-button',
+            toggle_mode: true,
+            can_focus: true,
+            child: new St.Icon({ icon_name: 'document-edit-symbolic', icon_size: 16 }),
+            accessible_name: _('Edit'),
+        });
+        this._editButton.track_hover = true;
+        this._editButton.connect('notify::hover', () => {
+            if (this._editButton.hover)
+                this._showTooltip(this._editButton,
+                    this._isCastMode ? _('Video Settings') : _('Edit Screenshot'));
+            else
+                this._hideTooltip();
+        });
+        this._editButton.connect('notify::checked', () => {
+            this._editMode = this._editButton.checked;
+            if (this._isCastMode) {
+                this._detachEditFromPanel();
+                if (this._editMode) {
+                    this._attachVideoToPanel();
+                } else {
+                    this._detachVideoFromPanel();
+                }
+            } else {
+                this._detachVideoFromPanel();
+                if (this._editMode) {
+                    this._attachEditToPanel();
+                } else {
+                    this._detachEditFromPanel();
+                    this.selectTool(null);
+                }
+            }
+        });
+
+        // Insert edit button into the native bottom-row controls
+        const showPointerContainer = this._ui._showPointerButtonContainer;
+        if (showPointerContainer) {
+            showPointerContainer.insert_child_at_index(this._editButton, 0);
+        } else {
+            const bottomRow = this._ui._bottomRowContainer;
+            if (bottomRow) bottomRow.add_child(this._editButton);
+        }
+
+        this._connectSignal(this._ui, 'notify::visible', () => this._onUIVisibilityChanged());
+    }
+
+    _connectDragEventActor(actor) {
+        if (!actor || actor === this._dragEventActor)
+            return;
+
+        this._disconnectDragEventActor();
+        this._dragEventActor = actor;
+        this._dragMotionId = actor.connect('captured-event',
+            (_actor, event) => this._onDragCapturedEvent(event));
+    }
+
+    _disconnectDragEventActor() {
+        if (this._dragMotionId && this._dragEventActor) {
+            try {
+                this._dragEventActor.disconnect(this._dragMotionId);
+            } catch (_e) {
+                // Already disconnected.
+            }
+        }
+        this._dragMotionId = 0;
+        this._dragEventActor = null;
+    }
+
+    _onDragCapturedEvent(event) {
+        const type = event.type();
+
+        // Ctrl+Scroll anywhere adjusts brush size or intensity while editing
+        if (this._editMode && type === Clutter.EventType.SCROLL) {
+            const state = event.get_state();
+            if (state & Clutter.ModifierType.CONTROL_MASK) {
+                const dir = event.get_scroll_direction();
+                const isEffectTool = this._activeTool === 'censor' || this._activeTool === 'blur';
+
+                if (isEffectTool) {
+                    // Adjust intensity for censor/blur
+                    let lvl = this._intensityLevel;
+                    if (dir === Clutter.ScrollDirection.UP) {
+                        lvl = Math.min(lvl + 1, 5);
+                    } else if (dir === Clutter.ScrollDirection.DOWN) {
+                        lvl = Math.max(lvl - 1, 1);
+                    } else if (dir === Clutter.ScrollDirection.SMOOTH) {
+                        const [, dy] = event.get_scroll_delta();
+                        if (dy < 0) lvl = Math.min(lvl + 1, 5);
+                        else if (dy > 0) lvl = Math.max(lvl - 1, 1);
+                    }
+                    this._intensityLevel = lvl;
+                    this._intensityLabel.text = String(lvl);
+                } else {
+                    // Adjust brush size for other tools
+                    let sz = this.brushSize;
+                    if (dir === Clutter.ScrollDirection.UP) {
+                        sz = Math.min(sz + 1, 100);
+                    } else if (dir === Clutter.ScrollDirection.DOWN) {
+                        sz = Math.max(sz - 1, 1);
+                    } else if (dir === Clutter.ScrollDirection.SMOOTH) {
+                        const [, dy] = event.get_scroll_delta();
+                        if (dy < 0) sz = Math.min(sz + 1, 100);
+                        else if (dy > 0) sz = Math.max(sz - 1, 1);
+                    }
+                    this._setBrushSize(sz);
+                }
+                return Clutter.EVENT_STOP;
+            }
+        }
+
+        if (!this._dragging && !this._videoDragging) return Clutter.EVENT_PROPAGATE;
+        if (type === Clutter.EventType.MOTION) {
+            const [mx, my] = event.get_coords();
+            if (this._dragging) {
+                const dx = mx - this._dragStartX;
+                const dy = my - this._dragStartY;
+                if (Math.abs(dx) < 4 && Math.abs(dy) < 4)
+                    return Clutter.EVENT_PROPAGATE;
+                this._editContainer.set_position(
+                    mx + this._dragOffsetX,
+                    my + this._dragOffsetY,
+                );
+            } else if (this._videoDragging) {
+                const dx = mx - this._videoDragStartX;
+                const dy = my - this._videoDragStartY;
+                if (Math.abs(dx) < 4 && Math.abs(dy) < 4)
+                    return Clutter.EVENT_PROPAGATE;
+                this._videoContainer.set_position(
+                    mx + this._videoDragOffsetX,
+                    my + this._videoDragOffsetY,
+                );
+            }
+            return Clutter.EVENT_STOP;
+        } else if (type === Clutter.EventType.BUTTON_RELEASE) {
+            this._dragging = false;
+            this._videoDragging = false;
+            return Clutter.EVENT_STOP;
+        }
+        return Clutter.EVENT_PROPAGATE;
+    }
+
+    /** Add edit toolbar as floating actor above the native panel. */
+    _attachEditToPanel() {
+        if (this._editContainer.get_parent()) return;
+        this._connectDragEventActor(this._ui ?? global.stage);
+        this._ui.add_child(this._editContainer);
+
+        // Position editContainer above the native panel
+        const panel = this._ui._panel;
+        if (panel) {
+            const [px, py] = panel.get_transformed_position();
+            const pw = panel.width;
+            const cw = this._editContainer.get_preferred_width(-1)[1] || 600;
+            const ch = this._editContainer.get_preferred_height(-1)[1] || 40;
+            this._editContainer.set_position(
+                px + (pw - cw) / 2,
+                py - ch - 12,
+            );
+        }
+
+        this._setNativePanelVisible(false);
+
+        // Fade-in
+        this._editContainer.opacity = 0;
+        this._editContainer.ease({
+            opacity: 230,
+            duration: 200,
+            mode: Clutter.AnimationMode.EASE_OUT_QUAD,
+        });
+    }
+
+    /** Remove edit tools from the native panel. */
+    _detachEditFromPanel() {
+        if (this._recordingToolbarAttached)
+            return;
+        const parent = this._editContainer.get_parent();
+        if (parent) parent.remove_child(this._editContainer);
+        this._setNativePanelVisible(true);
+    }
+
+    attachEditForRecording(onDone) {
+        if (!this._editContainer || this._recordingToolbarAttached)
+            return;
+
+        const parent = this._editContainer.get_parent();
+        if (parent)
+            parent.remove_child(this._editContainer);
+
+        this._recordingToolbarAttached = true;
+        this._recordingDoneCallback = onDone;
+        this._setRecordingToolbarMode(true);
+        this._connectDragEventActor(global.stage ?? this._ui);
+
+        Main.layoutManager.addTopChrome(this._editContainer, {
+            trackFullscreen: false,
+        });
+        this.raiseRecordingToolbar();
+
+        this._editContainer.opacity = 0;
+        this._positionRecordingToolbar();
+    }
+
+    detachEditForRecording() {
+        if (!this._recordingToolbarAttached)
+            return;
+
+        this._removeSource(this._recordingToolbarPositionId);
+        this._recordingToolbarPositionId = 0;
+        this._closeColorPopup();
+        this._closeSizePopup();
+        this._closeFontPopup();
+        this._closeIntensityPopup();
+        this._hideTooltip();
+
+        try { Main.layoutManager.removeChrome(this._editContainer); } catch (_e) { /* */ }
+        this._recordingToolbarAttached = false;
+        this._recordingDoneCallback = null;
+        this._setRecordingToolbarMode(false);
+        this._connectDragEventActor(this._ui ?? global.stage);
+    }
+
+    _positionRecordingToolbar() {
+        if (!this._editContainer)
+            return;
+
+        this._removeSource(this._recordingToolbarPositionId);
+        this._editContainer.queue_relayout();
+        this._recordingToolbarPositionId = this._addIdle(() => {
+            this._recordingToolbarPositionId = 0;
+            if (!this._recordingToolbarAttached ||
+                !this._actorIsOnStage(this._editContainer))
+                return GLib.SOURCE_REMOVE;
+
+            this._setRecordingToolbarPosition();
+            this._presentRecordingToolbar();
+            return GLib.SOURCE_REMOVE;
+        });
+    }
+
+    _setRecordingToolbarPosition() {
+        const monitor = global.display.get_current_monitor();
+        const rect = global.display.get_monitor_geometry(monitor);
+        const prefWidth = this._editContainer.get_preferred_width(-1)[1];
+        const prefHeight = this._editContainer.get_preferred_height(-1)[1];
+        const cw = Number.isFinite(prefWidth) && prefWidth > 0 ? prefWidth : 620;
+        const ch = Number.isFinite(prefHeight) && prefHeight > 0 ? prefHeight : 40;
+        const x = rect.x + Math.max(12, (rect.width - cw) / 2);
+        const y = rect.y + rect.height - ch - 64;
+
+        if (Number.isFinite(x) && Number.isFinite(y))
+            this._editContainer.set_position(x, y);
+    }
+
+    _presentRecordingToolbar() {
+        if (!this._editContainer)
+            return;
+
+        this._editContainer.remove_all_transitions?.();
+        this._editContainer.show();
+        this._editContainer.opacity = 230;
+        this._queueActorFrame(this._editContainer);
+    }
+
+    _queueActorFrame(actor) {
+        actor?.queue_relayout?.();
+        actor?.queue_redraw?.();
+        const parent = actor?.get_parent?.();
+        parent?.queue_relayout?.();
+        parent?.queue_redraw?.();
+        global.stage?.queue_redraw?.();
+    }
+
+    _raiseRecordingToolbar() {
+        const parent = this._editContainer?.get_parent?.();
+        if (!parent)
+            return;
+        try { parent.set_child_above_sibling(this._editContainer, null); } catch (_e) { /* */ }
+    }
+
+    raiseRecordingToolbar() {
+        if (!this._recordingToolbarAttached || !this._editContainer)
+            return;
+
+        const parent = this._editContainer.get_parent?.();
+        let x = null;
+        let y = null;
+        if (parent) {
+            try {
+                [x, y] = this._editContainer.get_transformed_position();
+                Main.layoutManager.removeChrome(this._editContainer);
+            } catch (_e) { /* */ }
+        }
+
+        if (!this._editContainer.get_parent?.()) {
+            Main.layoutManager.addTopChrome(this._editContainer, {
+                trackFullscreen: false,
+            });
+            if (x !== null && y !== null) {
+                if (Number.isFinite(x) && Number.isFinite(y))
+                    this._editContainer.set_position(x, y);
+            }
+        }
+
+        this._raiseRecordingToolbar();
+        this._queueActorFrame(this._editContainer);
+    }
+
+    containsRecordingControl(stageX, stageY, targetActor = null) {
+        const actors = [
+            this._editContainer,
+            this._sizePopup,
+            this._fontPopup,
+            this._intensityPopup,
+            this._colorPopup,
+            this._inlineMsg,
+            this._tooltip,
+        ];
+        return this._actorIsDescendant(targetActor, actors) ||
+            actors.some(actor => this._actorContainsStagePoint(actor, stageX, stageY));
+    }
+
+    previewHiddenActors() {
+        return [
+            this._editContainer,
+            this._sizePopup,
+            this._fontPopup,
+            this._intensityPopup,
+            this._colorPopup,
+            this._inlineMsg,
+            this._tooltip,
+        ];
+    }
+
+    _actorIsDescendant(actor, roots) {
+        while (actor) {
+            if (roots.includes(actor))
+                return true;
+            actor = actor.get_parent?.() ?? null;
+        }
+        return false;
+    }
+
+    _eventTargetsActor(event, actors) {
+        if (!event)
+            return false;
+        const target = global.stage.get_event_actor(event);
+        return this._actorIsDescendant(target, actors.filter(Boolean));
+    }
+
+    _actorContainsStagePoint(actor, stageX, stageY) {
+        if (!actor?.visible)
+            return false;
+
+        try {
+            const [ok, x, y] = actor.transform_stage_point(stageX, stageY);
+            if (!ok)
+                return false;
+            return x >= 0 && y >= 0 && x <= actor.width && y <= actor.height;
+        } catch (_e) {
+            return false;
+        }
+    }
+
+    _setRecordingToolbarMode(active) {
+        if (this._actionSep)
+            this._actionSep.visible = !active;
+        if (this._copyButton)
+            this._copyButton.visible = !active;
+        if (this._saveAsButton)
+            this._saveAsButton.visible = !active;
+        if (this._panelToggleBtn)
+            this._panelToggleBtn.visible = !active;
+        if (this._toolbarCloseSep)
+            this._toolbarCloseSep.visible = active;
+        if (this._toolbarCloseBtn) {
+            this._toolbarCloseBtn.visible = active;
+            this._toolbarCloseBtn.accessible_name = active ? _('Done') : _('Close');
+        }
+    }
+
+    _onToolbarCloseClicked() {
+        if (this._recordingToolbarAttached && this._recordingDoneCallback) {
+            this._recordingDoneCallback();
+            return;
+        }
+        this._ui.close();
+    }
+
+    _addFloatingActor(actor) {
+        if (this._recordingToolbarAttached) {
+            Main.layoutManager.addTopChrome(actor, {
+                trackFullscreen: false,
+            });
+            actor._bigShotToolbarChrome = true;
+            const parent = actor.get_parent?.();
+            try { parent?.set_child_above_sibling(actor, null); } catch (_e) { /* */ }
+            this._raiseRecordingToolbar();
+            return;
+        }
+        this._ui.add_child(actor);
+    }
+
+    _actorIsOnStage(actor) {
+        return actor?.get_stage?.() === global.stage;
+    }
+
+    _destroyFloatingActor(actor) {
+        if (!actor)
+            return;
+        // Destroying a tracked chrome actor emits `destroy` before Clutter
+        // clears its parent, allowing LayoutManager to untrack it safely.
+        // Calling removeChrome() first can trigger allocation work after the
+        // actor has already left the stage.
+        actor._bigShotToolbarChrome = false;
+        actor.destroy();
+    }
+
+    /** Toggle native panel visibility (eye button). */
+    _toggleNativePanel() {
+        this._setNativePanelVisible(this._nativePanelHidden);
+    }
+
+    /** Show or hide the native GNOME screenshot panel. */
+    _setNativePanelVisible(visible) {
+        const panel = this._ui._panel;
+        if (!panel) return;
+        this._nativePanelHidden = !visible;
+        const monitorBin = this._ui._primaryMonitorBin;
+        if (visible) {
+            panel.show();
+            this._panelToggleBtn.child.icon_name = 'view-conceal-symbolic';
+            if (monitorBin) monitorBin.show();
+            if (this._toolbarCloseSep) this._toolbarCloseSep.hide();
+            if (this._toolbarCloseBtn) this._toolbarCloseBtn.hide();
+        } else {
+            panel.hide();
+            this._panelToggleBtn.child.icon_name = 'view-reveal-symbolic';
+            if (monitorBin) monitorBin.hide();
+            if (this._toolbarCloseSep) this._toolbarCloseSep.show();
+            if (this._toolbarCloseBtn) this._toolbarCloseBtn.show();
+        }
+    }
+
+    /** Add video settings as floating actor above the native panel. */
+    _attachVideoToPanel() {
+        if (this._videoContainer.get_parent()) return;
+        this._populateVideoCodecs();
+        this._ui.add_child(this._videoContainer);
+
+        // Center above the native panel on the primary monitor
+        const panel = this._ui._panel;
+        const monitor = global.display.get_primary_monitor();
+        const monRect = global.display.get_monitor_geometry(monitor);
+        const cw = this._videoContainer.get_preferred_width(-1)[1] || 300;
+        const ch = this._videoContainer.get_preferred_height(-1)[1] || 80;
+
+        let cy = monRect.y + monRect.height - ch - 24; // near bottom
+        if (panel && panel.visible) {
+            const [, py] = panel.get_transformed_position();
+            cy = py - ch - 12;
+        }
+        this._videoContainer.set_position(
+            monRect.x + (monRect.width - cw) / 2,
+            cy,
+        );
+
+        // Fade-in
+        this._videoContainer.opacity = 0;
+        this._videoContainer.ease({
+            opacity: 230,
+            duration: 200,
+            mode: Clutter.AnimationMode.EASE_OUT_QUAD,
+        });
+    }
+
+    /** Reposition video panel centered above the bottom bar after row changes. */
+    repositionVideoPanel() {
+        if (!this._videoContainer.get_parent()) return;
+
+        // Defer to next allocation so the container knows its new size
+        this._removeSource(this._videoPanelPositionId);
+        this._videoContainer.queue_relayout();
+        this._videoPanelPositionId = this._addIdle(() => {
+            this._videoPanelPositionId = 0;
+            if (!this._actorIsOnStage(this._videoContainer))
+                return GLib.SOURCE_REMOVE;
+            const panel = this._ui._panel;
+            const monitor = global.display.get_primary_monitor();
+            const monRect = global.display.get_monitor_geometry(monitor);
+            const cw = this._videoContainer.get_preferred_width(-1)[1] || 300;
+            const ch = this._videoContainer.get_preferred_height(-1)[1] || 80;
+
+            let cy = monRect.y + monRect.height - ch - 24;
+            if (panel && panel.visible) {
+                const [, py] = panel.get_transformed_position();
+                cy = py - ch - 12;
+            }
+            this._videoContainer.set_position(
+                monRect.x + (monRect.width - cw) / 2,
+                cy,
+            );
+            return GLib.SOURCE_REMOVE;
+        });
+    }
+
+    /** Remove video settings from the native panel. */
+    _detachVideoFromPanel() {
+        this._removeSource(this._videoPanelPositionId);
+        this._videoPanelPositionId = 0;
+        const parent = this._videoContainer.get_parent();
+        if (parent) parent.remove_child(this._videoContainer);
+    }
+
+    _onToolClicked(toolId, btn) {
+        for (const [id, otherBtn] of this._toolButtons) {
+            if (id !== toolId)
+                otherBtn.checked = false;
+        }
+        this._activeTool = btn.checked ? toolId : null;
+        this._fontButton.visible = this._usesFontControls(this._activeTool);
+        this._intensityButton.visible = (this._activeTool === 'censor' || this._activeTool === 'blur');
+        this._onToolChanged(this._activeTool);
+    }
+
+    _usesFontControls(toolId) {
+        return toolId === 'text' || toolId === 'zoom';
+    }
+
+    _onToolChanged(toolId) {
+        for (const callback of this._toolChangedCallbacks ?? [])
+            callback(toolId);
+    }
+
+    onToolChanged(callback) {
+        if (!this._toolChangedCallbacks)
+            this._toolChangedCallbacks = [];
+        this._toolChangedCallbacks.push(callback);
+    }
+
+    selectTool(toolId) {
+        if (toolId === null) {
+            for (const [, btn] of this._toolButtons)
+                btn.checked = false;
+            this._activeTool = null;
+            this._fontButton.visible = false;
+            this._intensityButton.visible = false;
+            this._onToolChanged(null);
+            return;
+        }
+        const btn = this._toolButtons.get(toolId);
+        if (!btn) return;
+        for (const [id, otherBtn] of this._toolButtons)
+            otherBtn.checked = (id === toolId);
+        this._activeTool = toolId;
+        this._fontButton.visible = this._usesFontControls(toolId);
+        this._intensityButton.visible = (toolId === 'censor' || toolId === 'blur');
+        this._onToolChanged(toolId);
+    }
+
+    get activeTool() { return this._activeTool; }
+
+    _showSizePopup() {
+        this._closeSizePopup();
+        this._closeColorPopup();
+
+        this._sizePopup = new St.BoxLayout({
+            style_class: 'big-shot-edit-popup',
+            vertical: true,
+            reactive: true,
+        });
+
+        // Grid row of preset sizes (1-14)
+        const row1 = new St.BoxLayout({ style_class: 'big-shot-edit-row' });
+        const row2 = new St.BoxLayout({ style_class: 'big-shot-edit-row' });
+        for (let i = 1; i <= 14; i++) {
+            const btn = new St.Button({
+                style_class: 'big-shot-edit-tool-btn',
+                can_focus: true,
+                child: new St.Label({
+                    text: String(i),
+                    style: 'color: #ffffff; font-size: 12px;',
+                    x_align: Clutter.ActorAlign.CENTER,
+                    y_align: Clutter.ActorAlign.CENTER,
+                }),
+            });
+            if (i === this.brushSize)
+                btn.add_style_pseudo_class('checked');
+            const size = i;
+            btn.connect('clicked', () => {
+                this._setBrushSize(size);
+                this._closeSizePopup();
+            });
+            if (i <= 7)
+                row1.add_child(btn);
+            else
+                row2.add_child(btn);
+        }
+        this._sizePopup.add_child(row1);
+        this._sizePopup.add_child(row2);
+
+        // Custom size entry row
+        const customRow = new St.BoxLayout({ style_class: 'big-shot-edit-row' });
+        const customEntry = new St.Entry({
+            hint_text: _('Custom'),
+            style: 'width: 60px; color: #ffffff; font-size: 12px;',
+            can_focus: true,
+        });
+        customEntry.clutter_text.connect('activate', () => {
+            const val = parseInt(customEntry.get_text());
+            if (val > 0 && val <= 100) {
+                this._setBrushSize(val);
+                this._closeSizePopup();
+            }
+        });
+        customRow.add_child(customEntry);
+        this._sizePopup.add_child(customRow);
+
+        // Position above the size button
+        this._addFloatingActor(this._sizePopup);
+        this._sizePopupPositionId = this._addIdle(() => {
+            this._sizePopupPositionId = 0;
+            if (!this._actorIsOnStage(this._sizePopup) ||
+                !this._actorIsOnStage(this._sizeButton))
+                return GLib.SOURCE_REMOVE;
+            const [bx, by] = this._sizeButton.get_transformed_position();
+            this._sizePopup.set_position(bx, by - this._sizePopup.height - 8);
+            return GLib.SOURCE_REMOVE;
+        });
+    }
+
+    _closeSizePopup() {
+        this._removeSource(this._sizePopupPositionId);
+        this._sizePopupPositionId = 0;
+        this._destroyFloatingActor(this._sizePopup);
+        this._sizePopup = null;
+    }
+
+    _showFontPopup() {
+        this._closeFontPopup();
+
+        this._fontPopup = new St.BoxLayout({
+            style_class: 'big-shot-edit-popup',
+            vertical: true,
+            reactive: true,
+            style: 'padding: 4px;',
+        });
+
+        const fontNames = _getFontNames();
+
+        // Scrollable list
+        const scrollView = new St.ScrollView({
+            style: 'max-height: 300px; min-width: 200px;',
+            hscrollbar_policy: St.PolicyType.NEVER,
+            vscrollbar_policy: St.PolicyType.AUTOMATIC,
+        });
+
+        const listBox = new St.BoxLayout({ vertical: true, style: 'spacing: 2px;' });
+
+        for (const name of fontNames) {
+            const escapedName = name.replace(/'/g, "\\'");
+            const btn = new St.Button({
+                style_class: 'big-shot-edit-tool-btn',
+                can_focus: true,
+                x_expand: true,
+                child: new St.Label({
+                    text: name,
+                    style: `color: #ffffff; font-size: 15px; font-family: '${escapedName}';`,
+                    x_align: Clutter.ActorAlign.START,
+                    x_expand: true,
+                }),
+            });
+            if (name === this._currentFont)
+                btn.add_style_pseudo_class('checked');
+            btn.connect('clicked', () => {
+                this._currentFont = name;
+                this._fontLabel.text = name;
+                this._closeFontPopup();
+            });
+            listBox.add_child(btn);
+        }
+
+        scrollView.set_child(listBox);
+        this._fontPopup.add_child(scrollView);
+
+        this._addFloatingActor(this._fontPopup);
+
+        this._fontPopupPositionId = this._addIdle(() => {
+            this._fontPopupPositionId = 0;
+            if (!this._actorIsOnStage(this._fontPopup) ||
+                !this._actorIsOnStage(this._fontButton))
+                return GLib.SOURCE_REMOVE;
+            const [bx, by] = this._fontButton.get_transformed_position();
+            const monitor = global.display.get_current_monitor();
+            const geo = global.display.get_monitor_geometry(monitor);
+            let cpx = bx;
+            let cpy = by - this._fontPopup.height - 8;
+            cpx = Math.max(geo.x, Math.min(cpx, geo.x + geo.width - this._fontPopup.width));
+            cpy = Math.max(geo.y, cpy);
+            this._fontPopup.set_position(cpx, cpy);
+            return GLib.SOURCE_REMOVE;
+        });
+
+        this._fontPopupTimeoutId = this._addTimeout(100, () => {
+            this._fontPopupTimeoutId = 0;
+            if (this._destroyed) return GLib.SOURCE_REMOVE;
+            this._fontPopupClickId = global.stage.connect('button-press-event', (_stage, event) => {
+                if (this._eventTargetsActor(event, [this._fontPopup, this._fontButton]))
+                    return Clutter.EVENT_PROPAGATE;
+                this._closeFontPopup();
+                return Clutter.EVENT_PROPAGATE;
+            });
+            return GLib.SOURCE_REMOVE;
+        });
+    }
+
+    _closeFontPopup() {
+        this._removeSource(this._fontPopupPositionId);
+        this._fontPopupPositionId = 0;
+        if (this._fontPopupTimeoutId) {
+            this._removeSource(this._fontPopupTimeoutId);
+            this._fontPopupTimeoutId = 0;
+        }
+        if (this._fontPopupClickId) {
+            global.stage.disconnect(this._fontPopupClickId);
+            this._fontPopupClickId = null;
+        }
+        this._destroyFloatingActor(this._fontPopup);
+        this._fontPopup = null;
+    }
+
+    _setBrushSize(size) {
+        this._sizeLabel.text = String(size);
+    }
+
+    get brushSize() {
+        return parseInt(this._sizeLabel.text) || 3;
+    }
+
+    get intensity() {
+        return this._intensityLevel || 3;
+    }
+
+    _showIntensityPopup() {
+        this._closeIntensityPopup();
+        this._closeColorPopup();
+        this._closeSizePopup();
+
+        this._intensityPopup = new St.BoxLayout({
+            style_class: 'big-shot-edit-popup',
+            vertical: true,
+            reactive: true,
+        });
+
+        // Title row
+        const titleLabel = new St.Label({
+            text: _('Intensity'),
+            style: 'color: rgba(255,255,255,0.7); font-size: 11px; margin-bottom: 4px;',
+            x_align: Clutter.ActorAlign.CENTER,
+        });
+        this._intensityPopup.add_child(titleLabel);
+
+        // 5 level buttons
+        const row = new St.BoxLayout({ style_class: 'big-shot-edit-row' });
+        const labels = ['1', '2', '3', '4', '5'];
+        for (let i = 1; i <= 5; i++) {
+            const level = i;
+            const btn = new St.Button({
+                style_class: 'big-shot-edit-tool-btn',
+                can_focus: true,
+                child: new St.Label({
+                    text: labels[i - 1],
+                    style: 'color: #ffffff; font-size: 14px; min-width: 28px;',
+                    x_align: Clutter.ActorAlign.CENTER,
+                    y_align: Clutter.ActorAlign.CENTER,
+                }),
+                accessible_name: `${_('Intensity')} ${level}`,
+            });
+            if (level === this._intensityLevel)
+                btn.add_style_pseudo_class('checked');
+            btn.connect('clicked', () => {
+                this._intensityLevel = level;
+                this._intensityLabel.text = String(level);
+                this._closeIntensityPopup();
+            });
+            row.add_child(btn);
+        }
+        this._intensityPopup.add_child(row);
+
+        this._addFloatingActor(this._intensityPopup);
+
+        this._intensityPopupPositionId = this._addIdle(() => {
+            this._intensityPopupPositionId = 0;
+            if (!this._actorIsOnStage(this._intensityPopup) ||
+                !this._actorIsOnStage(this._intensityButton))
+                return GLib.SOURCE_REMOVE;
+            const [bx, by] = this._intensityButton.get_transformed_position();
+            const monitor = global.display.get_current_monitor();
+            const geo = global.display.get_monitor_geometry(monitor);
+            let cpx = bx;
+            let cpy = by - this._intensityPopup.height - 8;
+            cpx = Math.max(geo.x, Math.min(cpx, geo.x + geo.width - this._intensityPopup.width));
+            cpy = Math.max(geo.y, cpy);
+            this._intensityPopup.set_position(cpx, cpy);
+            return GLib.SOURCE_REMOVE;
+        });
+
+        this._intensityPopupTimeoutId = this._addTimeout(100, () => {
+            this._intensityPopupTimeoutId = 0;
+            if (this._destroyed) return GLib.SOURCE_REMOVE;
+            this._intensityPopupClickId = global.stage.connect('button-press-event', (_stage, event) => {
+                if (this._eventTargetsActor(event, [this._intensityPopup, this._intensityButton]))
+                    return Clutter.EVENT_PROPAGATE;
+                this._closeIntensityPopup();
+                return Clutter.EVENT_PROPAGATE;
+            });
+            return GLib.SOURCE_REMOVE;
+        });
+    }
+
+    _closeIntensityPopup() {
+        this._removeSource(this._intensityPopupPositionId);
+        this._intensityPopupPositionId = 0;
+        if (this._intensityPopupTimeoutId) {
+            this._removeSource(this._intensityPopupTimeoutId);
+            this._intensityPopupTimeoutId = 0;
+        }
+        if (this._intensityPopupClickId) {
+            global.stage.disconnect(this._intensityPopupClickId);
+            this._intensityPopupClickId = null;
+        }
+        this._destroyFloatingActor(this._intensityPopup);
+        this._intensityPopup = null;
+    }
+
+    _showColorPopup(target) {
+        this._closeColorPopup();
+
+        this._colorPopup = new St.BoxLayout({
+            style_class: 'big-shot-edit-popup',
+            vertical: true,
+            reactive: true,
+        });
+
+        for (let row = 0; row < 2; row++) {
+            const rowBox = new St.BoxLayout({ style: 'spacing: 6px;' });
+            for (let col = 0; col < 6; col++) {
+                const color = PALETTE[row * 6 + col];
+                const swatch = new St.Button({
+                    style: `background: ${color}; width: 28px; height: 28px; border-radius: 8px; margin: 2px; border: 2px solid transparent;`,
+                    reactive: true,
+                    can_focus: true,
+                    accessible_name: color,
+                });
+                swatch.connect('clicked', () => {
+                    this._applyColor(target, color);
+                    this._closeColorPopup();
+                });
+                rowBox.add_child(swatch);
+            }
+            this._colorPopup.add_child(rowBox);
+        }
+
+        if (target === 'fill') {
+            const noFillBtn = new St.Button({
+                style_class: 'big-shot-edit-tool-btn',
+                label: _('No Fill'),
+                can_focus: true,
+                style: 'margin-top: 4px; color: #ffffff;',
+            });
+            noFillBtn.connect('clicked', () => {
+                this._applyColor('fill', null);
+                this._closeColorPopup();
+            });
+            this._colorPopup.add_child(noFillBtn);
+        }
+
+        const anchor = target === 'fill' ? this._fillButton : this._colorButton;
+        this._addFloatingActor(this._colorPopup);
+
+        this._colorPopupPositionId = this._addIdle(() => {
+            this._colorPopupPositionId = 0;
+            if (!this._actorIsOnStage(this._colorPopup) ||
+                !this._actorIsOnStage(anchor))
+                return GLib.SOURCE_REMOVE;
+            const [bx, by] = anchor.get_transformed_position();
+            const monitor = global.display.get_current_monitor();
+            const geo = global.display.get_monitor_geometry(monitor);
+            let cpx = bx - 40;
+            let cpy = by - this._colorPopup.height - 8;
+            cpx = Math.max(geo.x, Math.min(cpx, geo.x + geo.width - this._colorPopup.width));
+            cpy = Math.max(geo.y, cpy);
+            this._colorPopup.set_position(cpx, cpy);
+            return GLib.SOURCE_REMOVE;
+        });
+
+        this._popupTimeoutId = this._addTimeout(100, () => {
+            this._popupTimeoutId = 0;
+            if (this._destroyed) return GLib.SOURCE_REMOVE;
+            this._colorPopupClickId = global.stage.connect('button-press-event', (_stage, event) => {
+                if (this._eventTargetsActor(event, [this._colorPopup, this._colorButton, this._fillButton]))
+                    return Clutter.EVENT_PROPAGATE;
+                this._closeColorPopup();
+                return Clutter.EVENT_PROPAGATE;
+            });
+            return GLib.SOURCE_REMOVE;
+        });
+    }
+
+    _applyColor(target, color) {
+        if (target === 'stroke') {
+            this._currentColorHex = color;
+            this._colorSwatch.set_style(
+                `background: ${color}; border-radius: 8px; min-width: 16px; min-height: 16px; border: 2px solid rgba(255,255,255,0.3);`,
+            );
+        } else {
+            this._fillColorHex = color;
+            if (color) {
+                this._fillSwatch.set_style(
+                    `background: ${color}; border-radius: 8px; min-width: 16px; min-height: 16px; border: 2px solid rgba(255,255,255,0.3);`,
+                );
+            } else {
+                this._fillSwatch.set_style(
+                    'background: transparent; border: 2px dashed rgba(255,255,255,0.5); border-radius: 8px; min-width: 16px; min-height: 16px;',
+                );
+            }
+        }
+    }
+
+    _closeColorPopup() {
+        this._removeSource(this._colorPopupPositionId);
+        this._colorPopupPositionId = 0;
+        if (this._popupTimeoutId) {
+            this._removeSource(this._popupTimeoutId);
+            this._popupTimeoutId = 0;
+        }
+        if (this._colorPopupClickId) {
+            global.stage.disconnect(this._colorPopupClickId);
+            this._colorPopupClickId = null;
+        }
+        this._destroyFloatingActor(this._colorPopup);
+        this._colorPopup = null;
+    }
+
+    get currentColor() { return this._currentColorHex || '#ed333b'; }
+    get fillColor() { return this._fillColorHex; }
+    get currentFont() { return this._currentFont || 'Sans'; }
+
+    // Video settings getters
+    get videoQuality() { return this._videoQuality; }
+    get selectedPipelineId() { return this._selectedPipelineId; }
+    get webcamMaskId() { return this._selectedMaskId; }
+
+    _onQualityClicked(qualityId) {
+        this._videoQuality = qualityId;
+        for (const [id, btn] of this._qualityButtons) {
+            btn.checked = (id === qualityId);
+        }
+    }
+
+    _onMaskClicked(maskId) {
+        this._selectedMaskId = maskId;
+        for (const [id, btn] of this._maskButtons) {
+            btn.checked = (id === maskId);
+        }
+        this._maskChangedCallback?.(maskId);
+    }
+
+    /** Register callback for mask selection changes. */
+    onMaskChanged(callback) {
+        this._maskChangedCallback = callback;
+    }
+
+    _onCameraClicked(device) {
+        this._selectedCameraDevice = device;
+        for (const [dev, btn] of this._cameraButtons) {
+            btn.checked = (dev === device);
+        }
+        this._cameraChangedCallback?.(device);
+    }
+
+    /** Register callback for camera selection changes. */
+    onCameraChanged(callback) {
+        this._cameraChangedCallback = callback;
+    }
+
+    /** Populate camera buttons from list of devices.
+     *  @param {Array<{device: string, name: string}>} devices */
+    populateCameras(devices) {
+        this._cameraButtonsRow.destroy_all_children();
+        this._cameraButtons.clear();
+
+        if (!devices || devices.length <= 1) {
+            // Hide row if 0 or 1 camera (no choice needed)
+            this._cameraRow.visible = false;
+            return;
+        }
+
+        // Show the row when there are multiple cameras
+        this._cameraRow.visible = true;
+
+        // Auto button
+        const autoBtn = new St.Button({
+            style_class: 'screenshot-ui-show-pointer-button',
+            toggle_mode: true,
+            can_focus: true,
+            label: _('Auto'),
+        });
+        autoBtn.checked = (this._selectedCameraDevice === null);
+        autoBtn.connect('clicked', () => this._onCameraClicked(null));
+        this._cameraButtonsRow.add_child(autoBtn);
+        this._cameraButtons.set(null, autoBtn);
+
+        for (const cam of devices) {
+            // Shorten name: take last meaningful part
+            let shortName = cam.name;
+            if (shortName.length > 20)
+                shortName = shortName.substring(0, 18) + '…';
+
+            const btn = new St.Button({
+                style_class: 'screenshot-ui-show-pointer-button',
+                toggle_mode: true,
+                can_focus: true,
+                label: shortName,
+            });
+            btn.checked = (cam.device === this._selectedCameraDevice);
+            const dev = cam.device;
+            btn.connect('clicked', () => this._onCameraClicked(dev));
+            btn.connect('enter-event', () => this._showTooltip(btn, cam.name));
+            btn.connect('leave-event', () => this._hideTooltip());
+            this._cameraButtonsRow.add_child(btn);
+            this._cameraButtons.set(cam.device, btn);
+        }
+    }
+
+    // ── Microphone selection ──────────────────────────────────────
+    _onMicClicked(device) {
+        this._selectedMicDevice = device;
+        for (const [dev, btn] of this._micSelButtons) {
+            btn.checked = (dev === device);
+        }
+        this._micChangedCallback?.(device);
+    }
+
+    /** Register callback for microphone selection changes. */
+    onMicChanged(callback) {
+        this._micChangedCallback = callback;
+    }
+
+    /** Populate microphone buttons from list of devices.
+     *  @param {Array<{id: number, name: string}>} devices */
+    populateMicrophones(devices) {
+        this._micButtonsRow.destroy_all_children();
+        this._micSelButtons.clear();
+
+        if (!devices || devices.length <= 1) {
+            this._micRow.visible = false;
+            this._selectedMicDevice = null;
+            return;
+        }
+
+        this._micRow.visible = true;
+
+        // Auto button (uses default source)
+        const autoBtn = new St.Button({
+            style_class: 'screenshot-ui-show-pointer-button',
+            toggle_mode: true,
+            can_focus: true,
+            label: _('Auto'),
+        });
+        autoBtn.checked = (this._selectedMicDevice === null);
+        autoBtn.connect('clicked', () => this._onMicClicked(null));
+        this._micButtonsRow.add_child(autoBtn);
+        this._micSelButtons.set(null, autoBtn);
+
+        for (const mic of devices) {
+            let shortName = mic.name;
+            if (shortName.length > 20)
+                shortName = shortName.substring(0, 18) + '…';
+
+            const btn = new St.Button({
+                style_class: 'screenshot-ui-show-pointer-button',
+                toggle_mode: true,
+                can_focus: true,
+                label: shortName,
+            });
+            btn.checked = (mic.id === this._selectedMicDevice);
+            const id = mic.id;
+            btn.connect('clicked', () => this._onMicClicked(id));
+            btn.connect('enter-event', () => this._showTooltip(btn, mic.name));
+            btn.connect('leave-event', () => this._hideTooltip());
+            this._micButtonsRow.add_child(btn);
+            this._micSelButtons.set(mic.id, btn);
+        }
+    }
+
+    /** @returns {number|null} selected mic device id or null for default */
+    get selectedMicDevice() {
+        return this._selectedMicDevice;
+    }
+
+    _onSizeClicked(sizeId, width) {
+        this._selectedSizeId = sizeId;
+        for (const [id, btn] of this._sizeButtons) {
+            btn.checked = (id === sizeId);
+        }
+        this._sizeChangedCallback?.(width);
+    }
+
+    /** Register callback for webcam size changes. */
+    onSizeChanged(callback) {
+        this._sizeChangedCallback = callback;
+    }
+
+    _populateVideoCodecs() {
+        this._ext._detectPipelines()
+            .then(() => {
+                if (!this._destroyed)
+                    this._refreshVideoCodecs();
+            })
+            .catch(e => {
+                console.warn(`[Big Shot] Codec list unavailable: ${e.message}`);
+            });
+    }
+
+    _refreshVideoCodecs() {
+        const configs = this._ext._availableConfigs;
+        if (!configs) return;
+
+        // Only rebuild if configs changed
+        const configIds = configs.map(c => c.id).join(',');
+        if (this._lastCodecConfigIds === configIds) return;
+        this._lastCodecConfigIds = configIds;
+
+        // Clear existing buttons
+        this._codecButtonsRow.destroy_all_children();
+        this._codecButtons.clear();
+
+        // Auto button
+        const autoBtn = new St.Button({
+            style_class: 'screenshot-ui-show-pointer-button',
+            toggle_mode: true,
+            can_focus: true,
+            label: _('Auto'),
+        });
+        autoBtn.checked = (this._selectedPipelineId === null);
+        autoBtn.connect('clicked', () => this._onCodecClicked(null));
+        autoBtn.connect('enter-event', () => this._showTooltip(autoBtn, _('Use best available codec')));
+        autoBtn.connect('leave-event', () => this._hideTooltip());
+        this._codecButtonsRow.add_child(autoBtn);
+        this._codecButtons.set(null, autoBtn);
+
+        // One button per available pipeline
+        for (const config of configs) {
+            const btn = new St.Button({
+                style_class: 'screenshot-ui-show-pointer-button',
+                toggle_mode: true,
+                can_focus: true,
+                label: _pipelineDisplayLabel(config.label),
+            });
+            btn.checked = (this._selectedPipelineId === config.id);
+            const cid = config.id;
+            btn.connect('clicked', () => this._onCodecClicked(cid));
+            btn.connect('enter-event', () => this._showTooltip(btn, _('Video codec')));
+            btn.connect('leave-event', () => this._hideTooltip());
+            this._codecButtonsRow.add_child(btn);
+            this._codecButtons.set(config.id, btn);
+        }
+    }
+
+    _onCodecClicked(pipelineId) {
+        this._selectedPipelineId = pipelineId;
+        for (const [id, btn] of this._codecButtons) {
+            btn.checked = (id === pipelineId);
+        }
+    }
+
+    // Video settings panel is now a floating modal, matching the edit toolbar behavior.
+
+    _onUndo() { }
+    _onRedo() { }
+
+    // --- Action button handlers ---
+    _onCopyClicked() {
+        this._actionCallback?.('copy');
+    }
+
+    _onSaveAsClicked() {
+        this._actionCallback?.('save-as');
+    }
+
+    onAction(callback) {
+        this._actionCallback = callback;
+    }
+
+    /** @returns {string|null} selected OCR language string (e.g. 'por+eng') or null for auto */
+    get ocrLanguage() { return this._ocrSelectedLang; }
+
+    _onOcrClicked() {
+        this._actionCallback?.('ocr');
+    }
+
+    /**
+     * Set OCR languages available (called by extension after detecting Tesseract).
+     * @param {string[]} langs - e.g. ['por', 'eng', 'spa', 'deu']
+     */
+    setOcrLanguages(langs) {
+        this._ocrAvailableLangs = langs.filter(lang => lang !== 'osd');
+        if (this._ocrSelectedLang && !this._ocrAvailableLangs.includes(this._ocrSelectedLang))
+            this._ocrSelectedLang = null;
+    }
+
+    _showOcrLangPopup() {
+        this._closeOcrLangPopup();
+        this._closeColorPopup();
+        this._closeSizePopup();
+
+        const langs = this._ocrAvailableLangs;
+        if (!langs || langs.length === 0) {
+            this._actionCallback?.('ocr-unavailable');
+            return;
+        }
+
+        this._ocrLangPopup = new St.BoxLayout({
+            style_class: 'big-shot-edit-popup',
+            vertical: true,
+            reactive: true,
+            style: 'padding: 4px;',
+        });
+
+        // Title
+        const titleLabel = new St.Label({
+            text: _('OCR Languages'),
+            style: 'color: rgba(255,255,255,0.7); font-size: 11px; margin-bottom: 4px;',
+            x_align: Clutter.ActorAlign.CENTER,
+        });
+        this._ocrLangPopup.add_child(titleLabel);
+
+        // Auto button
+        const autoBtn = new St.Button({
+            style_class: 'big-shot-edit-tool-btn',
+            can_focus: true,
+            x_expand: true,
+            child: new St.Label({
+                text: _('Auto (system)'),
+                style: 'color: #ffffff; font-size: 12px;',
+                x_align: Clutter.ActorAlign.START,
+                x_expand: true,
+            }),
+        });
+        if (this._ocrSelectedLang === null)
+            autoBtn.add_style_pseudo_class('checked');
+        autoBtn.connect('clicked', () => {
+            this._ocrSelectedLang = null;
+            this._ocrLangLabel.text = 'OCR ▾';
+            this._closeOcrLangPopup();
+        });
+        this._ocrLangPopup.add_child(autoBtn);
+
+        // Scrollable list of available languages
+        const scrollView = new St.ScrollView({
+            style: 'max-height: 250px; min-width: 160px;',
+            hscrollbar_policy: St.PolicyType.NEVER,
+            vscrollbar_policy: St.PolicyType.AUTOMATIC,
+        });
+
+        const listBox = new St.BoxLayout({ vertical: true, style: 'spacing: 2px;' });
+
+        // Friendly names for common languages
+        const LANG_NAMES = {
+            'por': 'Português', 'eng': 'English', 'spa': 'Español',
+            'fra': 'Français', 'deu': 'Deutsch', 'ita': 'Italiano',
+            'jpn': 'Japanese', 'kor': 'Korean', 'chi_sim': 'Chinese (Simplified)',
+            'chi_tra': 'Chinese (Traditional)', 'rus': 'Russian', 'ara': 'Arabic',
+            'hin': 'Hindi', 'nld': 'Dutch', 'pol': 'Polish',
+        };
+
+        for (const lang of langs) {
+            if (lang === 'osd') continue; // skip orientation/script detection
+            const displayName = LANG_NAMES[lang] || lang;
+            const isSelected = this._ocrSelectedLang === lang;
+
+            const btn = new St.Button({
+                style_class: 'big-shot-edit-tool-btn',
+                can_focus: true,
+                x_expand: true,
+                child: new St.Label({
+                    text: `${displayName} (${lang})`,
+                    style: 'color: #ffffff; font-size: 12px;',
+                    x_align: Clutter.ActorAlign.START,
+                    x_expand: true,
+                }),
+            });
+            if (isSelected)
+                btn.add_style_pseudo_class('checked');
+
+            const langId = lang;
+            btn.connect('clicked', () => {
+                this._ocrSelectedLang = langId;
+                this._ocrLangLabel.text = `${langId} ▾`;
+                this._closeOcrLangPopup();
+            });
+            listBox.add_child(btn);
+        }
+
+        scrollView.set_child(listBox);
+        this._ocrLangPopup.add_child(scrollView);
+
+        this._ui.add_child(this._ocrLangPopup);
+
+        this._ocrLangPopupPositionId = this._addIdle(() => {
+            this._ocrLangPopupPositionId = 0;
+            if (!this._actorIsOnStage(this._ocrLangPopup) ||
+                !this._actorIsOnStage(this._ocrLangButton))
+                return GLib.SOURCE_REMOVE;
+            const [bx, by] = this._ocrLangButton.get_transformed_position();
+            const monitor = global.display.get_current_monitor();
+            const geo = global.display.get_monitor_geometry(monitor);
+            let cpx = bx;
+            let cpy = by - this._ocrLangPopup.height - 8;
+            cpx = Math.max(geo.x, Math.min(cpx, geo.x + geo.width - this._ocrLangPopup.width));
+            cpy = Math.max(geo.y, cpy);
+            this._ocrLangPopup.set_position(cpx, cpy);
+            return GLib.SOURCE_REMOVE;
+        });
+
+        this._ocrLangPopupTimeoutId = this._addTimeout(100, () => {
+            this._ocrLangPopupTimeoutId = 0;
+            if (this._destroyed) return GLib.SOURCE_REMOVE;
+            this._ocrLangPopupClickId = global.stage.connect('button-press-event', () => {
+                this._closeOcrLangPopup();
+                return Clutter.EVENT_PROPAGATE;
+            });
+            return GLib.SOURCE_REMOVE;
+        });
+    }
+
+    _closeOcrLangPopup() {
+        this._removeSource(this._ocrLangPopupPositionId);
+        this._ocrLangPopupPositionId = 0;
+        if (this._ocrLangPopupTimeoutId) {
+            this._removeSource(this._ocrLangPopupTimeoutId);
+            this._ocrLangPopupTimeoutId = 0;
+        }
+        if (this._ocrLangPopupClickId) {
+            global.stage.disconnect(this._ocrLangPopupClickId);
+            this._ocrLangPopupClickId = null;
+        }
+        this._ocrLangPopup?.destroy();
+        this._ocrLangPopup = null;
+    }
+
+    /**
+     * Show a brief inline status message on the toolbar.
+     */
+    showInlineMessage(text) {
+        this._clearInlineMessage();
+        this._inlineMsg = new St.Label({
+            text,
+            style: 'color: #ffffff; font-size: 11px; background: rgba(0,0,0,0.7); padding: 4px 10px; border-radius: 8px;',
+        });
+        if (this._editContainer.get_parent()) {
+            this._addFloatingActor(this._inlineMsg);
+            this._inlineMsgPositionId = this._addIdle(() => {
+                this._inlineMsgPositionId = 0;
+                if (!this._actorIsOnStage(this._inlineMsg) ||
+                    !this._actorIsOnStage(this._editContainer))
+                    return GLib.SOURCE_REMOVE;
+                const [cx, cy] = this._editContainer.get_transformed_position();
+                const cw = this._editContainer.width;
+                const mw = this._inlineMsg.width;
+                this._inlineMsg.set_position(
+                    cx + (cw - mw) / 2,
+                    cy - this._inlineMsg.height - 6);
+                return GLib.SOURCE_REMOVE;
+            });
+        }
+        this._inlineMsgTimer = this._addTimeout(4000, () => {
+            this._inlineMsgTimer = 0;
+            this._clearInlineMessage();
+            return GLib.SOURCE_REMOVE;
+        });
+    }
+
+    _clearInlineMessage() {
+        this._removeSource(this._inlineMsgPositionId);
+        this._inlineMsgPositionId = 0;
+        if (this._inlineMsgTimer) {
+            this._removeSource(this._inlineMsgTimer);
+            this._inlineMsgTimer = 0;
+        }
+        if (this._inlineMsg) {
+            this._destroyFloatingActor(this._inlineMsg);
+            this._inlineMsg = null;
+        }
+    }
+
+    _showTooltip(button, text) {
+        this._hideTooltip();
+        let tooltip = this._tooltip;
+        if (!tooltip) {
+            tooltip = new St.Label({
+                text,
+                style_class: 'big-shot-tooltip',
+                style: 'background: rgba(0,0,0,0.85); color: #ffffff; padding: 4px 8px; border-radius: 4px; font-size: 11px;',
+            });
+            this._tooltip = tooltip;
+            this._addFloatingActor(tooltip);
+        } else {
+            tooltip.set_text(text);
+            if (this._recordingToolbarAttached && !tooltip._bigShotToolbarChrome) {
+                tooltip.get_parent()?.remove_child(tooltip);
+                this._addFloatingActor(tooltip);
+            } else if (!this._recordingToolbarAttached &&
+                tooltip._bigShotToolbarChrome) {
+                Main.layoutManager.removeChrome(tooltip);
+                tooltip._bigShotToolbarChrome = false;
+                this._ui.add_child(tooltip);
+            }
+            tooltip.show();
+        }
+        if (!this._recordingToolbarAttached)
+            this._ui.set_child_above_sibling(tooltip, null);
+
+        this._tooltipIdleId = this._addIdle(() => {
+            this._tooltipIdleId = 0;
+            if (this._tooltip !== tooltip ||
+                !this._actorIsOnStage(tooltip) ||
+                !this._actorIsOnStage(button))
+                return GLib.SOURCE_REMOVE;
+            const [bx, by] = button.get_transformed_position();
+            const bw = button.width;
+            const tw = tooltip.width;
+            const th = tooltip.height;
+            const x = bx + (bw - tw) / 2;
+            const y = by - th - 4;
+            if (Number.isFinite(x) && Number.isFinite(y))
+                tooltip.set_position(x, y);
+            return GLib.SOURCE_REMOVE;
+        });
+    }
+
+    _hideTooltip() {
+        if (this._tooltipIdleId) {
+            this._removeSource(this._tooltipIdleId);
+            this._tooltipIdleId = 0;
+        }
+        this._tooltip?.hide();
+    }
+
+    _destroyTooltip() {
+        this._hideTooltip();
+        if (!this._tooltip)
+            return;
+        this._destroyFloatingActor(this._tooltip);
+        this._tooltip = null;
+    }
+
+    _onUIVisibilityChanged() {
+        if (this._ui.visible) {
+            this._editButton.visible = true;
+            if (this._isCastMode) {
+                this._detachEditFromPanel();
+                this.selectTool(null);
+                if (this._editMode)
+                    this._attachVideoToPanel();
+            } else {
+                this._detachVideoFromPanel();
+            }
+        } else {
+            this._editButton.checked = false;
+            this._editMode = false;
+            this._detachEditFromPanel();
+            this._detachVideoFromPanel();
+            this.selectTool(null);
+        }
+    }
+
+    _onModeChanged(isCast) {
+        super._onModeChanged(isCast);
+        this._editButton.visible = this._ui.visible;
+        this._editButton.checked = false;
+        this._editMode = false;
+        this._detachEditFromPanel();
+        this._detachVideoFromPanel();
+        this.selectTool(null);
+    }
+
+    destroy() {
+        this._disconnectDragEventActor();
+        this.detachEditForRecording();
+        this._detachEditFromPanel();
+        this._detachVideoFromPanel();
+        this._closeColorPopup();
+        this._closeSizePopup();
+        this._closeFontPopup();
+        this._closeIntensityPopup();
+        this._closeOcrLangPopup();
+        this._destroyTooltip();
+        this._clearInlineMessage();
+
+        if (this._editButton) {
+            const p = this._editButton.get_parent();
+            if (p) p.remove_child(this._editButton);
+            this._editButton.destroy();
+            this._editButton = null;
+        }
+        if (this._editContainer) {
+            this._editContainer.destroy();
+            this._editContainer = null;
+        }
+        if (this._videoContainer) {
+            this._videoContainer.destroy();
+            this._videoContainer = null;
+        }
+
+        this._toolButtons.clear();
+        this._qualityButtons?.clear();
+        this._codecButtons?.clear();
+        this._toolChangedCallbacks = [];
+        super.destroy();
+    }
+}

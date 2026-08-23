@@ -10,7 +10,7 @@ hardware-accelerated encoding.
 
 <img src="usr/share/icons/hicolor/scalable/apps/big-shot.svg" width="128" alt="Big Shot icon">
 
-[![GNOME Shell](https://img.shields.io/badge/GNOME_Shell-46--50-4A86CF?logo=gnome&logoColor=white)](https://www.gnome.org/) [![GJS](https://img.shields.io/badge/GJS-ES2022-F7DF1E?logo=javascript&logoColor=black)](https://gjs.guide/) [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE) [![GStreamer](https://img.shields.io/badge/GStreamer-1.0-red)](https://gstreamer.freedesktop.org/) [![i18n](https://img.shields.io/badge/i18n-29_languages-green)](usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/po/)
+[![GNOME Shell](https://img.shields.io/badge/GNOME_Shell-46--50-4A86CF?logo=gnome&logoColor=white)](https://www.gnome.org/) [![GJS](https://img.shields.io/badge/GJS-ES2022-F7DF1E?logo=javascript&logoColor=black)](https://gjs.guide/) [![License](https://img.shields.io/badge/license-GPL--2.0--or--later-blue)](LICENSE) [![GStreamer](https://img.shields.io/badge/GStreamer-1.0-red)](https://gstreamer.freedesktop.org/) [![i18n](https://img.shields.io/badge/i18n-29_languages-green)](usr/share/gnome-shell/extensions/big-shot@communitybig.org/po/)
 
 </div>
 
@@ -79,8 +79,8 @@ editor window is required.
 
 OCR runs Tesseract on the composited screenshot and copies extracted text to
 the clipboard. Big Shot discovers installed language data, chooses a language
-from the current locale, and offers a language selector. On Arch-based systems,
-the first-use flow can install Tesseract and the matching language package.
+from the current locale, and offers a language selector. If Tesseract or its
+language data is missing, install it with the distribution's package manager.
 
 While selecting a screenshot area, hold `Shift` to show the 300 px circular
 magnifier. Scroll while it is visible to change magnification from 2× to 6×.
@@ -149,7 +149,8 @@ During recording, the top panel gains edit, clear, and pause/resume controls:
 4. Resume to close paused edit mode and start the next segment with the same
    video, audio, and webcam settings.
 5. On final stop, multiple segments are concatenated with `ffmpeg -c copy` and
-   temporary files under `~/Videos/BigShot/.segments/` are removed.
+   temporary files under `~/Videos/BigShot/.segments/` are removed. When
+   `ffmpeg` is unavailable, Big Shot keeps recording but omits pause/resume.
 
 Censor, Blur, and Invert capture the current stage for an accurate pixel-based
 preview in both live and paused modes. The recording toolbar and panel controls
@@ -226,6 +227,22 @@ The package builds gettext catalogs, installs the extension system-wide, runs
 focused checks, and enables the GNOME 49 workaround only when the system needs
 it.
 
+#### UUID migration
+
+Releases using `big-shot@bigcommunity.org` are a separate GNOME extension.
+After upgrading the system package, log out and back in, then enable
+`big-shot@communitybig.org`. If the legacy UUID was also installed per-user,
+remove that user copy first:
+
+```bash
+gnome-extensions disable big-shot@bigcommunity.org
+gnome-extensions uninstall big-shot@bigcommunity.org
+gnome-extensions enable big-shot@communitybig.org
+```
+
+The package removes legacy system files but never edits a user's GNOME
+extension settings as root.
+
 ### GNOME extension bundle
 
 Install `gnome-extensions` and `gettext`, then run:
@@ -233,13 +250,18 @@ Install `gnome-extensions` and `gettext`, then run:
 ```bash
 ./scripts/build-gnome-extension.sh
 gnome-extensions install --force \
-  dist/big-shot@bigcommunity.org.shell-extension.zip
-gnome-extensions enable big-shot@bigcommunity.org
+  dist/big-shot@communitybig.org.shell-extension.zip
+gnome-extensions enable big-shot@communitybig.org
 ```
 
 Log out and back in so GNOME Shell loads the extension. The build script stages
 the source in a temporary directory, compiles translations, and writes the
 upload-ready archive to `dist/` without modifying extension sources.
+
+The bundle declares the same GNOME Shell releases as the source metadata,
+46 through 50. Every Shell API whose shape changed inside that range is
+selected at runtime from `Config.PACKAGE_VERSION`; GNOME 50 is the release
+tested end to end. The distribution package keeps its own GNOME 49 workaround.
 
 ## Dependencies
 
@@ -285,10 +307,15 @@ scaling, overlay geometry, recording extension handling, pipeline integration
 contracts, window recording, and the guarded GNOME screencast patch. The
 PKGBUILD additionally syntax-checks every JavaScript file and the patch script.
 
+After changing user-visible text, regenerate the gettext template and merge
+all catalogs with `./scripts/update-translations.sh`. Use
+`./scripts/update-translations.sh --check` to detect stale catalogs without
+changing files.
+
 Main source layout:
 
 ```text
-usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/
+usr/share/gnome-shell/extensions/big-shot@communitybig.org/
 ├── extension.js           Extension lifecycle, screenshots, OCR, recording
 ├── drawing/               Annotation actions, colors, and drawing overlay
 ├── parts/                 Toolbar, audio, webcam, indicators, and UI modules
@@ -304,7 +331,7 @@ development VM.
 
 ## Translations
 
-Big Shot ships 29 complete, non-fuzzy gettext translations:
+Big Shot ships gettext catalogs for 29 languages:
 
 | | | | | |
 |:---:|:---:|:---:|:---:|:---:|
@@ -316,16 +343,20 @@ Big Shot ships 29 complete, non-fuzzy gettext translations:
 | Swedish | Turkish | Ukrainian | Chinese | |
 
 To add a language, copy
-`usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/po/big-shot.pot`
+`usr/share/gnome-shell/extensions/big-shot@communitybig.org/po/big-shot.pot`
 to a new `.po` file in the same directory, translate it, and rebuild the
 extension bundle.
 
 ## Acknowledgments
 
-Big Shot was inspired by
-[GNOME Shell Screencast Extra Feature](https://github.com/WSID/gnome-shell-screencast-extra-feature),
-whose screencast integration informed the original audio and pipeline work.
+Big Shot contains modified portions derived from
+[GNOME Shell Screencast Extra Feature](https://github.com/WSID/gnome-shell-screencast-extra-feature)
+by Wissle/WSID, licensed under GPL-2.0-or-later. Its screencast integration is
+the foundation of the original audio, adjustment, indicator, quick-stop, and
+pipeline work. See [NOTICE](NOTICE) for the distributed attribution.
 
 ## License
 
-[MIT](LICENSE) — Copyright © 2024 Community Big
+[GPL-2.0-or-later](LICENSE) — Copyright © 2024–2026 BigCommunity contributors.
+The historical MIT notice for independently authored portions is retained in
+[LICENSE.MIT](LICENSE.MIT).

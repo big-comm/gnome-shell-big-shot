@@ -1,0 +1,457 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: big-shot 1.0\n"
+"Report-Msgid-Bugs-To: https://github.com/BigCommunity/gnome-shell-big-shot/"
+"issues\n"
+"POT-Creation-Date: 2026-08-15 18:23-0300\n"
+"PO-Revision-Date: 2026-08-15 18:02-0300\n"
+"Last-Translator: Tales A. Mendonça <talesam@gmail.com>\n"
+"Language-Team: Turkish\n"
+"Language: tr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: attranslate\n"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/drawing/overlay.js:177
+msgid "Drawing canvas"
+msgstr "Çizim tuvali"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/drawing/overlay.js:832
+msgid "Text…"
+msgstr "Metin…"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/drawing/overlay.js:837
+msgid "Annotation text"
+msgstr "Açıklama metni"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/drawing/overlay.js:865
+msgid "Confirm"
+msgstr "Onayla"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/drawing/overlay.js:986
+msgid "Caption style — click to toggle highlight / neutral"
+msgstr "Başlık stili — vurgulu / nötr arasında geçiş yapmak için tıklayın"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/drawing/overlay.js:1002
+msgid "Caption (↑/↓ = size)…"
+msgstr "Başlık (↑/↓ = boyut)…"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/drawing/overlay.js:1003
+msgid "Zoom caption"
+msgstr "Başlığı yakınlaştır"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:378
+msgid "BigShot from %d %t"
+msgstr "BigShot %d %t"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1111
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1126
+msgid "Screenshot taken"
+msgstr "Ekran görüntüsü alındı"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1168
+msgid "Screenshots"
+msgstr "Ekran görüntüleri"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1178
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1816
+#, javascript-format
+msgid "Screenshot from %s"
+msgstr "%s ekran görüntüsü"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1227
+msgid "Screen Capture"
+msgstr "Ekran Yakalama"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1256
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1288
+msgid "Screenshot captured"
+msgstr "Ekran görüntüsü yakalandı"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1257
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1289
+msgid "You can paste the image from the clipboard"
+msgstr "Resmi panodan yapıştırabilirsiniz"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1264
+msgid "Show in Files"
+msgstr "Dosyalar’da Göster"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1574
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1588
+msgid ""
+"Automatic installation is unavailable. Install Tesseract and its language "
+"packs with your package manager."
+msgstr ""
+"Otomatik yükleme kullanılamıyor. Tesseract ve dil paketlerini paket "
+"yöneticisiyle yükleyin."
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1637
+msgid "Screenshot copied"
+msgstr "Ekran görüntüsü kopyalandı"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1669
+msgid "Extracting text..."
+msgstr "Metin çıkarılıyor..."
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1691
+#, javascript-format
+msgid "Text copied to clipboard! (%d chars)"
+msgstr "Metin panoya kopyalandı! (%d karakter)"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1694
+msgid "No text found in selection"
+msgstr "Seçimde metin bulunamadı"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1700
+#, javascript-format
+msgid "OCR failed: %s"
+msgstr "OCR başarısız oldu: %s"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1841
+msgid "Save Screenshot"
+msgstr "Ekran Görüntüsünü Kaydet"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1847
+msgid "PNG Images"
+msgstr ""
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:2609
+msgid "GNOME default"
+msgstr ""
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partaudio.js:96
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partaudio.js:158
+msgid "Desktop"
+msgstr "Masaüstü"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partaudio.js:108
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partaudio.js:166
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:581
+msgid "Mic"
+msgstr "Mikrofon"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partaudio.js:160
+msgid "Record Desktop Audio"
+msgstr "Masaüstü Sesini Kaydet"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partaudio.js:168
+msgid "Record Microphone"
+msgstr "Mikrofonu Kaydet"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partdownsize.js:18
+msgid "Recording resolution"
+msgstr "Kayıt çözünürlüğü"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partframerate.js:18
+msgid "Frames per second"
+msgstr "Kare/saniye"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partindicator.js:94
+msgid "Pause recording"
+msgstr ""
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partindicator.js:95
+msgid "Screen recording"
+msgstr ""
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:36
+msgid "Select / Move"
+msgstr "Seç / Taşı"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:37
+msgid "Pen"
+msgstr "Kalem"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:38
+msgid "Arrow"
+msgstr "Okçular"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:39
+msgid "Line"
+msgstr "Satır"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:40
+msgid "Rectangle"
+msgstr "Dikdörtgen"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:41
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:620
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partwebcam.js:45
+msgid "Oval"
+msgstr "Oval"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:42
+msgid "Text"
+msgstr "Metin"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:43
+msgid "Highlighter"
+msgstr "Vurgulayıcı"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:44
+msgid "Censor"
+msgstr "Sansürle"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:45
+msgid "Blur"
+msgstr "Bulanıklaştırma"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:46
+msgid "Invert Colors"
+msgstr "Renkleri ters çevir"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:47
+msgid "Magnify / Zoom"
+msgstr "Büyüt / Yakınlaştır"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:48
+msgid "Number"
+msgstr "Numara"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:49
+msgid "Number with Arrow"
+msgstr "Ok ile Sayı"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:50
+msgid "Number with Pointer"
+msgstr "Pointer ile Sayı"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:51
+msgid "Eraser"
+msgstr "Silgi"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:57
+#, javascript-format
+msgid "Software %s"
+msgstr ""
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:60
+#, javascript-format
+msgid "%s Low-Power"
+msgstr ""
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:128
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:136
+msgid "Show screenshot panel"
+msgstr "Ekran görüntüsü panelini göster"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:136
+msgid "Hide screenshot panel"
+msgstr "Ekran görüntüsü panelini gizle"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:213
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:216
+msgid "Color"
+msgstr "Renk"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:228
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:231
+msgid "Fill"
+msgstr "Doldur"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:241
+msgid "Decrease Size"
+msgstr "Boyut Azalt"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:258
+msgid "Brush Size"
+msgstr "Fırça Boyutu"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:282
+msgid "Increase Size"
+msgstr "Boyutu Artır"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:301
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:305
+msgid "Font"
+msgstr "Yazı Tipi"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:328
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:348
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1434
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1454
+msgid "Intensity"
+msgstr "Yoğunluk"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:360
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:363
+msgid "Undo"
+msgstr "Geri Al"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:372
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:375
+msgid "Redo"
+msgstr "Yinele"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:388
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:391
+msgid "Copy to Clipboard"
+msgstr "Panoza Kopyala"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:400
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:403
+msgid "Save As…"
+msgstr "Farklı Kaydet…"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:412
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:415
+msgid "Extract Text (OCR)"
+msgstr "Metni Çıkar (OCR)"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:428
+msgid "OCR Language"
+msgstr "OCR Dili"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:431
+msgid "Select OCR Language"
+msgstr "OCR Dilini Seçin"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:455
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:461
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1059
+msgid "Close"
+msgstr "Kapat"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:461
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1059
+msgid "Done"
+msgstr "Tamam"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:494
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:693
+msgid "Video Settings"
+msgstr "Video Ayarları"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:538
+msgid "Quality"
+msgstr "Kalite"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:544
+msgid "High"
+msgstr "Yüksek"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:545
+msgid "Medium"
+msgstr "Orta"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:546
+msgid "Low"
+msgstr "Düşük"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:558
+msgid "Recording quality (bitrate)"
+msgstr "Kayıt kalitesi (bit hızı)"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:568
+msgid "Codec"
+msgstr "Kodek"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:595
+msgid "Camera"
+msgstr "Kamera"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:609
+msgid "Mask"
+msgstr "Maske"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:618
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partwebcam.js:43
+msgid "None"
+msgstr ""
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:619
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partwebcam.js:44
+msgid "Circle"
+msgstr ""
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:621
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partwebcam.js:46
+msgid "Soft"
+msgstr ""
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:622
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partwebcam.js:47
+msgid "Spot"
+msgstr ""
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:623
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partwebcam.js:48
+msgid "Ornate"
+msgstr ""
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:624
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partwebcam.js:49
+msgid "Checker"
+msgstr ""
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:625
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partwebcam.js:50
+msgid "Neon"
+msgstr ""
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:647
+msgid "Size"
+msgstr "Boyut"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:687
+msgid "Edit"
+msgstr "Düzenle"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:693
+msgid "Edit Screenshot"
+msgstr "Ekran Görüntüsünü Düzenle"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1282
+msgid "Custom"
+msgstr "Özel"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1544
+msgid "No Fill"
+msgstr "Doldurma Yok"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1684
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1746
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1821
+msgid "Auto"
+msgstr "Otomatik"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1825
+msgid "Use best available codec"
+msgstr "En iyi mevcut kodeği kullanın"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1841
+msgid "Video codec"
+msgstr "Video kodek"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1910
+msgid "OCR Languages"
+msgstr "OCR Dilleri"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1922
+msgid "Auto (system)"
+msgstr "Otomatik (sistem)"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partvideoannotation.js:322
+msgid "Edit live"
+msgstr "Canlı düzenle"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partvideoannotation.js:327
+msgid "Clear annotations"
+msgstr "Anotasyonları temizle"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partwebcam.js:96
+msgid "Webcam"
+msgstr "Webcam"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partwebcam.js:121
+msgid "Webcam Overlay"
+msgstr "Webcam Üstü"
+
+#. TRANSLATORS: %d is the numeric camera device index.
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partwebcam.js:189
+#, javascript-format
+msgid "Camera %d"
+msgstr ""

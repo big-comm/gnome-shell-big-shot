@@ -1,0 +1,132 @@
+/* Big Shot — Extension Stylesheet
+ *
+ * Uses GNOME Shell CSS conventions for native look.
+ *
+ * SPDX-License-Identifier: GPL-2.0-or-later
+ */
+
+/* Ensure all type buttons have consistent minimum width */
+.screenshot-ui-type-button {
+    min-width: 50px;
+}
+/* ===== Edit Container (single row inside native panel) ===== */
+.big-shot-edit-container {
+    spacing: 4px;
+}
+
+/* Popups that still float (color picker, size picker, etc.) */
+.big-shot-edit-popup {
+    background-color: rgba(30, 30, 30, 0.92);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    padding: 10px 14px;
+    spacing: 4px;
+    color: #ffffff;
+}
+
+.big-shot-edit-row {
+    spacing: 4px;
+}
+
+/* Floating draggable toolbar */
+.big-shot-edit-floating {
+    background-color: rgba(30, 30, 30, 0.85);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 6px 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+.big-shot-edit-tool-btn {
+    border-radius: 8px;
+    border: 1px solid transparent;
+    padding: 2px;
+    min-width: 22px;
+    min-height: 22px;
+    color: #ffffff;
+}
+
+.big-shot-edit-tool-btn StIcon {
+    color: #ffffff;
+    -st-icon-style: symbolic;
+}
+
+.big-shot-edit-tool-btn:hover {
+    background-color: rgba(255, 255, 255, 0.12);
+}
+
+.big-shot-edit-tool-btn:checked {
+    background-color: rgba(255, 255, 255, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.big-shot-edit-tool-btn:focus {
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+.big-shot-edit-sep {
+    width: 1px;
+    background-color: rgba(255, 255, 255, 0.12);
+    margin: 2px 4px;
+}
+
+/* ===== Audio Toggle Buttons ===== */
+.big-shot-audio-button {
+    border-radius: 10px;
+    padding: 4px 10px;
+    spacing: 6px;
+}
+
+.big-shot-audio-button:checked {
+    background-color: rgba(53, 132, 228, 0.4);
+}
+
+/* ===== Panel Indicator ===== */
+.big-shot-indicator {
+    spacing: 6px;
+}
+
+.big-shot-indicator-timer {
+    font-weight: bold;
+    font-variant-numeric: tabular-nums;
+}
+
+/* ===== Hidden native panel when editing ===== */
+.big-shot-panel-hidden {
+    opacity: 0;
+    height: 0;
+    margin: 0;
+    padding: 0;
+    /* transition: opacity 200ms ease-out; */
+}
+
+/* ===== Recording pause indicator ===== */
+.big-shot-paused-icon {
+    color: #f9c440;
+}
+
+.big-shot-paused-timer {
+    color: #f9c440;
+}
+/* ===== Webcam overlay ===== */
+.big-shot-webcam-container {
+    background-color: rgba(0, 0, 0, 0.3);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+/* ===== Magnifier / Zoom Lens ===== */
+.big-shot-magnifier-lens {
+    /* Visual is drawn via Cairo mask; the class is a hook for theme overrides. */
+}
+
+.big-shot-magnifier-crosshair {
+    background-color: rgba(255, 50, 50, 0.7);
+}
+
+.big-shot-magnifier-zoom-label {
+    background-color: rgba(0, 0, 0, 0.7);
+    color: #ffffff;
+    font-size: 11px;
+    padding: 2px 6px;
+    border-radius: 4px;
+}

@@ -1,6 +1,8 @@
 # Build artifacts
 big-shot.zip
 *.zip
+*.pkg.tar*
+/dist/
 /locale/
 /usr/share/locale/
 

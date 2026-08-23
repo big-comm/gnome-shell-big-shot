@@ -9,7 +9,7 @@
 #   curl -fsSL https://raw.githubusercontent.com/xathay/gnome-shell-big-shot/main/scripts/vm-setup.sh | bash
 #   # or clone the repo first and run: bash scripts/vm-setup.sh
 #
-# SPDX-License-Identifier: MIT
+# SPDX-License-Identifier: GPL-2.0-or-later
 
 set -euo pipefail
 
@@ -48,8 +48,8 @@ fi
 # --- 3. Install extension ---
 echo "[3/4] Installing Big Shot extension..."
 
-EXT_SRC="$PROJ_DIR/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org"
-EXT_DST="/usr/share/gnome-shell/extensions/big-shot@bigcommunity.org"
+EXT_SRC="$PROJ_DIR/usr/share/gnome-shell/extensions/big-shot@communitybig.org"
+EXT_DST="/usr/share/gnome-shell/extensions/big-shot@communitybig.org"
 
 if [[ -d "$EXT_SRC" ]]; then
     sudo cp -r "$EXT_SRC" "$(dirname "$EXT_DST")/"
@@ -59,7 +59,7 @@ else
 fi
 
 # Enable the extension
-gnome-extensions enable big-shot@bigcommunity.org 2>/dev/null || true
+gnome-extensions enable big-shot@communitybig.org 2>/dev/null || true
 
 # --- 4. Summary ---
 echo "[4/4] Setup complete!"
@@ -71,5 +71,5 @@ echo "  3. Click the pencil icon to test the edit panel"
 echo ""
 echo "To update the extension after code changes:"
 echo "  cd $PROJ_DIR && git pull"
-echo "  sudo cp -r usr/share/gnome-shell/extensions/big-shot@bigcommunity.org/* $EXT_DST/"
+echo "  sudo cp -r usr/share/gnome-shell/extensions/big-shot@communitybig.org/* $EXT_DST/"
 echo "  # Then log out / log in"
