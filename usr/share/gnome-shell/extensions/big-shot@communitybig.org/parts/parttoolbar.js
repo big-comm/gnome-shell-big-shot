@@ -78,7 +78,8 @@ export class PartToolbar extends PartUI {
         this._currentFont = 'Sans';
 
         // Video settings state
-        this._videoQuality = 'high';   // 'high', 'medium', 'low'
+        // Default quality; see QUALITY_PRESETS in extension.js for the scale.
+        this._videoQuality = 'medium';
         this._selectedPipelineId = null; // null = auto cascade
 
         this._buildToolbar();
@@ -544,10 +545,15 @@ export class PartToolbar extends PartUI {
             y_align: Clutter.ActorAlign.CENTER,
         }));
         this._qualityButtons = new Map();
+        // Ordered best to smallest, matching the big-video-converter scale.
+        // Medium is the default and carries the values previously named High.
         const qualityOptions = [
+            { id: 'veryhigh', label: _('Very High') },
             { id: 'high', label: _('High') },
             { id: 'medium', label: _('Medium') },
             { id: 'low', label: _('Low') },
+            { id: 'verylow', label: _('Very Low') },
+            { id: 'superlow', label: _('Super Low') },
         ];
         for (const q of qualityOptions) {
             const btn = new St.Button({

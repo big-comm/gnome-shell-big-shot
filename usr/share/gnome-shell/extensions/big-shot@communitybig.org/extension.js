@@ -125,29 +125,45 @@ const GpuVendor = Object.freeze({
 // =============================================================================
 
 /**
- * Quality presets aligned with big-video-converter.
- * QP/CRF/CQ values follow the same scale: lower = higher quality, larger files.
+ * Quality presets, named after the big-video-converter scale.
+ * QP/CQ values follow the same convention: lower = better image, bigger file.
  *
- * big-video-converter mapping:
- *   high   → H.264 QP 21 / HEVC QP 25 / VP9 CQ 24
- *   medium → H.264 QP 24 / HEVC QP 28 / VP9 CQ 28
- *   low    → H.264 QP 27 / HEVC QP 31 / VP9 CQ 31
+ * `medium` is the default and carries the values that used to be called
+ * `high`, so recordings keep the quality users already had while the scale
+ * gains headroom in both directions.
  */
+const DEFAULT_QUALITY = 'medium';
+
 const QUALITY_PRESETS = Object.freeze({
+    veryhigh: {
+        qp: 15, qp_i: 15, qp_p: 17, qp_b: 19,
+        hevc_qp: 19, hevc_qp_i: 19, hevc_qp_p: 21, hevc_qp_b: 23,
+        openh264_br: 12000000, vp9_cq: 18, vp9_minq: 6, vp9_maxq: 40,
+    },
     high: {
+        qp: 18, qp_i: 18, qp_p: 20, qp_b: 22,
+        hevc_qp: 22, hevc_qp_i: 22, hevc_qp_p: 24, hevc_qp_b: 26,
+        openh264_br: 9000000, vp9_cq: 21, vp9_minq: 8, vp9_maxq: 45,
+    },
+    medium: {
         qp: 21, qp_i: 21, qp_p: 23, qp_b: 25,
         hevc_qp: 25, hevc_qp_i: 25, hevc_qp_p: 27, hevc_qp_b: 29,
         openh264_br: 6000000, vp9_cq: 24, vp9_minq: 10, vp9_maxq: 50,
     },
-    medium: {
-        qp: 24, qp_i: 24, qp_p: 26, qp_b: 28,
-        hevc_qp: 28, hevc_qp_i: 28, hevc_qp_p: 30, hevc_qp_b: 32,
+    low: {
+        qp: 25, qp_i: 25, qp_p: 27, qp_b: 29,
+        hevc_qp: 29, hevc_qp_i: 29, hevc_qp_p: 31, hevc_qp_b: 33,
         openh264_br: 3500000, vp9_cq: 28, vp9_minq: 15, vp9_maxq: 55,
     },
-    low: {
-        qp: 27, qp_i: 27, qp_p: 29, qp_b: 31,
-        hevc_qp: 31, hevc_qp_i: 31, hevc_qp_p: 33, hevc_qp_b: 35,
+    verylow: {
+        qp: 29, qp_i: 29, qp_p: 31, qp_b: 33,
+        hevc_qp: 33, hevc_qp_i: 33, hevc_qp_p: 35, hevc_qp_b: 37,
         openh264_br: 2000000, vp9_cq: 31, vp9_minq: 20, vp9_maxq: 58,
+    },
+    superlow: {
+        qp: 33, qp_i: 33, qp_p: 35, qp_b: 37,
+        hevc_qp: 37, hevc_qp_i: 37, hevc_qp_p: 39, hevc_qp_b: 41,
+        openh264_br: 1000000, vp9_cq: 35, vp9_minq: 25, vp9_maxq: 62,
     },
 });
 
@@ -2572,7 +2588,7 @@ export default class BigShotExtension extends Extension {
 
         const framerate = this._framerate?.value ?? 30;
         const downsize = this._downsize?.value ?? 1.0;
-        const quality = this._toolbar?.videoQuality ?? 'high';
+        const quality = this._toolbar?.videoQuality ?? DEFAULT_QUALITY;
         const framerateCaps = `${framerate}/1`;
 
         // Set framerate in D-Bus options
@@ -3343,12 +3359,12 @@ export default class BigShotExtension extends Extension {
     }
 
     _makePipelineString(
-        config, framerateCaps, downsize, quality = 'high', captureSize = null,
+        config, framerateCaps, downsize, quality = DEFAULT_QUALITY, captureSize = null,
     ) {
         let video = config.src.replace('FRAMERATE_CAPS', framerateCaps);
 
         // Resolve quality preset and build encoder string
-        const preset = QUALITY_PRESETS[quality] ?? QUALITY_PRESETS.high;
+        const preset = QUALITY_PRESETS[quality] ?? QUALITY_PRESETS[DEFAULT_QUALITY];
         video += ` ! ${config.enc(preset)}`;
 
         // Downsize — insert videoscale between videoconvert and encoder

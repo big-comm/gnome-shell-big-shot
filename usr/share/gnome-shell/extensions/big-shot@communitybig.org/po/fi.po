@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: big-shot 1.0\n"
 "Report-Msgid-Bugs-To: https://github.com/BigCommunity/gnome-shell-big-shot/"
 "issues\n"
-"POT-Creation-Date: 2026-08-15 18:23-0300\n"
+"POT-Creation-Date: 2026-08-30 23:25-0300\n"
 "PO-Revision-Date: 2026-08-15 18:02-0300\n"
 "Last-Translator: Tales A. Mendonça <talesam@gmail.com>\n"
 "Language-Team: Finnish\n"
@@ -42,45 +42,45 @@ msgstr "Kuvateksti (↑/↓ = koko)…"
 msgid "Zoom caption"
 msgstr "Kuvatekstin zoomaus"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:378
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:396
 msgid "BigShot from %d %t"
 msgstr "BigShot päivältä %d %t"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1111
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1126
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1136
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1151
 msgid "Screenshot taken"
 msgstr "Kuvakaappaus otettu"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1168
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1193
 msgid "Screenshots"
 msgstr "Kuvakaappaukset"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1178
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1816
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1203
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1862
 #, javascript-format
 msgid "Screenshot from %s"
 msgstr "Kuvakaappaus kohteesta %s"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1227
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1252
 msgid "Screen Capture"
 msgstr "Näytön kaappaus"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1256
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1288
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1302
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1334
 msgid "Screenshot captured"
 msgstr "Kuvakaappaus otettu"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1257
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1289
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1303
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1335
 msgid "You can paste the image from the clipboard"
 msgstr "Voit liittää kuvan leikepöydältä"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1264
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1310
 msgid "Show in Files"
 msgstr "Näytä tiedostohallinnassa"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1574
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1588
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1620
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1634
 msgid ""
 "Automatic installation is unavailable. Install Tesseract and its language "
 "packs with your package manager."
@@ -88,56 +88,56 @@ msgstr ""
 "Automaattinen asennus ei ole käytettävissä. Asenna Tesseract ja sen "
 "kielipaketit pakettienhallintasi avulla."
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1637
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1683
 msgid "Screenshot copied"
 msgstr "Kuvakaappaus kopioitu"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1669
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1715
 msgid "Extracting text..."
 msgstr "Tekstiä poimitaan..."
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1691
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1737
 #, javascript-format
 msgid "Text copied to clipboard! (%d chars)"
 msgstr "Teksti kopioitiin leikepöydälle! (%d merkkiä)"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1694
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1740
 msgid "No text found in selection"
 msgstr "Valinnasta ei löytynyt tekstiä"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1700
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1746
 #, javascript-format
 msgid "OCR failed: %s"
 msgstr "OCR epäonnistui: %s"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1841
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1887
 msgid "Save Screenshot"
 msgstr "Tallenna kuvakaappaus"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1847
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1893
 msgid "PNG Images"
 msgstr ""
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:2609
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:2721
 msgid "GNOME default"
 msgstr ""
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partaudio.js:96
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partaudio.js:158
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partaudio.js:98
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partaudio.js:160
 msgid "Desktop"
 msgstr "Työpöytä"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partaudio.js:108
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partaudio.js:166
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:581
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partaudio.js:110
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partaudio.js:168
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:591
 msgid "Mic"
 msgstr "Mikrofoni"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partaudio.js:160
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partaudio.js:162
 msgid "Record Desktop Audio"
 msgstr "Tallenna työpöydän ääni"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partaudio.js:168
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partaudio.js:170
 msgid "Record Microphone"
 msgstr "Tallenna mikrofoni"
 
@@ -157,280 +157,292 @@ msgstr ""
 msgid "Screen recording"
 msgstr ""
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:36
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:40
 msgid "Select / Move"
 msgstr "Valitse / Siirrä"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:37
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:41
 msgid "Pen"
 msgstr "Kynä"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:38
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:42
 msgid "Arrow"
 msgstr "Nuoli"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:39
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:43
 msgid "Line"
 msgstr "Rivi"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:40
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:44
 msgid "Rectangle"
 msgstr "Suorakulmio"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:41
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:620
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:45
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:630
 #: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partwebcam.js:45
 msgid "Oval"
 msgstr "Oval"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:42
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:46
 msgid "Text"
 msgstr "Teksti"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:43
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:47
 msgid "Highlighter"
 msgstr "Korostin"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:44
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:48
 msgid "Censor"
 msgstr "Sensuuri"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:45
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:49
 msgid "Blur"
 msgstr "Sume"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:46
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:50
 msgid "Invert Colors"
 msgstr "Käänteiset värit"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:47
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:51
 msgid "Magnify / Zoom"
 msgstr "Suurennus / Zoomaus"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:48
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:52
 msgid "Number"
 msgstr "Numero"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:49
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:53
 msgid "Number with Arrow"
 msgstr "Numero nuolella"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:50
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:54
 msgid "Number with Pointer"
 msgstr "Numero osoittimella"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:51
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:55
 msgid "Eraser"
 msgstr "Pyyhekumi"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:57
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:61
 #, javascript-format
 msgid "Software %s"
 msgstr ""
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:60
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:64
 #, javascript-format
 msgid "%s Low-Power"
 msgstr ""
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:128
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:136
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:133
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:141
 msgid "Show screenshot panel"
 msgstr "Näytä kuvakaappauspaneeli"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:136
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:141
 msgid "Hide screenshot panel"
 msgstr "Piilota kuvakaappauspaneeli"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:213
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:216
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:218
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:221
 msgid "Color"
 msgstr "Väri"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:228
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:231
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:233
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:236
 msgid "Fill"
 msgstr "Täytä"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:241
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:246
 msgid "Decrease Size"
 msgstr "Vähennä kokoa"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:258
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:263
 msgid "Brush Size"
 msgstr "Harjan koko"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:282
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:287
 msgid "Increase Size"
 msgstr "Lisää kokoa"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:301
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:305
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:306
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:310
 msgid "Font"
 msgstr "Fontti"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:328
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:348
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1434
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1454
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:333
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:353
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1448
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1468
 msgid "Intensity"
 msgstr "Intensiteetti"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:360
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:363
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:365
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:368
 msgid "Undo"
 msgstr "Kumoa"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:372
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:375
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:377
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:380
 msgid "Redo"
 msgstr "Tee uudelleen"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:388
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:391
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:393
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:396
 msgid "Copy to Clipboard"
 msgstr "Kopioi leikepöydälle"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:400
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:403
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:405
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:408
 msgid "Save As…"
 msgstr "Tallenna nimellä…"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:412
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:415
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:417
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:420
 msgid "Extract Text (OCR)"
 msgstr "Lue teksti (OCR)"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:428
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:433
 msgid "OCR Language"
 msgstr "OCR-kieli"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:431
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:436
 msgid "Select OCR Language"
 msgstr "Valitse OCR-kieli"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:455
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:461
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1059
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:460
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:466
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1069
 msgid "Close"
 msgstr "Sulje"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:461
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1059
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:466
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1069
 msgid "Done"
 msgstr "Valmis"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:494
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:693
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:499
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:703
 msgid "Video Settings"
 msgstr "Videon asetukset"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:538
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:543
 msgid "Quality"
 msgstr "Laatu"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:544
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:551
+msgid "Very High"
+msgstr ""
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:552
 msgid "High"
 msgstr "Korkea"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:545
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:553
 msgid "Medium"
 msgstr "Keskitaso"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:546
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:554
 msgid "Low"
 msgstr "Alhainen"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:558
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:555
+msgid "Very Low"
+msgstr ""
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:556
+msgid "Super Low"
+msgstr ""
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:568
 msgid "Recording quality (bitrate)"
 msgstr "Tallennuksen laatu (bitrate)"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:568
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:578
 msgid "Codec"
 msgstr "Koodekki"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:595
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:605
 msgid "Camera"
 msgstr "Kamera"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:609
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:619
 msgid "Mask"
 msgstr "Maski"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:618
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:628
 #: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partwebcam.js:43
 msgid "None"
 msgstr ""
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:619
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:629
 #: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partwebcam.js:44
 msgid "Circle"
 msgstr ""
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:621
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:631
 #: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partwebcam.js:46
 msgid "Soft"
 msgstr ""
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:622
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:632
 #: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partwebcam.js:47
 msgid "Spot"
 msgstr ""
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:623
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:633
 #: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partwebcam.js:48
 msgid "Ornate"
 msgstr ""
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:624
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:634
 #: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partwebcam.js:49
 msgid "Checker"
 msgstr ""
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:625
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:635
 #: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partwebcam.js:50
 msgid "Neon"
 msgstr ""
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:647
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:657
 msgid "Size"
 msgstr "Koko"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:687
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:697
 msgid "Edit"
 msgstr "Muokkaa"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:693
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:703
 msgid "Edit Screenshot"
 msgstr "Muokkaa näyttökuvaa"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1282
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1296
 msgid "Custom"
 msgstr "Mukautettu"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1544
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1558
 msgid "No Fill"
 msgstr "Ei täyttöä"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1684
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1746
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1821
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1698
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1760
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1835
 msgid "Auto"
 msgstr "Automaattinen"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1825
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1839
 msgid "Use best available codec"
 msgstr "Käytä parasta saatavilla olevaa koodekkia"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1841
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1855
 msgid "Video codec"
 msgstr "Videokoodekki"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1910
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1924
 msgid "OCR Languages"
 msgstr "OCR-kielet"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1922
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1936
 msgid "Auto (system)"
 msgstr "Automaattinen (järjestelmä)"
 
