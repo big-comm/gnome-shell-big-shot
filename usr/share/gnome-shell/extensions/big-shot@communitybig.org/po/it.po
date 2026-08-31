@@ -331,7 +331,7 @@ msgstr "Qualità"
 
 #: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:551
 msgid "Very High"
-msgstr ""
+msgstr "Molto alta"
 
 #: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:552
 msgid "High"
@@ -347,11 +347,11 @@ msgstr "Basso"
 
 #: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:555
 msgid "Very Low"
-msgstr ""
+msgstr "Molto bassa"
 
 #: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:556
 msgid "Super Low"
-msgstr ""
+msgstr "Bassissima"
 
 #: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:568
 msgid "Recording quality (bitrate)"
