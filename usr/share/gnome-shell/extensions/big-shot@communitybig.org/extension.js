@@ -761,8 +761,15 @@ export default class BigShotExtension extends Extension {
         registry.add(task);
 
         try {
-            const [, stdout, stderr] = await task.proc.communicate_utf8_async(
-                null, null);
+            // GJS resolves the promisified call to [stdout, stderr]; the
+            // gboolean return value is dropped because failures reject the
+            // promise instead. Older bindings prepended that boolean, so pick
+            // the strings by shape rather than by a fixed position — reading
+            // the wrong slot silently yields empty output, not an error.
+            const reply = await task.proc.communicate_utf8_async(null, null);
+            const [stdout, stderr] = typeof reply[0] === 'boolean'
+                ? [reply[1], reply[2]]
+                : [reply[0], reply[1]];
             return {
                 cancelled: task.cancelled,
                 successful: !task.cancelled && task.proc.get_successful(),
@@ -1928,14 +1935,59 @@ export default class BigShotExtension extends Extension {
         }
     }
 
-    async _detectGpuVendors() {
+    /**
+     * PCI vendor IDs as exposed by every DRM device under sysfs.
+     * Reading these needs no external tool, so it works where `lspci` is
+     * missing, renamed, or shipped without the PCI ID database.
+     */
+    _detectGpuVendorsFromSysfs() {
+        const vendors = new Set();
+        const byId = {
+            '0x10de': GpuVendor.NVIDIA,
+            '0x1002': GpuVendor.AMD,
+            '0x1022': GpuVendor.AMD,
+            '0x8086': GpuVendor.INTEL,
+        };
+
+        let enumerator = null;
+        try {
+            enumerator = Gio.File.new_for_path('/sys/class/drm')
+                .enumerate_children('standard::name',
+                    Gio.FileQueryInfoFlags.NONE, null);
+            let info = null;
+            while ((info = enumerator.next_file(null)) !== null) {
+                const name = info.get_name();
+                // Cards only; skip the connector entries (card0-HDMI-A-1, …).
+                if (!/^card\d+$/.test(name))
+                    continue;
+                try {
+                    const [ok, bytes] = Gio.File
+                        .new_for_path(`/sys/class/drm/${name}/device/vendor`)
+                        .load_contents(null);
+                    if (!ok)
+                        continue;
+                    const id = new TextDecoder().decode(bytes).trim().toLowerCase();
+                    if (byId[id])
+                        vendors.add(byId[id]);
+                } catch (_e) { /* device without a vendor file */ }
+            }
+        } catch (_e) {
+            // No sysfs DRM tree; the lspci path below still applies.
+        } finally {
+            try { enumerator?.close(null); } catch (_e) { /* */ }
+        }
+
+        return [...vendors];
+    }
+
+    async _detectGpuVendorsFromLspci() {
         try {
             const result = await this._runSubprocess(
                 ['lspci'],
                 Gio.SubprocessFlags.STDOUT_PIPE | Gio.SubprocessFlags.STDERR_SILENCE,
             );
             if (result.cancelled || !result.stdout)
-                return [GpuVendor.UNKNOWN];
+                return [];
 
             const vendors = [];
             const lines = result.stdout.toLowerCase();
@@ -1945,10 +1997,32 @@ export default class BigShotExtension extends Extension {
                 vendors.push(GpuVendor.AMD);
             if (/(?:vga|display controller).*intel/.test(lines))
                 vendors.push(GpuVendor.INTEL);
-            return vendors.length > 0 ? vendors : [GpuVendor.UNKNOWN];
+            return vendors;
         } catch {
-            return [GpuVendor.UNKNOWN];
+            return [];
         }
+    }
+
+    /**
+     * Identify GPU vendors so vendor-specific encoders can be offered.
+     *
+     * Detection is advisory, never a gate: when nothing identifies the GPU,
+     * return every vendor instead of UNKNOWN. A wrong guess costs nothing
+     * because each pipeline still has to pass the GStreamer element probe —
+     * whereas UNKNOWN silently hides every hardware encoder, leaving the user
+     * with software encoding on a machine that can do better.
+     */
+    async _detectGpuVendors() {
+        const fromSysfs = this._detectGpuVendorsFromSysfs();
+        if (fromSysfs.length > 0)
+            return fromSysfs;
+
+        const fromLspci = await this._detectGpuVendorsFromLspci();
+        if (fromLspci.length > 0)
+            return fromLspci;
+
+        console.warn('[Big Shot] GPU vendor undetected; probing every encoder');
+        return [GpuVendor.NVIDIA, GpuVendor.AMD, GpuVendor.INTEL];
     }
 
     async _checkGstreamerElement(name) {

@@ -404,3 +404,30 @@ test('widget properties stay available on every declared shell version', async (
     for (const source of sources)
         assert.doesNotMatch(source, /orientation:\s*Clutter\.Orientation/);
 });
+
+test('subprocess output is read by shape, and GPU detection never gates on one tool', async () => {
+    const source = await readFile(extensionPath, 'utf8');
+    const runStart = source.indexOf('    async _runSubprocess(');
+    const runEnd = source.indexOf('    _cancelSubprocesses(', runStart);
+    const runMethod = source.slice(runStart, runEnd);
+
+    assert.ok(runStart >= 0 && runEnd > runStart);
+    // GJS resolves the promisified call to [stdout, stderr]. Destructuring a
+    // leading boolean that is not there reads stderr as stdout and yields ""
+    // with no error, which silently disabled GPU detection and OCR.
+    assert.doesNotMatch(runMethod, /const \[, stdout, stderr\] = await/);
+    assert.match(runMethod, /typeof reply\[0\] === 'boolean'/);
+
+    const gpuStart = source.indexOf('    async _detectGpuVendors()');
+    const gpuEnd = source.indexOf('    async _checkGstreamerElement(', gpuStart);
+    const gpuMethod = source.slice(gpuStart, gpuEnd);
+
+    assert.ok(gpuStart >= 0 && gpuEnd > gpuStart);
+    // sysfs first, lspci second, and never UNKNOWN — UNKNOWN hides every
+    // hardware encoder, so an undetected GPU must probe them all instead.
+    assert.match(gpuMethod, /_detectGpuVendorsFromSysfs\(\)/);
+    assert.match(gpuMethod, /await this\._detectGpuVendorsFromLspci\(\)/);
+    assert.doesNotMatch(gpuMethod, /GpuVendor\.UNKNOWN/);
+    assert.match(gpuMethod,
+        /return \[GpuVendor\.NVIDIA, GpuVendor\.AMD, GpuVendor\.INTEL\]/);
+});
