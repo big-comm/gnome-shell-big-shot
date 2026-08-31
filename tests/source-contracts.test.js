@@ -431,3 +431,23 @@ test('subprocess output is read by shape, and GPU detection never gates on one t
     assert.match(gpuMethod,
         /return \[GpuVendor\.NVIDIA, GpuVendor\.AMD, GpuVendor\.INTEL\]/);
 });
+
+test('recordings are pinned to the requested constant frame rate', async () => {
+    const source = await readFile(extensionPath, 'utf8');
+    const makeStart = source.indexOf('    _makePipelineString(');
+    const makeEnd = source.indexOf('\n}', makeStart);
+    const makeMethod = source.slice(makeStart, makeEnd);
+
+    assert.ok(makeStart >= 0 && makeEnd > makeStart);
+    // The service only sets max-framerate, so PipeWire emits frames only on
+    // change. videorate fills the gaps to honour the selected FPS.
+    assert.match(makeMethod, /videorate skip-to-first=true/);
+    assert.match(makeMethod, /video\/x-raw,framerate=\$\{framerateCaps\}/);
+    // Scale before rate, so duplicated frames are not scaled twice.
+    assert.ok(makeMethod.indexOf('videoscale') < makeMethod.indexOf('videorate'));
+    // videorate must be probed like every other element it relies on.
+    assert.match(makeMethod, /this\._availableElements\?\.has\('videorate'\)/);
+    assert.match(source, /elementNames\.add\('videorate'\)/);
+    // The dead placeholder is gone; the stage is built explicitly.
+    assert.doesNotMatch(source, /FRAMERATE_CAPS/);
+});

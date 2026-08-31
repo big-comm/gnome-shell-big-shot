@@ -171,7 +171,8 @@ const QUALITY_PRESETS = Object.freeze({
  * Pipeline configs grouped by GPU vendor.
  * Each config has:
  *   label    — Human-readable name
- *   src      — Input capsfilter (FRAMERATE_CAPS replaced at runtime)
+ *   src      — Input conversion chain; scaling and frame-rate caps
+ *              are inserted before its queue at runtime
  *   enc      — Function(preset) returning encoder chain string
  *   elements — Required GStreamer elements to check
  *   ext      — Output container extension (mp4/webm)
@@ -2097,6 +2098,9 @@ export default class BigShotExtension extends Extension {
         const elementNames = new Set(candidates.flatMap(config => config.elements));
         elementNames.add('mp4mux');
         elementNames.add('webmmux');
+        // Used by every pipeline for constant-rate output, so probe it once
+        // here instead of listing it in each config.
+        elementNames.add('videorate');
         for (const choices of Object.values(AUDIO_PIPELINES)) {
             for (const choice of choices)
                 elementNames.add(choice.element);
@@ -3361,13 +3365,18 @@ export default class BigShotExtension extends Extension {
     _makePipelineString(
         config, framerateCaps, downsize, quality = DEFAULT_QUALITY, captureSize = null,
     ) {
-        let video = config.src.replace('FRAMERATE_CAPS', framerateCaps);
+        let video = config.src;
 
         // Resolve quality preset and build encoder string
         const preset = QUALITY_PRESETS[quality] ?? QUALITY_PRESETS[DEFAULT_QUALITY];
         video += ` ! ${config.enc(preset)}`;
 
-        // Downsize — insert videoscale between videoconvert and encoder
+        // Downsize and constant frame rate share one conversion stage, built
+        // in the order GStreamer expects: scale first, then rate, then the
+        // caps that pin both. Inserting them before the first queue keeps the
+        // encoder fed from a single negotiated format.
+        const stage = [];
+
         if (downsize < 1.0) {
             const sourceSize = captureSize ?? (() => {
                 const monitor = global.display.get_current_monitor();
@@ -3381,12 +3390,24 @@ export default class BigShotExtension extends Extension {
             );
             if (target) {
                 // Even output dimensions are required by common H.264/H.265 encoders.
-                video = video.replace(
-                    /queue/,
-                    `queue ! videoscale ! video/x-raw,width=${target.width},height=${target.height}`,
-                );
+                stage.push('videoscale',
+                    `video/x-raw,width=${target.width},height=${target.height}`);
             }
         }
+
+        // The screencast service only caps the rate (max-framerate=F/1) and
+        // PipeWire emits a frame just when the screen changes, so a quiet
+        // desktop produced a variable-rate file averaging a fraction of the
+        // requested FPS. videorate repeats the last frame to fill the gaps,
+        // making the recording honour the chosen rate the way players,
+        // editors and the segment concatenation all assume.
+        if (framerateCaps && this._availableElements?.has('videorate')) {
+            stage.push('videorate skip-to-first=true',
+                `video/x-raw,framerate=${framerateCaps}`);
+        }
+
+        if (stage.length > 0)
+            video = video.replace('queue', `${stage.join(' ! ')} ! queue`);
 
         const audioInput = this._audio?.makeAudioInput();
         const ext = config.ext;
