@@ -107,6 +107,11 @@ test('runtime logging contains no routine success output', async () => {
     const source = await readFile(extensionPath, 'utf8');
 
     assert.doesNotMatch(source, /console\.(?:log|debug|info)\(/);
+    // Shexli (EGO-A-004) caps ungated console calls at 5. Every failure path
+    // goes through warn()/fail(), so console appears only in those two.
+    assert.equal(source.match(/console\./g)?.length, 2);
+    assert.match(source, /function warn\(message\) \{\n    console\.warn\(`\[Big Shot\] \$\{message\}`\);/);
+    assert.match(source, /function fail\(message\) \{\n    console\.error\(`\[Big Shot\] \$\{message\}`\);/);
 });
 
 test('temporary images stay inside private directories', async () => {

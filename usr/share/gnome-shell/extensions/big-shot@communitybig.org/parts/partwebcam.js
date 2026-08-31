@@ -176,7 +176,7 @@ export class PartWebcam extends PartUI {
      *  Filters out duplicate V4L2 nodes (metadata/secondary) by keeping
      *  only the first device per unique name (typically the capture node).
      *  Returns [{device: '/dev/video0', name: 'USB Camera', index: 0}, ...] */
-    enumerateDevices() {
+    async enumerateDevices() {
         const seen = new Set();
         const cams = [];
         for (let i = 0; i < 10; i++) {
@@ -188,10 +188,23 @@ export class PartWebcam extends PartUI {
             // TRANSLATORS: %d is the numeric camera device index.
             let name = _('Camera %d').format(i);
             try {
-                const [ok, contents] = GLib.file_get_contents(nameFile);
-                if (ok)
-                    name = new TextDecoder().decode(contents).trim();
-            } catch { /* ignore */ }
+                // Async so probing ten device nodes never blocks the
+                // compositor. Wrapped by hand rather than promisifying
+                // Gio.File, which is shared with every other extension.
+                const contents = await new Promise((resolve, reject) => {
+                    Gio.File.new_for_path(nameFile).load_contents_async(
+                        null, (file, result) => {
+                            try {
+                                const [, bytes] =
+                                    file.load_contents_finish(result);
+                                resolve(bytes);
+                            } catch (e) {
+                                reject(e);
+                            }
+                        });
+                });
+                name = new TextDecoder().decode(contents).trim();
+            } catch { /* keep the numbered fallback name */ }
 
             // Skip duplicate names (secondary V4L2 nodes for same camera)
             if (seen.has(name))

@@ -112,6 +112,21 @@ function loadHeavyDeps() {
 // GPU DETECTION (following big-video-converter pattern)
 // =============================================================================
 
+/**
+ * The only two console entry points in this file.
+ *
+ * Every failure path routes through these so the log surface stays auditable
+ * and reviewers can see at a glance that nothing logs on success. The `[Big
+ * Shot]` prefix is applied here instead of at each call site.
+ */
+function warn(message) {
+    console.warn(`[Big Shot] ${message}`);
+}
+
+function fail(message) {
+    console.error(`[Big Shot] ${message}`);
+}
+
 /** GPU vendor enum */
 const GpuVendor = Object.freeze({
     NVIDIA: 'nvidia',
@@ -468,7 +483,7 @@ function findRecentFileInDirectory(dirPath, prefix, ext, startedAtUnix) {
             }
         }
     } catch (e) {
-        console.warn(`[Big Shot] Could not scan recording folder: ${e.message}`);
+        warn(`Could not scan recording folder: ${e.message}`);
     } finally {
         try { enumerator?.close(null); } catch (_e) { /* */ }
     }
@@ -497,7 +512,7 @@ function ensureRecordingFolder() {
     try {
         GLib.mkdir_with_parents(getRecordingFolder(), 0o755);
     } catch (e) {
-        console.warn(`[Big Shot] Could not create recording folder: ${e.message}`);
+        warn(`Could not create recording folder: ${e.message}`);
     }
 }
 
@@ -523,7 +538,7 @@ function fixFilePath(filePath, ext) {
             file.move(newFile, Gio.FileCopyFlags.OVERWRITE, null, null);
             return newPath;
         } catch (e) {
-            console.error(`[Big Shot] Failed to rename file: ${e.message}`);
+            fail(`Failed to rename file: ${e.message}`);
             return filePath;
         }
     }
@@ -538,7 +553,7 @@ function deletePathIfExists(path) {
         if (file.query_exists(null))
             file.delete(null);
     } catch (e) {
-        console.warn(`[Big Shot] Could not delete ${path}: ${e.message}`);
+        warn(`Could not delete ${path}: ${e.message}`);
     }
 }
 
@@ -581,12 +596,13 @@ export default class BigShotExtension extends Extension {
         this._renameFinalizeId = 0;
         this._origScreencastProxyTimeout = null;
         this._notificationSource = null;
+        this._notificationSourceDestroyId = 0;
         this._portalRequests = new Set();
         this._portalRequestSerial = 0;
 
         const screenshotUI = Main.screenshotUI;
         if (!screenshotUI) {
-            console.error('[Big Shot] ScreenshotUI not found');
+            fail('ScreenshotUI not found');
             return;
         }
 
@@ -640,7 +656,7 @@ export default class BigShotExtension extends Extension {
         try {
             await loadHeavyDeps();
         } catch (e) {
-            console.error(`[Big Shot] Failed to load deps: ${e.message}\n${e.stack}`);
+            fail(`Failed to load deps: ${e.message}\n${e.stack}`);
             return;
         }
 
@@ -672,7 +688,7 @@ export default class BigShotExtension extends Extension {
         // user starts recording immediately, that call awaits the same promise.
         this._detectPipelines().catch(e => {
             if (this._activeEnableSerial === enableSerial)
-                console.warn(`[Big Shot] Pipeline detection failed: ${e.message}`);
+                warn(`Pipeline detection failed: ${e.message}`);
         });
     }
 
@@ -685,7 +701,7 @@ export default class BigShotExtension extends Extension {
         try {
             fn();
         } catch (e) {
-            console.error(`[Big Shot] step "${label}" failed: ${e.message}\n${e.stack}`);
+            fail(`step "${label}" failed: ${e.message}\n${e.stack}`);
         }
     }
 
@@ -837,7 +853,7 @@ export default class BigShotExtension extends Extension {
         }
 
         try { dir.delete(null); } catch (e) {
-            console.warn(`[Big Shot] Could not remove temporary directory: ${e.message}`);
+            warn(`Could not remove temporary directory: ${e.message}`);
         }
     }
 
@@ -885,6 +901,13 @@ export default class BigShotExtension extends Extension {
         this._pendingRename = null;
         this._pipelineDetectionPromise = null;
 
+        if (this._notificationSourceDestroyId) {
+            try {
+                this._notificationSource?.disconnect(
+                    this._notificationSourceDestroyId);
+            } catch (_e) { /* source already gone */ }
+            this._notificationSourceDestroyId = 0;
+        }
         this._notificationSource?.destroy();
         this._notificationSource = null;
 
@@ -893,7 +916,7 @@ export default class BigShotExtension extends Extension {
             try {
                 part.destroy();
             } catch (e) {
-                console.error(`[Big Shot] Error destroying part: ${e.message}`);
+                fail(`Error destroying part: ${e.message}`);
             }
         }
         this._parts = [];
@@ -1085,7 +1108,7 @@ export default class BigShotExtension extends Extension {
                             } else {
                             }
                         } catch (err) {
-                            console.error(`[Big Shot] drawReal failed for ${action.constructor.name}: ${err.message}\n${err.stack}`);
+                            fail(`drawReal failed for ${action.constructor.name}: ${err.message}\n${err.stack}`);
                         }
                     }
                 }
@@ -1146,7 +1169,7 @@ export default class BigShotExtension extends Extension {
             } catch (e) {
                 if (ext._activeEnableSerial !== enableSerial)
                     return;
-                console.error(`[Big Shot] Annotation compositing failed: ${e.message}`);
+                fail(`Annotation compositing failed: ${e.message}`);
                 // Fallback: save without annotations
                 global.display.get_sound_player().play_from_theme(
                     'screen-capture', _('Screenshot taken'), null);
@@ -1253,7 +1276,10 @@ export default class BigShotExtension extends Extension {
             title: _('Screen Capture'),
             iconName: 'screenshooter-symbolic',
         });
-        source.connect('destroy', () => {
+        // Tracked so disable() can drop the handler before destroying the
+        // source; an unowned signal outliving enable() is a leak.
+        this._notificationSourceDestroyId = source.connect('destroy', () => {
+            this._notificationSourceDestroyId = 0;
             if (this._notificationSource === source)
                 this._notificationSource = null;
         });
@@ -1312,7 +1338,7 @@ export default class BigShotExtension extends Extension {
                     const app = Gio.app_info_get_default_for_type(
                         'inode/directory', false);
                     if (!app) {
-                        console.warn('[Big Shot] No file manager handles directories');
+                        warn('No file manager handles directories');
                         return;
                     }
                     app.launch([file], global.create_app_launch_context(0, -1));
@@ -1322,7 +1348,7 @@ export default class BigShotExtension extends Extension {
                         Gio.app_info_launch_default_for_uri(
                             file.get_uri(), global.create_app_launch_context(0, -1));
                     } catch (e) {
-                        console.error(`[Big Shot] Could not open screenshot: ${e.message}`);
+                        fail(`Could not open screenshot: ${e.message}`);
                     }
                     Main.overview.hide();
                     Main.panel.closeCalendar();
@@ -1330,7 +1356,7 @@ export default class BigShotExtension extends Extension {
             }
             source.addNotification(notification);
         } catch (e) {
-            console.warn(`[Big Shot] Screenshot notification failed: ${e.message}`);
+            warn(`Screenshot notification failed: ${e.message}`);
             this._showNotification(
                 _('Screenshot captured'),
                 _('You can paste the image from the clipboard'));
@@ -1433,7 +1459,7 @@ export default class BigShotExtension extends Extension {
                         const result = action.drawReal(workPixbuf, GdkPixbuf, GLib, toWidget, drawScale);
                         if (result) workPixbuf = result;
                     } catch (err) {
-                        console.error(`[Big Shot] drawReal failed: ${err.message}`);
+                        fail(`drawReal failed: ${err.message}`);
                     }
                 }
             }
@@ -1670,7 +1696,7 @@ export default class BigShotExtension extends Extension {
             if (this._activeEnableSerial !== enableSerial)
                 return;
             if (!result) {
-                console.error('[Big Shot] Failed to capture screenshot');
+                fail('Failed to capture screenshot');
                 return;
             }
 
@@ -1742,7 +1768,7 @@ export default class BigShotExtension extends Extension {
                     }
                 } catch (e) {
                     if (this._activeEnableSerial === enableSerial) {
-                        console.error(`[Big Shot] OCR failed: ${e.message}`);
+                        fail(`OCR failed: ${e.message}`);
                         this._showOcrMessage(
                             _('OCR failed: %s').format(e.message));
                     }
@@ -1755,7 +1781,7 @@ export default class BigShotExtension extends Extension {
             }
         } catch (e) {
             if (this._activeEnableSerial === enableSerial)
-                console.error(`[Big Shot] Action '${action}' failed: ${e.message}\n${e.stack}`);
+                fail(`Action '${action}' failed: ${e.message}\n${e.stack}`);
         }
     }
 
@@ -1806,7 +1832,7 @@ export default class BigShotExtension extends Extension {
                     try {
                         srcFile.copy(destFile, Gio.FileCopyFlags.OVERWRITE, null, null);
                     } catch (e) {
-                        console.error(`[Big Shot] Save failed: ${e.message}`);
+                        fail(`Save failed: ${e.message}`);
                     }
                 }
                 this._finishPortalRequest(request);
@@ -1909,7 +1935,7 @@ export default class BigShotExtension extends Extension {
                         [returnedPath] = result.deepUnpack();
                     } catch (e) {
                         if (!request.done)
-                            console.error(`[Big Shot] Portal SaveFile failed: ${e.message}`);
+                            fail(`Portal SaveFile failed: ${e.message}`);
                         this._finishPortalRequest(request);
                         return;
                     }
@@ -1921,7 +1947,7 @@ export default class BigShotExtension extends Extension {
                 },
             );
         } catch (e) {
-            console.error(`[Big Shot] Save dialog failed: ${e.message}`);
+            fail(`Save dialog failed: ${e.message}`);
             if (request)
                 this._finishPortalRequest(request);
             else
@@ -1957,7 +1983,7 @@ export default class BigShotExtension extends Extension {
      * Reading these needs no external tool, so it works where `lspci` is
      * missing, renamed, or shipped without the PCI ID database.
      */
-    _detectGpuVendorsFromSysfs() {
+    async _detectGpuVendorsFromSysfs() {
         const vendors = new Set();
         const byId = {
             '0x10de': GpuVendor.NVIDIA,
@@ -1978,15 +2004,26 @@ export default class BigShotExtension extends Extension {
                 if (!/^card\d+$/.test(name))
                     continue;
                 try {
-                    const [ok, bytes] = Gio.File
-                        .new_for_path(`/sys/class/drm/${name}/device/vendor`)
-                        .load_contents(null);
-                    if (!ok)
-                        continue;
+                    // Async so the compositor keeps painting. Wrapped by hand
+                    // instead of Gio._promisify, which would patch Gio.File
+                    // process-wide and leak into every other extension.
+                    const bytes = await new Promise((resolve, reject) => {
+                        Gio.File
+                            .new_for_path(`/sys/class/drm/${name}/device/vendor`)
+                            .load_contents_async(null, (file, result) => {
+                                try {
+                                    const [, contents] =
+                                        file.load_contents_finish(result);
+                                    resolve(contents);
+                                } catch (e) {
+                                    reject(e);
+                                }
+                            });
+                    });
                     const id = new TextDecoder().decode(bytes).trim().toLowerCase();
                     if (byId[id])
                         vendors.add(byId[id]);
-                } catch (_e) { /* device without a vendor file */ }
+                } catch (_e) { /* device without a readable vendor file */ }
             }
         } catch (_e) {
             // No sysfs DRM tree; the lspci path below still applies.
@@ -2030,7 +2067,7 @@ export default class BigShotExtension extends Extension {
      * with software encoding on a machine that can do better.
      */
     async _detectGpuVendors() {
-        const fromSysfs = this._detectGpuVendorsFromSysfs();
+        const fromSysfs = await this._detectGpuVendorsFromSysfs();
         if (fromSysfs.length > 0)
             return fromSysfs;
 
@@ -2038,7 +2075,7 @@ export default class BigShotExtension extends Extension {
         if (fromLspci.length > 0)
             return fromLspci;
 
-        console.warn('[Big Shot] GPU vendor undetected; probing every encoder');
+        warn('GPU vendor undetected; probing every encoder');
         return [GpuVendor.NVIDIA, GpuVendor.AMD, GpuVendor.INTEL];
     }
 
@@ -2123,7 +2160,7 @@ export default class BigShotExtension extends Extension {
         this._availableElements = availableElements;
         this._availableConfigs = [...gpuConfigs, ...swConfigs];
         if (this._availableConfigs.length === 0)
-            console.warn('[Big Shot] No compatible GStreamer pipeline found!');
+            warn('No compatible GStreamer pipeline found!');
 
         return this._availableConfigs;
     }
@@ -2181,7 +2218,7 @@ export default class BigShotExtension extends Extension {
 
         // Detect Tesseract and populate OCR languages (async — won't block UI)
         this._refreshOcrLanguages().catch(e => {
-            console.warn(`[Big Shot] Tesseract detection failed: ${e.message}`);
+            warn(`Tesseract detection failed: ${e.message}`);
         });
 
         // Audio — Desktop + Mic toggle buttons
@@ -2212,8 +2249,14 @@ export default class BigShotExtension extends Extension {
                 this._toolbar._sizeRow.visible = enabled;
             if (this._toolbar._cameraRow && enabled) {
                 // Populate camera list when webcam is enabled
-                const devices = this._webcam.enumerateDevices();
-                this._toolbar.populateCameras(devices);
+                // enumerateDevices() reads sysfs asynchronously; the guard
+                // covers the webcam being switched off while it runs.
+                this._webcam.enumerateDevices().then(devices => {
+                    if (this._webcam && this._toolbar?._cameraRow)
+                        this._toolbar.populateCameras(devices);
+                }).catch(e => {
+                    warn(`Camera list unavailable: ${e.message}`);
+                });
             } else if (this._toolbar._cameraRow) {
                 this._toolbar._cameraRow.visible = false;
             }
@@ -2320,7 +2363,7 @@ export default class BigShotExtension extends Extension {
                 };
             }
         } else {
-            console.warn('[Big Shot] _screencastProxy not found — custom pipelines disabled');
+            warn('_screencastProxy not found — custom pipelines disabled');
         }
 
         // Single open() patch: combines QuickStop (stop recording on
@@ -2328,7 +2371,7 @@ export default class BigShotExtension extends Extension {
         // Having a single save/restore avoids stale closure chains after
         // lock-screen disable/enable cycles.
         if (typeof screenshotUI.open !== 'function') {
-            console.warn('[Big Shot] screenshotUI.open missing — Quick Stop disabled');
+            warn('screenshotUI.open missing — Quick Stop disabled');
             return;
         }
         this._origOpen = screenshotUI.open.bind(screenshotUI);
@@ -2350,7 +2393,7 @@ export default class BigShotExtension extends Extension {
                         ext._stopActiveRecording();
                         Main.screenshotUI?.close();
                     } catch (e) {
-                        console.error(`[Big Shot] Quick stop error: ${e.message}`);
+                        fail(`Quick stop error: ${e.message}`);
                     }
                     return Promise.resolve();
                 }
@@ -2461,13 +2504,13 @@ export default class BigShotExtension extends Extension {
         // itself isn't kept as a property by GNOME 50.
         const rect = item.boundingBox;
         if (!rect || rect.width <= 0 || rect.height <= 0) {
-            console.warn('[Big Shot] Window screencast: invalid bounding box');
+            warn('Window screencast: invalid bounding box');
             this._recordingState = 'idle';
             return;
         }
         const proxy = ui._screencastProxy;
         if (!proxy || typeof proxy.ScreencastAreaAsync !== 'function') {
-            console.warn('[Big Shot] Window screencast: proxy unavailable');
+            warn('Window screencast: proxy unavailable');
             this._recordingState = 'idle';
             return;
         }
@@ -2518,7 +2561,7 @@ export default class BigShotExtension extends Extension {
                     ui._setScreencastInProgress(false);
                 else
                     ui._screencastInProgress = false;
-                console.warn('[Big Shot] Window screencast: service returned failure');
+                warn('Window screencast: service returned failure');
             }
         } catch (e) {
             if (this._activeEnableSerial !== enableSerial)
@@ -2528,7 +2571,7 @@ export default class BigShotExtension extends Extension {
                 ui._setScreencastInProgress(false);
             else
                 ui._screencastInProgress = false;
-            console.error(`[Big Shot] Window screencast error: ${e.message}`);
+            fail(`Window screencast error: ${e.message}`);
         } finally {
             delete ui._screencastStarting;
         }
@@ -2675,13 +2718,13 @@ export default class BigShotExtension extends Extension {
                     return recovered;
 
                 this._recordingState = 'idle';
-                console.warn(`[Big Shot] Pipeline ${config.id} failed: ${e.message}`);
+                warn(`Pipeline ${config.id} failed: ${e.message}`);
                 // Continue to next config
             }
         }
 
         // All custom pipelines exhausted — clean up indicator and fall back
-        console.warn('[Big Shot] All pipelines failed, falling back to GNOME default');
+        warn('All pipelines failed, falling back to GNOME default');
         return this._startDefaultRecording({
             filePath,
             options: baseOptions,
@@ -2807,7 +2850,7 @@ export default class BigShotExtension extends Extension {
                 this._recordingSession.ffmpegPath !== null);
             this._videoAnnotation?.onRecordingStarted();
         } catch (indErr) {
-            console.error('[Big Shot] onRecordingStarted ERROR:', indErr.message, indErr.stack);
+            fail('onRecordingStarted ERROR:', indErr.message, indErr.stack);
         }
 
         return (result && result[0])
@@ -2843,7 +2886,7 @@ export default class BigShotExtension extends Extension {
             return null;
         }
 
-        console.warn(`[Big Shot] Pipeline ${config.id} start timed out after output began; keeping recording attached`);
+        warn(`Pipeline ${config.id} start timed out after output began; keeping recording attached`);
         return this._registerRecordingStarted({
             result: [true, activePath],
             config,
@@ -2868,9 +2911,9 @@ export default class BigShotExtension extends Extension {
         try {
             const result = stopMethod();
             if (result?.catch)
-                result.catch(e => console.warn(`[Big Shot] stale screencast stop failed: ${e.message}`));
+                result.catch(e => warn(`stale screencast stop failed: ${e.message}`));
         } catch (e) {
-            console.warn(`[Big Shot] stale screencast stop failed: ${e.message}`);
+            warn(`stale screencast stop failed: ${e.message}`);
         }
     }
 
@@ -2913,7 +2956,7 @@ export default class BigShotExtension extends Extension {
         // Preferred: GNOME 50+ public API
         if (typeof ui.stopScreencast === 'function') {
             try { ui.stopScreencast(); return; } catch (e) {
-                console.warn(`[Big Shot] stopScreencast failed: ${e.message}`);
+                warn(`stopScreencast failed: ${e.message}`);
             }
         }
 
@@ -2921,7 +2964,7 @@ export default class BigShotExtension extends Extension {
         const recorder = ui._recorder;
         if (recorder && typeof recorder.close === 'function') {
             try { recorder.close(); return; } catch (e) {
-                console.warn(`[Big Shot] recorder.close failed: ${e.message}`);
+                warn(`recorder.close failed: ${e.message}`);
             }
         }
 
@@ -2929,7 +2972,7 @@ export default class BigShotExtension extends Extension {
         const proxy = ui._screencastProxy;
         if (proxy && typeof proxy.StopScreencastAsync === 'function') {
             try { proxy.StopScreencastAsync(); } catch (e) {
-                console.warn(`[Big Shot] StopScreencastAsync failed: ${e.message}`);
+                warn(`StopScreencastAsync failed: ${e.message}`);
             }
         }
     }
@@ -3081,7 +3124,7 @@ export default class BigShotExtension extends Extension {
             if (!activePath)
                 throw e;
 
-            console.warn(`[Big Shot] Resume segment ${index} timed out after output began; keeping recording attached`);
+            warn(`Resume segment ${index} timed out after output began; keeping recording attached`);
             result = [true, activePath];
         }
 
@@ -3112,11 +3155,11 @@ export default class BigShotExtension extends Extension {
         if (this._recordingState !== 'recording')
             return false;
         if (!this._recordingSession || !this._currentSegment) {
-            console.warn('[Big Shot] Pause unavailable without active segment');
+            warn('Pause unavailable without active segment');
             return false;
         }
         if (!this._recordingSession.ffmpegPath) {
-            console.warn('[Big Shot] Pause unavailable: ffmpeg not found');
+            warn('Pause unavailable: ffmpeg not found');
             return false;
         }
 
@@ -3136,7 +3179,7 @@ export default class BigShotExtension extends Extension {
         } catch (e) {
             if (this._activeEnableSerial !== enableSerial)
                 return false;
-            console.error(`[Big Shot] Failed to pause recording: ${e.message}`);
+            fail(`Failed to pause recording: ${e.message}`);
             this._recordingState = 'recording';
             this._suppressPauseStopFailure = false;
             this._setScreencastInProgress(true);
@@ -3165,7 +3208,7 @@ export default class BigShotExtension extends Extension {
         } catch (e) {
             if (this._activeEnableSerial !== enableSerial)
                 return false;
-            console.error(`[Big Shot] Failed to resume recording: ${e.message}`);
+            fail(`Failed to resume recording: ${e.message}`);
             this._recordingState = 'paused';
             this._indicator?.onPaused();
             return false;
@@ -3291,7 +3334,7 @@ export default class BigShotExtension extends Extension {
             );
             this._cleanupMergedSegments(session, listPath, tmpPath);
         } catch (e) {
-            console.error(`[Big Shot] Failed to merge recording segments: ${e.message}`);
+            fail(`Failed to merge recording segments: ${e.message}`);
             deletePathIfExists(tmpPath);
             deletePathIfExists(listPath);
         }
@@ -3420,7 +3463,7 @@ export default class BigShotExtension extends Extension {
             // The screencast service prepends pipewiresrc and appends ! filesink
             const audioPipeline = this._selectAudioPipeline(ext);
             if (!audioPipeline) {
-                console.warn(`[Big Shot] No ${ext === 'mp4' ? 'AAC' : 'Vorbis'} encoder; recording without audio`);
+                warn(`No ${ext === 'mp4' ? 'AAC' : 'Vorbis'} encoder; recording without audio`);
                 return `${video} ! ${muxer}`;
             }
             const videoSeg = `${video} ! queue ! mux.`;
