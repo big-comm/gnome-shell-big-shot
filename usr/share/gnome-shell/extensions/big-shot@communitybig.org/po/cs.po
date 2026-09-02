@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: big-shot 1.0\n"
 "Report-Msgid-Bugs-To: https://github.com/BigCommunity/gnome-shell-big-shot/"
 "issues\n"
-"POT-Creation-Date: 2026-08-30 23:25-0300\n"
+"POT-Creation-Date: 2026-09-02 00:45-0300\n"
 "PO-Revision-Date: 2026-08-15 18:02-0300\n"
 "Last-Translator: Tales A. Mendonça <talesam@gmail.com>\n"
 "Language-Team: Czech\n"
@@ -42,45 +42,45 @@ msgstr "Popisek (↑/↓ = velikost)…"
 msgid "Zoom caption"
 msgstr "Přiblížit popisek"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:396
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:417
 msgid "BigShot from %d %t"
 msgstr "BigShot z %d %t"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1136
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1151
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1165
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1180
 msgid "Screenshot taken"
 msgstr "Snímek obrazovky pořízen"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1193
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1222
 msgid "Screenshots"
 msgstr "Snímky obrazovky"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1203
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1862
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1232
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1894
 #, javascript-format
 msgid "Screenshot from %s"
 msgstr "Snímek obrazovky z %s"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1252
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1281
 msgid "Screen Capture"
 msgstr "Záznam obrazovky"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1302
 #: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1334
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1366
 msgid "Screenshot captured"
 msgstr "Byl pořízen snímek obrazovky"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1303
 #: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1335
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1367
 msgid "You can paste the image from the clipboard"
 msgstr "Obrázek můžete vložit ze schránky"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1310
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1342
 msgid "Show in Files"
 msgstr "Zobrazit v Souborech"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1620
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1634
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1652
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1666
 msgid ""
 "Automatic installation is unavailable. Install Tesseract and its language "
 "packs with your package manager."
@@ -88,39 +88,54 @@ msgstr ""
 "Automatická instalace není dostupná. Nainstalujte Tesseract a jeho jazykové "
 "balíčky pomocí správce balíčků."
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1683
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1715
 msgid "Screenshot copied"
 msgstr "Snímek obrazovky zkopírován"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1715
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1747
 msgid "Extracting text..."
 msgstr "Extrahuje se text..."
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1737
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1769
 #, javascript-format
 msgid "Text copied to clipboard! (%d chars)"
 msgstr "Text byl zkopírován do schránky! (%d znaků)"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1740
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1772
 msgid "No text found in selection"
 msgstr "Ve výběru nebyl nalezen žádný text"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1746
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1778
 #, javascript-format
 msgid "OCR failed: %s"
 msgstr "OCR selhalo: %s"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1887
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1919
 msgid "Save Screenshot"
 msgstr "Uložit snímek obrazovky"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1893
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1925
 msgid "PNG Images"
 msgstr ""
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:2721
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:2773
 msgid "GNOME default"
 msgstr ""
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:3052
+msgid "Recording could not be stopped"
+msgstr "Nahrávání se nepodařilo zastavit"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:3054
+#, javascript-format
+msgid ""
+"The screencast service stopped responding. The file is still growing at %s."
+msgstr "Služba nahrávání obrazovky přestala odpovídat. Soubor stále roste v %s."
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:3055
+msgid ""
+"The screencast service stopped responding and the recording is still running."
+msgstr "Služba nahrávání obrazovky přestala odpovídat a nahrávání stále běží."
 
 #: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partaudio.js:98
 #: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partaudio.js:160

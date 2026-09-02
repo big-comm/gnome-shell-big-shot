@@ -337,6 +337,11 @@ const MUXERS = {
 };
 
 const SCREENCAST_DBUS_TIMEOUT_MS = 30000;
+// The service stops by pushing EOS through the pipeline and only answers once
+// it drains. A wedged live source — a broken audio device is the usual cause —
+// never forwards EOS, so the call hangs and the user is left with a recording
+// that cannot be stopped. Give up before the D-Bus timeout and tell them.
+const SCREENCAST_STOP_GRACE_MS = 12000;
 const SUBPROCESS_PROBE_CONCURRENCY = 4;
 
 // =============================================================================
@@ -3014,8 +3019,41 @@ export default class BigShotExtension extends Extension {
             throw e;
         }
 
-        return Promise.resolve(result).finally(() => {
+        const settled = Promise.resolve(result).finally(() => {
             this._recordingStopCompleted(completion);
+        });
+
+        this._watchStopTimeout(settled);
+        return settled;
+    }
+
+    /**
+     * Surface a stop that never completes.
+     *
+     * Without this the UI reports the recording as finished while the service
+     * keeps writing, and every later click hits the same silent timeout. The
+     * recording cannot be killed from inside an extension, so be honest: say
+     * what happened and where the file is, rather than pretending it stopped.
+     */
+    _watchStopTimeout(settled) {
+        let done = false;
+        settled.finally(() => {
+            done = true;
+        }).catch(() => { /* reported by the caller */ });
+
+        this._addTimeout(SCREENCAST_STOP_GRACE_MS, () => {
+            if (done || this._recordingState === 'idle')
+                return GLib.SOURCE_REMOVE;
+
+            const path = this._currentSegmentPath;
+            warn('Screencast service did not answer the stop request; ' +
+                 'the recording is still running');
+            this._showNotification(
+                _('Recording could not be stopped'),
+                path
+                    ? _('The screencast service stopped responding. The file is still growing at %s.').format(path)
+                    : _('The screencast service stopped responding and the recording is still running.'));
+            return GLib.SOURCE_REMOVE;
         });
     }
 

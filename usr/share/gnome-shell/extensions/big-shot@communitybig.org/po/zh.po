@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: big-shot 1.0\n"
 "Report-Msgid-Bugs-To: https://github.com/BigCommunity/gnome-shell-big-shot/"
 "issues\n"
-"POT-Creation-Date: 2026-08-30 23:25-0300\n"
+"POT-Creation-Date: 2026-09-02 00:45-0300\n"
 "PO-Revision-Date: 2026-08-15 18:02-0300\n"
 "Last-Translator: Tales A. Mendonça <talesam@gmail.com>\n"
 "Language-Team: Chinese\n"
@@ -42,83 +42,98 @@ msgstr "标题（↑/↓ = 大小）…"
 msgid "Zoom caption"
 msgstr "缩放标题"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:396
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:417
 msgid "BigShot from %d %t"
 msgstr "BigShot %d %t"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1136
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1151
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1165
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1180
 msgid "Screenshot taken"
 msgstr "截图已保存"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1193
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1222
 msgid "Screenshots"
 msgstr "截图"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1203
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1862
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1232
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1894
 #, javascript-format
 msgid "Screenshot from %s"
 msgstr "来自 %s 的截图"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1252
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1281
 msgid "Screen Capture"
 msgstr "屏幕捕获"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1302
 #: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1334
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1366
 msgid "Screenshot captured"
 msgstr "已获取截图"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1303
 #: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1335
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1367
 msgid "You can paste the image from the clipboard"
 msgstr "您可以从剪贴板粘贴该图像"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1310
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1342
 msgid "Show in Files"
 msgstr "显示文件"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1620
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1634
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1652
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1666
 msgid ""
 "Automatic installation is unavailable. Install Tesseract and its language "
 "packs with your package manager."
 msgstr "无法自动安装。请使用软件包管理器安装 Tesseract 及其语言包。"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1683
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1715
 msgid "Screenshot copied"
 msgstr "截图已复制"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1715
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1747
 msgid "Extracting text..."
 msgstr "正在提取文本..."
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1737
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1769
 #, javascript-format
 msgid "Text copied to clipboard! (%d chars)"
 msgstr "文本已复制到剪贴板！(%d 个字符)"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1740
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1772
 msgid "No text found in selection"
 msgstr "未在选区中找到文本"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1746
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1778
 #, javascript-format
 msgid "OCR failed: %s"
 msgstr "OCR 失败：%s"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1887
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1919
 msgid "Save Screenshot"
 msgstr "保存截图"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1893
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1925
 msgid "PNG Images"
 msgstr ""
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:2721
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:2773
 msgid "GNOME default"
 msgstr ""
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:3052
+msgid "Recording could not be stopped"
+msgstr "无法停止录制"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:3054
+#, javascript-format
+msgid ""
+"The screencast service stopped responding. The file is still growing at %s."
+msgstr "屏幕录制服务已停止响应。文件仍在 %s 中增大。"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:3055
+msgid ""
+"The screencast service stopped responding and the recording is still running."
+msgstr "屏幕录制服务已停止响应，录制仍在继续。"
 
 #: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partaudio.js:98
 #: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partaudio.js:160
