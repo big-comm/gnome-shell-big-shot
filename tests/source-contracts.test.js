@@ -237,11 +237,22 @@ test('remaining user-visible labels use gettext and logical alignment', async ()
         readFile(`${partsDir}/partindicator.js`, 'utf8'),
     ]);
 
+    // Mask labels live once, in the part that can actually render them; the
+    // toolbar consumes that list. Keeping a second copy had already drifted.
     for (const label of [
-        'None', 'Circle', 'Oval', 'Soft', 'Spot', 'Ornate', 'Checker', 'Neon',
+        'None', 'Circle', 'Halo', 'Teardrop', 'Spot', 'Rounded', 'Widescreen',
+        'Ornate', 'Neon Pink', 'Neon Blue', 'Neon Spectrum',
     ]) {
-        assert.match(toolbar, new RegExp(`_\\('${label}'\\)`));
         assert.match(webcam, new RegExp(`_\\('${label}'\\)`));
+    }
+    assert.match(webcam, /export const BUILTIN_MASKS = \[/);
+    assert.match(toolbar, /import \{ BUILTIN_MASKS \} from '\.\/partwebcam\.js'/);
+    assert.match(toolbar, /const maskOptions = BUILTIN_MASKS;/);
+    // The retired masks must not linger in either file.
+    for (const gone of ['ellipse', 'soft-circle', 'checker', 'glass', 'hexagon',
+        'neon-green']) {
+        assert.doesNotMatch(webcam, new RegExp(`'${gone}'`));
+        assert.doesNotMatch(toolbar, new RegExp(`'${gone}'`));
     }
     assert.match(toolbar, /_\('Software %s'\)/);
     assert.match(toolbar, /_\('%s Low-Power'\)/);

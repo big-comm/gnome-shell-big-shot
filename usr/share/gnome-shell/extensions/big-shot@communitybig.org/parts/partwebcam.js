@@ -3,7 +3,8 @@
  *
  * Displays a draggable webcam preview on screen using GStreamer + Clutter,
  * captured by the screencast compositor pipeline.
- * All mask effects (circle, oval, soft, vignette, ornate, checker) are
+ * All mask effects (circle, halo, teardrop, vignette, rounded, widescreen,
+ * ornate, neon) are
  * implemented as pixel-level alpha/colour operations — no external SVGs.
  *
  * SPDX-License-Identifier: GPL-2.0-or-later
@@ -39,16 +40,34 @@ const gstReady = (async () => {
 
 const WEBCAM_DEFAULT_WIDTH = 320;
 
-const BUILTIN_MASKS = [
+export const BUILTIN_MASKS = [
     { id: 'none',             label: () => _('None') },
     { id: 'circle',           label: () => _('Circle') },
-    { id: 'ellipse',          label: () => _('Oval') },
-    { id: 'soft-circle',      label: () => _('Soft') },
+    { id: 'halo',             label: () => _('Halo') },
+    { id: 'teardrop',         label: () => _('Teardrop') },
     { id: 'spotlight',        label: () => _('Spot') },
+    { id: 'squircle',         label: () => _('Rounded') },
+    { id: 'widescreen',       label: () => _('Widescreen') },
     { id: 'ornate-frame',     label: () => _('Ornate') },
-    { id: 'checker',          label: () => _('Checker') },
-    { id: 'neon',             label: () => _('Neon') },
+    { id: 'neon',             label: () => _('Neon Pink') },
+    { id: 'neon-blue',        label: () => _('Neon Blue') },
+    { id: 'spectrum',         label: () => _('Neon Spectrum') },
 ];
+
+/** Ring and glow colours for the single-colour neon masks. */
+const NEON_PALETTES = Object.freeze({
+    neon: { ring: [255, 60, 235], glow: [190, 0, 220] },
+    'neon-blue': { ring: [90, 215, 255], glow: [0, 120, 240] },
+});
+
+/** Neon Spectrum sweeps these stops around the ring, hue by angle. */
+const SPECTRUM_STOPS = Object.freeze([
+    [255, 70, 200],   // pink
+    [200, 70, 255],   // violet
+    [110, 120, 255],  // indigo
+    [80, 200, 255],   // cyan
+    [200, 70, 255],   // back to violet, so the sweep closes seamlessly
+]);
 
 export class PartWebcam extends PartUI {
     constructor(screenshotUI, extension) {
@@ -252,9 +271,14 @@ export class PartWebcam extends PartUI {
     // Container / overlay geometry helpers
     // =========================================================================
 
+    /** Masks that keep the camera's own aspect instead of a square crop.
+     *  Widescreen does its own cropping, so it needs the full frame — boxing
+     *  it inside a square would leave a thin strip. */
+    static FULL_FRAME_MASKS = new Set(['none', 'widescreen']);
+
     /** Circle-based masks use a square container inscribed in the shorter dim. */
     _isCircleBased() {
-        return this._maskId !== 'none' && this._maskId !== 'ellipse';
+        return !PartWebcam.FULL_FRAME_MASKS.has(this._maskId);
     }
 
     _containerSize() {
@@ -393,7 +417,7 @@ export class PartWebcam extends PartUI {
     /** Apply the active mask to RGBA pixel data in-place.
      *  All masks work in normalised-radius space:
      *    dist = sqrt((dx/rx)^2 + (dy/ry)^2)
-     *  where rx,ry define the ellipse axes.
+     *  where rx,ry define the mask axes.
      */
     _applyMaskToPixels(data, w, h) {
         switch (this._maskId) {
@@ -402,23 +426,30 @@ export class PartWebcam extends PartUI {
         case 'circle':
             this._maskCircle(data, w, h);
             return;
-        case 'ellipse':
-            this._maskEllipse(data, w, h);
+        case 'halo':
+            this._maskHalo(data, w, h);
             return;
-        case 'soft-circle':
-            this._maskSoft(data, w, h);
+        case 'teardrop':
+            this._maskTeardrop(data, w, h);
             return;
         case 'spotlight':
             this._maskSpotlight(data, w, h);
             return;
+        case 'squircle':
+            this._maskRoundedRect(data, w, h, 1.0, 0.14);
+            return;
+        case 'widescreen':
+            this._maskRoundedRect(data, w, h, 16 / 9, 0.08);
+            return;
+        case 'spectrum':
+            this._maskNeon(data, w, h, null);
+            return;
         case 'ornate-frame':
             this._maskOrnate(data, w, h);
             return;
-        case 'checker':
-            this._maskChecker(data, w, h);
-            return;
         case 'neon':
-            this._maskNeon(data, w, h);
+        case 'neon-blue':
+            this._maskNeon(data, w, h, NEON_PALETTES[this._maskId]);
             return;
         }
     }
@@ -456,41 +487,23 @@ export class PartWebcam extends PartUI {
         }
     }
 
-    /** Ellipse filling the full frame. */
-    _maskEllipse(data, w, h) {
-        const cx = w / 2;
-        const cy = h / 2;
-        const rx = cx;
-        const ry = cy;
-        const edge = 0.04;
-        const thresh2 = (1 - edge) * (1 - edge);
-
-        for (let y = 0; y < h; y++) {
-            const dy = (y - cy) / ry;
-            const dy2 = dy * dy;
-            for (let x = 0; x < w; x++) {
-                const dx = (x - cx) / rx;
-                const d2 = dx * dx + dy2;
-                if (d2 > 1.0)
-                    data[(y * w + x) * 4 + 3] = 0;
-                else if (d2 > thresh2) {
-                    const d = Math.sqrt(d2);
-                    const t = (1.0 - d) / edge;
-                    data[(y * w + x) * 4 + 3] = Math.round(
-                        data[(y * w + x) * 4 + 3] * t,
-                    );
-                }
-            }
-        }
-    }
-
-    /** Circle with wide feathered edge. */
-    _maskSoft(data, w, h) {
+    /** Halo: a thin translucent light band just inside a darkened rim, so the
+     *  webcam reads as sitting behind glass. The band stays see-through — it
+     *  frames the subject instead of covering them. */
+    _maskHalo(data, w, h) {
         const cx = w / 2;
         const cy = h / 2;
         const r = Math.min(w, h) / 2;
-        const edge = 0.40;
-        const thresh2 = (1 - edge) * (1 - edge);
+        const edge = 0.025;
+
+        const bandInner = 0.855;  // narrow band, hugging the rim
+        const bandOuter = 0.965;
+        const bandPeak = (bandOuter + bandInner) / 2;
+        const bandHalf = (bandOuter - bandInner) / 2;
+        const maxWhite = 0.30;    // translucent: content stays visible through it
+
+        const rimStart = 0.955;   // dark outline that defines the edge
+        const maxDark = 0.62;
 
         for (let y = 0; y < h; y++) {
             const dy = (y - cy) / r;
@@ -503,15 +516,77 @@ export class PartWebcam extends PartUI {
             for (let x = 0; x < w; x++) {
                 const dx = (x - cx) / r;
                 const d2 = dx * dx + dy2;
-                if (d2 > 1.0)
-                    data[(y * w + x) * 4 + 3] = 0;
-                else if (d2 > thresh2) {
-                    const d = Math.sqrt(d2);
-                    const t = (1.0 - d) / edge;
-                    // Quadratic ease-in for softer gradient
-                    data[(y * w + x) * 4 + 3] = Math.round(
-                        data[(y * w + x) * 4 + 3] * t * t,
-                    );
+                const idx = (y * w + x) * 4;
+                if (d2 > 1.0) {
+                    data[idx + 3] = 0;
+                    continue;
+                }
+                const d = Math.sqrt(d2);
+
+                if (d > bandInner) {
+                    const t = 1 - Math.abs(d - bandPeak) / bandHalf;
+                    const mix = maxWhite * Math.max(0, t) ** 1.2;
+                    data[idx]     = Math.round(data[idx]     * (1 - mix) + 255 * mix);
+                    data[idx + 1] = Math.round(data[idx + 1] * (1 - mix) + 255 * mix);
+                    data[idx + 2] = Math.round(data[idx + 2] * (1 - mix) + 255 * mix);
+                }
+
+                if (d > rimStart) {
+                    const t = (d - rimStart) / (1 - rimStart);
+                    const dark = 1 - maxDark * t ** 0.8;
+                    data[idx]     = Math.round(data[idx]     * dark);
+                    data[idx + 1] = Math.round(data[idx + 1] * dark);
+                    data[idx + 2] = Math.round(data[idx + 2] * dark);
+                }
+
+                if (d > 1 - edge)
+                    data[idx + 3] = Math.round(data[idx + 3] * ((1 - d) / edge));
+            }
+        }
+    }
+
+    /** Rounded rectangle, cropping the sides to `aspect` and rounding the
+     *  corners by `radius` (a fraction of the shorter side).
+     *
+     *  Uses a signed distance field so the straight edges get exactly the
+     *  same soft transition as the corners. Testing the corners separately —
+     *  as this did before — left the flat sides cut off abruptly, which read
+     *  as "only the corners have an effect".
+     */
+    _maskRoundedRect(data, w, h, aspect, radius) {
+        // Largest aspect-correct box that fits the frame, centred.
+        let boxW = w;
+        let boxH = Math.round(w / aspect);
+        if (boxH > h) {
+            boxH = h;
+            boxW = Math.round(h * aspect);
+        }
+        const cx = w / 2;
+        const cy = h / 2;
+        const rad = Math.min(boxW, boxH) * radius;
+        // Half-extents of the straight part, i.e. the box minus its corners.
+        const halfW = boxW / 2 - rad;
+        const halfH = boxH / 2 - rad;
+        const edge = Math.max(1.2, Math.min(boxW, boxH) * 0.012);
+
+        const smooth = (t) => {
+            const c = Math.min(1, Math.max(0, t));
+            return c * c * (3 - 2 * c);
+        };
+
+        for (let y = 0; y < h; y++) {
+            const qy = Math.abs(y + 0.5 - cy) - halfH;
+            for (let x = 0; x < w; x++) {
+                const qx = Math.abs(x + 0.5 - cx) - halfW;
+                // Signed distance to the rounded-box outline: < 0 inside.
+                const dist = Math.hypot(Math.max(qx, 0), Math.max(qy, 0)) +
+                    Math.min(Math.max(qx, qy), 0) - rad;
+                const idx = (y * w + x) * 4;
+                if (dist >= 0) {
+                    data[idx + 3] = 0;
+                } else if (dist > -edge) {
+                    data[idx + 3] = Math.round(
+                        data[idx + 3] * smooth(-dist / edge));
                 }
             }
         }
@@ -631,133 +706,154 @@ export class PartWebcam extends PartUI {
         }
     }
 
-    /** Checker: radial checkerboard sunburst border around the webcam circle. */
-    _maskChecker(data, w, h) {
+    /** Sample the spectrum gradient at an angle, in radians. */
+    _spectrumColour(angle) {
+        const span = SPECTRUM_STOPS.length - 1;
+        const t = ((angle / (Math.PI * 2)) % 1 + 1) % 1 * span;
+        const i = Math.min(span - 1, Math.floor(t));
+        const f = t - i;
+        const a = SPECTRUM_STOPS[i];
+        const b = SPECTRUM_STOPS[i + 1];
+        return [
+            a[0] + (b[0] - a[0]) * f,
+            a[1] + (b[1] - a[1]) * f,
+            a[2] + (b[2] - a[2]) * f,
+        ];
+    }
+
+    /** Neon ring with outer glow.
+     *
+     *  `palette` null selects the angular spectrum sweep instead of a single
+     *  colour. Every transition is smoothed over one pixel — measured as
+     *  1/r in the normalised space the mask works in — because a fixed
+     *  fraction of the radius is thinner than a pixel on a small preview and
+     *  that is what made the ring look stair-stepped.
+     */
+    _maskNeon(data, w, h, palette = NEON_PALETTES.neon) {
         const cx = w / 2;
         const cy = h / 2;
         const r = Math.min(w, h) / 2;
+        const px = 1 / r;                     // one pixel, normalised
+        const aa = Math.max(px * 1.5, 0.006);  // anti-alias width
 
-        const innerR = 0.78;     // webcam circle edge
-        const outerR = 1.0;
-        const numRings = 4;
-        const ringW = (outerR - innerR) / numRings;
-        const numSectors = 28;   // angular divisions
-        const aa = 0.01;         // anti-alias at outer boundary
+        // Ring thick enough to survive small previews.
+        const ringCenter = 0.90;
+        const ringHalf = Math.max(0.026, px * 2.5);
+        const ringInner = ringCenter - ringHalf;
+        const ringOuter = ringCenter + ringHalf;
+        const glowInner = ringInner - 0.16;   // soft bloom on the inside
+        const glowOuter = 1.0;                // fades out by the crop edge
+
+        const smooth = (t) => {
+            const c = Math.min(1, Math.max(0, t));
+            return c * c * (3 - 2 * c);
+        };
 
         for (let y = 0; y < h; y++) {
             const dy = (y - cy) / r;
             const dy2 = dy * dy;
-            if (dy2 > (outerR + aa) * (outerR + aa)) {
+            if (dy2 > 1.2) {
                 for (let x = 0; x < w; x++)
                     data[(y * w + x) * 4 + 3] = 0;
                 continue;
             }
             for (let x = 0; x < w; x++) {
                 const dx = (x - cx) / r;
-                const d2 = dx * dx + dy2;
+                const d = Math.sqrt(dx * dx + dy2);
                 const idx = (y * w + x) * 4;
-                const d = Math.sqrt(d2);
 
-                if (d > outerR + aa) {
+                const [cR, cG, cB] = palette
+                    ? palette.ring
+                    : this._spectrumColour(Math.atan2(dy, dx) + Math.PI);
+                const [gR, gG, gB] = palette ? palette.glow : [cR * 0.75, cG * 0.75, cB * 0.9];
+
+                if (d > glowOuter + aa) {
                     data[idx + 3] = 0;
-                } else if (d > innerR) {
-                    // Checkerboard border zone
-                    const ringIdx = Math.min(numRings - 1, Math.floor((d - innerR) / ringW));
-                    const angle = (Math.atan2(y - cy, x - cx) + Math.PI) / (2 * Math.PI);
-                    const sectorIdx = Math.floor(angle * numSectors);
-                    const isBlack = (ringIdx + sectorIdx) % 2 === 0;
-
-                    if (isBlack) {
-                        // Dark cell: fully transparent
-                        data[idx + 3] = 0;
-                    } else {
-                        // Light cell: slightly dimmed webcam pixels
-                        const dim = 0.75;
-                        data[idx]     = Math.round(data[idx]     * dim);
-                        data[idx + 1] = Math.round(data[idx + 1] * dim);
-                        data[idx + 2] = Math.round(data[idx + 2] * dim);
-                    }
-
-                    // Outer edge alpha fade
-                    if (d > outerR)
-                        data[idx + 3] = Math.round(data[idx + 3] * Math.max(0, (outerR + aa - d) / aa));
+                    continue;
                 }
-                // else: inside inner circle — keep webcam pixels
+
+                // Ring intensity: 1 at the centre line, easing to 0 over aa.
+                const ring = 1 - smooth((Math.abs(d - ringCenter) - ringHalf) / aa + 1);
+
+                if (ring > 0.001) {
+                    // White-hot core blended towards the neon colour outwards.
+                    const core = ring ** 2.2;
+                    const rr = cR + (255 - cR) * core * 0.85;
+                    const rg = cG + (255 - cG) * core * 0.85;
+                    const rb = cB + (255 - cB) * core * 0.85;
+                    data[idx]     = Math.round(data[idx]     * (1 - ring) + rr * ring);
+                    data[idx + 1] = Math.round(data[idx + 1] * (1 - ring) + rg * ring);
+                    data[idx + 2] = Math.round(data[idx + 2] * (1 - ring) + rb * ring);
+                    data[idx + 3] = Math.max(data[idx + 3], Math.round(255 * ring));
+                }
+
+                if (d > ringOuter) {
+                    // Outside the ring there is no webcam content: paint glow
+                    // over transparency so it blends with whatever is behind.
+                    const t = (d - ringOuter) / (glowOuter - ringOuter);
+                    const glow = (1 - smooth(t)) ** 1.6;
+                    const alpha = Math.round(200 * glow);
+                    if (ring <= 0.001) {
+                        data[idx]     = Math.round(gR);
+                        data[idx + 1] = Math.round(gG);
+                        data[idx + 2] = Math.round(gB);
+                        data[idx + 3] = alpha;
+                    } else {
+                        data[idx + 3] = Math.max(data[idx + 3], alpha);
+                    }
+                } else if (d > glowInner && ring <= 0.001) {
+                    // Inner bloom tinting the webcam edge.
+                    const t = (d - glowInner) / (ringInner - glowInner);
+                    const bloom = smooth(t) * 0.5;
+                    data[idx]     = Math.round(data[idx]     * (1 - bloom) + gR * bloom);
+                    data[idx + 1] = Math.round(data[idx + 1] * (1 - bloom) + gG * bloom);
+                    data[idx + 2] = Math.round(data[idx + 2] * (1 - bloom) + gB * bloom);
+                }
             }
         }
     }
 
-    // =========================================================================
-    // Drag handling
-    // =========================================================================
-
-    /** Neon 80s — glowing neon ring with magenta/pink glow around a circle. */
-    _maskNeon(data, w, h) {
+    /** Teardrop: the streaming-overlay frame — a circle whose bottom-right
+     *  corner stays square, giving the drop/speech-bubble silhouette, wrapped
+     *  in a thin white border. The distance field is evaluated per quadrant so
+     *  the border keeps an even thickness all the way around the join.
+     */
+    _maskTeardrop(data, w, h) {
         const cx = w / 2;
         const cy = h / 2;
         const r = Math.min(w, h) / 2;
+        const aa = Math.max(1.2, r * 0.012);
+        const border = Math.max(2, r * 0.05);   // thin, like the reference
 
-        // Ring geometry (normalised to radius)
-        const ringCenter = 0.88;
-        const ringHalf = 0.012;       // ring half-thickness
-        const ringInner = ringCenter - ringHalf;
-        const ringOuter = ringCenter + ringHalf;
-
-        // Glow zones
-        const innerGlowStart = 0.72;  // inner glow begins beyond this
-        const outerGlowEnd = 1.0;     // outer glow fades to zero here
-
-        // Neon colours
-        const nR = 255, nG = 50, nB = 255;   // hot magenta for the ring
-        const gR = 180, gG = 0,  gB = 220;   // purple for the glow
+        const smooth = (t) => {
+            const c = Math.min(1, Math.max(0, t));
+            return c * c * (3 - 2 * c);
+        };
 
         for (let y = 0; y < h; y++) {
-            const dy = (y - cy) / r;
-            const dy2 = dy * dy;
-
+            const py = y + 0.5 - cy;
             for (let x = 0; x < w; x++) {
-                const dx = (x - cx) / r;
-                const d2 = dx * dx + dy2;
-                const d = Math.sqrt(d2);
+                const px = x + 0.5 - cx;
                 const idx = (y * w + x) * 4;
 
-                if (d > outerGlowEnd) {
-                    // Outside glow — fully transparent
+                // Bottom-right quadrant is a square corner; the rest is round.
+                const dist = (px >= 0 && py >= 0)
+                    ? Math.max(px - r, py - r)
+                    : Math.hypot(px, py) - r;
+
+                if (dist >= 0) {
                     data[idx + 3] = 0;
-                } else if (d > ringOuter) {
-                    // Outer glow zone: neon colour with fading alpha
-                    const t = (d - ringOuter) / (outerGlowEnd - ringOuter);
-                    const glowAlpha = Math.round(180 * Math.pow(1 - t, 2.5));
-                    data[idx]     = gR;
-                    data[idx + 1] = gG;
-                    data[idx + 2] = gB;
-                    data[idx + 3] = glowAlpha;
-                } else if (d >= ringInner) {
-                    // The neon ring itself — bright, near-white pink
-                    const dist = Math.abs(d - ringCenter) / ringHalf;
-                    // Core is white-hot, edges are magenta
-                    const white = Math.pow(Math.max(0, 1 - dist), 1.5);
-                    data[idx]     = Math.round(nR * (1 - white * 0.0) + 255 * white);
-                    data[idx + 1] = Math.round(nG * (1 - white) + 220 * white);
-                    data[idx + 2] = Math.round(nB * (1 - white * 0.0) + 255 * white);
-                    data[idx + 3] = 255;
-                } else if (d > innerGlowStart) {
-                    // Inner glow zone: blend webcam with soft glow
-                    const t = (d - innerGlowStart) / (ringInner - innerGlowStart);
-                    const glowIntensity = Math.pow(t, 2.0) * 0.55;
-                    data[idx]     = Math.round(data[idx]     * (1 - glowIntensity) + gR * glowIntensity);
-                    data[idx + 1] = Math.round(data[idx + 1] * (1 - glowIntensity) + gG * glowIntensity);
-                    data[idx + 2] = Math.round(data[idx + 2] * (1 - glowIntensity) + gB * glowIntensity);
-                    // Alpha stays as-is (webcam content)
-                } else if (d > innerGlowStart - 0.02) {
-                    // Soft anti-alias transition
-                    const t = (d - (innerGlowStart - 0.02)) / 0.02;
-                    const vignette = t * 0.05;
-                    data[idx]     = Math.round(data[idx]     * (1 - vignette) + gR * vignette);
-                    data[idx + 1] = Math.round(data[idx + 1] * (1 - vignette) + gG * vignette);
-                    data[idx + 2] = Math.round(data[idx + 2] * (1 - vignette) + gB * vignette);
+                    continue;
                 }
-                // else: pure webcam pixels unchanged
+                // White band hugging the inside of the outline.
+                const white = smooth((dist + border) / border);
+                if (white > 0.001) {
+                    data[idx]     = Math.round(data[idx]     * (1 - white) + 255 * white);
+                    data[idx + 1] = Math.round(data[idx + 1] * (1 - white) + 255 * white);
+                    data[idx + 2] = Math.round(data[idx + 2] * (1 - white) + 255 * white);
+                }
+                if (dist > -aa)
+                    data[idx + 3] = Math.round(data[idx + 3] * smooth(-dist / aa));
             }
         }
     }

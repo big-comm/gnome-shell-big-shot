@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: big-shot 1.0\n"
 "Report-Msgid-Bugs-To: https://github.com/BigCommunity/gnome-shell-big-shot/"
 "issues\n"
-"POT-Creation-Date: 2026-09-02 00:45-0300\n"
+"POT-Creation-Date: 2026-09-02 15:45-0300\n"
 "PO-Revision-Date: 2026-08-15 18:02-0300\n"
 "Last-Translator: Tales A. Mendonça <talesam@gmail.com>\n"
 "Language-Team: Ukrainian\n"
@@ -131,7 +131,8 @@ msgstr "Не вдалося зупинити запис"
 #, javascript-format
 msgid ""
 "The screencast service stopped responding. The file is still growing at %s."
-msgstr "Служба запису екрана перестала відповідати. Файл продовжує зростати в %s."
+msgstr ""
+"Служба запису екрана перестала відповідати. Файл продовжує зростати в %s."
 
 #: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:3055
 msgid ""
@@ -145,7 +146,7 @@ msgstr "Десктоп"
 
 #: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partaudio.js:110
 #: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partaudio.js:168
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:591
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:592
 msgid "Mic"
 msgstr "Мікрофон"
 
@@ -173,292 +174,255 @@ msgstr ""
 msgid "Screen recording"
 msgstr ""
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:40
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:41
 msgid "Select / Move"
 msgstr "Вибрати / Перемістити"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:41
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:42
 msgid "Pen"
 msgstr "Ручка"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:42
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:43
 msgid "Arrow"
 msgstr "Стрілка"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:43
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:44
 msgid "Line"
 msgstr "Лінія"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:44
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:45
 msgid "Rectangle"
 msgstr "Прямокутник"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:45
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:630
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partwebcam.js:45
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:46
 msgid "Oval"
 msgstr "Oval"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:46
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:47
 msgid "Text"
 msgstr "Текст"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:47
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:48
 msgid "Highlighter"
 msgstr "Маркер"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:48
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:49
 msgid "Censor"
 msgstr "Цензура"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:49
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:50
 msgid "Blur"
 msgstr "Розмиття"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:50
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:51
 msgid "Invert Colors"
 msgstr "Інвертувати кольори"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:51
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:52
 msgid "Magnify / Zoom"
 msgstr "Масштабування / Збільшення"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:52
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:53
 msgid "Number"
 msgstr "Номер"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:53
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:54
 msgid "Number with Arrow"
 msgstr "Число зі стрілкою"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:54
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:55
 msgid "Number with Pointer"
 msgstr "Число з вказівником"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:55
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:56
 msgid "Eraser"
 msgstr "Гумка"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:61
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:62
 #, javascript-format
 msgid "Software %s"
 msgstr ""
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:64
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:65
 #, javascript-format
 msgid "%s Low-Power"
 msgstr ""
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:133
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:141
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:134
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:142
 msgid "Show screenshot panel"
 msgstr "Показати панель знімків екрана"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:141
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:142
 msgid "Hide screenshot panel"
 msgstr "Сховати панель знімків екрана"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:218
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:221
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:219
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:222
 msgid "Color"
 msgstr "Колір"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:233
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:236
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:234
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:237
 msgid "Fill"
 msgstr "Заповнити"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:246
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:247
 msgid "Decrease Size"
 msgstr "Зменшити розмір"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:263
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:264
 msgid "Brush Size"
 msgstr "Розмір пензля"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:287
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:288
 msgid "Increase Size"
 msgstr "Збільшити розмір"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:306
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:310
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:307
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:311
 msgid "Font"
 msgstr "Шрифт"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:333
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:353
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1448
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1468
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:334
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:354
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1442
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1462
 msgid "Intensity"
 msgstr "Інтенсивність"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:365
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:368
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:366
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:369
 msgid "Undo"
 msgstr "Відмінити"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:377
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:380
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:378
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:381
 msgid "Redo"
 msgstr "Повторити"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:393
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:396
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:394
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:397
 msgid "Copy to Clipboard"
 msgstr "Копіювати в буфер обміну"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:405
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:408
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:406
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:409
 msgid "Save As…"
 msgstr "Зберегти як…"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:417
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:420
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:418
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:421
 msgid "Extract Text (OCR)"
 msgstr "Витягти текст (OCR)"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:433
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:434
 msgid "OCR Language"
 msgstr "Мова OCR"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:436
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:437
 msgid "Select OCR Language"
 msgstr "Вибрати мову OCR"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:460
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:466
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1069
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:461
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:467
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1063
 msgid "Close"
 msgstr "Закрити"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:466
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1069
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:467
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1063
 msgid "Done"
 msgstr "Готово"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:499
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:703
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:500
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:697
 msgid "Video Settings"
 msgstr "Відео налаштування"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:543
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:544
 msgid "Quality"
 msgstr "Якість"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:551
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:552
 msgid "Very High"
 msgstr "Дуже високий"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:552
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:553
 msgid "High"
 msgstr "Високий"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:553
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:554
 msgid "Medium"
 msgstr "Середній"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:554
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:555
 msgid "Low"
 msgstr "Низький"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:555
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:556
 msgid "Very Low"
 msgstr "Дуже низький"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:556
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:557
 msgid "Super Low"
 msgstr "Вкрай низький"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:568
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:569
 msgid "Recording quality (bitrate)"
 msgstr "Якість запису (бітрейт)"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:578
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:579
 msgid "Codec"
 msgstr "Кодек"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:605
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:606
 msgid "Camera"
 msgstr "Камера"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:619
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:620
 msgid "Mask"
 msgstr "Маска"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:628
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partwebcam.js:43
-msgid "None"
-msgstr ""
-
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:629
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partwebcam.js:44
-msgid "Circle"
-msgstr ""
-
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:631
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partwebcam.js:46
-msgid "Soft"
-msgstr ""
-
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:632
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partwebcam.js:47
-msgid "Spot"
-msgstr ""
-
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:633
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partwebcam.js:48
-msgid "Ornate"
-msgstr ""
-
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:634
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partwebcam.js:49
-msgid "Checker"
-msgstr ""
-
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:635
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partwebcam.js:50
-msgid "Neon"
-msgstr ""
-
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:657
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:651
 msgid "Size"
 msgstr "Розмір"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:697
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:691
 msgid "Edit"
 msgstr "Редагувати"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:703
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:697
 msgid "Edit Screenshot"
 msgstr "Редагувати знімок екрана"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1296
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1290
 msgid "Custom"
 msgstr "Користувацький"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1558
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1552
 msgid "No Fill"
 msgstr "Без заповнення"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1698
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1760
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1835
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1692
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1754
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1829
 msgid "Auto"
 msgstr "Авто"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1839
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1833
 msgid "Use best available codec"
 msgstr "Використовуйте найкращий доступний кодек"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1855
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1849
 msgid "Video codec"
 msgstr "Відеокодек"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1924
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1918
 msgid "OCR Languages"
 msgstr "Мови OCR"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1936
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1930
 msgid "Auto (system)"
 msgstr "Авто (система)"
 
@@ -470,16 +434,60 @@ msgstr "Редагувати в реальному часі"
 msgid "Clear annotations"
 msgstr "Очистити анотації"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partwebcam.js:96
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partwebcam.js:44
+msgid "None"
+msgstr ""
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partwebcam.js:45
+msgid "Circle"
+msgstr ""
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partwebcam.js:46
+msgid "Halo"
+msgstr "Ореол"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partwebcam.js:47
+msgid "Teardrop"
+msgstr "Крапля"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partwebcam.js:48
+msgid "Spot"
+msgstr ""
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partwebcam.js:49
+msgid "Rounded"
+msgstr "Заокруглене"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partwebcam.js:50
+msgid "Widescreen"
+msgstr "Широкий екран"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partwebcam.js:51
+msgid "Ornate"
+msgstr ""
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partwebcam.js:52
+msgid "Neon Pink"
+msgstr "Неоновий рожевий"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partwebcam.js:53
+msgid "Neon Blue"
+msgstr "Неоновий синій"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partwebcam.js:54
+msgid "Neon Spectrum"
+msgstr "Неоновий спектр"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partwebcam.js:115
 msgid "Webcam"
 msgstr "Вебкамера"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partwebcam.js:121
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partwebcam.js:140
 msgid "Webcam Overlay"
 msgstr "Накладення вебкамери"
 
 #. TRANSLATORS: %d is the numeric camera device index.
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partwebcam.js:189
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partwebcam.js:208
 #, javascript-format
 msgid "Camera %d"
 msgstr ""

@@ -18,6 +18,7 @@ import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 import { gettext as _ } from 'resource:///org/gnome/shell/extensions/extension.js';
 
 import { PartUI } from './partbase.js';
+import { BUILTIN_MASKS } from './partwebcam.js';
 import { PALETTE } from '../drawing/colors.js';
 
 // Cached font list (loaded once, shared across instances)
@@ -624,16 +625,9 @@ export class PartToolbar extends PartUI {
         this._maskButtons = new Map();
         this._selectedMaskId = 'circle';
 
-        const maskOptions = [
-            { id: 'none', label: () => _('None') },
-            { id: 'circle', label: () => _('Circle') },
-            { id: 'ellipse', label: () => _('Oval') },
-            { id: 'soft-circle', label: () => _('Soft') },
-            { id: 'spotlight', label: () => _('Spot') },
-            { id: 'ornate-frame', label: () => _('Ornate') },
-            { id: 'checker', label: () => _('Checker') },
-            { id: 'neon', label: () => _('Neon') },
-        ];
+        // Single source of truth: the masks the webcam part can actually
+        // render. A second hand-kept list here had already drifted.
+        const maskOptions = BUILTIN_MASKS;
         for (const m of maskOptions) {
             const btn = new St.Button({
                 style_class: 'screenshot-ui-show-pointer-button',
