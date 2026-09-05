@@ -18,6 +18,7 @@ import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 import { gettext as _ } from 'resource:///org/gnome/shell/extensions/extension.js';
 
 import { PartUI } from './partbase.js';
+import { PartMonitor } from './partmonitor.js';
 import { BUILTIN_MASKS } from './partwebcam.js';
 import { PALETTE } from '../drawing/colors.js';
 
@@ -84,6 +85,10 @@ export class PartToolbar extends PartUI {
         this._selectedPipelineId = null; // null = auto cascade
 
         this._buildToolbar();
+        this._monitorPlacement = new PartMonitor(this._ui, this._ext, () => {
+            this._positionCaptureToolbar(this._editContainer);
+            this._positionCaptureToolbar(this._videoContainer);
+        });
     }
 
     _getIcon(iconName) {
@@ -831,18 +836,7 @@ export class PartToolbar extends PartUI {
         this._connectDragEventActor(this._ui ?? global.stage);
         this._ui.add_child(this._editContainer);
 
-        // Position editContainer above the native panel
-        const panel = this._ui._panel;
-        if (panel) {
-            const [px, py] = panel.get_transformed_position();
-            const pw = panel.width;
-            const cw = this._editContainer.get_preferred_width(-1)[1] || 600;
-            const ch = this._editContainer.get_preferred_height(-1)[1] || 40;
-            this._editContainer.set_position(
-                px + (pw - cw) / 2,
-                py - ch - 12,
-            );
-        }
+        this._positionCaptureToolbar(this._editContainer);
 
         this._setNativePanelVisible(false);
 
@@ -924,8 +918,9 @@ export class PartToolbar extends PartUI {
     }
 
     _setRecordingToolbarPosition() {
-        const monitor = global.display.get_current_monitor();
-        const rect = global.display.get_monitor_geometry(monitor);
+        const rect = this._monitorPlacement?.monitor ?? Main.layoutManager.primaryMonitor;
+        if (!rect)
+            return;
         const prefWidth = this._editContainer.get_preferred_width(-1)[1];
         const prefHeight = this._editContainer.get_preferred_height(-1)[1];
         const cw = Number.isFinite(prefWidth) && prefWidth > 0 ? prefWidth : 620;
@@ -1133,22 +1128,7 @@ export class PartToolbar extends PartUI {
         this._populateVideoCodecs();
         this._ui.add_child(this._videoContainer);
 
-        // Center above the native panel on the primary monitor
-        const panel = this._ui._panel;
-        const monitor = global.display.get_primary_monitor();
-        const monRect = global.display.get_monitor_geometry(monitor);
-        const cw = this._videoContainer.get_preferred_width(-1)[1] || 300;
-        const ch = this._videoContainer.get_preferred_height(-1)[1] || 80;
-
-        let cy = monRect.y + monRect.height - ch - 24; // near bottom
-        if (panel && panel.visible) {
-            const [, py] = panel.get_transformed_position();
-            cy = py - ch - 12;
-        }
-        this._videoContainer.set_position(
-            monRect.x + (monRect.width - cw) / 2,
-            cy,
-        );
+        this._positionCaptureToolbar(this._videoContainer);
 
         // Fade-in
         this._videoContainer.opacity = 0;
@@ -1160,6 +1140,22 @@ export class PartToolbar extends PartUI {
     }
 
     /** Reposition video panel centered above the bottom bar after row changes. */
+    _positionCaptureToolbar(actor) {
+        if (!actor || actor.get_parent() !== this._ui)
+            return;
+        const rect = this._monitorPlacement?.monitor ?? Main.layoutManager.primaryMonitor;
+        if (!rect)
+            return;
+        const width = actor.get_preferred_width(-1)[1] || 600;
+        const height = actor.get_preferred_height(-1)[1] || 80;
+        const panelHeight = this._ui._panel?.visible
+            ? this._ui._panel.get_preferred_height(-1)[1] : 0;
+        actor.set_position(
+            rect.x + Math.max(0, (rect.width - width) / 2),
+            Math.max(rect.y, rect.y + rect.height - height - panelHeight - 24),
+        );
+    }
+
     repositionVideoPanel() {
         if (!this._videoContainer.get_parent()) return;
 
@@ -1170,21 +1166,7 @@ export class PartToolbar extends PartUI {
             this._videoPanelPositionId = 0;
             if (!this._actorIsOnStage(this._videoContainer))
                 return GLib.SOURCE_REMOVE;
-            const panel = this._ui._panel;
-            const monitor = global.display.get_primary_monitor();
-            const monRect = global.display.get_monitor_geometry(monitor);
-            const cw = this._videoContainer.get_preferred_width(-1)[1] || 300;
-            const ch = this._videoContainer.get_preferred_height(-1)[1] || 80;
-
-            let cy = monRect.y + monRect.height - ch - 24;
-            if (panel && panel.visible) {
-                const [, py] = panel.get_transformed_position();
-                cy = py - ch - 12;
-            }
-            this._videoContainer.set_position(
-                monRect.x + (monRect.width - cw) / 2,
-                cy,
-            );
+            this._positionCaptureToolbar(this._videoContainer);
             return GLib.SOURCE_REMOVE;
         });
     }
@@ -2172,6 +2154,8 @@ export class PartToolbar extends PartUI {
     }
 
     destroy() {
+        this._monitorPlacement?.destroy();
+        this._monitorPlacement = null;
         this._disconnectDragEventActor();
         this.detachEditForRecording();
         this._detachEditFromPanel();
