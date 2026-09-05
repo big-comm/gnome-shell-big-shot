@@ -2257,8 +2257,11 @@ export default class BigShotExtension extends Extension {
                 // enumerateDevices() reads sysfs asynchronously; the guard
                 // covers the webcam being switched off while it runs.
                 this._webcam.enumerateDevices().then(devices => {
-                    if (this._webcam && this._toolbar?._cameraRow)
+                    if (this._webcam?.enabled && this._webcam._isCastMode &&
+                        this._toolbar?._cameraRow) {
                         this._toolbar.populateCameras(devices);
+                        this._toolbar.repositionVideoPanel();
+                    }
                 }).catch(e => {
                     warn(`Camera list unavailable: ${e.message}`);
                 });
@@ -2280,7 +2283,7 @@ export default class BigShotExtension extends Extension {
                 const mics = this._audio.enumerateMicrophones();
                 this._toolbar.populateMicrophones(mics);
             } else {
-                this._toolbar.populateMicrophones([]);
+                this._toolbar._micRow.visible = false;
             }
             this._toolbar.repositionVideoPanel();
         });
@@ -2308,9 +2311,7 @@ export default class BigShotExtension extends Extension {
                 this._webcam.reparentForPreview();
                 this._webcam.startPreview();
             } else if (!ui.visible && this._recordingState === 'idle') {
-                // Reset webcam button to off so next open starts clean
-                if (this._webcam?._webcamButton)
-                    this._webcam._webcamButton.checked = false;
+                this._webcam?.stopPreview();
             } else if (!ui.visible && this._recordingState !== 'idle') {
                 // Recording started, UI hiding — move webcam to TopChrome
                 this._webcam?.reparentForRecording();

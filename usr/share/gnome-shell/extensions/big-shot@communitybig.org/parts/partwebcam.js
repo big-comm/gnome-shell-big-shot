@@ -242,7 +242,7 @@ export class PartWebcam extends PartUI {
     async startPreview() {
         if (!Gst)
             await gstReady;
-        if (!this._enabled || !Gst || this._pipeline || !this._isCastMode)
+        if (!this._enabled || !Gst || this._pipeline || !this._isCastMode || !this._ui.visible)
             return;
 
         this._createOverlay();
@@ -265,6 +265,11 @@ export class PartWebcam extends PartUI {
         // to screenshot, but we need the webcam to persist during recording.
         if (!isCast && (!this._ext || this._ext._recordingState === 'idle'))
             this.stopPreview();
+        else if (isCast && this._enabled && this._ui.visible &&
+            (!this._ext || this._ext._recordingState === 'idle'))
+            this.startPreview();
+
+        this._webcamToggledCallback?.(isCast && this._enabled);
     }
 
     // =========================================================================

@@ -120,7 +120,7 @@ export class PartAudio extends PartUI {
         typeContainer.add_child(this._micButton);
 
         // Notify toolbar when mic is toggled so it can show/hide mic selector
-        this._micButton.connect('clicked', () => {
+        this._micButton.connect('notify::checked', () => {
             this._micToggledCallback?.(this._micButton.checked);
         });
 
@@ -292,8 +292,7 @@ export class PartAudio extends PartUI {
         if (this._micButton) {
             this._micButton.visible = isCast;
             this._micButton.reactive = isCast;
-            if (!isCast)
-                this._micToggledCallback?.(false);
+            this._micToggledCallback?.(isCast && this._micButton.checked);
         }
     }
 
