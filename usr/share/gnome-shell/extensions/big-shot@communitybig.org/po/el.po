@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: big-shot 1.0\n"
 "Report-Msgid-Bugs-To: https://github.com/BigCommunity/gnome-shell-big-shot/"
 "issues\n"
-"POT-Creation-Date: 2026-09-02 15:45-0300\n"
+"POT-Creation-Date: 2026-09-07 01:07-0300\n"
 "PO-Revision-Date: 2026-08-15 18:02-0300\n"
 "Last-Translator: Tales A. Mendonça <talesam@gmail.com>\n"
 "Language-Team: Greek\n"
@@ -46,41 +46,42 @@ msgstr "Μεγέθυνση λεζάντας"
 msgid "BigShot from %d %t"
 msgstr "BigShot από %d %t"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1165
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1180
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1178
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1193
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1312
 msgid "Screenshot taken"
 msgstr "Η λήψη οθόνης ολοκληρώθηκε"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1222
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1332
 msgid "Screenshots"
 msgstr "Λήψεις οθόνης"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1232
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1894
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1342
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:2004
 #, javascript-format
 msgid "Screenshot from %s"
 msgstr "Λήψη οθόνης από %s"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1281
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1391
 msgid "Screen Capture"
 msgstr "Αποτύπωση Οθόνης"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1334
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1366
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1444
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1476
 msgid "Screenshot captured"
 msgstr "Καταγράφηκε Στιγμιότυπο Οθόνης"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1335
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1367
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1445
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1477
 msgid "You can paste the image from the clipboard"
 msgstr "Μπορείτε να Επικολλήσετε την Εικόνα από το Πρόχειρο"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1342
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1452
 msgid "Show in Files"
 msgstr "Εμφάνιση στα Αρχεία"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1652
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1666
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1762
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1776
 msgid ""
 "Automatic installation is unavailable. Install Tesseract and its language "
 "packs with your package manager."
@@ -88,45 +89,45 @@ msgstr ""
 "Η αυτόματη εγκατάσταση δεν είναι διαθέσιμη. Εγκαταστήστε το Tesseract και τα "
 "πακέτα γλωσσών του με το διαχειριστή πακέτων σας."
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1715
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1825
 msgid "Screenshot copied"
 msgstr "Η λήψη οθόνης αντιγράφηκε"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1747
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1857
 msgid "Extracting text..."
 msgstr "Εξαγωγή κειμένου..."
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1769
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1879
 #, javascript-format
 msgid "Text copied to clipboard! (%d chars)"
 msgstr "Το κείμενο αντιγράφηκε στο πρόχειρο! (%d χαρακτήρες)"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1772
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1882
 msgid "No text found in selection"
 msgstr "Δεν βρέθηκε κείμενο στην επιλογή"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1778
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1888
 #, javascript-format
 msgid "OCR failed: %s"
 msgstr "Το OCR απέτυχε: %s"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1919
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:2029
 msgid "Save Screenshot"
 msgstr "Αποθήκευση λήψης οθόνης"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1925
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:2035
 msgid "PNG Images"
 msgstr ""
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:2773
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:2884
 msgid "GNOME default"
 msgstr ""
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:3052
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:3163
 msgid "Recording could not be stopped"
 msgstr "Δεν ήταν δυνατή η διακοπή της εγγραφής"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:3054
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:3165
 #, javascript-format
 msgid ""
 "The screencast service stopped responding. The file is still growing at %s."
@@ -134,7 +135,7 @@ msgstr ""
 "Η υπηρεσία εγγραφής οθόνης σταμάτησε να αποκρίνεται. Το αρχείο συνεχίζει να "
 "μεγαλώνει στο %s."
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:3055
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:3166
 msgid ""
 "The screencast service stopped responding and the recording is still running."
 msgstr ""
@@ -148,7 +149,7 @@ msgstr "Desktop"
 
 #: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partaudio.js:110
 #: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partaudio.js:168
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:592
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:631
 msgid "Mic"
 msgstr "Μικρόφωνο"
 
@@ -176,255 +177,274 @@ msgstr ""
 msgid "Screen recording"
 msgstr ""
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:41
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:42
 msgid "Select / Move"
 msgstr "Επιλογή / Μετακίνηση"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:42
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:43
 msgid "Pen"
 msgstr "Στυλό"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:43
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:44
 msgid "Arrow"
 msgstr "Βέλος"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:44
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:45
 msgid "Line"
 msgstr "Γραμμή"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:45
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:46
 msgid "Rectangle"
 msgstr "Ορθογώνιο"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:46
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:47
 msgid "Oval"
 msgstr "Oval"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:47
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:48
 msgid "Text"
 msgstr "Κείμενο"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:48
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:49
 msgid "Highlighter"
 msgstr "Υπογραμμιστής"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:49
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:50
 msgid "Censor"
 msgstr "Λογοκρισία"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:50
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:51
 msgid "Blur"
 msgstr "Θόλωμα"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:51
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:52
 msgid "Invert Colors"
 msgstr "Αντιστροφή χρωμάτων"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:52
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:53
 msgid "Magnify / Zoom"
 msgstr "Μεγέθυνση / Ζουμ"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:53
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:54
 msgid "Number"
 msgstr "Αριθμός"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:54
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:55
 msgid "Number with Arrow"
 msgstr "Αριθμός με Βέλος"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:55
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:56
 msgid "Number with Pointer"
 msgstr "Αριθμός με Δείκτη"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:56
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:57
 msgid "Eraser"
 msgstr "Γόμα"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:62
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:63
 #, javascript-format
 msgid "Software %s"
 msgstr ""
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:65
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:66
 #, javascript-format
 msgid "%s Low-Power"
 msgstr ""
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:134
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:142
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:141
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:149
 msgid "Show screenshot panel"
 msgstr "Εμφάνιση πίνακα λήψεων οθόνης"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:142
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:149
 msgid "Hide screenshot panel"
 msgstr "Απόκρυψη πίνακα λήψεων οθόνης"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:219
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:222
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:175
+msgid "Screenshot timer"
+msgstr "Χρονόμετρο στιγμιότυπου"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:180
+#, javascript-format
+msgid "Screenshot timer: %d s"
+msgstr "Χρονόμετρο στιγμιότυπου: %d δ"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:181
+msgid "Screenshot timer: off"
+msgstr "Χρονόμετρο στιγμιότυπου: ανενεργό"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:258
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:261
 msgid "Color"
 msgstr "Χρώμα"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:234
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:237
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:273
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:276
 msgid "Fill"
 msgstr "Γέμισμα"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:247
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:286
 msgid "Decrease Size"
 msgstr "Μείωση Μεγέθους"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:264
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:303
 msgid "Brush Size"
 msgstr "Μέγεθος Πινέλου"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:288
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:327
 msgid "Increase Size"
 msgstr "Αύξηση Μεγέθους"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:307
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:311
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:346
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:350
 msgid "Font"
 msgstr "Γραμματοσειρά"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:334
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:354
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1442
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1462
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:373
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:393
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1458
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1478
 msgid "Intensity"
 msgstr "Ένταση"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:366
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:369
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:405
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:408
 msgid "Undo"
 msgstr "Αναίρεση"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:378
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:381
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:417
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:420
 msgid "Redo"
 msgstr "Επανάληψη"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:394
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:397
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:433
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:436
 msgid "Copy to Clipboard"
 msgstr "Αντιγραφή στο Πρόχειρο"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:406
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:409
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:445
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:448
 msgid "Save As…"
 msgstr "Αποθήκευση ως…"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:418
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:421
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:457
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:460
 msgid "Extract Text (OCR)"
 msgstr "Εξαγωγή κειμένου (OCR)"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:434
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:473
 msgid "OCR Language"
 msgstr "Γλώσσα OCR"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:437
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:476
 msgid "Select OCR Language"
 msgstr "Επιλογή γλώσσας OCR"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:461
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:467
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1063
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:500
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:506
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1092
 msgid "Close"
 msgstr "Κλείσιμο"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:467
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1063
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:506
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1092
 msgid "Done"
 msgstr "Τέλος"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:500
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:697
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:539
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:736
 msgid "Video Settings"
 msgstr "Ρυθμίσεις Βίντεο"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:544
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:583
 msgid "Quality"
 msgstr "Ποιότητα"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:552
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:591
 msgid "Very High"
 msgstr "Πολύ υψηλή"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:553
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:592
 msgid "High"
 msgstr "Υψηλή"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:554
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:593
 msgid "Medium"
 msgstr "Μεσαία"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:555
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:594
 msgid "Low"
 msgstr "Χαμηλό"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:556
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:595
 msgid "Very Low"
 msgstr "Πολύ χαμηλή"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:557
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:596
 msgid "Super Low"
 msgstr "Εξαιρετικά χαμηλή"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:569
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:608
 msgid "Recording quality (bitrate)"
 msgstr "Ποιότητα εγγραφής (bitrate)"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:579
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:618
 msgid "Codec"
 msgstr "Κωδικοποιητής"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:606
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:645
 msgid "Camera"
 msgstr "Κάμερα"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:620
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:659
 msgid "Mask"
 msgstr "Μάσκα"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:651
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:690
 msgid "Size"
 msgstr "Μέγεθος"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:691
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:730
 msgid "Edit"
 msgstr "Επεξεργασία"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:697
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:736
 msgid "Edit Screenshot"
 msgstr "Επεξεργασία στιγμιότυπου"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1290
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1306
 msgid "Custom"
 msgstr "Προσαρμοσμένο"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1552
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1568
 msgid "No Fill"
 msgstr "Χωρίς γέμισμα"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1692
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1754
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1829
+#. TRANSLATORS: compact timer label, %d is a number of seconds.
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1658
+#, javascript-format
+msgid "%ds"
+msgstr "%dδ"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1724
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1786
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1861
 msgid "Auto"
 msgstr "Αυτόματο"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1833
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1865
 msgid "Use best available codec"
 msgstr "Χρησιμοποιήστε τον καλύτερο διαθέσιμο κωδικοποιητή"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1849
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1881
 msgid "Video codec"
 msgstr "Κωδικοποιητής βίντεο"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1918
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1950
 msgid "OCR Languages"
 msgstr "Γλώσσες OCR"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1930
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1962
 msgid "Auto (system)"
 msgstr "Αυτόματο (σύστημα)"
 

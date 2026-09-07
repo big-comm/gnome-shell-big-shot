@@ -1016,6 +1016,19 @@ export default class BigShotExtension extends Extension {
             const overlay = ext._annotation?._overlay;
             const actions = overlay?._actions;
 
+            // Timer set: the UI closes right after this returns, so read the
+            // selection now and capture the live screen once it is gone.
+            // Annotations belong to the frozen frame the UI opened with, so a
+            // delayed shot deliberately ignores them.
+            const delay = ext._toolbar?.captureDelay ?? 0;
+            if (delay > 0 && (!actions || actions.length === 0)) {
+                const geometry = ext._selectedCaptureGeometry(this);
+                if (geometry) {
+                    ext._startDelayedCapture(geometry, delay, enableSerial);
+                    return;
+                }
+            }
+
             // No annotations — use original save
             if (!actions || actions.length === 0) {
                 return ext._origSaveScreenshot();
@@ -1203,6 +1216,103 @@ export default class BigShotExtension extends Extension {
     /**
      * Store screenshot to clipboard + file (mirrors GNOME's _storeScreenshot)
      */
+    /**
+     * Geometry the user picked in the screenshot UI, in stage coordinates.
+     * Returns null for window mode, which has no stable rectangle once the
+     * UI closes and the user may raise a different window.
+     */
+    _selectedCaptureGeometry(ui) {
+        if (ui._selectionButton?.checked) {
+            const [x, y, w, h] = ui._getSelectedGeometry
+                ? ui._getSelectedGeometry(false)
+                : [];
+            return Number.isFinite(w) && w > 0 ? { x, y, width: w, height: h } : null;
+        }
+        if (ui._screenButton?.checked) {
+            const index = global.display.get_current_monitor();
+            const geo = global.display.get_monitor_geometry(index);
+            return { x: geo.x, y: geo.y, width: geo.width, height: geo.height };
+        }
+        return null;
+    }
+
+    /** Big centred countdown, drawn above everything and never captured. */
+    _showCountdown(seconds) {
+        const label = new St.Label({
+            style_class: 'big-shot-countdown',
+            text: String(seconds),
+            style: 'font-size: 96px; font-weight: 800; color: white; ' +
+                   'background-color: rgba(0,0,0,0.55); border-radius: 24px; ' +
+                   'padding: 12px 32px;',
+        });
+        label.set_pivot_point(0.5, 0.5);
+        Main.uiGroup.add_child(label);
+        Shell.util_set_hidden_from_pick(label, true);
+
+        const place = () => {
+            const monitor = Main.layoutManager.currentMonitor;
+            label.set_position(
+                Math.round(monitor.x + (monitor.width - label.width) / 2),
+                Math.round(monitor.y + (monitor.height - label.height) / 2));
+        };
+        place();
+        return { label, place };
+    }
+
+    /**
+     * Close-count-capture: the UI is already on its way out, so wait, grab the
+     * live screen and store it through the same path as a normal shot.
+     */
+    _startDelayedCapture(geometry, seconds, enableSerial) {
+        const countdown = this._showCountdown(seconds);
+        let remaining = seconds;
+
+        const tick = () => {
+            if (this._activeEnableSerial !== enableSerial) {
+                countdown.label.destroy();
+                return GLib.SOURCE_REMOVE;
+            }
+            remaining--;
+            if (remaining > 0) {
+                countdown.label.text = String(remaining);
+                countdown.place();
+                return GLib.SOURCE_CONTINUE;
+            }
+            // Remove the overlay before grabbing, so it stays out of the shot.
+            countdown.label.destroy();
+            this._captureNow(geometry, enableSerial).catch(e => {
+                fail(`Delayed screenshot failed: ${e.message}`);
+            });
+            return GLib.SOURCE_REMOVE;
+        };
+
+        this._addTimeout(1000, tick);
+    }
+
+    async _captureNow(geometry, enableSerial) {
+        const shooter = new Shell.Screenshot();
+        const stream = Gio.MemoryOutputStream.new_resizable();
+        const { x, y, width, height } = geometry;
+
+        const pixbuf = await new Promise((resolve, reject) => {
+            shooter.screenshot_area(x, y, width, height, stream, (obj, result) => {
+                try {
+                    resolve(obj.screenshot_area_finish(result));
+                } catch (e) {
+                    reject(e);
+                }
+            });
+        });
+
+        stream.close(null);
+        if (this._activeEnableSerial !== enableSerial)
+            return;
+
+        global.display.get_sound_player().play_from_theme(
+            'screen-capture', _('Screenshot taken'), null);
+        this._storeScreenshotBytes(stream.steal_as_bytes(), pixbuf);
+    }
+
     _storeScreenshotBytes(bytes, pixbuf) {
         // Clipboard
         const clipboard = St.Clipboard.get_default();

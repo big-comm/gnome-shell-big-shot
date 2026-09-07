@@ -467,3 +467,30 @@ test('recordings are pinned to the requested constant frame rate', async () => {
     // The dead placeholder is gone; the stage is built explicitly.
     assert.doesNotMatch(source, /FRAMERATE_CAPS/);
 });
+
+test('the screenshot timer captures the live screen without the UI', async () => {
+    const [source, toolbar] = await Promise.all([
+        readFile(extensionPath, 'utf8'),
+        readFile(`${partsDir}/parttoolbar.js`, 'utf8'),
+    ]);
+
+    assert.match(toolbar, /this\._captureDelaySteps = \[0, 3, 5, 10\]/);
+    assert.match(toolbar, /get captureDelay\(\) \{ return this\._captureDelay; \}/);
+
+    // The UI closes right after _saveScreenshot returns, so the geometry has
+    // to be read before scheduling and the shot taken live afterwards.
+    assert.match(source, /const delay = ext\._toolbar\?\.captureDelay \?\? 0;/);
+    assert.match(source, /ext\._selectedCaptureGeometry\(this\)/);
+    assert.match(source, /new Shell\.Screenshot\(\)/);
+    assert.match(source, /screenshot_area\(x, y, width, height, stream/);
+
+    const startIdx = source.indexOf('    _startDelayedCapture(');
+    const endIdx = source.indexOf('    async _captureNow(', startIdx);
+    const scheduler = source.slice(startIdx, endIdx);
+    assert.ok(startIdx >= 0 && endIdx > startIdx);
+    // The countdown must be gone before the grab, or it lands in the picture.
+    assert.ok(scheduler.indexOf('countdown.label.destroy()') <
+        scheduler.indexOf('this._captureNow('));
+    // Timers stay owned by the extension's source registry.
+    assert.match(scheduler, /this\._addTimeout\(1000, tick\)/);
+});

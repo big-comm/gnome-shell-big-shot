@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: big-shot 1.0\n"
 "Report-Msgid-Bugs-To: https://github.com/BigCommunity/gnome-shell-big-shot/"
 "issues\n"
-"POT-Creation-Date: 2026-09-02 15:45-0300\n"
+"POT-Creation-Date: 2026-09-07 01:07-0300\n"
 "PO-Revision-Date: 2026-08-15 18:02-0300\n"
 "Last-Translator: Tales A. Mendonça <talesam@gmail.com>\n"
 "Language-Team: Czech\n"
@@ -46,41 +46,42 @@ msgstr "Přiblížit popisek"
 msgid "BigShot from %d %t"
 msgstr "BigShot z %d %t"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1165
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1180
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1178
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1193
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1312
 msgid "Screenshot taken"
 msgstr "Snímek obrazovky pořízen"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1222
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1332
 msgid "Screenshots"
 msgstr "Snímky obrazovky"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1232
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1894
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1342
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:2004
 #, javascript-format
 msgid "Screenshot from %s"
 msgstr "Snímek obrazovky z %s"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1281
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1391
 msgid "Screen Capture"
 msgstr "Záznam obrazovky"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1334
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1366
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1444
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1476
 msgid "Screenshot captured"
 msgstr "Byl pořízen snímek obrazovky"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1335
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1367
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1445
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1477
 msgid "You can paste the image from the clipboard"
 msgstr "Obrázek můžete vložit ze schránky"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1342
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1452
 msgid "Show in Files"
 msgstr "Zobrazit v Souborech"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1652
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1666
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1762
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1776
 msgid ""
 "Automatic installation is unavailable. Install Tesseract and its language "
 "packs with your package manager."
@@ -88,52 +89,52 @@ msgstr ""
 "Automatická instalace není dostupná. Nainstalujte Tesseract a jeho jazykové "
 "balíčky pomocí správce balíčků."
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1715
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1825
 msgid "Screenshot copied"
 msgstr "Snímek obrazovky zkopírován"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1747
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1857
 msgid "Extracting text..."
 msgstr "Extrahuje se text..."
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1769
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1879
 #, javascript-format
 msgid "Text copied to clipboard! (%d chars)"
 msgstr "Text byl zkopírován do schránky! (%d znaků)"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1772
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1882
 msgid "No text found in selection"
 msgstr "Ve výběru nebyl nalezen žádný text"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1778
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1888
 #, javascript-format
 msgid "OCR failed: %s"
 msgstr "OCR selhalo: %s"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1919
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:2029
 msgid "Save Screenshot"
 msgstr "Uložit snímek obrazovky"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1925
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:2035
 msgid "PNG Images"
 msgstr ""
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:2773
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:2884
 msgid "GNOME default"
 msgstr ""
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:3052
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:3163
 msgid "Recording could not be stopped"
 msgstr "Nahrávání se nepodařilo zastavit"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:3054
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:3165
 #, javascript-format
 msgid ""
 "The screencast service stopped responding. The file is still growing at %s."
 msgstr ""
 "Služba nahrávání obrazovky přestala odpovídat. Soubor stále roste v %s."
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:3055
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:3166
 msgid ""
 "The screencast service stopped responding and the recording is still running."
 msgstr "Služba nahrávání obrazovky přestala odpovídat a nahrávání stále běží."
@@ -145,7 +146,7 @@ msgstr "Plocha"
 
 #: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partaudio.js:110
 #: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partaudio.js:168
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:592
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:631
 msgid "Mic"
 msgstr "Mikrofon"
 
@@ -173,255 +174,274 @@ msgstr ""
 msgid "Screen recording"
 msgstr ""
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:41
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:42
 msgid "Select / Move"
 msgstr "Vybrat / Přesunout"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:42
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:43
 msgid "Pen"
 msgstr "Pero"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:43
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:44
 msgid "Arrow"
 msgstr "Šipka"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:44
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:45
 msgid "Line"
 msgstr "Čára"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:45
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:46
 msgid "Rectangle"
 msgstr "Obdélník"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:46
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:47
 msgid "Oval"
 msgstr "Oval"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:47
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:48
 msgid "Text"
 msgstr "Text"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:48
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:49
 msgid "Highlighter"
 msgstr "Zvýrazňovač"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:49
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:50
 msgid "Censor"
 msgstr "Cenzurovat"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:50
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:51
 msgid "Blur"
 msgstr "Rozostření"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:51
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:52
 msgid "Invert Colors"
 msgstr "Invertovat barvy"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:52
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:53
 msgid "Magnify / Zoom"
 msgstr "Přiblížení / zoom"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:53
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:54
 msgid "Number"
 msgstr "Číslo"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:54
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:55
 msgid "Number with Arrow"
 msgstr "Číslo se šipkou"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:55
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:56
 msgid "Number with Pointer"
 msgstr "Číslo s ukazatelem"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:56
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:57
 msgid "Eraser"
 msgstr "Guma"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:62
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:63
 #, javascript-format
 msgid "Software %s"
 msgstr ""
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:65
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:66
 #, javascript-format
 msgid "%s Low-Power"
 msgstr ""
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:134
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:142
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:141
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:149
 msgid "Show screenshot panel"
 msgstr "Zobrazit panel snímků obrazovky"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:142
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:149
 msgid "Hide screenshot panel"
 msgstr "Skrýt panel snímků obrazovky"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:219
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:222
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:175
+msgid "Screenshot timer"
+msgstr "Časovač snímku"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:180
+#, javascript-format
+msgid "Screenshot timer: %d s"
+msgstr "Časovač snímku: %d s"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:181
+msgid "Screenshot timer: off"
+msgstr "Časovač snímku: vypnuto"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:258
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:261
 msgid "Color"
 msgstr "Barva"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:234
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:237
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:273
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:276
 msgid "Fill"
 msgstr "Vyplnit"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:247
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:286
 msgid "Decrease Size"
 msgstr "Zmenšit velikost"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:264
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:303
 msgid "Brush Size"
 msgstr "Velikost štětce"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:288
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:327
 msgid "Increase Size"
 msgstr "Zvětšit velikost"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:307
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:311
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:346
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:350
 msgid "Font"
 msgstr "Písmo"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:334
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:354
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1442
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1462
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:373
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:393
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1458
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1478
 msgid "Intensity"
 msgstr "Intenzita"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:366
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:369
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:405
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:408
 msgid "Undo"
 msgstr "Zpět"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:378
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:381
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:417
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:420
 msgid "Redo"
 msgstr "Znovu"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:394
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:397
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:433
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:436
 msgid "Copy to Clipboard"
 msgstr "Kopírovat do schránky"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:406
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:409
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:445
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:448
 msgid "Save As…"
 msgstr "Uložit jako…"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:418
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:421
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:457
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:460
 msgid "Extract Text (OCR)"
 msgstr "Extrahovat text (OCR)"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:434
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:473
 msgid "OCR Language"
 msgstr "Jazyk OCR"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:437
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:476
 msgid "Select OCR Language"
 msgstr "Vyberte jazyk OCR"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:461
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:467
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1063
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:500
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:506
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1092
 msgid "Close"
 msgstr "Zavřít"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:467
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1063
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:506
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1092
 msgid "Done"
 msgstr "Hotovo"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:500
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:697
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:539
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:736
 msgid "Video Settings"
 msgstr "Nastavení videa"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:544
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:583
 msgid "Quality"
 msgstr "Kvalita"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:552
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:591
 msgid "Very High"
 msgstr "Velmi vysoká"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:553
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:592
 msgid "High"
 msgstr "Vysoká"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:554
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:593
 msgid "Medium"
 msgstr "Střední"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:555
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:594
 msgid "Low"
 msgstr "Nízká"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:556
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:595
 msgid "Very Low"
 msgstr "Velmi nízká"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:557
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:596
 msgid "Super Low"
 msgstr "Nejnižší"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:569
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:608
 msgid "Recording quality (bitrate)"
 msgstr "Kvalita nahrávání (bitrate)"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:579
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:618
 msgid "Codec"
 msgstr "Kodek"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:606
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:645
 msgid "Camera"
 msgstr "Kamera"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:620
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:659
 msgid "Mask"
 msgstr "Maska"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:651
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:690
 msgid "Size"
 msgstr "Velikost"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:691
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:730
 msgid "Edit"
 msgstr "Upravit"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:697
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:736
 msgid "Edit Screenshot"
 msgstr "Upravit screenshot"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1290
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1306
 msgid "Custom"
 msgstr "Vlastní"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1552
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1568
 msgid "No Fill"
 msgstr "Bez výplně"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1692
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1754
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1829
+#. TRANSLATORS: compact timer label, %d is a number of seconds.
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1658
+#, javascript-format
+msgid "%ds"
+msgstr "%ds"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1724
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1786
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1861
 msgid "Auto"
 msgstr "Automaticky"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1833
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1865
 msgid "Use best available codec"
 msgstr "Použijte nejlepší dostupný kodek"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1849
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1881
 msgid "Video codec"
 msgstr "Video kodek"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1918
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1950
 msgid "OCR Languages"
 msgstr "Jazyky OCR"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1930
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1962
 msgid "Auto (system)"
 msgstr "Automaticky (systém)"
 

@@ -83,6 +83,8 @@ export class PartToolbar extends PartUI {
         // Default quality; see QUALITY_PRESETS in extension.js for the scale.
         this._videoQuality = 'medium';
         this._selectedPipelineId = null; // null = auto cascade
+        // Screenshot countdown, in seconds. 0 disables it.
+        this._captureDelay = 0;
 
         this._buildToolbar();
         this._monitorPlacement = new PartMonitor(this._ui, this._ext, () => {
@@ -147,6 +149,38 @@ export class PartToolbar extends PartUI {
                 this._nativePanelHidden ? _('Show screenshot panel') : _('Hide screenshot panel')));
         this._panelToggleBtn.connect('leave-event', () => this._hideTooltip());
         this._editContainer.add_child(this._panelToggleBtn);
+
+        // Countdown timer: cycles off → 3s → 5s → 10s. Screenshot only; the
+        // recording flow already has its own start delay in the service.
+        this._captureDelaySteps = [0, 3, 5, 10];
+        // Off shows the stopwatch alone; an armed timer adds the seconds
+        // beside it, so the button never has to spell out "off".
+        this._timerLabel = new St.Label({
+            text: '',
+            visible: false,
+            y_align: Clutter.ActorAlign.CENTER,
+            style: 'padding-left: 4px;',
+        });
+        const timerBox = new St.BoxLayout({ vertical: false });
+        timerBox.add_child(new St.Icon({
+            gicon: this._getIcon('big-shot-timer-symbolic'),
+            icon_size: 18,
+        }));
+        timerBox.add_child(this._timerLabel);
+        this._timerButton = new St.Button({
+            style_class: 'big-shot-edit-btn',
+            can_focus: true,
+            toggle_mode: true,
+            child: timerBox,
+            accessible_name: _('Screenshot timer'),
+        });
+        this._timerButton.connect('clicked', () => this._cycleCaptureDelay());
+        this._timerButton.connect('enter-event', () =>
+            this._showTooltip(this._timerButton, this._captureDelay
+                ? _('Screenshot timer: %d s').format(this._captureDelay)
+                : _('Screenshot timer: off')));
+        this._timerButton.connect('leave-event', () => this._hideTooltip());
+        this._editContainer.add_child(this._timerButton);
 
         // Drag state
         this._dragging = false;
@@ -1615,6 +1649,22 @@ export class PartToolbar extends PartUI {
 
     // Video settings getters
     get videoQuality() { return this._videoQuality; }
+    _cycleCaptureDelay() {
+        const steps = this._captureDelaySteps;
+        const next = (steps.indexOf(this._captureDelay) + 1) % steps.length;
+        this._captureDelay = steps[next];
+        if (this._captureDelay > 0) {
+            // TRANSLATORS: compact timer label, %d is a number of seconds.
+            this._timerLabel.text = _('%ds').format(this._captureDelay);
+            this._timerLabel.visible = true;
+        } else {
+            this._timerLabel.text = '';
+            this._timerLabel.visible = false;
+        }
+        this._timerButton.checked = this._captureDelay > 0;
+    }
+
+    get captureDelay() { return this._captureDelay; }
     get selectedPipelineId() { return this._selectedPipelineId; }
     get webcamMaskId() { return this._selectedMaskId; }
 

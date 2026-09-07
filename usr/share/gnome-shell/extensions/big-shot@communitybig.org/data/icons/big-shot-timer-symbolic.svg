@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+  <!-- Stopwatch: wide crown, body sized so the outline survives 18px -->
+  <path d="M5.8 1.9 H10.2" fill="none" stroke="#ffffff" stroke-width="1.6" stroke-linecap="round"/>
+  <path d="M8 2.6 V4.2" fill="none" stroke="#ffffff" stroke-width="1.6" stroke-linecap="round"/>
+  <circle cx="8" cy="9.6" r="4.7" fill="none" stroke="#ffffff" stroke-width="1.6"/>
+  <path d="M8 9.6 V7.1 M8 9.6 L10 10.6" fill="none" stroke="#ffffff" stroke-width="1.4" stroke-linecap="round"/>
+</svg>
