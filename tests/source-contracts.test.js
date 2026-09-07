@@ -493,4 +493,22 @@ test('the screenshot timer captures the live screen without the UI', async () =>
         scheduler.indexOf('this._captureNow('));
     // Timers stay owned by the extension's source registry.
     assert.match(scheduler, /this\._addTimeout\(1000, tick\)/);
+
+    // Copy and Save As bypass _saveScreenshot entirely, so the timer has to
+    // be wired there too — that gap made the toolbar buttons ignore it.
+    assert.match(source,
+        /\(action === 'copy' \|\| action === 'save-as'\)/);
+    assert.match(source,
+        /this\._startDelayedCapture\(\s*geometry, delay, enableSerial, action\)/);
+    const captureIdx = source.indexOf('    async _captureNow(');
+    const captureEnd = source.indexOf('\n    _storeScreenshotBytes(', captureIdx);
+    const capture = source.slice(captureIdx, captureEnd);
+    assert.ok(captureIdx >= 0 && captureEnd > captureIdx);
+    for (const branch of ["action === 'copy'", "action === 'save-as'"])
+        assert.ok(capture.includes(branch));
+    // Annotations are re-drawn over the delayed capture, through the same
+    // compositor the immediate path uses.
+    assert.match(capture, /this\._compositeAnnotations\(/);
+    assert.match(source,
+        /_compositeAnnotations\(pixbuf, actions, offsetX, offsetY, bufScale\)/);
 });

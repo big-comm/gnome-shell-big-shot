@@ -1018,10 +1018,9 @@ export default class BigShotExtension extends Extension {
 
             // Timer set: the UI closes right after this returns, so read the
             // selection now and capture the live screen once it is gone.
-            // Annotations belong to the frozen frame the UI opened with, so a
-            // delayed shot deliberately ignores them.
+            // Annotations are re-drawn onto that capture afterwards.
             const delay = ext._toolbar?.captureDelay ?? 0;
-            if (delay > 0 && (!actions || actions.length === 0)) {
+            if (delay > 0) {
                 const geometry = ext._selectedCaptureGeometry(this);
                 if (geometry) {
                     ext._startDelayedCapture(geometry, delay, enableSerial);
@@ -1263,7 +1262,7 @@ export default class BigShotExtension extends Extension {
      * Close-count-capture: the UI is already on its way out, so wait, grab the
      * live screen and store it through the same path as a normal shot.
      */
-    _startDelayedCapture(geometry, seconds, enableSerial) {
+    _startDelayedCapture(geometry, seconds, enableSerial, action = 'store') {
         const countdown = this._showCountdown(seconds);
         let remaining = seconds;
 
@@ -1280,7 +1279,7 @@ export default class BigShotExtension extends Extension {
             }
             // Remove the overlay before grabbing, so it stays out of the shot.
             countdown.label.destroy();
-            this._captureNow(geometry, enableSerial).catch(e => {
+            this._captureNow(geometry, enableSerial, action).catch(e => {
                 fail(`Delayed screenshot failed: ${e.message}`);
             });
             return GLib.SOURCE_REMOVE;
@@ -1289,7 +1288,7 @@ export default class BigShotExtension extends Extension {
         this._addTimeout(1000, tick);
     }
 
-    async _captureNow(geometry, enableSerial) {
+    async _captureNow(geometry, enableSerial, action = 'store') {
         const shooter = new Shell.Screenshot();
         const stream = Gio.MemoryOutputStream.new_resizable();
         const { x, y, width, height } = geometry;
@@ -1308,9 +1307,47 @@ export default class BigShotExtension extends Extension {
         if (this._activeEnableSerial !== enableSerial)
             return;
 
-        global.display.get_sound_player().play_from_theme(
-            'screen-capture', _('Screenshot taken'), null);
-        this._storeScreenshotBytes(stream.steal_as_bytes(), pixbuf);
+        let bytes = stream.steal_as_bytes();
+        let shot = pixbuf;
+        const player = global.display.get_sound_player();
+
+        // Annotations were drawn in stage coordinates over the frozen frame;
+        // the same coordinates map onto the live capture, so they land where
+        // the user put them even though the content underneath moved on.
+        const actions = this._annotation?._overlay?._actions ?? [];
+        if (actions.length > 0 && pixbuf) {
+            try {
+                const composed = this._compositeAnnotations(
+                    pixbuf, actions, geometry.x, geometry.y, 1);
+                bytes = composed.bytes;
+                shot = composed.pixbuf;
+            } catch (e) {
+                warn(`Could not draw annotations on the delayed shot: ${e.message}`);
+            }
+        }
+
+        if (action === 'copy') {
+            St.Clipboard.get_default().set_content(
+                St.ClipboardType.CLIPBOARD, 'image/png', bytes);
+            player.play_from_theme('screen-capture', _('Screenshot copied'), null);
+            return;
+        }
+
+        if (action === 'save-as') {
+            St.Clipboard.get_default().set_content(
+                St.ClipboardType.CLIPBOARD, 'image/png', bytes);
+            player.play_from_theme('screen-capture', _('Screenshot taken'), null);
+            const tmpPath = this._getTempPath('save-as');
+            const tmpFile = Gio.File.new_for_path(tmpPath);
+            const outStream = tmpFile.create(Gio.FileCreateFlags.NONE, null);
+            outStream.write_bytes(bytes, null);
+            outStream.close(null);
+            this._openSaveDialog(tmpPath);
+            return;
+        }
+
+        player.play_from_theme('screen-capture', _('Screenshot taken'), null);
+        this._storeScreenshotBytes(bytes, shot);
     }
 
     _storeScreenshotBytes(bytes, pixbuf) {
@@ -1557,6 +1594,19 @@ export default class BigShotExtension extends Extension {
 
         const offsetX = gx / bufScale;
         const offsetY = gy / bufScale;
+        return this._compositeAnnotations(
+            pixbuf, actions, offsetX, offsetY, bufScale);
+    }
+
+    /**
+     * Draw the current annotations onto `pixbuf` and return PNG bytes.
+     *
+     * Shared by the immediate path, which composites onto the frame the UI
+     * froze, and by the timer, which composites onto a screen captured after
+     * the countdown. Annotations carry stage coordinates, so the same offset
+     * and scale maths applies to either image.
+     */
+    _compositeAnnotations(pixbuf, actions, offsetX, offsetY, bufScale) {
         const tmpBase = this._getTempPath('base');
         const tmpAnnotated = this._getTempPath('annotated');
 
@@ -1806,6 +1856,21 @@ export default class BigShotExtension extends Extension {
                 return;
             if (this._activeEnableSerial !== enableSerial)
                 return;
+
+            // Copy and Save As work on the frame the UI froze when it opened.
+            // With a timer armed the user wants the screen as it will look
+            // after the countdown, so close the UI and grab it live instead —
+            // the same path the capture button takes.
+            const delay = this._toolbar?.captureDelay ?? 0;
+            if (delay > 0 && (action === 'copy' || action === 'save-as')) {
+                const geometry = this._selectedCaptureGeometry(ui);
+                if (geometry) {
+                    ui.close();
+                    this._startDelayedCapture(
+                        geometry, delay, enableSerial, action);
+                    return;
+                }
+            }
 
             const result = await this._captureAnnotatedBytes();
             if (this._activeEnableSerial !== enableSerial)
