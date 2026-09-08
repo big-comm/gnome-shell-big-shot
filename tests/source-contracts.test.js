@@ -499,7 +499,14 @@ test('the screenshot timer captures the live screen without the UI', async () =>
     assert.match(source,
         /\(action === 'copy' \|\| action === 'save-as'\)/);
     assert.match(source,
-        /this\._startDelayedCapture\(\s*geometry, delay, enableSerial, action\)/);
+        /this\._startDelayedCapture\(\s*geometry, delay, enableSerial, action, annotations\)/);
+    // The overlay dies with the UI, so the annotations must be copied before
+    // closing it — reading them at capture time yields an empty list.
+    assert.match(source,
+        /const annotations =\s*\[\.\.\.\(this\._annotation\?\._overlay\?\._actions \?\? \[\]\)\]/);
+    const annIdx = source.indexOf('const annotations =');
+    assert.ok(annIdx >= 0 && annIdx < source.indexOf('ui.close();', annIdx));
+    assert.match(source, /const actions = annotations;/);
     const captureIdx = source.indexOf('    async _captureNow(');
     const captureEnd = source.indexOf('\n    _storeScreenshotBytes(', captureIdx);
     const capture = source.slice(captureIdx, captureEnd);
@@ -511,4 +518,32 @@ test('the screenshot timer captures the live screen without the UI', async () =>
     assert.match(capture, /this\._compositeAnnotations\(/);
     assert.match(source,
         /_compositeAnnotations\(pixbuf, actions, offsetX, offsetY, bufScale\)/);
+});
+
+test('the delayed capture derives its buffer scale from the image', async () => {
+    const source = await readFile(extensionPath, 'utf8');
+    const start = source.indexOf('    async _captureNow(');
+    const end = source.indexOf('\n    _storeScreenshotBytes(', start);
+    const method = source.slice(start, end);
+
+    assert.ok(start >= 0 && end > start);
+    // screenshot_area takes logical coordinates and returns physical pixels,
+    // so a hardcoded scale of 1 misplaces annotations on scaled monitors.
+    assert.match(method, /pixbuf\.get_width\(\) \/ geometry\.width/);
+    assert.doesNotMatch(method, /geometry\.x, geometry\.y, 1\)/);
+});
+
+test('the delayed capture decodes its pixbuf from the PNG stream', async () => {
+    const source = await readFile(extensionPath, 'utf8');
+    const start = source.indexOf('    async _captureNow(');
+    const end = source.indexOf('\n    _storeScreenshotBytes(', start);
+    const method = source.slice(start, end);
+
+    assert.ok(start >= 0 && end > start);
+    // screenshot_area_finish() returns a success boolean and writes the PNG
+    // into the stream. Using that boolean as an image made compositing and the
+    // notification preview fail silently ("savev is not a function").
+    assert.doesNotMatch(method, /const pixbuf = await new Promise/);
+    assert.match(method, /GdkPixbuf\.Pixbuf\.new_from_stream\(/);
+    assert.match(method, /Gio\.MemoryInputStream\.new_from_bytes\(bytes\)/);
 });

@@ -1023,7 +1023,11 @@ export default class BigShotExtension extends Extension {
             if (delay > 0) {
                 const geometry = ext._selectedCaptureGeometry(this);
                 if (geometry) {
-                    ext._startDelayedCapture(geometry, delay, enableSerial);
+                    // Copy the list now: this.close() destroys the overlay
+                    // long before the countdown ends.
+                    ext._startDelayedCapture(
+                        geometry, delay, enableSerial, 'store',
+                        [...(actions ?? [])]);
                     return;
                 }
             }
@@ -1262,7 +1266,9 @@ export default class BigShotExtension extends Extension {
      * Close-count-capture: the UI is already on its way out, so wait, grab the
      * live screen and store it through the same path as a normal shot.
      */
-    _startDelayedCapture(geometry, seconds, enableSerial, action = 'store') {
+    _startDelayedCapture(
+        geometry, seconds, enableSerial, action = 'store', annotations = [],
+    ) {
         const countdown = this._showCountdown(seconds);
         let remaining = seconds;
 
@@ -1279,21 +1285,26 @@ export default class BigShotExtension extends Extension {
             }
             // Remove the overlay before grabbing, so it stays out of the shot.
             countdown.label.destroy();
-            this._captureNow(geometry, enableSerial, action).catch(e => {
-                fail(`Delayed screenshot failed: ${e.message}`);
-            });
+            this._captureNow(geometry, enableSerial, action, annotations)
+                .catch(e => {
+                    fail(`Delayed screenshot failed: ${e.message}`);
+                });
             return GLib.SOURCE_REMOVE;
         };
 
         this._addTimeout(1000, tick);
     }
 
-    async _captureNow(geometry, enableSerial, action = 'store') {
+    async _captureNow(geometry, enableSerial, action = 'store', annotations = []) {
         const shooter = new Shell.Screenshot();
         const stream = Gio.MemoryOutputStream.new_resizable();
         const { x, y, width, height } = geometry;
 
-        const pixbuf = await new Promise((resolve, reject) => {
+        // screenshot_area_finish() reports success and writes the PNG into the
+        // stream; it does not hand back an image. The pixbuf has to be decoded
+        // from those bytes — treating the boolean as a pixbuf is what silently
+        // dropped annotations and the notification preview.
+        await new Promise((resolve, reject) => {
             shooter.screenshot_area(x, y, width, height, stream, (obj, result) => {
                 try {
                     resolve(obj.screenshot_area_finish(result));
@@ -1308,17 +1319,31 @@ export default class BigShotExtension extends Extension {
             return;
 
         let bytes = stream.steal_as_bytes();
+        let pixbuf = null;
+        try {
+            pixbuf = GdkPixbuf.Pixbuf.new_from_stream(
+                Gio.MemoryInputStream.new_from_bytes(bytes), null);
+        } catch (e) {
+            warn(`Could not decode the delayed capture: ${e.message}`);
+        }
         let shot = pixbuf;
         const player = global.display.get_sound_player();
 
         // Annotations were drawn in stage coordinates over the frozen frame;
         // the same coordinates map onto the live capture, so they land where
         // the user put them even though the content underneath moved on.
-        const actions = this._annotation?._overlay?._actions ?? [];
+        // They arrive as a snapshot: closing the UI destroys the overlay, so
+        // by now this._annotation holds nothing.
+        const actions = annotations;
         if (actions.length > 0 && pixbuf) {
             try {
+                // screenshot_area takes logical coordinates but returns
+                // physical pixels, so on a scaled monitor the image is larger
+                // than the geometry. Derive the factor instead of assuming 1,
+                // or every annotation lands at a fraction of its position.
+                const bufScale = pixbuf.get_width() / geometry.width;
                 const composed = this._compositeAnnotations(
-                    pixbuf, actions, geometry.x, geometry.y, 1);
+                    pixbuf, actions, geometry.x, geometry.y, bufScale);
                 bytes = composed.bytes;
                 shot = composed.pixbuf;
             } catch (e) {
@@ -1441,6 +1466,14 @@ export default class BigShotExtension extends Extension {
     }
 
     _showScreenshotNotification(pixbuf, time, file, disableSaveToDisk) {
+        if (!pixbuf) {
+            // No preview to show — a decode failure upstream, already logged.
+            this._showNotification(
+                _('Screenshot captured'),
+                _('You can paste the image from the clipboard'));
+            return;
+        }
+
         try {
             // Cogl must not read RGB rows as RGBA. That can overrun the
             // pixbuf buffer and crash GNOME Shell in native memcpy code.
@@ -1865,9 +1898,13 @@ export default class BigShotExtension extends Extension {
             if (delay > 0 && (action === 'copy' || action === 'save-as')) {
                 const geometry = this._selectedCaptureGeometry(ui);
                 if (geometry) {
+                    // Snapshot before closing: ui.close() tears the overlay
+                    // down, taking the annotations with it.
+                    const annotations =
+                        [...(this._annotation?._overlay?._actions ?? [])];
                     ui.close();
                     this._startDelayedCapture(
-                        geometry, delay, enableSerial, action);
+                        geometry, delay, enableSerial, action, annotations);
                     return;
                 }
             }
