@@ -644,7 +644,7 @@ export default class BigShotExtension extends Extension {
         // Big Shot builds its UI and patches the screenshot implementation.
         this._enableDeferredId = this._addIdle(() => {
             this._enableDeferredId = 0;
-            this._runDeferredEnable(enableSerial);
+            void this._runDeferredEnable(enableSerial);
             return GLib.SOURCE_REMOVE;
         }, GLib.PRIORITY_LOW);
     }
@@ -2430,7 +2430,7 @@ export default class BigShotExtension extends Extension {
 
         // Wire action buttons (copy, save-as, ocr)
         this._toolbar.onAction((action) => {
-            this._handleAction(action);
+            void this._handleAction(action);
         });
 
         // Detect Tesseract and populate OCR languages (async — won't block UI)
@@ -3522,7 +3522,7 @@ export default class BigShotExtension extends Extension {
         this._currentSegment = null;
 
         if (session?.segments?.length > 1)
-            this._mergeSegments(session);
+            void this._mergeSegments(session);
     }
 
     _finishPausedRecording() {
