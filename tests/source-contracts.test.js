@@ -215,8 +215,8 @@ test('pause is unavailable when ffmpeg cannot merge segments', async () => {
         readFile(extensionPath, 'utf8'),
         readFile(`${partsDir}/partindicator.js`, 'utf8'),
     ]);
-    const pauseStart = extension.indexOf('    async pauseRecording()');
-    const pauseEnd = extension.indexOf('    async resumeRecording()', pauseStart);
+    const pauseStart = extension.indexOf('    async _pauseRecordingAsync()');
+    const pauseEnd = extension.indexOf('    resumeRecording()', pauseStart);
     const pauseMethod = extension.slice(pauseStart, pauseEnd);
     const mergeStart = extension.indexOf('    async _mergeSegments(');
     const mergeEnd = extension.indexOf('    _cleanupMergedSegments(', mergeStart);
@@ -226,7 +226,7 @@ test('pause is unavailable when ffmpeg cannot merge segments', async () => {
     assert.match(pauseMethod, /if \(!this\._recordingSession\.ffmpegPath\)/);
     assert.match(mergeMethod, /session\.ffmpegPath/);
     assert.doesNotMatch(mergeMethod, /\n\s*'ffmpeg',/);
-    assert.match(indicator, /this\._panelButton\.reactive = this\._canPause/);
+    assert.match(indicator, /this\._pauseButton\.reactive = this\._canPause && !this\._busy/);
 });
 
 test('remaining user-visible labels use gettext and logical alignment', async () => {
