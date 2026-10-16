@@ -26,6 +26,8 @@ export class PartIndicator extends PartUI {
         this._pausedElapsed = 0;
         this._isPaused = false;
         this._canPause = false;
+        this._busy = false;
+        this._stopFailed = false;
     }
 
     onPipelineStarting() {
@@ -44,6 +46,8 @@ export class PartIndicator extends PartUI {
         this._pausedElapsed = 0;
         this._isPaused = false;
         this._canPause = canPause;
+        this._busy = false;
+        this._stopFailed = false;
         this._createPanelButton();
         this._startTimer();
     }
@@ -52,6 +56,8 @@ export class PartIndicator extends PartUI {
      * Called when recording is paused.
      */
     onPaused() {
+        this._busy = false;
+        this._stopFailed = false;
         this._isPaused = true;
         this._pausedElapsed += this._elapsed;
         this._elapsed = 0;
@@ -63,14 +69,28 @@ export class PartIndicator extends PartUI {
      * Called when recording is resumed.
      */
     onResuming() {
+        this._busy = true;
         this._isPaused = false;
         this._updatePanelButton();
     }
 
     onResumed() {
+        this._busy = false;
+        this._stopFailed = false;
         this._isPaused = false;
         this._elapsed = 0;
         this._startTimer();
+        this._updatePanelButton();
+    }
+
+    onStopping() {
+        this._busy = true;
+        this._updatePanelButton();
+    }
+
+    onStopFailed() {
+        this._busy = true;
+        this._stopFailed = true;
         this._updatePanelButton();
     }
 
@@ -84,6 +104,8 @@ export class PartIndicator extends PartUI {
         this._pausedElapsed = 0;
         this._isPaused = false;
         this._canPause = false;
+        this._busy = false;
+        this._stopFailed = false;
     }
 
     _createPanelButton() {
@@ -109,7 +131,8 @@ export class PartIndicator extends PartUI {
             y_align: Clutter.ActorAlign.CENTER,
             style: 'font-size: 12px; font-variant-numeric: tabular-nums;',
         });
-        box.add_child(this._timerLabel);
+        const pauseBox = new St.BoxLayout({ style: 'spacing: 4px;' });
+        pauseBox.add_child(this._timerLabel);
 
         if (this._canPause) {
             this._icon = new St.Icon({
@@ -117,17 +140,37 @@ export class PartIndicator extends PartUI {
                 style_class: 'system-status-icon',
                 icon_size: 16,
             });
-            box.add_child(this._icon);
+            pauseBox.add_child(this._icon);
         }
 
+        this._pauseButton = new St.Button({
+            child: pauseBox,
+            accessible_name: _('Pause recording'),
+            reactive: this._canPause,
+            can_focus: this._canPause,
+        });
+        this._pauseButton.connect('clicked', () => this._onPauseClicked());
+        box.add_child(this._pauseButton);
+        this._stopIcon = new St.Icon({
+            icon_name: 'media-playback-stop-symbolic',
+            style_class: 'system-status-icon',
+            icon_size: 16,
+        });
+        const stopBox = new St.BoxLayout({ style: 'spacing: 4px;' });
+        stopBox.add_child(this._stopIcon);
+        this._stopText = new St.Label({
+            text: _('Force stop'), visible: false,
+            y_align: Clutter.ActorAlign.CENTER,
+        });
+        stopBox.add_child(this._stopText);
+        this._stopButton = new St.Button({
+            child: stopBox,
+            accessible_name: _('Stop recording'),
+            can_focus: true,
+        });
+        this._stopButton.connect('clicked', () => this._onStopClicked());
+        box.add_child(this._stopButton);
         this._panelButton.add_child(box);
-        this._panelButton.reactive = this._canPause;
-        if (this._canPause) {
-            this._panelButton.connect('button-press-event', () => {
-                this._onPauseClicked();
-                return Clutter.EVENT_STOP;
-            });
-        }
 
         // Position right before the native recording indicator (screenRecording)
         try {
@@ -151,9 +194,38 @@ export class PartIndicator extends PartUI {
         }
         this._icon = null;
         this._timerLabel = null;
+        this._pauseButton = null;
+        this._stopButton = null;
+        this._stopIcon = null;
+        this._stopText = null;
     }
 
     _updatePanelButton() {
+        this._updatePauseButton();
+        this._updateStopButton();
+        this._updatePauseIcon();
+    }
+
+    _updatePauseButton() {
+        if (!this._pauseButton)
+            return;
+        this._pauseButton.reactive = this._canPause && !this._busy;
+        this._pauseButton.accessible_name = this._isPaused
+            ? _('Resume recording') : _('Pause recording');
+    }
+
+    _updateStopButton() {
+        if (!this._stopButton)
+            return;
+        this._stopButton.accessible_name = this._stopFailed
+            ? _('Force stop recording service (last fragment may be incomplete)')
+            : _('Stop recording');
+        this._stopIcon.icon_name = this._stopFailed
+            ? 'process-stop-symbolic' : 'media-playback-stop-symbolic';
+        this._stopText.visible = this._stopFailed;
+    }
+
+    _updatePauseIcon() {
         if (!this._icon) return;
 
         if (this._isPaused) {
@@ -170,7 +242,15 @@ export class PartIndicator extends PartUI {
     }
 
     _onPauseClicked() {
-        this._ext?.togglePauseRecording();
+        if (!this._busy)
+            void this._ext?.togglePauseRecording();
+    }
+
+    _onStopClicked() {
+        if (this._stopFailed)
+            void this._ext?.forceStopRecording();
+        else
+            void this._ui?.stopScreencast();
     }
 
     _startTimer() {

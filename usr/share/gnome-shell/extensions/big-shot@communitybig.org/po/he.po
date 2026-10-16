@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: big-shot 1.0\n"
 "Report-Msgid-Bugs-To: https://github.com/BigCommunity/gnome-shell-big-shot/"
 "issues\n"
-"POT-Creation-Date: 2026-09-07 01:07-0300\n"
+"POT-Creation-Date: 2026-10-16 09:55-0300\n"
 "PO-Revision-Date: 2026-08-15 18:02-0300\n"
 "Last-Translator: Tales A. Mendonça <talesam@gmail.com>\n"
 "Language-Team: Hebrew\n"
@@ -42,46 +42,54 @@ msgstr "כיתוב (↑/↓ = גודל)…"
 msgid "Zoom caption"
 msgstr "תקריב כיתוב"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:417
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:418
 msgid "BigShot from %d %t"
 msgstr "BigShot מ־%d %t"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1178
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1193
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1312
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1195
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1210
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1378
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1388
 msgid "Screenshot taken"
 msgstr "צילום מסך נלקח"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1332
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1371
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1941
+msgid "Screenshot copied"
+msgstr "צילום מסך הועתק"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1408
 msgid "Screenshots"
 msgstr "צילומי מסך"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1342
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:2004
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1418
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:2120
 #, javascript-format
 msgid "Screenshot from %s"
 msgstr "צילום מסך מ־%s"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1391
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1467
 msgid "Screen Capture"
 msgstr "צילום המסך"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1444
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1476
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1486
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1528
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1560
 msgid "Screenshot captured"
 msgstr "המסך צולם"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1445
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1477
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1487
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1529
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1561
 msgid "You can paste the image from the clipboard"
 msgstr "אפשר להדביק את התמונה מלוח הגזירים"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1452
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1536
 msgid "Show in Files"
 msgstr "הצגה בקבצים"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1762
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1776
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1859
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1873
 msgid ""
 "Automatic installation is unavailable. Install Tesseract and its language "
 "packs with your package manager."
@@ -89,54 +97,49 @@ msgstr ""
 "התקנה אוטומטית אינה זמינה. התקן את Tesseract ואת חבילות השפה שלו באמצעות "
 "מנהל החבילות שלך."
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1825
-msgid "Screenshot copied"
-msgstr "צילום מסך הועתק"
-
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1857
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1973
 msgid "Extracting text..."
 msgstr "מתבצע חילוץ הטקסט..."
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1879
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1995
 #, javascript-format
 msgid "Text copied to clipboard! (%d chars)"
 msgstr "הטקסט הועתק ללוח הגזירים! (%d תווים)"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1882
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1998
 msgid "No text found in selection"
 msgstr "לא נמצא טקסט בבחירה"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1888
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:2004
 #, javascript-format
 msgid "OCR failed: %s"
 msgstr "OCR נכשל: %s"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:2029
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:2145
 msgid "Save Screenshot"
 msgstr "שמור צילום מסך"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:2035
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:2151
 msgid "PNG Images"
 msgstr ""
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:2884
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:3030
 msgid "GNOME default"
 msgstr ""
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:3163
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:3307
+msgid "Screencast recorded"
+msgstr ""
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:3380
 msgid "Recording could not be stopped"
 msgstr "לא ניתן היה לעצור את ההקלטה"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:3165
-#, javascript-format
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:3381
 msgid ""
-"The screencast service stopped responding. The file is still growing at %s."
-msgstr "שירות הקלטת המסך הפסיק להגיב. הקובץ ממשיך לגדול ב־%s."
-
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:3166
-msgid ""
-"The screencast service stopped responding and the recording is still running."
-msgstr "שירות הקלטת המסך הפסיק להגיב וההקלטה ממשיכה."
+"The recording service is not responding. Use Force stop in the recording "
+"controls to terminate it. The last video fragment may be incomplete."
+msgstr ""
 
 #: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partaudio.js:98
 #: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partaudio.js:160
@@ -165,12 +168,31 @@ msgstr "רזולוציית הקלטה"
 msgid "Frames per second"
 msgstr "פריימים לשנייה"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partindicator.js:94
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partindicator.js:116
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partindicator.js:148
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partindicator.js:207
 msgid "Pause recording"
 msgstr ""
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partindicator.js:95
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partindicator.js:117
 msgid "Screen recording"
+msgstr ""
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partindicator.js:162
+msgid "Force stop"
+msgstr ""
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partindicator.js:168
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partindicator.js:212
+msgid "Stop recording"
+msgstr ""
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partindicator.js:207
+msgid "Resume recording"
+msgstr ""
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partindicator.js:211
+msgid "Force stop recording service (last fragment may be incomplete)"
 msgstr ""
 
 #: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:42
