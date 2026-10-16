@@ -201,19 +201,31 @@ export class PartIndicator extends PartUI {
     }
 
     _updatePanelButton() {
-        if (this._pauseButton) {
-            this._pauseButton.reactive = this._canPause && !this._busy;
-            this._pauseButton.accessible_name = this._isPaused
-                ? _('Resume recording') : _('Pause recording');
-        }
-        if (this._stopButton) {
-            this._stopButton.accessible_name = this._stopFailed
-                ? _('Force stop recording service (last fragment may be incomplete)')
-                : _('Stop recording');
-            this._stopIcon.icon_name = this._stopFailed
-                ? 'process-stop-symbolic' : 'media-playback-stop-symbolic';
-            this._stopText.visible = this._stopFailed;
-        }
+        this._updatePauseButton();
+        this._updateStopButton();
+        this._updatePauseIcon();
+    }
+
+    _updatePauseButton() {
+        if (!this._pauseButton)
+            return;
+        this._pauseButton.reactive = this._canPause && !this._busy;
+        this._pauseButton.accessible_name = this._isPaused
+            ? _('Resume recording') : _('Pause recording');
+    }
+
+    _updateStopButton() {
+        if (!this._stopButton)
+            return;
+        this._stopButton.accessible_name = this._stopFailed
+            ? _('Force stop recording service (last fragment may be incomplete)')
+            : _('Stop recording');
+        this._stopIcon.icon_name = this._stopFailed
+            ? 'process-stop-symbolic' : 'media-playback-stop-symbolic';
+        this._stopText.visible = this._stopFailed;
+    }
+
+    _updatePauseIcon() {
         if (!this._icon) return;
 
         if (this._isPaused) {

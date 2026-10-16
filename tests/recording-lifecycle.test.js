@@ -51,6 +51,8 @@ function fixture() {
     const ext = Object.assign(new Extension(), {
         _activeEnableSerial: 1, _recordingEpoch: 1,
         _recordingState: 'recording', _screenshotUI: ui,
+        _recordingStartPromise: null, _recordingStopPromise: null,
+        _segmentStopPromise: null, _pausePromise: null, _resumePromise: null,
         _stopCompletions: new Set(), _stopWatcherId: 0,
         _recordingSession: {ffmpegPath: '/bin/ffmpeg', segments: []},
         _currentSegment: {path: '/test/segment.mp4'},

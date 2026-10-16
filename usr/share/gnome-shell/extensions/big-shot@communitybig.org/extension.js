@@ -2657,7 +2657,7 @@ export default class BigShotExtension extends Extension {
             screenshotUI._startScreencast = function (...args) {
                 // The native UI clears its flag before StopScreencast replies.
                 // Never let another capture overwrite a session still draining.
-                if (ext._recordingState !== 'idle' || ext._recordingStartPromise)
+                if (ext._recordingState !== 'idle' || ext._recordingStartPromise !== null)
                     return Promise.resolve();
                 ext._recordingState = 'starting';
                 const start = this._windowButton?.checked
@@ -3251,7 +3251,7 @@ export default class BigShotExtension extends Extension {
     }
 
     _stopScreencastProxyAsync(...args) {
-        if (this._recordingStopPromise)
+        if (this._recordingStopPromise !== null)
             return this._recordingStopPromise;
         if (this._recordingState === 'stop-failed')
             return Promise.reject(new Error('Recording service is unresponsive; use Force stop'));
@@ -3300,7 +3300,7 @@ export default class BigShotExtension extends Extension {
     }
 
     async _stopScreencastUiAsync(...args) {
-        const notify = !this._recordingStopPromise;
+        const notify = this._recordingStopPromise === null;
         try {
             const [success] = await this._stopScreencastProxyAsync(...args);
             if (success && notify)
@@ -3313,7 +3313,7 @@ export default class BigShotExtension extends Extension {
     }
 
     _stopSegmentAsync(...args) {
-        if (this._segmentStopPromise)
+        if (this._segmentStopPromise !== null)
             return this._segmentStopPromise;
         const pending = this._trackRecordingStop(async () => {
             const result = await this._origStopScreencastAsync(...args);
@@ -3438,7 +3438,7 @@ export default class BigShotExtension extends Extension {
         if (completion.epoch !== this._recordingEpoch)
             return;
         if (this._stopCompletions.size === 0 &&
-            !this._recordingStopPromise && !this._pausePromise &&
+            this._recordingStopPromise === null && this._pausePromise === null &&
             this._recordingState !== 'stop-failed' &&
             this._recordingState !== 'idle' &&
             !this._screenshotUI?._screencastInProgress) {
@@ -3574,9 +3574,9 @@ export default class BigShotExtension extends Extension {
     }
 
     pauseRecording() {
-        if (this._recordingStopPromise || this._recordingState !== 'recording')
+        if (this._recordingStopPromise !== null || this._recordingState !== 'recording')
             return Promise.resolve(false);
-        if (this._pausePromise)
+        if (this._pausePromise !== null)
             return this._pausePromise;
         const pending = this._pauseRecordingAsync().finally(() => {
             if (this._pausePromise === pending)
@@ -3630,9 +3630,9 @@ export default class BigShotExtension extends Extension {
     }
 
     resumeRecording() {
-        if (this._recordingStopPromise)
+        if (this._recordingStopPromise !== null)
             return Promise.resolve(false);
-        if (this._resumePromise)
+        if (this._resumePromise !== null)
             return this._resumePromise;
         const pending = this._resumeRecordingAsync().finally(() => {
             if (this._resumePromise === pending)
@@ -3684,7 +3684,7 @@ export default class BigShotExtension extends Extension {
     async togglePauseRecording() {
         if (this._recordingState === 'recording') {
             if (await this.pauseRecording() &&
-                this._recordingState === 'paused' && !this._recordingStopPromise)
+                this._recordingState === 'paused' && this._recordingStopPromise === null)
                 this._videoAnnotation?.enterPausedEditFromPause();
         } else if (this._recordingState === 'paused') {
             this._videoAnnotation?.finishPausedEditFromPause();
@@ -3707,7 +3707,7 @@ export default class BigShotExtension extends Extension {
                 this._recordingState === 'resuming' ||
                 this._recordingState === 'stopping' ||
                 this._recordingState === 'stop-failed' ||
-                this._recordingStopPromise ||
+                this._recordingStopPromise !== null ||
                 this._stopCompletions.size > 0)
                 return GLib.SOURCE_CONTINUE;
 

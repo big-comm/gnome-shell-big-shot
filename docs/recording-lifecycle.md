@@ -120,6 +120,24 @@ extension patch has been loaded, and they do not exercise the original
 audio-enabled stalled recording. Raw videos, frames, and private session logs
 are not included in this repository or PR.
 
+## Static-analysis follow-up
+
+The local follow-up addresses the findings reported for the initial patch:
+
+- Promise-presence checks now compare explicitly with `null`; the pending
+  promise itself is never used as the truth value of a recording-state test.
+- The synthetic PipeWire probe maps encoder and source-format choices to
+  literal command arguments instead of forwarding CLI strings. Command
+  builders reject unknown choices even if called without the CLI parser.
+  Synthetic node IDs and the diagnostic flag are validated independently.
+- Indicator updates are split into pause-control, stop-control, and icon
+  helpers, preserving their observable states with separate tests.
+
+The Python tests run from the Node suite and use mocked subprocesses; they do
+not create media devices or execute argument payloads. They cover rejected
+options, invalid node IDs, propagation of child failures, and producer cleanup.
+Local tests and lint do not replace a fresh Sonar analysis after publication.
+
 In the graphical session, verify start/stop, start/pause/resume/stop, quick
 repeated clicks, stop while pausing, and stop while resuming. Check that files
 play and that no service keeps writing after stop. A force stop is recovery,
