@@ -163,10 +163,15 @@ export class PartIndicator extends PartUI {
             y_align: Clutter.ActorAlign.CENTER,
         });
         stopBox.add_child(this._stopText);
+        // Hidden during a healthy recording: the shell's own screenRecording
+        // indicator sits right next to this one and already offers stop, so
+        // showing both put two stop buttons side by side. This one surfaces
+        // only as the Force stop escape hatch.
         this._stopButton = new St.Button({
             child: stopBox,
             accessible_name: _('Stop recording'),
             can_focus: true,
+            visible: false,
         });
         this._stopButton.connect('clicked', () => this._onStopClicked());
         box.add_child(this._stopButton);
@@ -217,6 +222,7 @@ export class PartIndicator extends PartUI {
     _updateStopButton() {
         if (!this._stopButton)
             return;
+        this._stopButton.visible = this._stopFailed;
         this._stopButton.accessible_name = this._stopFailed
             ? _('Force stop recording service (last fragment may be incomplete)')
             : _('Stop recording');

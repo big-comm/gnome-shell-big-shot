@@ -374,3 +374,19 @@ test('pause judges the segment by the file, not by the stop return value', async
     assert.doesNotMatch(block, /return Array\.isArray\(result\)/);
     assert.match(block, /await this\._stopSegmentAsync\(\);\s*\n\s*return true;/);
 });
+
+test('the panel keeps one stop control, not two', async () => {
+    const source = await import('node:fs/promises')
+        .then(fs => fs.readFile(
+            'usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partindicator.js',
+            'utf8'));
+    // The shell's screenRecording indicator sits next to ours and already
+    // stops the recording; our button is the Force stop escape hatch only.
+    const createIdx = source.indexOf('this._stopButton = new St.Button({');
+    assert.ok(createIdx >= 0);
+    assert.match(source.slice(createIdx, createIdx + 220), /visible: false,/);
+    const updateIdx = source.indexOf('    _updateStopButton() {');
+    assert.ok(updateIdx >= 0);
+    assert.match(source.slice(updateIdx, updateIdx + 200),
+        /this\._stopButton\.visible = this\._stopFailed;/);
+});
