@@ -247,10 +247,15 @@ export class PartIndicator extends PartUI {
     }
 
     _onStopClicked() {
-        if (this._stopFailed)
+        if (this._stopFailed) {
             void this._ext?.forceStopRecording();
-        else
-            void this._ui?.stopScreencast();
+            return;
+        }
+        // stopScreencast() only exists from GNOME 50 on. Go through the
+        // extension's version-aware path instead of calling it directly,
+        // or the handler throws on 46-49 and the recording cannot be
+        // stopped from the indicator at all.
+        void this._ext?._stopActiveRecording();
     }
 
     _startTimer() {

@@ -2685,15 +2685,20 @@ export default class BigShotExtension extends Extension {
                 if (ext._recordingState === 'stop-failed' &&
                     ext._isStartupTimeout(args[1]))
                     return;
-                if (ext._shouldIgnorePauseStopFailure() &&
-                    screenshotUI._screencastProxy?.g_name_owner) {
+                // Do not require the service to still own the bus name here.
+                // org.gnome.Shell.Screencast shuts down about two seconds
+                // after the pause segment stops, so by the time this fires
+                // the owner is normally already gone — which is exactly the
+                // case this suppression exists for.
+                if (ext._shouldIgnorePauseStopFailure()) {
                     ext._suppressPauseStopFailure = false;
                     return;
                 }
                 if (args[0] === 'RECORDING') {
-                    // Service loss is not a confirmed EOS. Preserve segments
-                    // and invalidate callbacks belonging to the dead service.
-                    ext._recordingSession = null;
+                    // Service loss is not a confirmed EOS for the segment in
+                    // flight, so drop only that one. Clearing the session too
+                    // would skip the merge in _onFinalStop() and orphan every
+                    // segment already written to disk.
                     ext._currentSegment = null;
                     ext._onFinalStop();
                 }
@@ -3300,6 +3305,13 @@ export default class BigShotExtension extends Extension {
     }
 
     async _stopScreencastUiAsync(...args) {
+        // Native stopScreencast() returns early when nothing is recording.
+        // Without this the idle stop reaches the service, comes back false,
+        // and the error path switches the system recording indicator back on
+        // with no recording behind it.
+        if (!this._isRecordingActive() && this._recordingState === 'idle')
+            return;
+
         const notify = this._recordingStopPromise === null;
         try {
             const [success] = await this._stopScreencastProxyAsync(...args);
@@ -3315,12 +3327,14 @@ export default class BigShotExtension extends Extension {
     _stopSegmentAsync(...args) {
         if (this._segmentStopPromise !== null)
             return this._segmentStopPromise;
-        const pending = this._trackRecordingStop(async () => {
-            const result = await this._origStopScreencastAsync(...args);
-            if (!result?.[0])
-                throw new Error('StopScreencast returned false');
-            return result;
-        }).finally(() => {
+        // The service answers false only when it holds no recorder for this
+        // sender — a stop issued twice, or after the segment already ended.
+        // That is benign: the recording is already over. A real failure to
+        // drain EOS never answers at all (the reply sits inside the service's
+        // finally block), so it surfaces through the stop watchdog, not here.
+        const pending = this._trackRecordingStop(
+            () => this._origStopScreencastAsync(...args),
+        ).finally(() => {
             if (this._segmentStopPromise === pending)
                 this._segmentStopPromise = null;
         });
@@ -3367,6 +3381,14 @@ export default class BigShotExtension extends Extension {
                 this._recordingEpoch !== recordingEpoch)
                 return GLib.SOURCE_REMOVE;
 
+            // Pausing goes through the same stop call. A slow pause is not a
+            // stuck recording: announcing "could not be stopped" there pushes
+            // the user towards Force stop and kills a session that is about
+            // to pause cleanly.
+            if (this._recordingState === 'pausing' ||
+                this._recordingState === 'paused')
+                return GLib.SOURCE_REMOVE;
+
             warn('Screencast service did not answer the stop request; ' +
                  'the recording is still running');
             this._indicator?.onStopFailed();
@@ -3384,8 +3406,17 @@ export default class BigShotExtension extends Extension {
     async forceStopRecording() {
         const proxy = this._screenshotUI?._screencastProxy;
         const owner = proxy?.g_name_owner;
-        if (!owner || !this._indicator?._stopFailed || this._forceStopInProgress)
+        if (!this._indicator?._stopFailed || this._forceStopInProgress)
             return;
+        if (!owner) {
+            // Nothing left to terminate: the service already left the bus.
+            // Returning here used to strand the user — the state stayed
+            // stop-failed, which blocks every new recording, and the button
+            // did nothing. Clear the session instead.
+            warn('Screencast service is already gone; clearing recording state');
+            this._onFinalStop();
+            return;
+        }
         this._forceStopInProgress = true;
         const enableSerial = this._activeEnableSerial;
         const recordingEpoch = this._recordingEpoch;
@@ -3416,11 +3447,12 @@ export default class BigShotExtension extends Extension {
                 [kill, '-KILL', '--', String(pid)], Gio.SubprocessFlags.NONE);
             if (!result.successful)
                 throw new Error('Could not terminate recording service');
-            // Native owner-change handling clears the in-progress flag.
-            // An unconfirmed segment must never be merged or deleted here.
+            // Native owner-change handling clears the in-progress flag. The
+            // segment that was still running is unconfirmed, so drop it — but
+            // keep the session, or _onFinalStop() skips the merge and the
+            // segments already finished are orphaned on disk.
             if (this._activeEnableSerial === enableSerial &&
                 this._recordingEpoch === recordingEpoch) {
-                this._recordingSession = null;
                 this._currentSegment = null;
                 this._setScreencastInProgress(false);
                 this._onFinalStop();
@@ -3893,7 +3925,12 @@ export default class BigShotExtension extends Extension {
         // encoder fed from a single negotiated format.
         const stage = [];
 
-        if (downsize < 1.0 || config.rawFormat === 'NV12') {
+        // Only resize against a size we actually know. For a full-screen
+        // capture captureSize is null and the monitor geometry is logical,
+        // so on fractional scaling it disagrees with the PipeWire stream —
+        // pinning width/height from it downscaled NVIDIA recordings to a
+        // wrong resolution.
+        if (downsize < 1.0 || (config.rawFormat === 'NV12' && captureSize)) {
             const sourceSize = captureSize ?? (() => {
                 const monitor = global.display.get_current_monitor();
                 const geo = global.display.get_monitor_geometry(monitor);

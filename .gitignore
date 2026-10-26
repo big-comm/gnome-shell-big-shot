@@ -23,3 +23,6 @@ node_modules/
 # OS files
 .DS_Store
 Thumbs.db
+
+# Lock da ferramenta gitrepo — nunca versionar
+gitrepo-operation.lock

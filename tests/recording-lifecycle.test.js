@@ -97,12 +97,14 @@ test('stop keeps recording visible until acknowledgement; repeated stops share o
     assert.equal(events.filter(x => x === 'finalized').length, 1);
 });
 
-for (const outcome of ['reject', 'false']) {
-    test(`failed stop (${outcome}) preserves segments and blocks pause/resume`, async () => {
+// A rejected stop is a real failure: the service never acknowledged EOS.
+// `false` is not — the service answered that it holds no recorder for us,
+// which means the recording is already over. See _stopSegmentAsync.
+test('failed stop (reject) preserves segments and blocks pause/resume', async () => {
+    {
         const {ext, ui, events, timers} = fixture();
         const session = ext._recordingSession;
-        ext._origStopScreencastAsync = () => outcome === 'reject'
-            ? Promise.reject(new Error('timeout')) : Promise.resolve([false]);
+        ext._origStopScreencastAsync = () => Promise.reject(new Error('timeout'));
         await ext._stopScreencastUiAsync();
         assert.equal(ext._recordingState, 'stop-failed');
         assert.equal(ui._screencastInProgress, true);
@@ -114,8 +116,19 @@ for (const outcome of ['reject', 'false']) {
         ui._screencastInProgress = false;
         assert.equal(timers.get(500)(), true);
         assert.equal(events.includes('finalized'), false);
-    });
-}
+    }
+});
+
+test('stop answered false ends the session instead of blocking it', async () => {
+    const {ext, ui} = fixture();
+    // The service replies false only when it has no recorder for this sender,
+    // so the recording is already finished. Treating that as a failure left
+    // the extension in stop-failed, which blocks every later recording.
+    ext._origStopScreencastAsync = () => Promise.resolve([false]);
+    await ext._stopScreencastUiAsync();
+    assert.equal(ext._recordingState, 'idle');
+    assert.equal(ui._screencastInProgress, false);
+});
 
 test('pause updates the clock only after EOS; final stop during pause sends no second stop', async () => {
     const {ext, events} = fixture();
@@ -294,4 +307,55 @@ test('NV12 retains selected downscaling and framerate', () => {
     assert.match(pipeline, /width=1280,height=720/);
     assert.match(pipeline, /framerate=60\/1/);
     assert.match(pipeline, /format=NV12/);
+});
+
+test('pause survives the service leaving the bus', async () => {
+    // org.gnome.Shell.Screencast shuts down ~2s after the pause segment
+    // stops, so the owner is normally already gone when _screencastFailed
+    // fires. Requiring g_name_owner here destroyed the paused session.
+    const source = await import('node:fs/promises')
+        .then(fs => fs.readFile(
+            'usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js',
+            'utf8'));
+    assert.doesNotMatch(source,
+        /_shouldIgnorePauseStopFailure\(\) &&\s*screenshotUI\._screencastProxy\?\.g_name_owner/);
+    assert.match(source, /if \(ext\._shouldIgnorePauseStopFailure\(\)\) \{/);
+});
+
+test('losing the service keeps the finished segments', async () => {
+    const source = await import('node:fs/promises')
+        .then(fs => fs.readFile(
+            'usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js',
+            'utf8'));
+    // _onFinalStop() is the only caller of _mergeSegments(session); clearing
+    // the session first silently orphans every segment already on disk.
+    const failedIdx = source.indexOf("if (args[0] === 'RECORDING') {");
+    const block = source.slice(failedIdx, failedIdx + 500);
+    assert.ok(failedIdx >= 0);
+    assert.doesNotMatch(block, /ext\._recordingSession = null/);
+    assert.match(block, /ext\._currentSegment = null/);
+});
+
+test('force stop clears the state when the service is already gone', async () => {
+    const source = await import('node:fs/promises')
+        .then(fs => fs.readFile(
+            'usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js',
+            'utf8'));
+    const idx = source.indexOf('async forceStopRecording()');
+    const block = source.slice(idx, idx + 700);
+    assert.ok(idx >= 0);
+    // Returning early on a missing owner stranded the user in stop-failed,
+    // which blocks every new recording.
+    assert.match(block, /if \(!owner\) \{[\s\S]*?this\._onFinalStop\(\);/);
+});
+
+test('the stop watchdog stays quiet while pausing', async () => {
+    const source = await import('node:fs/promises')
+        .then(fs => fs.readFile(
+            'usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js',
+            'utf8'));
+    const idx = source.indexOf('    _watchStopTimeout(settled) {');
+    const block = source.slice(idx, idx + 1400);
+    assert.ok(idx >= 0);
+    assert.match(block, /_recordingState === 'pausing' \|\|[\s\S]*?=== 'paused'/);
 });
