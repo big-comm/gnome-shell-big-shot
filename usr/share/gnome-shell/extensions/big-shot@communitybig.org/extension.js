@@ -3505,8 +3505,12 @@ export default class BigShotExtension extends Extension {
             return false;
 
         this._suppressPauseStopFailure = true;
-        const result = await this._stopSegmentAsync();
-        return Array.isArray(result) ? Boolean(result[0]) : Boolean(result);
+        // Same contract as the final stop: false only means the service holds
+        // no recorder for this sender, so the segment is already over. Only a
+        // rejected call — a real D-Bus failure — means the pause did not
+        // happen; a stalled EOS never answers and belongs to the watchdog.
+        await this._stopSegmentAsync();
+        return true;
     }
 
     _finalizeCurrentSegment() {

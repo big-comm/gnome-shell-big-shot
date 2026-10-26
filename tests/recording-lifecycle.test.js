@@ -359,3 +359,18 @@ test('the stop watchdog stays quiet while pausing', async () => {
     assert.ok(idx >= 0);
     assert.match(block, /_recordingState === 'pausing' \|\|[\s\S]*?=== 'paused'/);
 });
+
+test('pause judges the segment by the file, not by the stop return value', async () => {
+    const source = await import('node:fs/promises')
+        .then(fs => fs.readFile(
+            'usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js',
+            'utf8'));
+    const idx = source.indexOf('    async _stopCurrentSegmentForPause() {');
+    const block = source.slice(idx, idx + 600);
+    assert.ok(idx >= 0);
+    // A false stop is benign — it only means the service no longer holds a
+    // recorder for this sender. Failing the pause on it dropped a healthy
+    // session into stop-failed.
+    assert.doesNotMatch(block, /return Array\.isArray\(result\)/);
+    assert.match(block, /await this\._stopSegmentAsync\(\);\s*\n\s*return true;/);
+});
