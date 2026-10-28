@@ -85,6 +85,9 @@ export class PartToolbar extends PartUI {
         this._selectedPipelineId = null; // null = auto cascade
         // Screenshot countdown, in seconds. 0 disables it.
         this._captureDelay = 0;
+        // One-shot handler that re-centres the video panel on its first
+        // allocation, when its real width is finally known.
+        this._videoFirstAllocationId = 0;
 
         this._buildToolbar();
         this._monitorPlacement = new PartMonitor(this._ui, this._ext, () => {
@@ -1164,6 +1167,26 @@ export class PartToolbar extends PartUI {
 
         this._positionCaptureToolbar(this._videoContainer);
 
+        // The centring above measures get_preferred_width() on a container
+        // the stage has never allocated, so it is only a guess — the panel
+        // opened off to the side and stayed there until some row change
+        // (showing the Mic row, say) triggered a reposition. Re-centre once
+        // the first real allocation lands, then stop listening.
+        if (this._videoFirstAllocationId) {
+            this._videoContainer.disconnect(this._videoFirstAllocationId);
+            this._videoFirstAllocationId = 0;
+        }
+        this._videoFirstAllocationId = this._videoContainer.connect(
+            'notify::allocation', () => {
+                if (!this._videoFirstAllocationId)
+                    return;
+                this._videoContainer.disconnect(this._videoFirstAllocationId);
+                this._videoFirstAllocationId = 0;
+                // Defer: repositioning from inside an allocation cycle is
+                // what queue_relayout() exists to avoid.
+                this.repositionVideoPanel();
+            });
+
         // Fade-in
         this._videoContainer.opacity = 0;
         this._videoContainer.ease({
@@ -1209,6 +1232,10 @@ export class PartToolbar extends PartUI {
     _detachVideoFromPanel() {
         this._removeSource(this._videoPanelPositionId);
         this._videoPanelPositionId = 0;
+        if (this._videoFirstAllocationId) {
+            this._videoContainer.disconnect(this._videoFirstAllocationId);
+            this._videoFirstAllocationId = 0;
+        }
         const parent = this._videoContainer.get_parent();
         if (parent) parent.remove_child(this._videoContainer);
     }
@@ -2231,6 +2258,7 @@ export class PartToolbar extends PartUI {
         if (this._videoContainer) {
             this._videoContainer.destroy();
             this._videoContainer = null;
+            this._videoFirstAllocationId = 0;
         }
 
         this._toolButtons.clear();

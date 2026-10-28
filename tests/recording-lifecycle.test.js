@@ -461,3 +461,23 @@ test('a window-mode startup timeout does not silently go idle', async () => {
     // orphan a recording with no way to stop it.
     assert.match(block, /if \(this\._isStartupTimeout\(e\)\) \{[\s\S]*?'stop-failed'/);
 });
+
+test('the video settings panel re-centres on its first allocation', async () => {
+    const source = await import('node:fs/promises')
+        .then(fs => fs.readFile(
+            'usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js',
+            'utf8'));
+    const idx = source.indexOf('    _attachVideoToPanel() {');
+    const block = source.slice(idx, idx + 1600);
+    assert.ok(idx >= 0);
+    // Centring on get_preferred_width() before the stage has allocated the
+    // container measured a guess, so the panel opened off to the side.
+    assert.match(block, /connect\(\s*'notify::allocation'/);
+    assert.match(block, /this\.repositionVideoPanel\(\);/);
+    // One-shot: the handler must disconnect itself.
+    assert.match(block, /this\._videoContainer\.disconnect\(this\._videoFirstAllocationId\);/);
+    // And be torn down if the panel closes before it ever fires.
+    const detachIdx = source.indexOf('    _detachVideoFromPanel() {');
+    assert.match(source.slice(detachIdx, detachIdx + 400),
+        /this\._videoContainer\.disconnect\(this\._videoFirstAllocationId\);/);
+});
