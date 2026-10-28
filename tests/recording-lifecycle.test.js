@@ -342,7 +342,7 @@ test('force stop clears the state when the service is already gone', async () =>
             'usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js',
             'utf8'));
     const idx = source.indexOf('async forceStopRecording()');
-    const block = source.slice(idx, idx + 700);
+    const block = source.slice(idx, idx + 1200);
     assert.ok(idx >= 0);
     // Returning early on a missing owner stranded the user in stop-failed,
     // which blocks every new recording.
@@ -389,4 +389,75 @@ test('the panel keeps one stop control, not two', async () => {
     assert.ok(updateIdx >= 0);
     assert.match(source.slice(updateIdx, updateIdx + 200),
         /this\._stopButton\.visible = this\._stopFailed;/);
+});
+
+const readExtensionSource = () => import('node:fs/promises')
+    .then(fs => fs.readFile(
+        'usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js',
+        'utf8'));
+
+test('the native startup retry is not swallowed by the re-entrancy guard', async () => {
+    const source = await readExtensionSource();
+    const idx = source.indexOf('screenshotUI._startScreencast = function (...args) {');
+    const block = source.slice(idx, idx + 1200);
+    assert.ok(idx >= 0);
+    // Native _startScreencast(nRetries) retries a startup crash through
+    // this._startScreencast(nRetries + 1), which re-enters this patch.
+    const retryIdx = block.indexOf("typeof args[0] === 'number' && args[0] > 0");
+    const guardIdx = block.indexOf("ext._recordingStartPromise !== null");
+    assert.ok(retryIdx >= 0);
+    assert.ok(retryIdx < guardIdx, 'the retry escape must come before the guard');
+});
+
+test('a late service shutdown does not tear down a resumed session', async () => {
+    const source = await readExtensionSource();
+    const idx = source.indexOf('    _shouldIgnorePauseStopFailure() {');
+    const block = source.slice(idx, idx + 600);
+    assert.ok(idx >= 0);
+    assert.match(block, /_recordingState === 'resuming'/);
+});
+
+test('pause refuses up front when the native stop method is missing', async () => {
+    const source = await readExtensionSource();
+    const idx = source.indexOf('    async _pauseRecordingAsync() {');
+    const block = source.slice(idx, idx + 1200);
+    assert.ok(idx >= 0);
+    const guardIdx = block.indexOf('if (!this._origStopScreencastAsync) {');
+    const pausingIdx = block.indexOf("this._recordingState = 'pausing';");
+    assert.ok(guardIdx >= 0);
+    assert.ok(guardIdx < pausingIdx, 'refuse before entering the pausing state');
+    // No stop was sent, so the recording must not be declared stop-failed.
+    assert.doesNotMatch(block, /throw new Error\('StopScreencast returned false'\)/);
+});
+
+test('one stuck stop produces a single failure notification', async () => {
+    const source = await readExtensionSource();
+    const idx = source.indexOf('    _notifyRecordingStopFailure() {');
+    const block = source.slice(idx, idx + 600);
+    assert.ok(idx >= 0);
+    assert.match(block, /if \(this\._stopFailureNotified\)\s*\n\s*return;/);
+    // Cleared when the session ends, or the next failure stays silent.
+    const stopIdx = source.indexOf('    _onFinalStop() {');
+    assert.match(source.slice(stopIdx, stopIdx + 900),
+        /this\._stopFailureNotified = false;/);
+});
+
+test('force stop clears the shell indicator when the service is gone', async () => {
+    const source = await readExtensionSource();
+    const idx = source.indexOf('async forceStopRecording()');
+    const block = source.slice(idx, idx + 900);
+    assert.ok(idx >= 0);
+    const ownerIdx = block.indexOf('if (!owner) {');
+    assert.match(block.slice(ownerIdx, ownerIdx + 900),
+        /this\._setScreencastInProgress\(false\);/);
+});
+
+test('a window-mode startup timeout does not silently go idle', async () => {
+    const source = await readExtensionSource();
+    const idx = source.indexOf('    async _startWindowScreencast(ui) {');
+    const block = source.slice(idx, idx + 4000);
+    assert.ok(idx >= 0);
+    // The service's pending start survives the timeout, so idle here can
+    // orphan a recording with no way to stop it.
+    assert.match(block, /if \(this\._isStartupTimeout\(e\)\) \{[\s\S]*?'stop-failed'/);
 });

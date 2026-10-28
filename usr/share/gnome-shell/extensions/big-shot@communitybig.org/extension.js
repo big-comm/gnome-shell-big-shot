@@ -599,6 +599,7 @@ export default class BigShotExtension extends Extension {
         this._recordingSession = null;
         this._currentSegment = null;
         this._suppressPauseStopFailure = false;
+        this._stopFailureNotified = false;
         this._stopWatcherId = 0;
         this._stopCompletions = new Set();
         this._recordingStartPromise = null;
@@ -900,6 +901,7 @@ export default class BigShotExtension extends Extension {
         this._recordingSession = null;
         this._currentSegment = null;
         this._suppressPauseStopFailure = false;
+        this._stopFailureNotified = false;
         this._stopWatcherId = 0;
         this._stopCompletions.clear();
         this._recordingStartPromise = null;
@@ -2655,6 +2657,16 @@ export default class BigShotExtension extends Extension {
         this._origStartScreencast = screenshotUI._startScreencast?.bind(screenshotUI);
         if (this._origStartScreencast) {
             screenshotUI._startScreencast = function (...args) {
+                // Native _startScreencast(nRetries) retries a startup crash
+                // with this._startScreencast(nRetries + 1), which lands back
+                // here while our own start is still pending. The guard below
+                // would swallow it, so the service would blocklist the broken
+                // pipeline and then never be asked again — the user clicks
+                // record and nothing happens. The UI always calls this with
+                // no argument, so a positive counter identifies the retry.
+                if (typeof args[0] === 'number' && args[0] > 0)
+                    return ext._origStartScreencast(...args);
+
                 // The native UI clears its flag before StopScreencast replies.
                 // Never let another capture overwrite a session still draining.
                 if (ext._recordingState !== 'idle' || ext._recordingStartPromise !== null)
@@ -2823,6 +2835,18 @@ export default class BigShotExtension extends Extension {
         } catch (e) {
             if (this._activeEnableSerial !== enableSerial)
                 return;
+            // A D-Bus timeout does not cancel the service's pending start, so
+            // going idle here can leave an orphan recording writing to disk
+            // with nothing in the UI to stop it. Same reasoning as the
+            // full-screen path.
+            if (this._isStartupTimeout(e)) {
+                this._recordingState = 'stop-failed';
+                this._indicator?.onRecordingStarted(false);
+                this._indicator?.onStopFailed();
+                this._notifyRecordingStopFailure();
+                fail(`Window screencast timed out: ${e.message}`);
+                return;
+            }
             this._recordingState = 'idle';
             if (typeof ui._setScreencastInProgress === 'function')
                 ui._setScreencastInProgress(false);
@@ -3398,6 +3422,13 @@ export default class BigShotExtension extends Extension {
     }
 
     _notifyRecordingStopFailure() {
+        // The watchdog fires at its own deadline and the D-Bus call rejects
+        // at SCREENCAST_DBUS_TIMEOUT_MS, so one stuck stop reaches this twice.
+        // The user only needs to be told once; the flag is cleared when the
+        // session ends.
+        if (this._stopFailureNotified)
+            return;
+        this._stopFailureNotified = true;
         this._showNotification(
             _('Recording could not be stopped'),
             _('The recording service is not responding. Use Force stop in the recording controls to terminate it. The last video fragment may be incomplete.'));
@@ -3414,7 +3445,12 @@ export default class BigShotExtension extends Extension {
             // stop-failed, which blocks every new recording, and the button
             // did nothing. Clear the session instead.
             warn('Screencast service is already gone; clearing recording state');
+            // The path that leads here sets the flag back to true so the stop
+            // can be retried; leaving it set keeps the shell's own recording
+            // indicator lit with nothing behind it.
+            this._setScreencastInProgress(false);
             this._onFinalStop();
+            this._indicator?.onRecordingStopped();
             return;
         }
         this._forceStopInProgress = true;
@@ -3492,8 +3528,15 @@ export default class BigShotExtension extends Extension {
     }
 
     _shouldIgnorePauseStopFailure() {
+        // 'resuming' belongs here too: the service leaves the bus about two
+        // seconds after the pause segment stops, so a user who resumes
+        // quickly is already past 'paused' when the stale owner-change
+        // arrives — and letting it through tears down the session that the
+        // resume just restarted.
         return this._suppressPauseStopFailure &&
-            (this._recordingState === 'pausing' || this._recordingState === 'paused');
+            (this._recordingState === 'pausing' ||
+             this._recordingState === 'paused' ||
+             this._recordingState === 'resuming');
     }
 
     // =========================================================================
@@ -3635,13 +3678,19 @@ export default class BigShotExtension extends Extension {
             warn('Pause unavailable: ffmpeg not found');
             return false;
         }
+        // Refuse here rather than below: without the native stop method no
+        // stop is ever sent, so the recording is provably healthy and must
+        // not be dropped into stop-failed.
+        if (!this._origStopScreencastAsync) {
+            warn('Pause unavailable: native stop method missing');
+            return false;
+        }
 
         this._recordingState = 'pausing';
         this._indicator?.onStopping();
 
         try {
-            if (!await this._stopCurrentSegmentForPause())
-                throw new Error('StopScreencast returned false');
+            await this._stopCurrentSegmentForPause();
             if (this._activeEnableSerial !== enableSerial ||
                 this._recordingEpoch !== recordingEpoch)
                 return false;
@@ -3772,6 +3821,7 @@ export default class BigShotExtension extends Extension {
         this._pausePromise = null;
         this._resumePromise = null;
         this._suppressPauseStopFailure = false;
+        this._stopFailureNotified = false;
         this._videoAnnotation?.onRecordingStopped();
         this._indicator?.onRecordingStopped();
         this._webcam?.stopPreview();
