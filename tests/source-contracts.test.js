@@ -576,3 +576,20 @@ test('the orientation probe falls back instead of assuming', async () => {
     // and runs before the stage exists on some paths.
     assert.match(compat, /if \(orientationSupported !== null\)\s*\n\s*return orientationSupported;/);
 });
+
+test('annotated capture does not encode the same PNG twice', async () => {
+    const source = await readFile(extensionPath, 'utf8');
+    // The scratch file is decoded again on the next line, so deflating it is
+    // pure latency. Both compositing paths must skip it.
+    const scratchWrites = source.match(/savev\(tmpBase, 'png'[^)]*\)/g) ?? [];
+    assert.equal(scratchWrites.length, 2);
+    for (const call of scratchWrites)
+        assert.match(call, /\['compression'\], \['0'\]/);
+
+    // writeToPNG() already produced the final bytes; re-encoding the decoded
+    // pixbuf cost as much again and produced the same image.
+    assert.doesNotMatch(source, /_pixbufToBytes/);
+    const reads = source.match(
+        /Gio\.File\.new_for_path\(tmpAnnotated\)\.load_bytes\(null\)/g) ?? [];
+    assert.equal(reads.length, 2);
+});
