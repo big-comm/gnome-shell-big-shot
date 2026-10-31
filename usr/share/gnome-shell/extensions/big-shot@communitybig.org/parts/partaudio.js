@@ -12,6 +12,8 @@
 
 import St from 'gi://St';
 import Clutter from 'gi://Clutter';
+
+import { boxLayout } from '../lib/stcompat.js';
 import GObject from 'gi://GObject';
 import Gio from 'gi://Gio';
 import Gvc from 'gi://Gvc';
@@ -45,8 +47,9 @@ export const IconLabelButton = GObject.registerClass(
             super._init(params);
 
         // St.BoxLayout only gained the `orientation` property in GNOME 48;
-        // `vertical` is the spelling that works on every supported release.
-        this._container = new St.BoxLayout({
+        // boxLayout() picks the spelling this shell accepts: :vertical was
+        // removed in GNOME 51 and :orientation does not exist before 48.
+        this._container = boxLayout({
             vertical: true,
             style_class: 'icon-label-button-container',
         });
