@@ -534,7 +534,7 @@ test('the screenshot timer captures the live screen without the UI', async () =>
     // compositor the immediate path uses.
     assert.match(capture, /this\._compositeAnnotations\(/);
     assert.match(source,
-        /_compositeAnnotations\(pixbuf, actions, offsetX, offsetY, bufScale\)/);
+        /_compositeAnnotations\(\s*pixbuf, actions, offsetX, offsetY, bufScale, baseBytes\)/);
 });
 
 test('the delayed capture derives its buffer scale from the image', async () => {
@@ -579,12 +579,20 @@ test('the orientation probe falls back instead of assuming', async () => {
 
 test('annotated capture does not encode the same PNG twice', async () => {
     const source = await readFile(extensionPath, 'utf8');
-    // The scratch file is decoded again on the next line, so deflating it is
-    // pure latency. Both compositing paths must skip it.
-    const scratchWrites = source.match(/savev\(tmpBase, 'png'[^)]*\)/g) ?? [];
+    // composite_to_stream already encoded this frame; both compositing paths
+    // must hand those bytes to the scratch file instead of encoding again.
+    const scratchWrites = source.match(
+        /_writeScratchBase\(tmpBase, workPixbuf,\s*\n\s*workPixbuf === pixbuf \? baseBytes : null\)/g) ?? [];
     assert.equal(scratchWrites.length, 2);
-    for (const call of scratchWrites)
-        assert.match(call, /\['compression'\], \['0'\]/);
+    // Only when an effect repainted the pixels do we fall back to encoding —
+    // and then with compression 0, since the file is decoded two lines later.
+    assert.match(source, /pixbuf\.savev\(path, 'png', \['compression'\], \['0'\]\)/);
+    assert.doesNotMatch(source, /savev\(tmpBase,/);
+    // The bytes must be taken before the try block: the failure path stores
+    // them too, and steal_as_bytes() empties the stream on first call.
+    assert.equal(
+        source.match(/const baseBytes = stream\.steal_as_bytes\(\);/g)?.length, 2);
+    assert.doesNotMatch(source, /const bytes = stream\.steal_as_bytes\(\);/);
 
     // writeToPNG() already produced the final bytes; re-encoding the decoded
     // pixbuf cost as much again and produced the same image.

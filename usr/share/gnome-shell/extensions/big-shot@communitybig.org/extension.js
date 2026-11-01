@@ -350,6 +350,30 @@ const SUBPROCESS_PROBE_CONCURRENCY = 4;
 // =============================================================================
 
 /**
+ * Write the scratch file Cairo decodes the base image from.
+ *
+ * `baseBytes` is the PNG the shell itself produced for this frame while
+ * compositing it. As long as no effect repainted the pixels, those bytes are
+ * the image, so writing them costs about a millisecond — encoding the pixbuf
+ * again costs tens of them for a result that is byte-for-byte equivalent.
+ * Once an effect has run the pixbuf no longer matches, and it has to be
+ * encoded: compression 0, because this file is decoded two lines later.
+ *
+ * @param {string} path - scratch file to write
+ * @param {GdkPixbuf.Pixbuf} pixbuf - the image to encode, if needed
+ * @param {GLib.Bytes|null} baseBytes - PNG bytes matching `pixbuf`, or null
+ */
+function _writeScratchBase(path, pixbuf, baseBytes) {
+    if (baseBytes) {
+        Gio.File.new_for_path(path).replace_contents(
+            baseBytes.get_data(), null, false,
+            Gio.FileCreateFlags.REPLACE_DESTINATION, null);
+        return;
+    }
+    pixbuf.savev(path, 'png', ['compression'], ['0']);
+}
+
+/**
  * Some annotations (zoom callouts) can be placed outside the captured area.
  * Compute how much the export canvas must grow so they are not clipped.
  *
@@ -1103,6 +1127,11 @@ export default class BigShotExtension extends Extension {
             );
             stream.close(null);
 
+            // composite_to_stream already encoded this frame as PNG. Keep the
+            // bytes: unless an effect repaints the pixels, they are exactly
+            // what the scratch file needs, and re-encoding them is wasted work.
+            const baseBytes = stream.steal_as_bytes();
+
             if (ext._activeEnableSerial !== enableSerial)
                 return;
 
@@ -1151,11 +1180,11 @@ export default class BigShotExtension extends Extension {
                     }
                 }
 
-                // 2. Save (possibly modified) pixbuf as PNG.
-                //    Compression 0: this file exists only to be decoded back
-                //    on the next line, so deflating it is pure latency —
-                //    roughly 420 ms of it on a 4K frame.
-                workPixbuf.savev(tmpBase, 'png', ['compression'], ['0']);
+                // 2. Put the base image where Cairo can read it. Reuses the
+                //    PNG the shell already encoded unless an effect above
+                //    replaced the pixels.
+                _writeScratchBase(tmpBase, workPixbuf,
+                    workPixbuf === pixbuf ? baseBytes : null);
 
                 // 3. Build the Cairo surface. If an annotation (e.g. a zoom inset)
                 //    sits outside the captured area, grow the canvas and fill the
@@ -1229,8 +1258,7 @@ export default class BigShotExtension extends Extension {
                 // Fallback: save without annotations
                 global.display.get_sound_player().play_from_theme(
                     'screen-capture', _('Screenshot taken'), null);
-                const bytes = stream.steal_as_bytes();
-                const resultFile = ext._storeScreenshotBytes(bytes, pixbuf);
+                const resultFile = ext._storeScreenshotBytes(baseBytes, pixbuf);
                 if (resultFile)
                     this.emit('screenshot-taken', resultFile);
             } finally {
@@ -1640,21 +1668,20 @@ export default class BigShotExtension extends Extension {
             stream,
         );
         stream.close(null);
+        const baseBytes = stream.steal_as_bytes();
 
         if (this._activeEnableSerial !== enableSerial)
             return null;
 
         if (!pixbuf) return null;
 
-        if (actions.length === 0) {
-            const bytes = stream.steal_as_bytes();
-            return { bytes, pixbuf };
-        }
+        if (actions.length === 0)
+            return { bytes: baseBytes, pixbuf };
 
         const offsetX = gx / bufScale;
         const offsetY = gy / bufScale;
         return this._compositeAnnotations(
-            pixbuf, actions, offsetX, offsetY, bufScale);
+            pixbuf, actions, offsetX, offsetY, bufScale, baseBytes);
     }
 
     /**
@@ -1665,7 +1692,7 @@ export default class BigShotExtension extends Extension {
      * the countdown. Annotations carry stage coordinates, so the same offset
      * and scale maths applies to either image.
      */
-    _compositeAnnotations(pixbuf, actions, offsetX, offsetY, bufScale) {
+    _compositeAnnotations(pixbuf, actions, offsetX, offsetY, bufScale, baseBytes = null) {
         const tmpBase = this._getTempPath('base');
         const tmpAnnotated = this._getTempPath('annotated');
 
@@ -1688,8 +1715,8 @@ export default class BigShotExtension extends Extension {
                 }
             }
 
-            // Compression 0: a scratch file decoded again two lines below.
-            workPixbuf.savev(tmpBase, 'png', ['compression'], ['0']);
+            _writeScratchBase(tmpBase, workPixbuf,
+                workPixbuf === pixbuf ? baseBytes : null);
 
             // Grow the canvas with a neutral border if an annotation (e.g. a zoom
             // inset) sits outside the captured area, so it is not clipped.
