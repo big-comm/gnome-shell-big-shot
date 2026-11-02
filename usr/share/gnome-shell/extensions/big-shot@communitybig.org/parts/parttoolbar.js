@@ -17,6 +17,7 @@ import PangoCairo from 'gi://PangoCairo';
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 import { gettext as _ } from 'resource:///org/gnome/shell/extensions/extension.js';
 
+import { boxLayout } from '../lib/stcompat.js';
 import { PartUI } from './partbase.js';
 import { PartMonitor } from './partmonitor.js';
 import { BUILTIN_MASKS } from './partwebcam.js';
@@ -85,6 +86,9 @@ export class PartToolbar extends PartUI {
         this._selectedPipelineId = null; // null = auto cascade
         // Screenshot countdown, in seconds. 0 disables it.
         this._captureDelay = 0;
+        // One-shot handler that re-centres the video panel on its first
+        // allocation, when its real width is finally known.
+        this._videoFirstAllocationId = 0;
 
         this._buildToolbar();
         this._monitorPlacement = new PartMonitor(this._ui, this._ext, () => {
@@ -161,7 +165,7 @@ export class PartToolbar extends PartUI {
             y_align: Clutter.ActorAlign.CENTER,
             style: 'padding-left: 4px;',
         });
-        const timerBox = new St.BoxLayout({ vertical: false });
+        const timerBox = boxLayout({ vertical: false });
         timerBox.add_child(new St.Icon({
             gicon: this._getIcon('big-shot-timer-symbolic'),
             icon_size: 18,
@@ -511,7 +515,7 @@ export class PartToolbar extends PartUI {
         // It gets inserted into _panel when edit mode is toggled ON.
 
         // === Video Settings Container (floating, like _editContainer) ===
-        this._videoContainer = new St.BoxLayout({
+        this._videoContainer = boxLayout({
             vertical: true,
             style_class: 'big-shot-edit-container big-shot-edit-floating',
             reactive: true,
@@ -578,7 +582,7 @@ export class PartToolbar extends PartUI {
         });
 
         // Row 1: Quality label + buttons
-        const qualityBox = new St.BoxLayout({ vertical: false, style: 'spacing: 8px;' });
+        const qualityBox = boxLayout({ vertical: false, style: 'spacing: 8px;' });
         qualityBox.add_child(new St.Label({
             text: _('Quality'),
             style: 'color: rgba(255,255,255,0.6); font-size: 12px; min-width: 50px;',
@@ -613,7 +617,7 @@ export class PartToolbar extends PartUI {
         this._videoContainer.add_child(qualityBox);
 
         // Row 2: Codec label + buttons (populated dynamically)
-        const codecBox = new St.BoxLayout({ vertical: false, style: 'spacing: 8px;' });
+        const codecBox = boxLayout({ vertical: false, style: 'spacing: 8px;' });
         codecBox.add_child(new St.Label({
             text: _('Codec'),
             style: 'color: rgba(255,255,255,0.6); font-size: 12px; min-width: 50px;',
@@ -625,7 +629,7 @@ export class PartToolbar extends PartUI {
         this._codecButtons = new Map();
 
         // Row 3: Microphone selection (visible when >1 mic available and mic is active)
-        this._micRow = new St.BoxLayout({ vertical: false, style: 'spacing: 8px;' });
+        this._micRow = boxLayout({ vertical: false, style: 'spacing: 8px;' });
         this._micRow.visible = false;
         this._micRow.add_child(new St.Label({
             text: _('Mic'),
@@ -639,7 +643,7 @@ export class PartToolbar extends PartUI {
         this._videoContainer.add_child(this._micRow);
 
         // Row 4: Camera selection (visible only when webcam is on)
-        this._cameraRow = new St.BoxLayout({ vertical: false, style: 'spacing: 8px;' });
+        this._cameraRow = boxLayout({ vertical: false, style: 'spacing: 8px;' });
         this._cameraRow.visible = false;
         this._cameraRow.add_child(new St.Label({
             text: _('Camera'),
@@ -653,7 +657,7 @@ export class PartToolbar extends PartUI {
         this._videoContainer.add_child(this._cameraRow);
 
         // Row 4: Mask selection (visible only when webcam is on)
-        this._maskRow = new St.BoxLayout({ vertical: false, style: 'spacing: 8px;' });
+        this._maskRow = boxLayout({ vertical: false, style: 'spacing: 8px;' });
         this._maskRow.visible = false;
         this._maskRow.add_child(new St.Label({
             text: _('Mask'),
@@ -684,7 +688,7 @@ export class PartToolbar extends PartUI {
         this._videoContainer.add_child(this._maskRow);
 
         // Row 4: Webcam size selection (visible only when webcam is on)
-        this._sizeRow = new St.BoxLayout({ vertical: false, style: 'spacing: 8px;' });
+        this._sizeRow = boxLayout({ vertical: false, style: 'spacing: 8px;' });
         this._sizeRow.visible = false;
         this._sizeRow.add_child(new St.Label({
             text: _('Size'),
@@ -1164,6 +1168,26 @@ export class PartToolbar extends PartUI {
 
         this._positionCaptureToolbar(this._videoContainer);
 
+        // The centring above measures get_preferred_width() on a container
+        // the stage has never allocated, so it is only a guess — the panel
+        // opened off to the side and stayed there until some row change
+        // (showing the Mic row, say) triggered a reposition. Re-centre once
+        // the first real allocation lands, then stop listening.
+        if (this._videoFirstAllocationId) {
+            this._videoContainer.disconnect(this._videoFirstAllocationId);
+            this._videoFirstAllocationId = 0;
+        }
+        this._videoFirstAllocationId = this._videoContainer.connect(
+            'notify::allocation', () => {
+                if (!this._videoFirstAllocationId)
+                    return;
+                this._videoContainer.disconnect(this._videoFirstAllocationId);
+                this._videoFirstAllocationId = 0;
+                // Defer: repositioning from inside an allocation cycle is
+                // what queue_relayout() exists to avoid.
+                this.repositionVideoPanel();
+            });
+
         // Fade-in
         this._videoContainer.opacity = 0;
         this._videoContainer.ease({
@@ -1209,6 +1233,10 @@ export class PartToolbar extends PartUI {
     _detachVideoFromPanel() {
         this._removeSource(this._videoPanelPositionId);
         this._videoPanelPositionId = 0;
+        if (this._videoFirstAllocationId) {
+            this._videoContainer.disconnect(this._videoFirstAllocationId);
+            this._videoFirstAllocationId = 0;
+        }
         const parent = this._videoContainer.get_parent();
         if (parent) parent.remove_child(this._videoContainer);
     }
@@ -1265,7 +1293,7 @@ export class PartToolbar extends PartUI {
         this._closeSizePopup();
         this._closeColorPopup();
 
-        this._sizePopup = new St.BoxLayout({
+        this._sizePopup = boxLayout({
             style_class: 'big-shot-edit-popup',
             vertical: true,
             reactive: true,
@@ -1340,7 +1368,7 @@ export class PartToolbar extends PartUI {
     _showFontPopup() {
         this._closeFontPopup();
 
-        this._fontPopup = new St.BoxLayout({
+        this._fontPopup = boxLayout({
             style_class: 'big-shot-edit-popup',
             vertical: true,
             reactive: true,
@@ -1356,7 +1384,7 @@ export class PartToolbar extends PartUI {
             vscrollbar_policy: St.PolicyType.AUTOMATIC,
         });
 
-        const listBox = new St.BoxLayout({ vertical: true, style: 'spacing: 2px;' });
+        const listBox = boxLayout({ vertical: true, style: 'spacing: 2px;' });
 
         for (const name of fontNames) {
             const escapedName = name.replace(/'/g, "\\'");
@@ -1447,7 +1475,7 @@ export class PartToolbar extends PartUI {
         this._closeColorPopup();
         this._closeSizePopup();
 
-        this._intensityPopup = new St.BoxLayout({
+        this._intensityPopup = boxLayout({
             style_class: 'big-shot-edit-popup',
             vertical: true,
             reactive: true,
@@ -1537,7 +1565,7 @@ export class PartToolbar extends PartUI {
     _showColorPopup(target) {
         this._closeColorPopup();
 
-        this._colorPopup = new St.BoxLayout({
+        this._colorPopup = boxLayout({
             style_class: 'big-shot-edit-popup',
             vertical: true,
             reactive: true,
@@ -1938,7 +1966,7 @@ export class PartToolbar extends PartUI {
             return;
         }
 
-        this._ocrLangPopup = new St.BoxLayout({
+        this._ocrLangPopup = boxLayout({
             style_class: 'big-shot-edit-popup',
             vertical: true,
             reactive: true,
@@ -1981,7 +2009,7 @@ export class PartToolbar extends PartUI {
             vscrollbar_policy: St.PolicyType.AUTOMATIC,
         });
 
-        const listBox = new St.BoxLayout({ vertical: true, style: 'spacing: 2px;' });
+        const listBox = boxLayout({ vertical: true, style: 'spacing: 2px;' });
 
         // Friendly names for common languages
         const LANG_NAMES = {
@@ -2231,6 +2259,7 @@ export class PartToolbar extends PartUI {
         if (this._videoContainer) {
             this._videoContainer.destroy();
             this._videoContainer = null;
+            this._videoFirstAllocationId = 0;
         }
 
         this._toolButtons.clear();

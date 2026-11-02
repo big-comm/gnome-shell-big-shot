@@ -8,6 +8,8 @@ import Clutter from 'gi://Clutter';
 import GLib from 'gi://GLib';
 import St from 'gi://St';
 
+import { boxLayout } from '../lib/stcompat.js';
+
 // =============================================================================
 // PartBase — Simplest base class
 // =============================================================================
@@ -157,7 +159,7 @@ export class PartPopupSelect extends PartUI {
         }
 
         // Create popup container
-        this._popup = new St.BoxLayout({
+        this._popup = boxLayout({
             style_class: 'screenshot-ui-type-button-container',
             vertical: true,
             visible: false,

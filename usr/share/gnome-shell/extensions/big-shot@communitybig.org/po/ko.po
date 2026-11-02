@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: big-shot 1.0\n"
 "Report-Msgid-Bugs-To: https://github.com/BigCommunity/gnome-shell-big-shot/"
 "issues\n"
-"POT-Creation-Date: 2026-09-07 01:07-0300\n"
+"POT-Creation-Date: 2026-10-16 09:55-0300\n"
 "PO-Revision-Date: 2026-08-15 18:02-0300\n"
 "Last-Translator: Tales A. Mendonça <talesam@gmail.com>\n"
 "Language-Team: Korean\n"
@@ -42,46 +42,54 @@ msgstr "캡션 (↑/↓ = 크기)…"
 msgid "Zoom caption"
 msgstr "캡션 확대"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:417
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:418
 msgid "BigShot from %d %t"
 msgstr "BigShot %d %t"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1178
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1193
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1312
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1195
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1210
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1378
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1388
 msgid "Screenshot taken"
 msgstr "스크린샷이 찍혔습니다"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1332
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1371
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1941
+msgid "Screenshot copied"
+msgstr "스크린샷이 복사되었습니다"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1408
 msgid "Screenshots"
 msgstr "스크린샷들"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1342
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:2004
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1418
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:2120
 #, javascript-format
 msgid "Screenshot from %s"
 msgstr "%s의 스크린샷"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1391
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1467
 msgid "Screen Capture"
 msgstr "스크린샷 찍음"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1444
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1476
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1486
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1528
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1560
 msgid "Screenshot captured"
 msgstr "스크린샷 찍음"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1445
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1477
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1487
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1529
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1561
 msgid "You can paste the image from the clipboard"
 msgstr "클립보드에서 이미지를 붙여넣을 수 있습니다"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1452
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1536
 msgid "Show in Files"
 msgstr "파일에서 보기"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1762
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1776
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1859
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1873
 msgid ""
 "Automatic installation is unavailable. Install Tesseract and its language "
 "packs with your package manager."
@@ -89,55 +97,49 @@ msgstr ""
 "자동 설치를 사용할 수 없습니다. 패키지 관리자로 Tesseract 및 언어 팩을 설치하"
 "세요."
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1825
-msgid "Screenshot copied"
-msgstr "스크린샷이 복사되었습니다"
-
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1857
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1973
 msgid "Extracting text..."
 msgstr "텍스트를 추출 중입니다..."
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1879
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1995
 #, javascript-format
 msgid "Text copied to clipboard! (%d chars)"
 msgstr "텍스트가 클립보드에 복사되었습니다! (%d자)"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1882
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1998
 msgid "No text found in selection"
 msgstr "선택 영역에서 텍스트를 찾을 수 없습니다"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1888
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:2004
 #, javascript-format
 msgid "OCR failed: %s"
 msgstr "OCR 실패: %s"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:2029
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:2145
 msgid "Save Screenshot"
 msgstr "스크린샷 저장"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:2035
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:2151
 msgid "PNG Images"
 msgstr ""
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:2884
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:3030
 msgid "GNOME default"
 msgstr ""
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:3163
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:3307
+msgid "Screencast recorded"
+msgstr ""
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:3380
 msgid "Recording could not be stopped"
 msgstr "녹화를 중지할 수 없습니다"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:3165
-#, javascript-format
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:3381
 msgid ""
-"The screencast service stopped responding. The file is still growing at %s."
+"The recording service is not responding. Use Force stop in the recording "
+"controls to terminate it. The last video fragment may be incomplete."
 msgstr ""
-"화면 녹화 서비스가 응답하지 않습니다. 파일이 %s에서 계속 커지고 있습니다."
-
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:3166
-msgid ""
-"The screencast service stopped responding and the recording is still running."
-msgstr "화면 녹화 서비스가 응답하지 않아 녹화가 계속되고 있습니다."
 
 #: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partaudio.js:98
 #: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partaudio.js:160
@@ -166,12 +168,31 @@ msgstr "녹화 해상도"
 msgid "Frames per second"
 msgstr "초당 프레임"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partindicator.js:94
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partindicator.js:116
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partindicator.js:148
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partindicator.js:207
 msgid "Pause recording"
 msgstr ""
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partindicator.js:95
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partindicator.js:117
 msgid "Screen recording"
+msgstr ""
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partindicator.js:162
+msgid "Force stop"
+msgstr ""
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partindicator.js:168
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partindicator.js:212
+msgid "Stop recording"
+msgstr ""
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partindicator.js:207
+msgid "Resume recording"
+msgstr ""
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partindicator.js:211
+msgid "Force stop recording service (last fragment may be incomplete)"
 msgstr ""
 
 #: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:42

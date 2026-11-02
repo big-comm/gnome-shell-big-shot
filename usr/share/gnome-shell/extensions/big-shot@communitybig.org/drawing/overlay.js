@@ -14,6 +14,8 @@ import Gio from 'gi://Gio';
 import GObject from 'gi://GObject';
 import Shell from 'gi://Shell';
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
+
+import { boxLayout } from '../lib/stcompat.js';
 import { gettext as _ } from 'resource:///org/gnome/shell/extensions/extension.js';
 
 import {
@@ -820,7 +822,7 @@ export class DrawingOverlay {
             ? position
             : this._toWidgetCoords(position[0], position[1]);
 
-        this._textPopover = new St.BoxLayout({
+        this._textPopover = boxLayout({
             style: 'background: rgba(30,30,30,0.95); border-radius: 8px; padding: 8px; ' +
                    'border: 1px solid rgba(255,255,255,0.15);',
             vertical: false,

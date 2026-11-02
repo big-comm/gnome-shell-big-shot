@@ -200,6 +200,7 @@ const VIDEO_PIPELINES = [
         id: 'nvidia-raw-h264-nvenc',
         label: 'NVIDIA H.264',
         vendors: [GpuVendor.NVIDIA],
+        rawFormat: 'NV12',
         src: 'videoconvert chroma-mode=none dither=none matrix-mode=output-only n-threads=4 ! queue',
         enc: (p) => `nvh264enc rc-mode=constqp qp-const=${p.qp} ! h264parse config-interval=-1`,
         elements: ['videoconvert', 'nvh264enc', 'h264parse'],
@@ -210,6 +211,7 @@ const VIDEO_PIPELINES = [
         id: 'nvidia-raw-h265-nvenc',
         label: 'NVIDIA H.265',
         vendors: [GpuVendor.NVIDIA],
+        rawFormat: 'NV12',
         src: 'videoconvert chroma-mode=none dither=none matrix-mode=output-only n-threads=4 ! queue',
         enc: (p) => `nvh265enc rc-mode=constqp qp-const=${p.hevc_qp} ! h265parse config-interval=-1`,
         elements: ['videoconvert', 'nvh265enc', 'h265parse'],
@@ -338,15 +340,38 @@ const MUXERS = {
 
 const SCREENCAST_DBUS_TIMEOUT_MS = 30000;
 // The service stops by pushing EOS through the pipeline and only answers once
-// it drains. A wedged live source — a broken audio device is the usual cause —
-// never forwards EOS, so the call hangs and the user is left with a recording
-// that cannot be stopped. Give up before the D-Bus timeout and tell them.
+// it drains. A stalled source or encoder can block EOS and leave the call
+// pending. Surface that before the D-Bus timeout; never assume EOS succeeded.
 const SCREENCAST_STOP_GRACE_MS = 12000;
 const SUBPROCESS_PROBE_CONCURRENCY = 4;
 
 // =============================================================================
 // HELPER FUNCTIONS
 // =============================================================================
+
+/**
+ * Write the scratch file Cairo decodes the base image from.
+ *
+ * `baseBytes` is the PNG the shell itself produced for this frame while
+ * compositing it. As long as no effect repainted the pixels, those bytes are
+ * the image, so writing them costs about a millisecond — encoding the pixbuf
+ * again costs tens of them for a result that is byte-for-byte equivalent.
+ * Once an effect has run the pixbuf no longer matches, and it has to be
+ * encoded: compression 0, because this file is decoded two lines later.
+ *
+ * @param {string} path - scratch file to write
+ * @param {GdkPixbuf.Pixbuf} pixbuf - the image to encode, if needed
+ * @param {GLib.Bytes|null} baseBytes - PNG bytes matching `pixbuf`, or null
+ */
+function _writeScratchBase(path, pixbuf, baseBytes) {
+    if (baseBytes) {
+        Gio.File.new_for_path(path).replace_contents(
+            baseBytes.get_data(), null, false,
+            Gio.FileCreateFlags.REPLACE_DESTINATION, null);
+        return;
+    }
+    pixbuf.savev(path, 'png', ['compression'], ['0']);
+}
 
 /**
  * Some annotations (zoom callouts) can be placed outside the captured area.
@@ -590,13 +615,22 @@ export default class BigShotExtension extends Extension {
         this._currentConfigIndex = 0;
 
         // Pause/resume recording state
-        this._recordingState = 'idle'; // 'idle' | 'starting' | 'recording' | 'pausing' | 'paused' | 'resuming'
+        // idle | starting | recording | pausing | paused | resuming |
+        // stopping | stop-failed
+        this._recordingState = 'idle';
+        this._recordingEpoch = (this._recordingEpoch ?? 0) + 1;
         this._recordingContext = null;
         this._recordingSession = null;
         this._currentSegment = null;
         this._suppressPauseStopFailure = false;
+        this._stopFailureNotified = false;
         this._stopWatcherId = 0;
         this._stopCompletions = new Set();
+        this._recordingStartPromise = null;
+        this._recordingStopPromise = null;
+        this._segmentStopPromise = null;
+        this._pausePromise = null;
+        this._resumePromise = null;
         this._renameTimerId = 0;
         this._renameFinalizeId = 0;
         this._origScreencastProxyTimeout = null;
@@ -891,8 +925,14 @@ export default class BigShotExtension extends Extension {
         this._recordingSession = null;
         this._currentSegment = null;
         this._suppressPauseStopFailure = false;
+        this._stopFailureNotified = false;
         this._stopWatcherId = 0;
         this._stopCompletions.clear();
+        this._recordingStartPromise = null;
+        this._recordingStopPromise = null;
+        this._segmentStopPromise = null;
+        this._pausePromise = null;
+        this._resumePromise = null;
 
         // Clean up webcam UI visibility listener
         if (this._webcamUIVisId) {
@@ -1087,6 +1127,11 @@ export default class BigShotExtension extends Extension {
             );
             stream.close(null);
 
+            // composite_to_stream already encoded this frame as PNG. Keep the
+            // bytes: unless an effect repaints the pixels, they are exactly
+            // what the scratch file needs, and re-encoding them is wasted work.
+            const baseBytes = stream.steal_as_bytes();
+
             if (ext._activeEnableSerial !== enableSerial)
                 return;
 
@@ -1114,6 +1159,7 @@ export default class BigShotExtension extends Extension {
                     (y - offsetY) * bufScale,
                 ];
                 const drawScale = 1.0;
+                const startedAt = GLib.get_monotonic_time();
 
                 // 1. Apply pixel-manipulating effects (pixelate, blur)
                 // on the GdkPixbuf before converting to Cairo surface
@@ -1134,8 +1180,11 @@ export default class BigShotExtension extends Extension {
                     }
                 }
 
-                // 2. Save (possibly modified) pixbuf as PNG
-                workPixbuf.savev(tmpBase, 'png', [], []);
+                // 2. Put the base image where Cairo can read it. Reuses the
+                //    PNG the shell already encoded unless an effect above
+                //    replaced the pixels.
+                _writeScratchBase(tmpBase, workPixbuf,
+                    workPixbuf === pixbuf ? baseBytes : null);
 
                 // 3. Build the Cairo surface. If an annotation (e.g. a zoom inset)
                 //    sits outside the captured area, grow the canvas and fill the
@@ -1180,12 +1229,27 @@ export default class BigShotExtension extends Extension {
                 global.display.get_sound_player().play_from_theme(
                     'screen-capture', _('Screenshot taken'), null);
 
-                // 7. Store to clipboard + file
-                const finalBytes = ext._pixbufToBytes(annotPixbuf);
+                // 7. Store to clipboard + file.
+                //    writeToPNG() just wrote exactly these bytes, so read
+                //    them back instead of re-encoding the pixbuf — the
+                //    second encode cost ~320 ms on a 4K frame and produced
+                //    the same image.
+                const [finalBytes] =
+                    Gio.File.new_for_path(tmpAnnotated).load_bytes(null);
                 const resultFile = ext._storeScreenshotBytes(finalBytes, annotPixbuf);
 
                 if (resultFile)
                     this.emit('screenshot-taken', resultFile);
+
+                // Compositing is synchronous, so every millisecond here is a
+                // millisecond the screen is frozen after the user pressed
+                // Enter. Report the outliers; silence means it was quick.
+                const elapsed =
+                    (GLib.get_monotonic_time() - startedAt) / 1000;
+                if (elapsed > 600) {
+                    warn(`Annotated capture took ${Math.round(elapsed)} ms ` +
+                         `for ${imgW}x${imgH} with ${actions.length} annotations`);
+                }
 
             } catch (e) {
                 if (ext._activeEnableSerial !== enableSerial)
@@ -1194,8 +1258,7 @@ export default class BigShotExtension extends Extension {
                 // Fallback: save without annotations
                 global.display.get_sound_player().play_from_theme(
                     'screen-capture', _('Screenshot taken'), null);
-                const bytes = stream.steal_as_bytes();
-                const resultFile = ext._storeScreenshotBytes(bytes, pixbuf);
+                const resultFile = ext._storeScreenshotBytes(baseBytes, pixbuf);
                 if (resultFile)
                     this.emit('screenshot-taken', resultFile);
             } finally {
@@ -1205,15 +1268,6 @@ export default class BigShotExtension extends Extension {
             }
         };
 
-    }
-
-    /**
-     * Convert a GdkPixbuf.Pixbuf to PNG GLib.Bytes
-     */
-    _pixbufToBytes(pixbuf) {
-        const [ok, buffer] = pixbuf.save_to_bufferv('png', [], []);
-        if (!ok) throw new Error('Failed to save pixbuf to buffer');
-        return GLib.Bytes.new(buffer);
     }
 
     /**
@@ -1614,21 +1668,20 @@ export default class BigShotExtension extends Extension {
             stream,
         );
         stream.close(null);
+        const baseBytes = stream.steal_as_bytes();
 
         if (this._activeEnableSerial !== enableSerial)
             return null;
 
         if (!pixbuf) return null;
 
-        if (actions.length === 0) {
-            const bytes = stream.steal_as_bytes();
-            return { bytes, pixbuf };
-        }
+        if (actions.length === 0)
+            return { bytes: baseBytes, pixbuf };
 
         const offsetX = gx / bufScale;
         const offsetY = gy / bufScale;
         return this._compositeAnnotations(
-            pixbuf, actions, offsetX, offsetY, bufScale);
+            pixbuf, actions, offsetX, offsetY, bufScale, baseBytes);
     }
 
     /**
@@ -1639,7 +1692,7 @@ export default class BigShotExtension extends Extension {
      * the countdown. Annotations carry stage coordinates, so the same offset
      * and scale maths applies to either image.
      */
-    _compositeAnnotations(pixbuf, actions, offsetX, offsetY, bufScale) {
+    _compositeAnnotations(pixbuf, actions, offsetX, offsetY, bufScale, baseBytes = null) {
         const tmpBase = this._getTempPath('base');
         const tmpAnnotated = this._getTempPath('annotated');
 
@@ -1662,7 +1715,8 @@ export default class BigShotExtension extends Extension {
                 }
             }
 
-            workPixbuf.savev(tmpBase, 'png', [], []);
+            _writeScratchBase(tmpBase, workPixbuf,
+                workPixbuf === pixbuf ? baseBytes : null);
 
             // Grow the canvas with a neutral border if an annotation (e.g. a zoom
             // inset) sits outside the captured area, so it is not clipped.
@@ -1700,7 +1754,9 @@ export default class BigShotExtension extends Extension {
             surface.finish();
 
             const annotPixbuf = GdkPixbuf.Pixbuf.new_from_file(tmpAnnotated);
-            const bytes = this._pixbufToBytes(annotPixbuf);
+            // Read back what writeToPNG() just wrote rather than encoding
+            // the same image a second time.
+            const [bytes] = Gio.File.new_for_path(tmpAnnotated).load_bytes(null);
             return { bytes, pixbuf: annotPixbuf };
         } finally {
             try { Gio.File.new_for_path(tmpBase).delete(null); } catch (_e) { /* */ }
@@ -2641,11 +2697,30 @@ export default class BigShotExtension extends Extension {
         this._origStartScreencast = screenshotUI._startScreencast?.bind(screenshotUI);
         if (this._origStartScreencast) {
             screenshotUI._startScreencast = function (...args) {
+                // Native _startScreencast(nRetries) retries a startup crash
+                // with this._startScreencast(nRetries + 1), which lands back
+                // here while our own start is still pending. The guard below
+                // would swallow it, so the service would blocklist the broken
+                // pipeline and then never be asked again — the user clicks
+                // record and nothing happens. The UI always calls this with
+                // no argument, so a positive counter identifies the retry.
+                if (typeof args[0] === 'number' && args[0] > 0)
+                    return ext._origStartScreencast(...args);
+
+                // The native UI clears its flag before StopScreencast replies.
+                // Never let another capture overwrite a session still draining.
+                if (ext._recordingState !== 'idle' || ext._recordingStartPromise !== null)
+                    return Promise.resolve();
                 ext._recordingState = 'starting';
-                if (this._windowButton?.checked) {
-                    return ext._startWindowScreencast(this);
-                }
-                return ext._origStartScreencast(...args);
+                const start = this._windowButton?.checked
+                    ? () => ext._startWindowScreencast(this)
+                    : () => ext._origStartScreencast(...args);
+                const pending = Promise.resolve().then(start).finally(() => {
+                    if (ext._recordingStartPromise === pending)
+                        ext._recordingStartPromise = null;
+                });
+                ext._recordingStartPromise = pending;
+                return pending;
             };
         }
 
@@ -2659,9 +2734,25 @@ export default class BigShotExtension extends Extension {
         this._origScreencastFailed = screenshotUI._screencastFailed?.bind(screenshotUI);
         if (this._origScreencastFailed) {
             screenshotUI._screencastFailed = function (...args) {
+                if (ext._recordingState === 'stop-failed' &&
+                    ext._isStartupTimeout(args[1]))
+                    return;
+                // Do not require the service to still own the bus name here.
+                // org.gnome.Shell.Screencast shuts down about two seconds
+                // after the pause segment stops, so by the time this fires
+                // the owner is normally already gone — which is exactly the
+                // case this suppression exists for.
                 if (ext._shouldIgnorePauseStopFailure()) {
                     ext._suppressPauseStopFailure = false;
                     return;
+                }
+                if (args[0] === 'RECORDING') {
+                    // Service loss is not a confirmed EOS for the segment in
+                    // flight, so drop only that one. Clearing the session too
+                    // would skip the merge in _onFinalStop() and orphan every
+                    // segment already written to disk.
+                    ext._currentSegment = null;
+                    ext._onFinalStop();
                 }
                 return ext._origScreencastFailed(...args);
             };
@@ -2784,6 +2875,18 @@ export default class BigShotExtension extends Extension {
         } catch (e) {
             if (this._activeEnableSerial !== enableSerial)
                 return;
+            // A D-Bus timeout does not cancel the service's pending start, so
+            // going idle here can leave an orphan recording writing to disk
+            // with nothing in the UI to stop it. Same reasoning as the
+            // full-screen path.
+            if (this._isStartupTimeout(e)) {
+                this._recordingState = 'stop-failed';
+                this._indicator?.onRecordingStarted(false);
+                this._indicator?.onStopFailed();
+                this._notifyRecordingStopFailure();
+                fail(`Window screencast timed out: ${e.message}`);
+                return;
+            }
             this._recordingState = 'idle';
             if (typeof ui._setScreencastInProgress === 'function')
                 ui._setScreencastInProgress(false);
@@ -2935,6 +3038,16 @@ export default class BigShotExtension extends Extension {
                 if (recovered)
                     return recovered;
 
+                // A D-Bus timeout does not cancel the service's pending start.
+                // Trying another encoder now can create an orphan recording.
+                if (this._isStartupTimeout(e)) {
+                    this._recordingState = 'stop-failed';
+                    this._indicator?.onRecordingStarted(false);
+                    this._indicator?.onStopFailed();
+                    this._notifyRecordingStopFailure();
+                    throw e;
+                }
+
                 this._recordingState = 'idle';
                 warn(`Pipeline ${config.id} failed: ${e.message}`);
                 // Continue to next config
@@ -3003,6 +3116,13 @@ export default class BigShotExtension extends Extension {
             if (this._activeEnableSerial !== enableSerial) {
                 this._stopStaleScreencast(stopMethod);
                 return [false];
+            }
+            if (this._isStartupTimeout(e)) {
+                this._recordingState = 'stop-failed';
+                this._indicator?.onRecordingStarted(false);
+                this._indicator?.onStopFailed();
+                this._notifyRecordingStopFailure();
+                throw e;
             }
             this._recordingState = 'idle';
             this._indicator?.onPipelineReady();
@@ -3099,10 +3219,8 @@ export default class BigShotExtension extends Extension {
             return null;
 
         const activePath = findRecentRecordingFile(config.ext, startedAtUnix);
-        if (!activePath) {
-            this._stopScreencastAfterStartupFailure();
+        if (!activePath)
             return null;
-        }
 
         warn(`Pipeline ${config.id} start timed out after output began; keeping recording attached`);
         return this._registerRecordingStarted({
@@ -3145,6 +3263,8 @@ export default class BigShotExtension extends Extension {
      * to the legacy Shell.Recorder when the flag is absent.
      */
     _isRecordingActive() {
+        if (this._recordingState !== 'idle')
+            return true;
         const ui = this._screenshotUI ?? Main.screenshotUI;
         if (!ui) return false;
         if (ui._screencastInProgress) return true;
@@ -3173,7 +3293,7 @@ export default class BigShotExtension extends Extension {
 
         // Preferred: GNOME 50+ public API
         if (typeof ui.stopScreencast === 'function') {
-            try { ui.stopScreencast(); return; } catch (e) {
+            try { void ui.stopScreencast(); return; } catch (e) {
                 warn(`stopScreencast failed: ${e.message}`);
             }
         }
@@ -3200,29 +3320,94 @@ export default class BigShotExtension extends Extension {
     }
 
     _stopScreencastProxyAsync(...args) {
-        if (this._recordingState === 'paused') {
-            this._finishPausedRecording();
-            return Promise.resolve([true]);
-        }
-
-        this._prepareRecordingStop();
-        return this._trackRecordingStop(
-            () => this._origStopScreencastAsync(...args));
+        if (this._recordingStopPromise !== null)
+            return this._recordingStopPromise;
+        if (this._recordingState === 'stop-failed')
+            return Promise.reject(new Error('Recording service is unresponsive; use Force stop'));
+        const enableSerial = this._activeEnableSerial;
+        const recordingEpoch = this._recordingEpoch;
+        const pending = Promise.resolve().then(async () => {
+            // Serialize stop with startup, pause, and resume. In particular,
+            // stopping during pause must not issue a second physical stop.
+            await this._recordingStartPromise;
+            await this._pausePromise;
+            await this._resumePromise;
+            if (this._activeEnableSerial !== enableSerial ||
+                this._recordingEpoch !== recordingEpoch)
+                return [false];
+            if (this._recordingState === 'paused') {
+                this._finishPausedRecording();
+                return [true];
+            }
+            if (this._recordingState === 'stop-failed')
+                throw new Error('Recording service is unresponsive; use Force stop');
+            this._prepareRecordingStop();
+            this._recordingState = 'stopping';
+            this._indicator?.onStopping();
+            await this._stopSegmentAsync(...args);
+            if (this._activeEnableSerial !== enableSerial ||
+                this._recordingEpoch !== recordingEpoch)
+                return [false];
+            this._setScreencastInProgress(false);
+            this._onFinalStop();
+            return [true];
+        }).catch(e => {
+            if (this._activeEnableSerial === enableSerial &&
+                this._recordingEpoch === recordingEpoch) {
+                this._recordingState = 'stop-failed';
+                this._setScreencastInProgress(true);
+                this._indicator?.onStopFailed();
+                this._notifyRecordingStopFailure();
+            }
+            throw e;
+        }).finally(() => {
+            if (this._recordingStopPromise === pending)
+                this._recordingStopPromise = null;
+        });
+        this._recordingStopPromise = pending;
+        return pending;
     }
 
-    _stopScreencastUiAsync(...args) {
-        if (this._recordingState === 'paused') {
-            this._finishPausedRecording();
-            return Promise.resolve();
-        }
+    async _stopScreencastUiAsync(...args) {
+        // Native stopScreencast() returns early when nothing is recording.
+        // Without this the idle stop reaches the service, comes back false,
+        // and the error path switches the system recording indicator back on
+        // with no recording behind it.
+        if (!this._isRecordingActive() && this._recordingState === 'idle')
+            return;
 
-        this._prepareRecordingStop();
-        return this._trackRecordingStop(
-            () => this._origStopScreencast(...args));
+        const notify = this._recordingStopPromise === null;
+        try {
+            const [success] = await this._stopScreencastProxyAsync(...args);
+            if (success && notify)
+                this._screenshotUI?._showNotification(_('Screencast recorded'));
+        } catch (e) {
+            // Match the native UI's non-throwing contract. Keep the indicator
+            // visible and preserve every segment when the outcome is unknown.
+            warn(`Stop recording failed: ${e.message}`);
+        }
+    }
+
+    _stopSegmentAsync(...args) {
+        if (this._segmentStopPromise !== null)
+            return this._segmentStopPromise;
+        // The service answers false only when it holds no recorder for this
+        // sender — a stop issued twice, or after the segment already ended.
+        // That is benign: the recording is already over. A real failure to
+        // drain EOS never answers at all (the reply sits inside the service's
+        // finally block), so it surfaces through the stop watchdog, not here.
+        const pending = this._trackRecordingStop(
+            () => this._origStopScreencastAsync(...args),
+        ).finally(() => {
+            if (this._segmentStopPromise === pending)
+                this._segmentStopPromise = null;
+        });
+        this._segmentStopPromise = pending;
+        return pending;
     }
 
     _trackRecordingStop(stop) {
-        const completion = {};
+        const completion = { epoch: this._recordingEpoch };
         this._stopCompletions.add(completion);
         let result;
         try {
@@ -3245,35 +3430,124 @@ export default class BigShotExtension extends Extension {
      *
      * Without this the UI reports the recording as finished while the service
      * keeps writing, and every later click hits the same silent timeout. The
-     * recording cannot be killed from inside an extension, so be honest: say
-     * what happened and where the file is, rather than pretending it stopped.
+     * failure must remain visible until the service acknowledges EOS or the
+     * user explicitly terminates the unresponsive recording service.
      */
     _watchStopTimeout(settled) {
+        const recordingEpoch = this._recordingEpoch;
         let done = false;
         settled.finally(() => {
             done = true;
         }).catch(() => { /* reported by the caller */ });
 
         this._addTimeout(SCREENCAST_STOP_GRACE_MS, () => {
-            if (done || this._recordingState === 'idle')
+            if (done || this._recordingState === 'idle' ||
+                this._recordingEpoch !== recordingEpoch)
                 return GLib.SOURCE_REMOVE;
 
-            const path = this._currentSegmentPath;
+            // Pausing goes through the same stop call. A slow pause is not a
+            // stuck recording: announcing "could not be stopped" there pushes
+            // the user towards Force stop and kills a session that is about
+            // to pause cleanly.
+            if (this._recordingState === 'pausing' ||
+                this._recordingState === 'paused')
+                return GLib.SOURCE_REMOVE;
+
             warn('Screencast service did not answer the stop request; ' +
                  'the recording is still running');
-            this._showNotification(
-                _('Recording could not be stopped'),
-                path
-                    ? _('The screencast service stopped responding. The file is still growing at %s.').format(path)
-                    : _('The screencast service stopped responding and the recording is still running.'));
+            this._indicator?.onStopFailed();
+            this._notifyRecordingStopFailure();
             return GLib.SOURCE_REMOVE;
         });
+    }
+
+    _notifyRecordingStopFailure() {
+        // The watchdog fires at its own deadline and the D-Bus call rejects
+        // at SCREENCAST_DBUS_TIMEOUT_MS, so one stuck stop reaches this twice.
+        // The user only needs to be told once; the flag is cleared when the
+        // session ends.
+        if (this._stopFailureNotified)
+            return;
+        this._stopFailureNotified = true;
+        this._showNotification(
+            _('Recording could not be stopped'),
+            _('The recording service is not responding. Use Force stop in the recording controls to terminate it. The last video fragment may be incomplete.'));
+    }
+
+    async forceStopRecording() {
+        const proxy = this._screenshotUI?._screencastProxy;
+        const owner = proxy?.g_name_owner;
+        if (!this._indicator?._stopFailed || this._forceStopInProgress)
+            return;
+        if (!owner) {
+            // Nothing left to terminate: the service already left the bus.
+            // Returning here used to strand the user — the state stayed
+            // stop-failed, which blocks every new recording, and the button
+            // did nothing. Clear the session instead.
+            warn('Screencast service is already gone; clearing recording state');
+            // The path that leads here sets the flag back to true so the stop
+            // can be retried; leaving it set keeps the shell's own recording
+            // indicator lit with nothing behind it.
+            this._setScreencastInProgress(false);
+            this._onFinalStop();
+            this._indicator?.onRecordingStopped();
+            return;
+        }
+        this._forceStopInProgress = true;
+        const enableSerial = this._activeEnableSerial;
+        const recordingEpoch = this._recordingEpoch;
+        try {
+            // Address the unique bus owner, not an executable name or a saved
+            // PID. Never kill unrelated gjs processes or the Shell itself.
+            const reply = await new Promise((resolve, reject) => {
+                Gio.DBus.session.call(
+                    'org.freedesktop.DBus', '/org/freedesktop/DBus',
+                    'org.freedesktop.DBus', 'GetConnectionUnixProcessID',
+                    new GLib.Variant('(s)', [owner]), new GLib.VariantType('(u)'),
+                    Gio.DBusCallFlags.NONE, 2000, null, (connection, result) => {
+                        try { resolve(connection.call_finish(result)); }
+                        catch (e) { reject(e); }
+                    });
+            });
+            const [pid] = reply.deep_unpack();
+            if (this._activeEnableSerial !== enableSerial ||
+                this._recordingEpoch !== recordingEpoch ||
+                !this._indicator?._stopFailed ||
+                proxy.g_name_owner !== owner || pid <= 1 ||
+                pid === Gio.Credentials.new().get_unix_pid())
+                return;
+            const kill = GLib.find_program_in_path('kill');
+            if (!kill)
+                throw new Error('kill not found');
+            const result = await this._runSubprocess(
+                [kill, '-KILL', '--', String(pid)], Gio.SubprocessFlags.NONE);
+            if (!result.successful)
+                throw new Error('Could not terminate recording service');
+            // Native owner-change handling clears the in-progress flag. The
+            // segment that was still running is unconfirmed, so drop it — but
+            // keep the session, or _onFinalStop() skips the merge and the
+            // segments already finished are orphaned on disk.
+            if (this._activeEnableSerial === enableSerial &&
+                this._recordingEpoch === recordingEpoch) {
+                this._currentSegment = null;
+                this._setScreencastInProgress(false);
+                this._onFinalStop();
+            }
+        } catch (e) {
+            warn(`Force stop failed: ${e.message}`);
+        } finally {
+            this._forceStopInProgress = false;
+        }
     }
 
     _recordingStopCompleted(completion) {
         if (!this._stopCompletions.delete(completion))
             return;
+        if (completion.epoch !== this._recordingEpoch)
+            return;
         if (this._stopCompletions.size === 0 &&
+            this._recordingStopPromise === null && this._pausePromise === null &&
+            this._recordingState !== 'stop-failed' &&
             this._recordingState !== 'idle' &&
             !this._screenshotUI?._screencastInProgress) {
             this._removeSource(this._stopWatcherId);
@@ -3294,8 +3568,15 @@ export default class BigShotExtension extends Extension {
     }
 
     _shouldIgnorePauseStopFailure() {
+        // 'resuming' belongs here too: the service leaves the bus about two
+        // seconds after the pause segment stops, so a user who resumes
+        // quickly is already past 'paused' when the stale owner-change
+        // arrives — and letting it through tears down the session that the
+        // resume just restarted.
         return this._suppressPauseStopFailure &&
-            (this._recordingState === 'pausing' || this._recordingState === 'paused');
+            (this._recordingState === 'pausing' ||
+             this._recordingState === 'paused' ||
+             this._recordingState === 'resuming');
     }
 
     // =========================================================================
@@ -3307,8 +3588,12 @@ export default class BigShotExtension extends Extension {
             return false;
 
         this._suppressPauseStopFailure = true;
-        const result = await this._origStopScreencastAsync();
-        return Array.isArray(result) ? Boolean(result[0]) : Boolean(result);
+        // Same contract as the final stop: false only means the service holds
+        // no recorder for this sender, so the segment is already over. Only a
+        // rejected call — a real D-Bus failure — means the pause did not
+        // happen; a stalled EOS never answers and belongs to the watchdog.
+        await this._stopSegmentAsync();
+        return true;
     }
 
     _finalizeCurrentSegment() {
@@ -3330,6 +3615,7 @@ export default class BigShotExtension extends Extension {
 
     async _startNextSegment() {
         const enableSerial = this._activeEnableSerial;
+        const recordingEpoch = this._recordingEpoch;
         const stopMethod = this._origStopScreencastAsync;
         const session = this._recordingSession;
         if (!session?.starter || !session.config)
@@ -3356,16 +3642,21 @@ export default class BigShotExtension extends Extension {
 
         try {
             result = await session.starter(filePath, pipelineOptions);
-            if (this._activeEnableSerial !== enableSerial) {
-                if (result?.[0] !== false)
+            if (this._activeEnableSerial !== enableSerial ||
+                this._recordingEpoch !== recordingEpoch) {
+                if (result?.[0] !== false && this._activeEnableSerial !== enableSerial)
                     this._stopStaleScreencast(stopMethod);
                 return false;
             }
             if (result && result[0] === false)
                 throw new Error('Screencast service returned failure');
         } catch (e) {
-            if (this._activeEnableSerial !== enableSerial) {
-                this._stopStaleScreencast(stopMethod);
+            if (this._activeEnableSerial !== enableSerial ||
+                this._recordingEpoch !== recordingEpoch) {
+                // A later session may already own the same service. Only
+                // stop stale work across an extension enable cycle.
+                if (this._activeEnableSerial !== enableSerial)
+                    this._stopStaleScreencast(stopMethod);
                 return false;
             }
             if (!this._isStartupTimeout(e))
@@ -3401,8 +3692,22 @@ export default class BigShotExtension extends Extension {
         return true;
     }
 
-    async pauseRecording() {
+    pauseRecording() {
+        if (this._recordingStopPromise !== null || this._recordingState !== 'recording')
+            return Promise.resolve(false);
+        if (this._pausePromise !== null)
+            return this._pausePromise;
+        const pending = this._pauseRecordingAsync().finally(() => {
+            if (this._pausePromise === pending)
+                this._pausePromise = null;
+        });
+        this._pausePromise = pending;
+        return pending;
+    }
+
+    async _pauseRecordingAsync() {
         const enableSerial = this._activeEnableSerial;
+        const recordingEpoch = this._recordingEpoch;
         if (this._recordingState !== 'recording')
             return false;
         if (!this._recordingSession || !this._currentSegment) {
@@ -3413,34 +3718,58 @@ export default class BigShotExtension extends Extension {
             warn('Pause unavailable: ffmpeg not found');
             return false;
         }
+        // Refuse here rather than below: without the native stop method no
+        // stop is ever sent, so the recording is provably healthy and must
+        // not be dropped into stop-failed.
+        if (!this._origStopScreencastAsync) {
+            warn('Pause unavailable: native stop method missing');
+            return false;
+        }
 
         this._recordingState = 'pausing';
-        this._indicator?.onPaused();
+        this._indicator?.onStopping();
 
         try {
-            if (!await this._stopCurrentSegmentForPause())
-                throw new Error('StopScreencast returned false');
-            if (this._activeEnableSerial !== enableSerial)
+            await this._stopCurrentSegmentForPause();
+            if (this._activeEnableSerial !== enableSerial ||
+                this._recordingEpoch !== recordingEpoch)
                 return false;
 
             this._finalizeCurrentSegment();
             this._recordingState = 'paused';
             this._setScreencastInProgress(true);
+            this._indicator?.onPaused();
             return true;
         } catch (e) {
-            if (this._activeEnableSerial !== enableSerial)
+            if (this._activeEnableSerial !== enableSerial ||
+                this._recordingEpoch !== recordingEpoch)
                 return false;
             fail(`Failed to pause recording: ${e.message}`);
-            this._recordingState = 'recording';
+            this._recordingState = 'stop-failed';
             this._suppressPauseStopFailure = false;
             this._setScreencastInProgress(true);
-            this._indicator?.onResumed();
+            this._indicator?.onStopFailed();
+            this._notifyRecordingStopFailure();
             return false;
         }
     }
 
-    async resumeRecording() {
+    resumeRecording() {
+        if (this._recordingStopPromise !== null)
+            return Promise.resolve(false);
+        if (this._resumePromise !== null)
+            return this._resumePromise;
+        const pending = this._resumeRecordingAsync().finally(() => {
+            if (this._resumePromise === pending)
+                this._resumePromise = null;
+        });
+        this._resumePromise = pending;
+        return pending;
+    }
+
+    async _resumeRecordingAsync() {
         const enableSerial = this._activeEnableSerial;
+        const recordingEpoch = this._recordingEpoch;
         if (this._recordingState === 'resuming')
             return true;
         if (this._recordingState !== 'paused')
@@ -3451,15 +3780,23 @@ export default class BigShotExtension extends Extension {
 
         try {
             if (!await this._startNextSegment() ||
-                this._activeEnableSerial !== enableSerial)
+                this._activeEnableSerial !== enableSerial ||
+                this._recordingEpoch !== recordingEpoch)
                 return false;
             this._recordingState = 'recording';
             this._indicator?.onResumed();
             return true;
         } catch (e) {
-            if (this._activeEnableSerial !== enableSerial)
+            if (this._activeEnableSerial !== enableSerial ||
+                this._recordingEpoch !== recordingEpoch)
                 return false;
             fail(`Failed to resume recording: ${e.message}`);
+            if (this._isStartupTimeout(e)) {
+                this._recordingState = 'stop-failed';
+                this._indicator?.onStopFailed();
+                this._notifyRecordingStopFailure();
+                return false;
+            }
             this._recordingState = 'paused';
             this._indicator?.onPaused();
             return false;
@@ -3471,7 +3808,8 @@ export default class BigShotExtension extends Extension {
      */
     async togglePauseRecording() {
         if (this._recordingState === 'recording') {
-            if (await this.pauseRecording())
+            if (await this.pauseRecording() &&
+                this._recordingState === 'paused' && this._recordingStopPromise === null)
                 this._videoAnnotation?.enterPausedEditFromPause();
         } else if (this._recordingState === 'paused') {
             this._videoAnnotation?.finishPausedEditFromPause();
@@ -3492,6 +3830,9 @@ export default class BigShotExtension extends Extension {
             if (this._recordingState === 'pausing' ||
                 this._recordingState === 'paused' ||
                 this._recordingState === 'resuming' ||
+                this._recordingState === 'stopping' ||
+                this._recordingState === 'stop-failed' ||
+                this._recordingStopPromise !== null ||
                 this._stopCompletions.size > 0)
                 return GLib.SOURCE_CONTINUE;
 
@@ -3514,6 +3855,13 @@ export default class BigShotExtension extends Extension {
         const session = this._recordingSession;
 
         this._recordingState = 'idle';
+        this._recordingEpoch++;
+        this._recordingStopPromise = null;
+        this._segmentStopPromise = null;
+        this._pausePromise = null;
+        this._resumePromise = null;
+        this._suppressPauseStopFailure = false;
+        this._stopFailureNotified = false;
         this._videoAnnotation?.onRecordingStopped();
         this._indicator?.onRecordingStopped();
         this._webcam?.stopPreview();
@@ -3671,7 +4019,12 @@ export default class BigShotExtension extends Extension {
         // encoder fed from a single negotiated format.
         const stage = [];
 
-        if (downsize < 1.0) {
+        // Only resize against a size we actually know. For a full-screen
+        // capture captureSize is null and the monitor geometry is logical,
+        // so on fractional scaling it disagrees with the PipeWire stream —
+        // pinning width/height from it downscaled NVIDIA recordings to a
+        // wrong resolution.
+        if (downsize < 1.0 || (config.rawFormat === 'NV12' && captureSize)) {
             const sourceSize = captureSize ?? (() => {
                 const monitor = global.display.get_current_monitor();
                 const geo = global.display.get_monitor_geometry(monitor);
@@ -3682,7 +4035,8 @@ export default class BigShotExtension extends Extension {
                 sourceSize.height,
                 downsize,
             );
-            if (target) {
+            if (target && (downsize < 1.0 ||
+                target.width !== sourceSize.width || target.height !== sourceSize.height)) {
                 // Even output dimensions are required by common H.264/H.265 encoders.
                 stage.push('videoscale',
                     `video/x-raw,width=${target.width},height=${target.height}`);
@@ -3699,6 +4053,12 @@ export default class BigShotExtension extends Extension {
             stage.push('videorate skip-to-first=true',
                 `video/x-raw,framerate=${framerateCaps}`);
         }
+
+        // Unconstrained PipeWire format negotiation can crash the NVENC host
+        // copy path on GStreamer 1.28.6. Negotiate a known 4:2:0 layout instead
+        // of depending on the source's preferred raw format.
+        if (config.rawFormat)
+            stage.push(`video/x-raw,format=${config.rawFormat}`);
 
         if (stage.length > 0)
             video = video.replace('queue', `${stage.join(' ! ')} ! queue`);

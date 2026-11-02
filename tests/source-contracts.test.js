@@ -215,8 +215,8 @@ test('pause is unavailable when ffmpeg cannot merge segments', async () => {
         readFile(extensionPath, 'utf8'),
         readFile(`${partsDir}/partindicator.js`, 'utf8'),
     ]);
-    const pauseStart = extension.indexOf('    async pauseRecording()');
-    const pauseEnd = extension.indexOf('    async resumeRecording()', pauseStart);
+    const pauseStart = extension.indexOf('    async _pauseRecordingAsync()');
+    const pauseEnd = extension.indexOf('    resumeRecording()', pauseStart);
     const pauseMethod = extension.slice(pauseStart, pauseEnd);
     const mergeStart = extension.indexOf('    async _mergeSegments(');
     const mergeEnd = extension.indexOf('    _cleanupMergedSegments(', mergeStart);
@@ -226,7 +226,7 @@ test('pause is unavailable when ffmpeg cannot merge segments', async () => {
     assert.match(pauseMethod, /if \(!this\._recordingSession\.ffmpegPath\)/);
     assert.match(mergeMethod, /session\.ffmpegPath/);
     assert.doesNotMatch(mergeMethod, /\n\s*'ffmpeg',/);
-    assert.match(indicator, /this\._panelButton\.reactive = this\._canPause/);
+    assert.match(indicator, /this\._pauseButton\.reactive = this\._canPause && !this\._busy/);
 });
 
 test('remaining user-visible labels use gettext and logical alignment', async () => {
@@ -416,9 +416,26 @@ test('widget properties stay available on every declared shell version', async (
         `usr/share/gnome-shell/extensions/big-shot@communitybig.org/${name}`,
         'utf8')));
 
-    // St.BoxLayout:orientation landed in GNOME 48; `vertical` spans 46-50.
-    for (const source of sources)
+    // No spelling of the orientation covers the declared range on its own:
+    // :orientation arrived in GNOME 48, :vertical was removed in 51, and
+    // passing the wrong one throws from the constructor and aborts enable().
+    // This test used to forbid :orientation outright — correct while 50 was
+    // the ceiling, but it then kept the extension broken on 51. Both spellings
+    // are now banned at the call sites; lib/stcompat.js probes for the one
+    // this shell accepts.
+    for (const source of sources) {
         assert.doesNotMatch(source, /orientation:\s*Clutter\.Orientation/);
+        assert.doesNotMatch(source, /new St\.BoxLayout\(\{[^}]*vertical:/s);
+    }
+
+    const compat = await readFile(
+        'usr/share/gnome-shell/extensions/big-shot@communitybig.org/lib/stcompat.js',
+        'utf8');
+    // The probe must be a real construction attempt: a version check would
+    // have to be re-audited on every release, which is how 51 broke.
+    assert.match(compat, /new St\.BoxLayout\(\{orientation: Clutter\.Orientation\.VERTICAL\}\)/);
+    assert.match(compat, /\{vertical, \.\.\.rest\}/);
+    assert.doesNotMatch(compat, /PACKAGE_VERSION|shellMajorVersion/);
 });
 
 test('subprocess output is read by shape, and GPU detection never gates on one tool', async () => {
@@ -517,7 +534,7 @@ test('the screenshot timer captures the live screen without the UI', async () =>
     // compositor the immediate path uses.
     assert.match(capture, /this\._compositeAnnotations\(/);
     assert.match(source,
-        /_compositeAnnotations\(pixbuf, actions, offsetX, offsetY, bufScale\)/);
+        /_compositeAnnotations\(\s*pixbuf, actions, offsetX, offsetY, bufScale, baseBytes\)/);
 });
 
 test('the delayed capture derives its buffer scale from the image', async () => {
@@ -546,4 +563,41 @@ test('the delayed capture decodes its pixbuf from the PNG stream', async () => {
     assert.doesNotMatch(method, /const pixbuf = await new Promise/);
     assert.match(method, /GdkPixbuf\.Pixbuf\.new_from_stream\(/);
     assert.match(method, /Gio\.MemoryInputStream\.new_from_bytes\(bytes\)/);
+});
+
+test('the orientation probe falls back instead of assuming', async () => {
+    const compat = await readFile(
+        'usr/share/gnome-shell/extensions/big-shot@communitybig.org/lib/stcompat.js',
+        'utf8');
+    // A failed probe must mean "this shell is 46/47", not "give up": the
+    // catch has to leave a usable boxLayout() behind.
+    assert.match(compat, /catch \{\s*\n\s*orientationSupported = false;/);
+    // Probed once — constructing a throwaway actor per box would be wasteful
+    // and runs before the stage exists on some paths.
+    assert.match(compat, /if \(orientationSupported !== null\)\s*\n\s*return orientationSupported;/);
+});
+
+test('annotated capture does not encode the same PNG twice', async () => {
+    const source = await readFile(extensionPath, 'utf8');
+    // composite_to_stream already encoded this frame; both compositing paths
+    // must hand those bytes to the scratch file instead of encoding again.
+    const scratchWrites = source.match(
+        /_writeScratchBase\(tmpBase, workPixbuf,\s*\n\s*workPixbuf === pixbuf \? baseBytes : null\)/g) ?? [];
+    assert.equal(scratchWrites.length, 2);
+    // Only when an effect repainted the pixels do we fall back to encoding —
+    // and then with compression 0, since the file is decoded two lines later.
+    assert.match(source, /pixbuf\.savev\(path, 'png', \['compression'\], \['0'\]\)/);
+    assert.doesNotMatch(source, /savev\(tmpBase,/);
+    // The bytes must be taken before the try block: the failure path stores
+    // them too, and steal_as_bytes() empties the stream on first call.
+    assert.equal(
+        source.match(/const baseBytes = stream\.steal_as_bytes\(\);/g)?.length, 2);
+    assert.doesNotMatch(source, /const bytes = stream\.steal_as_bytes\(\);/);
+
+    // writeToPNG() already produced the final bytes; re-encoding the decoded
+    // pixbuf cost as much again and produced the same image.
+    assert.doesNotMatch(source, /_pixbufToBytes/);
+    const reads = source.match(
+        /Gio\.File\.new_for_path\(tmpAnnotated\)\.load_bytes\(null\)/g) ?? [];
+    assert.equal(reads.length, 2);
 });
