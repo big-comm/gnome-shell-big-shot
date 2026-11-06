@@ -3401,7 +3401,6 @@ export default class BigShotExtension extends Extension {
             return;
 
         const notify = this._recordingStopPromise === null;
-        const recordingEpoch = this._recordingEpoch;
         try {
             const [success] = await this._stopScreencastProxyAsync(...args);
             if (success && notify)
@@ -3424,12 +3423,13 @@ export default class BigShotExtension extends Extension {
             if (this._stopFailureLogged)
                 return;
 
-            // The watchdog's recovery ends the session and then the service
-            // drops off the bus, which is what rejects this call. Reporting
-            // that as a failed stop put "Stop recording failed" in the log of
-            // a recording that had just been saved correctly. Only a session
-            // still waiting on this stop actually failed.
-            if (this._recordingEpoch !== recordingEpoch)
+            // A recovery in flight is what rejected this call: it signalled
+            // the service, and the service left the bus under the request.
+            // Reporting that put "Stop recording failed" in the log of a
+            // recording that was about to be saved correctly. The rejection
+            // arrives before the teardown, so the recording epoch cannot tell
+            // these apart yet — the vouch can.
+            if (this._expectedServiceExit)
                 return;
 
             this._stopFailureLogged = true;
