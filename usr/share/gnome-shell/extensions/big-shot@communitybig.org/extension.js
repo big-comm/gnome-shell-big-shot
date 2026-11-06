@@ -3473,11 +3473,86 @@ export default class BigShotExtension extends Extension {
                 return GLib.SOURCE_REMOVE;
 
             warn('Screencast service did not answer the stop request; ' +
-                 'the recording is still running');
-            this._indicator?.onStopFailed();
-            this._notifyRecordingStopFailure();
+                 'interrupting it so the recording is finalized');
+            void this._recoverStuckStop(recordingEpoch, () => done);
             return GLib.SOURCE_REMOVE;
         });
+    }
+
+    /**
+     * Finish a stop the service never answered.
+     *
+     * The stall is inside GStreamer: EOS never drains, so the reply sits in a
+     * finally block that never runs. The process itself is healthy, and SIGINT
+     * walks it through its normal shutdown — the muxer writes its trailer and
+     * the file plays whole. Doing that here is what makes Stop actually stop;
+     * leaving it to the Force stop button asks the user to perform a recovery
+     * the extension can already reach on its own, after telling them their
+     * recording may be damaged.
+     *
+     * @param {number} recordingEpoch - session the stuck stop belongs to
+     * @param {Function} isDone - whether the stop settled while we worked
+     */
+    async _recoverStuckStop(recordingEpoch, isDone) {
+        const recovered =
+            await this._interruptStuckRecordingService(recordingEpoch, isDone);
+        if (isDone() || this._recordingEpoch !== recordingEpoch)
+            return;
+
+        if (!recovered) {
+            // SIGINT could not reach it either. Escalating to SIGKILL behind
+            // the user's back would throw the recording away, so stop here and
+            // let them make that call through Force stop.
+            this._indicator?.onStopFailed();
+            this._notifyRecordingStopFailure();
+            return;
+        }
+
+        // The service just vanished under its own pending stop call, so that
+        // call is about to reject. Bumping the epoch in _onFinalStop() is what
+        // keeps the rejection from reporting a failure the user never had.
+        this._setScreencastInProgress(false);
+        this._onFinalStop();
+        this._screenshotUI?._showNotification(_('Screencast recorded'));
+    }
+
+    /**
+     * Ask the wedged recording service to shut down, without escalating.
+     *
+     * @param {number} recordingEpoch - session this recovery belongs to
+     * @param {Function} isDone - whether the stop settled while we worked
+     * @returns {Promise<boolean>} whether the service shut down and left
+     */
+    async _interruptStuckRecordingService(recordingEpoch, isDone) {
+        const proxy = this._screenshotUI?._screencastProxy;
+        const owner = proxy?.g_name_owner;
+        if (!owner || this._forceStopInProgress)
+            return false;
+
+        this._forceStopInProgress = true;
+        try {
+            const pid = await this._resolveRecordingServicePid(proxy, owner);
+            // Re-check after the round trip. A drain that finished while we
+            // were resolving the pid needs no signal, and the service may
+            // already be handing this pid back to something else.
+            if (pid === null || isDone() ||
+                this._recordingEpoch !== recordingEpoch)
+                return false;
+
+            const kill = GLib.find_program_in_path('kill');
+            if (!kill)
+                return false;
+            if (!await this._signalRecordingService(kill, 'INT', pid))
+                return false;
+
+            return await this._waitForOwnerGone(
+                proxy, owner, SCREENCAST_SIGINT_GRACE_MS);
+        } catch (e) {
+            warn(`Could not interrupt the recording service: ${e.message}`);
+            return false;
+        } finally {
+            this._forceStopInProgress = false;
+        }
     }
 
     _notifyRecordingStopFailure() {
@@ -3516,24 +3591,11 @@ export default class BigShotExtension extends Extension {
         const enableSerial = this._activeEnableSerial;
         const recordingEpoch = this._recordingEpoch;
         try {
-            // Address the unique bus owner, not an executable name or a saved
-            // PID. Never kill unrelated gjs processes or the Shell itself.
-            const reply = await new Promise((resolve, reject) => {
-                Gio.DBus.session.call(
-                    'org.freedesktop.DBus', '/org/freedesktop/DBus',
-                    'org.freedesktop.DBus', 'GetConnectionUnixProcessID',
-                    new GLib.Variant('(s)', [owner]), new GLib.VariantType('(u)'),
-                    Gio.DBusCallFlags.NONE, 2000, null, (connection, result) => {
-                        try { resolve(connection.call_finish(result)); }
-                        catch (e) { reject(e); }
-                    });
-            });
-            const [pid] = reply.deep_unpack();
-            if (this._activeEnableSerial !== enableSerial ||
+            const pid = await this._resolveRecordingServicePid(proxy, owner);
+            if (pid === null ||
+                this._activeEnableSerial !== enableSerial ||
                 this._recordingEpoch !== recordingEpoch ||
-                !this._indicator?._stopFailed ||
-                proxy.g_name_owner !== owner || pid <= 1 ||
-                pid === Gio.Credentials.new().get_unix_pid())
+                !this._indicator?._stopFailed)
                 return;
             const kill = GLib.find_program_in_path('kill');
             if (!kill)
@@ -3573,6 +3635,36 @@ export default class BigShotExtension extends Extension {
         } finally {
             this._forceStopInProgress = false;
         }
+    }
+
+    /**
+     * Resolve the pid behind a bus owner, or null when it cannot be trusted.
+     *
+     * Asking the bus about the unique owner — not an executable name, not a
+     * pid saved when the recording started — is what keeps these signals off
+     * unrelated gjs processes and off the Shell itself.
+     *
+     * @param {Gio.DBusProxy} proxy - the screencast proxy
+     * @param {string} owner - unique bus name captured by the caller
+     * @returns {Promise<number|null>} the service pid, or null
+     */
+    async _resolveRecordingServicePid(proxy, owner) {
+        const reply = await new Promise((resolve, reject) => {
+            Gio.DBus.session.call(
+                'org.freedesktop.DBus', '/org/freedesktop/DBus',
+                'org.freedesktop.DBus', 'GetConnectionUnixProcessID',
+                new GLib.Variant('(s)', [owner]), new GLib.VariantType('(u)'),
+                Gio.DBusCallFlags.NONE, 2000, null, (connection, result) => {
+                    try { resolve(connection.call_finish(result)); }
+                    catch (e) { reject(e); }
+                });
+        });
+
+        const [pid] = reply.deep_unpack();
+        if (proxy.g_name_owner !== owner || pid <= 1 ||
+            pid === Gio.Credentials.new().get_unix_pid())
+            return null;
+        return pid;
     }
 
     /**
