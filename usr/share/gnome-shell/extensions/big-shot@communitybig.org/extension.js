@@ -628,6 +628,9 @@ export default class BigShotExtension extends Extension {
         this._recordingSession = null;
         this._currentSegment = null;
         this._suppressPauseStopFailure = false;
+        // Set while we are deliberately walking the service out through
+        // SIGINT. Its exit is the recovery working, not a crash.
+        this._expectedServiceExit = false;
         this._stopFailureNotified = false;
         this._stopWatcherId = 0;
         this._stopCompletions = new Set();
@@ -933,6 +936,9 @@ export default class BigShotExtension extends Extension {
         this._recordingSession = null;
         this._currentSegment = null;
         this._suppressPauseStopFailure = false;
+        // Set while we are deliberately walking the service out through
+        // SIGINT. Its exit is the recovery working, not a crash.
+        this._expectedServiceExit = false;
         this._stopFailureNotified = false;
         this._stopWatcherId = 0;
         this._stopCompletions.clear();
@@ -2756,6 +2762,16 @@ export default class BigShotExtension extends Extension {
                     return;
                 }
                 if (args[0] === 'RECORDING') {
+                    // A service we walked out with SIGINT finished its own
+                    // shutdown: the muxer wrote the trailer and the segment on
+                    // disk is a real recording. Treating that exit as a crash
+                    // discarded the very file the recovery had just saved, and
+                    // ran a second teardown on top of the one already in
+                    // flight while the compositor was still unwinding its
+                    // session. The recovery path owns this ending.
+                    if (ext._expectedServiceExit)
+                        return;
+
                     // Service loss is not a confirmed EOS for the segment in
                     // flight, so drop only that one. Clearing the session too
                     // would skip the merge in _onFinalStop() and orphan every
@@ -3494,26 +3510,36 @@ export default class BigShotExtension extends Extension {
      * @param {Function} isDone - whether the stop settled while we worked
      */
     async _recoverStuckStop(recordingEpoch, isDone) {
-        const recovered =
-            await this._interruptStuckRecordingService(recordingEpoch, isDone);
-        if (isDone() || this._recordingEpoch !== recordingEpoch)
-            return;
+        let recovered = false;
+        try {
+            recovered =
+                await this._interruptStuckRecordingService(recordingEpoch, isDone);
+            if (isDone() || this._recordingEpoch !== recordingEpoch)
+                return;
 
-        if (!recovered) {
-            // SIGINT could not reach it either. Escalating to SIGKILL behind
-            // the user's back would throw the recording away, so stop here and
-            // let them make that call through Force stop.
-            this._indicator?.onStopFailed();
-            this._notifyRecordingStopFailure();
-            return;
+            if (!recovered) {
+                // SIGINT could not reach it either. Escalating to SIGKILL
+                // behind the user's back would throw the recording away, so
+                // stop here and let them make that call through Force stop.
+                this._indicator?.onStopFailed();
+                this._notifyRecordingStopFailure();
+                return;
+            }
+
+            // The service just vanished under its own pending stop call, so
+            // that call is about to reject. Bumping the epoch in
+            // _onFinalStop() is what keeps the rejection from reporting a
+            // failure the user never had.
+            this._setScreencastInProgress(false);
+            this._onFinalStop();
+            this._screenshotUI?._showNotification(_('Screencast recorded'));
+        } finally {
+            // Held across the teardown above, not just across the signal: the
+            // Shell reports the vanished service on its own schedule, and the
+            // flag is what stops that report from discarding the finalized
+            // segment and running a second teardown underneath this one.
+            this._expectedServiceExit = false;
         }
-
-        // The service just vanished under its own pending stop call, so that
-        // call is about to reject. Bumping the epoch in _onFinalStop() is what
-        // keeps the rejection from reporting a failure the user never had.
-        this._setScreencastInProgress(false);
-        this._onFinalStop();
-        this._screenshotUI?._showNotification(_('Screencast recorded'));
     }
 
     /**
@@ -3542,6 +3568,7 @@ export default class BigShotExtension extends Extension {
             const kill = GLib.find_program_in_path('kill');
             if (!kill)
                 return false;
+            this._expectedServiceExit = true;
             if (!await this._signalRecordingService(kill, 'INT', pid))
                 return false;
 
@@ -3606,6 +3633,7 @@ export default class BigShotExtension extends Extension {
             // the normal shutdown, the muxer writes its trailer, and the file
             // plays. SIGKILL at this point leaves an MP4 with no moov atom —
             // the whole recording lost, not just its last seconds.
+            this._expectedServiceExit = true;
             let graceful = await this._signalRecordingService(kill, 'INT', pid);
             if (graceful) {
                 graceful = await this._waitForOwnerGone(
@@ -3614,9 +3642,13 @@ export default class BigShotExtension extends Extension {
 
             // Still there: it is wedged somewhere SIGINT cannot reach, and the
             // user asked for this recording to end. Take the file we can.
-            if (!graceful &&
-                !await this._signalRecordingService(kill, 'KILL', pid))
-                throw new Error('Could not terminate recording service');
+            if (!graceful) {
+                // A killed service leaves an unfinished container, so from
+                // here the Shell's crash report is accurate and has to run.
+                this._expectedServiceExit = false;
+                if (!await this._signalRecordingService(kill, 'KILL', pid))
+                    throw new Error('Could not terminate recording service');
+            }
 
             // Native owner-change handling clears the in-progress flag.
             if (this._activeEnableSerial === enableSerial &&
@@ -3633,6 +3665,7 @@ export default class BigShotExtension extends Extension {
         } catch (e) {
             warn(`Force stop failed: ${e.message}`);
         } finally {
+            this._expectedServiceExit = false;
             this._forceStopInProgress = false;
         }
     }
@@ -4045,6 +4078,9 @@ export default class BigShotExtension extends Extension {
         this._pausePromise = null;
         this._resumePromise = null;
         this._suppressPauseStopFailure = false;
+        // Set while we are deliberately walking the service out through
+        // SIGINT. Its exit is the recovery working, not a crash.
+        this._expectedServiceExit = false;
         this._stopFailureNotified = false;
         this._videoAnnotation?.onRecordingStopped();
         this._indicator?.onRecordingStopped();

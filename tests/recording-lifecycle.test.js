@@ -460,10 +460,44 @@ test('losing the service keeps the finished segments', async () => {
     // _onFinalStop() is the only caller of _mergeSegments(session); clearing
     // the session first silently orphans every segment already on disk.
     const failedIdx = source.indexOf("if (args[0] === 'RECORDING') {");
-    const block = source.slice(failedIdx, failedIdx + 500);
+    const block = source.slice(failedIdx, failedIdx + 1200);
     assert.ok(failedIdx >= 0);
     assert.doesNotMatch(block, /ext\._recordingSession = null/);
     assert.match(block, /ext\._currentSegment = null/);
+
+    // An exit we asked for is not a crash. Without this guard the Shell's
+    // report discarded the segment SIGINT had just finalized — the recovered
+    // file was never renamed off its temporary extension — and ran a second
+    // teardown while the compositor was still unwinding its own session.
+    assert.match(block,
+        /if \(ext\._expectedServiceExit\)\s*\n\s*return;/);
+    assert.ok(block.indexOf('_expectedServiceExit') <
+        block.indexOf('ext._currentSegment = null'));
+});
+
+test('a service we walked out is only reported once we stop vouching for it', async () => {
+    const source = await import('node:fs/promises')
+        .then(fs => fs.readFile(
+            'usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js',
+            'utf8'));
+
+    // Both recovery paths must raise the flag before signalling, or the
+    // Shell's own crash report wins the race and throws the file away.
+    for (const entry of ['async _interruptStuckRecordingService',
+        'async forceStopRecording()']) {
+        const idx = source.indexOf(entry);
+        assert.ok(idx >= 0, entry);
+        const block = source.slice(idx, idx + 3000);
+        const raised = block.indexOf('this._expectedServiceExit = true');
+        const signalled = block.indexOf("'INT', pid");
+        assert.ok(raised >= 0 && signalled >= 0 && raised < signalled, entry);
+    }
+
+    // SIGKILL leaves an unfinished container, so from there the report is
+    // accurate and has to run.
+    const force = source.slice(source.indexOf('async forceStopRecording()'));
+    const cleared = force.indexOf('this._expectedServiceExit = false');
+    assert.ok(cleared >= 0 && cleared < force.indexOf("'KILL', pid"));
 });
 
 test('force stop clears the state when the service is already gone', async () => {
