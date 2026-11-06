@@ -634,9 +634,8 @@ export default class BigShotExtension extends Extension {
         this._stopFailureNotified = false;
         this._stopWatcherId = 0;
         this._stopCompletions = new Set();
-        // Rejections already reported. Weak so a failure stops being tracked
-        // as soon as the Error itself is collected.
-        this._loggedStopFailures = new WeakSet();
+        // Whether this session's stop failure has already been logged.
+        this._stopFailureLogged = false;
         this._recordingStartPromise = null;
         this._recordingStopPromise = null;
         this._segmentStopPromise = null;
@@ -942,7 +941,7 @@ export default class BigShotExtension extends Extension {
         this._stopFailureNotified = false;
         this._stopWatcherId = 0;
         this._stopCompletions.clear();
-        this._loggedStopFailures = new WeakSet();
+        this._stopFailureLogged = false;
         this._recordingStartPromise = null;
         this._recordingStopPromise = null;
         this._segmentStopPromise = null;
@@ -3411,14 +3410,19 @@ export default class BigShotExtension extends Extension {
             // visible and preserve every segment when the outcome is unknown.
             //
             // Every call that joined the pending stop rejects with the same
-            // Error instance, and holding the screencast shortcut re-enters
-            // here at the keyboard repeat rate — one wedged stop logged this
-            // 37 times in 7 ms. Report the failure, not the audience.
-            if (e && typeof e === 'object') {
-                if (this._loggedStopFailures.has(e))
-                    return;
-                this._loggedStopFailures.add(e);
-            }
+            // Error, and holding the screencast shortcut re-enters here at
+            // the keyboard repeat rate — one wedged stop logged this 37 times
+            // in 7 ms. Report the failure, not the audience.
+            //
+            // Deduplicate on the session, never on the error object. A
+            // rejected stop carries a Gio.DBusError, and using that GJS
+            // wrapper as a WeakSet key killed the whole Shell: SpiderMonkey
+            // reached for a class hook the wrapper does not have and called
+            // through a null pointer, so a recording that merely hung took
+            // the user's entire desktop down with it.
+            if (this._stopFailureLogged)
+                return;
+            this._stopFailureLogged = true;
             warn(`Stop recording failed: ${e.message}`);
         }
     }
@@ -4009,6 +4013,7 @@ export default class BigShotExtension extends Extension {
         // SIGINT. Its exit is the recovery working, not a crash.
         this._expectedServiceExit = false;
         this._stopFailureNotified = false;
+        this._stopFailureLogged = false;
         this._videoAnnotation?.onRecordingStopped();
         this._indicator?.onRecordingStopped();
         this._webcam?.stopPreview();

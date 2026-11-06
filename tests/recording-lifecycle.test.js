@@ -56,7 +56,7 @@ function fixture() {
         _recordingStartPromise: null, _recordingStopPromise: null,
         _segmentStopPromise: null, _pausePromise: null, _resumePromise: null,
         _stopCompletions: new Set(), _stopWatcherId: 0,
-        _loggedStopFailures: new WeakSet(),
+        _stopFailureLogged: false,
         _recordingSession: {ffmpegPath: '/bin/ffmpeg', segments: []},
         _currentSegment: {path: '/test/segment.mp4'},
         _indicator: Object.fromEntries([
@@ -284,6 +284,20 @@ test('force stop escalates to SIGKILL only after the grace period, and then drop
     assert.equal(ext._recordingState, 'idle');
     // Killed mid-write: this segment is unconfirmed and must not be merged.
     assert.equal(events.includes('finalized'), false);
+});
+
+// A Gio.DBusError is a GJS wrapper around a GError, not a plain object.
+// Using one as a weak-collection key made SpiderMonkey reach for a class
+// hook the wrapper does not have and call through a null pointer: the whole
+// Shell took SIGSEGV inside js::RunJobs and the user lost their session,
+// because a recording had hung. Deduplicate on session state instead.
+test('no rejected value is ever used as a weak collection key', async () => {
+    const source = await import('node:fs/promises')
+        .then(fs => fs.readFile(
+            'usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js',
+            'utf8'));
+    assert.doesNotMatch(source, /new Weak(Set|Map)\b/);
+    assert.match(source, /if \(this\._stopFailureLogged\)\s*\n\s*return;/);
 });
 
 test('one wedged stop is reported once, however many callers joined it', async () => {
