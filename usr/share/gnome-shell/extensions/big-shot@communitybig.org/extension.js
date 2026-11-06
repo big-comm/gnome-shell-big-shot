@@ -3518,10 +3518,15 @@ export default class BigShotExtension extends Extension {
         try {
             recovered =
                 await this._interruptStuckRecordingService(recordingEpoch, isDone);
-            if (isDone() || this._recordingEpoch !== recordingEpoch)
+            if (this._recordingEpoch !== recordingEpoch)
                 return;
 
             if (!recovered) {
+                // Nothing was ended here. A stop that settled on its own in
+                // the meantime needs no report either.
+                if (isDone())
+                    return;
+
                 // SIGINT could not reach it either. Escalating to SIGKILL
                 // behind the user's back would throw the recording away, so
                 // stop here and let them make that call through Force stop.
@@ -3529,6 +3534,13 @@ export default class BigShotExtension extends Extension {
                 this._notifyRecordingStopFailure();
                 return;
             }
+
+            // Past this point the stop has certainly settled — killing the
+            // service is what made its pending call fail. Checking isDone()
+            // here read our own success as "someone else already handled
+            // this" and skipped the teardown, so the recording stayed under
+            // the temporary extension the service falls back to and never
+            // reached the user's folder.
 
             // The service just vanished under its own pending stop call, so
             // that call is about to reject. Bumping the epoch in

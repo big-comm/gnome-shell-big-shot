@@ -339,6 +339,34 @@ test('a stop the service never answers is interrupted automatically', async () =
     assert.equal(events.includes('onStopFailed'), false);
 });
 
+test('a recovery is not abandoned because the stop it ended rejected', async () => {
+    const {ext, ui, events, timers} = fixture();
+    ui._screencastProxy = {g_name_owner: ':1.42'};
+    const stop = deferred();
+    ext._origStopScreencastAsync = () => stop.promise;
+    ext._runSubprocess = async args => {
+        if (args[1] === '-INT') {
+            ui._screencastProxy.g_name_owner = null;
+            // Ending the service is precisely what makes its pending call
+            // fail, so the rejection lands while the recovery is still running.
+            stop.reject(new Error('Remote peer disconnected'));
+        }
+        return {successful: true};
+    };
+    const pending = ext._stopScreencastUiAsync();
+    await tick();
+    assert.equal(timers.get(12000)(), false);
+    await tick();
+    await pending;
+
+    // Reading that rejection as "the stop already settled" made the recovery
+    // discard its own success: the teardown never ran, so the finalized file
+    // stayed under the temporary extension instead of reaching the folder.
+    assert.equal(ext._recordingState, 'idle');
+    assert.equal(events.includes('finalized'), true);
+    assert.equal(events.includes('Screencast recorded'), true);
+});
+
 test('a stop SIGINT cannot reach falls back to the Force stop prompt', async () => {
     const {ext, ui, events, timers} = fixture();
     ui._screencastProxy = {g_name_owner: ':1.42'};
