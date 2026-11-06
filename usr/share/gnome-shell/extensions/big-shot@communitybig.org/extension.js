@@ -3401,6 +3401,7 @@ export default class BigShotExtension extends Extension {
             return;
 
         const notify = this._recordingStopPromise === null;
+        const recordingEpoch = this._recordingEpoch;
         try {
             const [success] = await this._stopScreencastProxyAsync(...args);
             if (success && notify)
@@ -3422,6 +3423,15 @@ export default class BigShotExtension extends Extension {
             // the user's entire desktop down with it.
             if (this._stopFailureLogged)
                 return;
+
+            // The watchdog's recovery ends the session and then the service
+            // drops off the bus, which is what rejects this call. Reporting
+            // that as a failed stop put "Stop recording failed" in the log of
+            // a recording that had just been saved correctly. Only a session
+            // still waiting on this stop actually failed.
+            if (this._recordingEpoch !== recordingEpoch)
+                return;
+
             this._stopFailureLogged = true;
             warn(`Stop recording failed: ${e.message}`);
         }
