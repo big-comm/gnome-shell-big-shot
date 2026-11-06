@@ -286,74 +286,6 @@ test('force stop escalates to SIGKILL only after the grace period, and then drop
     assert.equal(events.includes('finalized'), false);
 });
 
-// Stop must actually stop. Telling the user their recording may be damaged
-// and asking them to press Force stop is a worse outcome than the one the
-// extension can already reach by itself, since SIGINT finalizes the file.
-test('a stop the service never answers is interrupted automatically', async () => {
-    const {ext, ui, events, timers} = fixture();
-    ui._screencastProxy = {g_name_owner: ':1.42'};
-    const calls = [];
-    ext._runSubprocess = async args => {
-        calls.push(Array.from(args));
-        if (args[1] === '-INT')
-            ui._screencastProxy.g_name_owner = null;
-        return {successful: true};
-    };
-    const stop = deferred();
-    ext._origStopScreencastAsync = () => stop.promise;
-    const pending = ext._stopScreencastUiAsync();
-    await tick();
-
-    // The EOS drain never completes, so the watchdog deadline arrives first.
-    assert.equal(timers.get(12000)(), false);
-    await tick();
-
-    assert.deepEqual(calls, [['/usr/bin/kill', '-INT', '--', '42']]);
-    assert.equal(ext._recordingState, 'idle');
-    assert.equal(ui._screencastInProgress, false);
-    assert.equal(events.includes('finalized'), true);
-    assert.equal(events.includes('Screencast recorded'), true);
-    // The user was never shown a failure, because there was not one.
-    assert.equal(events.includes('Recording could not be stopped'), false);
-    assert.equal(events.includes('onStopFailed'), false);
-
-    // The service left the bus under its own pending call, so that call now
-    // rejects. The session is already over; it must not reopen as a failure.
-    stop.reject(new Error('Message recipient disconnected'));
-    await pending;
-    assert.equal(ext._recordingState, 'idle');
-    assert.equal(events.includes('onStopFailed'), false);
-});
-
-test('a stop SIGINT cannot reach falls back to the Force stop prompt', async () => {
-    const {ext, ui, events, timers} = fixture();
-    ui._screencastProxy = {g_name_owner: ':1.42'};
-    const calls = [];
-    // Wedged beyond SIGINT's reach: the bus name never goes away.
-    ext._runSubprocess = async args => {
-        calls.push(Array.from(args));
-        return {successful: true};
-    };
-    ext._origStopScreencastAsync = () => deferred().promise;
-    void ext._stopScreencastUiAsync();
-    await tick();
-    assert.equal(timers.get(12000)(), false);
-    await tick();
-
-    for (let i = 0; i < 21 && timers.has(250); i++) {
-        if (timers.get(250)() === false)
-            timers.delete(250);
-        await tick();
-    }
-
-    // Escalating to SIGKILL unprompted would throw the recording away; that
-    // call belongs to the user, through Force stop.
-    assert.deepEqual(calls, [['/usr/bin/kill', '-INT', '--', '42']]);
-    assert.equal(events.includes('onStopFailed'), true);
-    assert.equal(events.includes('Recording could not be stopped'), true);
-    assert.equal(events.includes('finalized'), false);
-});
-
 test('one wedged stop is reported once, however many callers joined it', async () => {
     const {ext, logs} = fixture();
     const stop = deferred();
@@ -481,17 +413,14 @@ test('a service we walked out is only reported once we stop vouching for it', as
             'usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js',
             'utf8'));
 
-    // Both recovery paths must raise the flag before signalling, or the
-    // Shell's own crash report wins the race and throws the file away.
-    for (const entry of ['async _interruptStuckRecordingService',
-        'async forceStopRecording()']) {
-        const idx = source.indexOf(entry);
-        assert.ok(idx >= 0, entry);
-        const block = source.slice(idx, idx + 3000);
-        const raised = block.indexOf('this._expectedServiceExit = true');
-        const signalled = block.indexOf("'INT', pid");
-        assert.ok(raised >= 0 && signalled >= 0 && raised < signalled, entry);
-    }
+    // Force stop must raise the flag before signalling, or the Shell's own
+    // crash report wins the race and throws the finalized file away.
+    const idx = source.indexOf('async forceStopRecording()');
+    assert.ok(idx >= 0);
+    const block = source.slice(idx, idx + 3000);
+    const raised = block.indexOf('this._expectedServiceExit = true');
+    const signalled = block.indexOf("'INT', pid");
+    assert.ok(raised >= 0 && signalled >= 0 && raised < signalled);
 
     // SIGKILL leaves an unfinished container, so from there the report is
     // accurate and has to run.

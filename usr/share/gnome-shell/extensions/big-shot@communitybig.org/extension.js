@@ -3488,98 +3488,25 @@ export default class BigShotExtension extends Extension {
                 this._recordingState === 'paused')
                 return GLib.SOURCE_REMOVE;
 
+            // Ending the service here, without being asked, is not safe.
+            // SIGINT does finalize the recording — but twice out of two runs
+            // on GNOME 50.5 the Shell took SIGSEGV within a few dozen
+            // milliseconds of mutter logging "D-Bus client with active
+            // sessions vanished", and the user lost their whole session for a
+            // stop that had merely hung. The same sequence driven straight
+            // through org.gnome.Shell.Screencast, with this extension out of
+            // the path, survived sixteen runs, so the crash needs something
+            // Big Shot does while recording and is not understood yet.
+            //
+            // Until it is, terminating the service stays a decision the user
+            // makes through Force stop, where losing the session is a risk
+            // they chose rather than one we took on their behalf.
             warn('Screencast service did not answer the stop request; ' +
-                 'interrupting it so the recording is finalized');
-            void this._recoverStuckStop(recordingEpoch, () => done);
+                 'the recording is still running');
+            this._indicator?.onStopFailed();
+            this._notifyRecordingStopFailure();
             return GLib.SOURCE_REMOVE;
         });
-    }
-
-    /**
-     * Finish a stop the service never answered.
-     *
-     * The stall is inside GStreamer: EOS never drains, so the reply sits in a
-     * finally block that never runs. The process itself is healthy, and SIGINT
-     * walks it through its normal shutdown — the muxer writes its trailer and
-     * the file plays whole. Doing that here is what makes Stop actually stop;
-     * leaving it to the Force stop button asks the user to perform a recovery
-     * the extension can already reach on its own, after telling them their
-     * recording may be damaged.
-     *
-     * @param {number} recordingEpoch - session the stuck stop belongs to
-     * @param {Function} isDone - whether the stop settled while we worked
-     */
-    async _recoverStuckStop(recordingEpoch, isDone) {
-        let recovered = false;
-        try {
-            recovered =
-                await this._interruptStuckRecordingService(recordingEpoch, isDone);
-            if (isDone() || this._recordingEpoch !== recordingEpoch)
-                return;
-
-            if (!recovered) {
-                // SIGINT could not reach it either. Escalating to SIGKILL
-                // behind the user's back would throw the recording away, so
-                // stop here and let them make that call through Force stop.
-                this._indicator?.onStopFailed();
-                this._notifyRecordingStopFailure();
-                return;
-            }
-
-            // The service just vanished under its own pending stop call, so
-            // that call is about to reject. Bumping the epoch in
-            // _onFinalStop() is what keeps the rejection from reporting a
-            // failure the user never had.
-            this._setScreencastInProgress(false);
-            this._onFinalStop();
-            this._screenshotUI?._showNotification(_('Screencast recorded'));
-        } finally {
-            // Held across the teardown above, not just across the signal: the
-            // Shell reports the vanished service on its own schedule, and the
-            // flag is what stops that report from discarding the finalized
-            // segment and running a second teardown underneath this one.
-            this._expectedServiceExit = false;
-        }
-    }
-
-    /**
-     * Ask the wedged recording service to shut down, without escalating.
-     *
-     * @param {number} recordingEpoch - session this recovery belongs to
-     * @param {Function} isDone - whether the stop settled while we worked
-     * @returns {Promise<boolean>} whether the service shut down and left
-     */
-    async _interruptStuckRecordingService(recordingEpoch, isDone) {
-        const proxy = this._screenshotUI?._screencastProxy;
-        const owner = proxy?.g_name_owner;
-        if (!owner || this._forceStopInProgress)
-            return false;
-
-        this._forceStopInProgress = true;
-        try {
-            const pid = await this._resolveRecordingServicePid(proxy, owner);
-            // Re-check after the round trip. A drain that finished while we
-            // were resolving the pid needs no signal, and the service may
-            // already be handing this pid back to something else.
-            if (pid === null || isDone() ||
-                this._recordingEpoch !== recordingEpoch)
-                return false;
-
-            const kill = GLib.find_program_in_path('kill');
-            if (!kill)
-                return false;
-            this._expectedServiceExit = true;
-            if (!await this._signalRecordingService(kill, 'INT', pid))
-                return false;
-
-            return await this._waitForOwnerGone(
-                proxy, owner, SCREENCAST_SIGINT_GRACE_MS);
-        } catch (e) {
-            warn(`Could not interrupt the recording service: ${e.message}`);
-            return false;
-        } finally {
-            this._forceStopInProgress = false;
-        }
     }
 
     _notifyRecordingStopFailure() {
