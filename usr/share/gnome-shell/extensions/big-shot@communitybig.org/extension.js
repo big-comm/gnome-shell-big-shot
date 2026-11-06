@@ -343,6 +343,11 @@ const SCREENCAST_DBUS_TIMEOUT_MS = 30000;
 // it drains. A stalled source or encoder can block EOS and leave the call
 // pending. Surface that before the D-Bus timeout; never assume EOS succeeded.
 const SCREENCAST_STOP_GRACE_MS = 12000;
+// How long Force stop lets the service unwind after SIGINT before escalating
+// to SIGKILL. That unwind is what writes the MP4 trailer, so the wait buys a
+// playable file; a 4K recording needs a moment to flush, and the user is
+// already watching a stuck stop, so a few seconds is cheaper than the loss.
+const SCREENCAST_SIGINT_GRACE_MS = 5000;
 const SUBPROCESS_PROBE_CONCURRENCY = 4;
 
 // =============================================================================
@@ -626,6 +631,9 @@ export default class BigShotExtension extends Extension {
         this._stopFailureNotified = false;
         this._stopWatcherId = 0;
         this._stopCompletions = new Set();
+        // Rejections already reported. Weak so a failure stops being tracked
+        // as soon as the Error itself is collected.
+        this._loggedStopFailures = new WeakSet();
         this._recordingStartPromise = null;
         this._recordingStopPromise = null;
         this._segmentStopPromise = null;
@@ -928,6 +936,7 @@ export default class BigShotExtension extends Extension {
         this._stopFailureNotified = false;
         this._stopWatcherId = 0;
         this._stopCompletions.clear();
+        this._loggedStopFailures = new WeakSet();
         this._recordingStartPromise = null;
         this._recordingStopPromise = null;
         this._segmentStopPromise = null;
@@ -3384,6 +3393,16 @@ export default class BigShotExtension extends Extension {
         } catch (e) {
             // Match the native UI's non-throwing contract. Keep the indicator
             // visible and preserve every segment when the outcome is unknown.
+            //
+            // Every call that joined the pending stop rejects with the same
+            // Error instance, and holding the screencast shortcut re-enters
+            // here at the keyboard repeat rate — one wedged stop logged this
+            // 37 times in 7 ms. Report the failure, not the audience.
+            if (e && typeof e === 'object') {
+                if (this._loggedStopFailures.has(e))
+                    return;
+                this._loggedStopFailures.add(e);
+            }
             warn(`Stop recording failed: ${e.message}`);
         }
     }
@@ -3519,17 +3538,33 @@ export default class BigShotExtension extends Extension {
             const kill = GLib.find_program_in_path('kill');
             if (!kill)
                 throw new Error('kill not found');
-            const result = await this._runSubprocess(
-                [kill, '-KILL', '--', String(pid)], Gio.SubprocessFlags.NONE);
-            if (!result.successful)
+
+            // SIGINT first. A stuck stop means GStreamer never drained EOS,
+            // but the process itself is responsive: SIGINT unwinds it through
+            // the normal shutdown, the muxer writes its trailer, and the file
+            // plays. SIGKILL at this point leaves an MP4 with no moov atom —
+            // the whole recording lost, not just its last seconds.
+            let graceful = await this._signalRecordingService(kill, 'INT', pid);
+            if (graceful) {
+                graceful = await this._waitForOwnerGone(
+                    proxy, owner, SCREENCAST_SIGINT_GRACE_MS);
+            }
+
+            // Still there: it is wedged somewhere SIGINT cannot reach, and the
+            // user asked for this recording to end. Take the file we can.
+            if (!graceful &&
+                !await this._signalRecordingService(kill, 'KILL', pid))
                 throw new Error('Could not terminate recording service');
-            // Native owner-change handling clears the in-progress flag. The
-            // segment that was still running is unconfirmed, so drop it — but
-            // keep the session, or _onFinalStop() skips the merge and the
-            // segments already finished are orphaned on disk.
+
+            // Native owner-change handling clears the in-progress flag.
             if (this._activeEnableSerial === enableSerial &&
                 this._recordingEpoch === recordingEpoch) {
-                this._currentSegment = null;
+                // A SIGINT shutdown finalizes the container, so the segment is
+                // a real recording and must survive into the merge. Only the
+                // killed one is unconfirmed — drop it, but keep the session or
+                // _onFinalStop() orphans the segments already finished.
+                if (!graceful)
+                    this._currentSegment = null;
                 this._setScreencastInProgress(false);
                 this._onFinalStop();
             }
@@ -3538,6 +3573,63 @@ export default class BigShotExtension extends Extension {
         } finally {
             this._forceStopInProgress = false;
         }
+    }
+
+    /**
+     * Send one signal to the screencast service.
+     *
+     * @param {string} kill - absolute path to kill(1)
+     * @param {string} signal - signal name, without the SIG prefix
+     * @param {number} pid - the service's pid, already validated by the caller
+     * @returns {Promise<boolean>} whether kill(1) reported success
+     */
+    async _signalRecordingService(kill, signal, pid) {
+        const result = await this._runSubprocess(
+            [kill, `-${signal}`, '--', String(pid)], Gio.SubprocessFlags.NONE);
+        return result.successful;
+    }
+
+    /**
+     * Wait for the screencast service to drop off the bus.
+     *
+     * Losing the bus name is the observable end of its shutdown: by then the
+     * pipeline is torn down and the file is closed. Polling the proxy rather
+     * than the pid keeps this to the identity the rest of the force-stop path
+     * already uses, so a service that exits and is respawned under the same
+     * pid cannot read as "still running".
+     *
+     * @param {Gio.DBusProxy} proxy - the screencast proxy
+     * @param {string} owner - bus name owner captured before signalling
+     * @param {number} timeoutMs - how long to wait before giving up
+     * @returns {Promise<boolean>} true if it left within the timeout
+     */
+    _waitForOwnerGone(proxy, owner, timeoutMs) {
+        return new Promise(resolve => {
+            if (proxy.g_name_owner !== owner) {
+                resolve(true);
+                return;
+            }
+
+            let waited = 0;
+            const step = 250;
+            const added = this._addTimeout(step, () => {
+                if (proxy.g_name_owner !== owner) {
+                    resolve(true);
+                    return GLib.SOURCE_REMOVE;
+                }
+                waited += step;
+                if (waited >= timeoutMs) {
+                    resolve(false);
+                    return GLib.SOURCE_REMOVE;
+                }
+                return GLib.SOURCE_CONTINUE;
+            });
+
+            // _addTimeout returns 0 once teardown has cleared the source set.
+            // Nothing will ever poll, so do not leave the caller hanging.
+            if (!added)
+                resolve(false);
+        });
     }
 
     _recordingStopCompleted(completion) {

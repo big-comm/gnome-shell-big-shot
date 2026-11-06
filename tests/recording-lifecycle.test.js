@@ -15,6 +15,7 @@ function deferred() {
 
 function fixture() {
     const events = [];
+    const logs = [];
     const timers = new Map();
     const ui = {
         _screencastInProgress: true,
@@ -46,7 +47,8 @@ function fixture() {
         '\n({Extension: BigShotExtension, configs: VIDEO_PIPELINES});', {
         Extension: class {}, GLib: glib, Main: {screenshotUI: ui},
         __gio: gio, __scale: computeScaledDimensions,
-        _: text => text, console: {warn() {}, error() {}},
+        _: text => text,
+        console: {warn: message => logs.push(message), error() {}},
     });
     const ext = Object.assign(new Extension(), {
         _activeEnableSerial: 1, _recordingEpoch: 1,
@@ -54,6 +56,7 @@ function fixture() {
         _recordingStartPromise: null, _recordingStopPromise: null,
         _segmentStopPromise: null, _pausePromise: null, _resumePromise: null,
         _stopCompletions: new Set(), _stopWatcherId: 0,
+        _loggedStopFailures: new WeakSet(),
         _recordingSession: {ffmpegPath: '/bin/ffmpeg', segments: []},
         _currentSegment: {path: '/test/segment.mp4'},
         _indicator: Object.fromEntries([
@@ -72,7 +75,7 @@ function fixture() {
             }
         },
     });
-    return {ext, ui, events, timers, bus, configs};
+    return {ext, ui, events, logs, timers, bus, configs};
 }
 
 const tick = async () => { for (let i = 0; i < 12; i++) await Promise.resolve(); };
@@ -230,17 +233,76 @@ test('stop waits for startup before asking the service to stop', async () => {
     assert.equal(ext._recordingState, 'idle');
 });
 
-test('force stop targets only the current recording service and never finalizes its uncertain segment', async () => {
+test('force stop asks the service to unwind before killing it, and keeps the file it finalized', async () => {
     const {ext, ui, events} = fixture();
     ui._screencastProxy = {g_name_owner: ':1.42'};
     ext._indicator._stopFailed = true;
     const calls = [];
-    ext._runSubprocess = async args => { calls.push(args); return {successful: true}; };
+    ext._runSubprocess = async args => {
+        calls.push(Array.from(args));
+        // A stuck EOS does not mean a stuck process: SIGINT unwinds it, the
+        // muxer writes its trailer, and the service drops off the bus.
+        if (args[1] === '-INT')
+            ui._screencastProxy.g_name_owner = null;
+        return {successful: true};
+    };
     await ext.forceStopRecording();
-    assert.deepEqual(Array.from(calls[0]), ['/usr/bin/kill', '-KILL', '--', '42']);
+
+    // SIGKILL here would leave an MP4 with no moov atom — the entire
+    // recording lost, not merely its last seconds.
+    assert.deepEqual(calls, [['/usr/bin/kill', '-INT', '--', '42']]);
     assert.equal(ext._recordingState, 'idle');
     assert.equal(ui._screencastInProgress, false);
+    // The container closed cleanly, so that segment is a real recording and
+    // has to reach the merge instead of being discarded as uncertain.
+    assert.equal(events.includes('finalized'), true);
+});
+
+test('force stop escalates to SIGKILL only after the grace period, and then drops the segment', async () => {
+    const {ext, ui, events, timers} = fixture();
+    ui._screencastProxy = {g_name_owner: ':1.42'};
+    ext._indicator._stopFailed = true;
+    const calls = [];
+    // Wedged beyond SIGINT's reach: the bus name never goes away.
+    ext._runSubprocess = async args => {
+        calls.push(Array.from(args));
+        return {successful: true};
+    };
+    const done = ext.forceStopRecording();
+    await tick();
+    assert.deepEqual(calls, [['/usr/bin/kill', '-INT', '--', '42']]);
+
+    // Drive the 250 ms poll past the 5 s grace window.
+    for (let i = 0; i < 21 && timers.has(250); i++) {
+        if (timers.get(250)() === false)
+            timers.delete(250);
+        await tick();
+    }
+    await done;
+
+    assert.deepEqual(calls[1], ['/usr/bin/kill', '-KILL', '--', '42']);
+    assert.equal(ext._recordingState, 'idle');
+    // Killed mid-write: this segment is unconfirmed and must not be merged.
     assert.equal(events.includes('finalized'), false);
+});
+
+test('one wedged stop is reported once, however many callers joined it', async () => {
+    const {ext, logs} = fixture();
+    const stop = deferred();
+    ext._origStopScreencastAsync = () => stop.promise;
+    // Holding the screencast shortcut re-enters the stop at the keyboard
+    // repeat rate; every call joins the same pending request.
+    const pending = [
+        ext._stopScreencastUiAsync(),
+        ext._stopScreencastUiAsync(),
+        ext._stopScreencastUiAsync(),
+    ];
+    await tick();
+    stop.reject(new Error('Timeout was reached'));
+    await Promise.all(pending);
+
+    const failures = logs.filter(line => line.includes('Stop recording failed'));
+    assert.deepEqual(failures, ['[Big Shot] Stop recording failed: Timeout was reached']);
 });
 
 test('force stop refuses changed owners or sessions, the Shell PID, and healthy recordings', async () => {
