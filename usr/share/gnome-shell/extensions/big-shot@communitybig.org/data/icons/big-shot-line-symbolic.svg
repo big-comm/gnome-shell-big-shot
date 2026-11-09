@@ -1,3 +1,8 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
-  <line x1="2" y1="14" x2="14" y2="2" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" version="1.1">
+ <defs>
+  <style id="current-color-scheme" type="text/css">
+   .ColorScheme-Text { color:#444444; }
+  </style>
+ </defs>
+ <path style="fill:currentColor" class="ColorScheme-Text" d="M14 1.25a.75.75 0 0 0-.531.219l-12 12a.75.75 0 0 0 0 1.062.75.75 0 0 0 1.062 0l12-12a.75.75 0 0 0 0-1.062A.75.75 0 0 0 14 1.25"/>
 </svg>

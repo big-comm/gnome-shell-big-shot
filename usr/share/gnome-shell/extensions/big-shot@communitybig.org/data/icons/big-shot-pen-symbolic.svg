@@ -1,4 +1,9 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
-  <path d="M13 1.5L14.5 3 5.5 12 3 13l1-2.5z" fill="#ffffff"/>
-  <path d="M11.5 3L13 4.5" stroke="#ffffff" stroke-width="1" fill="none"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" version="1.1">
+ <defs>
+  <style id="current-color-scheme" type="text/css">
+   .ColorScheme-Text { color:#444444; }
+  </style>
+ </defs>
+ <path style="fill:currentColor" class="ColorScheme-Text" d="M13 1.5 14.5 3l-9 9L3 13l1-2.5z"/>
+ <path style="fill:currentColor" class="ColorScheme-Text" d="m11.854 2.646-.708.708 1.5 1.5.708-.708z"/>
 </svg>

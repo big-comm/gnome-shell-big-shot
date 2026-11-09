@@ -1,7 +1,11 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
-  <!-- Blur: concentric blurred circles indicating gaussian blur -->
-  <circle cx="8" cy="8" r="6" fill="none" stroke="#ffffff" stroke-width="1" opacity="0.3"/>
-  <circle cx="8" cy="8" r="4.5" fill="none" stroke="#ffffff" stroke-width="1.2" opacity="0.5"/>
-  <circle cx="8" cy="8" r="3" fill="none" stroke="#ffffff" stroke-width="1.5" opacity="0.7"/>
-  <circle cx="8" cy="8" r="1.5" fill="#ffffff" opacity="0.9"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" version="1.1">
+ <defs>
+  <style id="current-color-scheme" type="text/css">
+   .ColorScheme-Text { color:#444444; }
+  </style>
+ </defs>
+ <path style="opacity:0.3;fill:currentColor" class="ColorScheme-Text" d="M8 1.5A6.51 6.51 0 0 0 1.5 8c0 3.584 2.916 6.5 6.5 6.5s6.5-2.916 6.5-6.5S11.584 1.5 8 1.5m0 1c3.043 0 5.5 2.457 5.5 5.5s-2.457 5.5-5.5 5.5A5.49 5.49 0 0 1 2.5 8c0-3.043 2.457-5.5 5.5-5.5"/>
+ <path style="opacity:0.5;fill:currentColor" class="ColorScheme-Text" d="M8 2.9C5.19 2.9 2.9 5.19 2.9 8s2.29 5.1 5.1 5.1 5.1-2.29 5.1-5.1S10.81 2.9 8 2.9m0 1.2c2.161 0 3.9 1.739 3.9 3.9s-1.739 3.9-3.9 3.9S4.1 10.161 4.1 8 5.839 4.1 8 4.1"/>
+ <path style="opacity:0.7;fill:currentColor" class="ColorScheme-Text" d="M8 4.25A3.76 3.76 0 0 0 4.25 8 3.76 3.76 0 0 0 8 11.75 3.76 3.76 0 0 0 11.75 8 3.76 3.76 0 0 0 8 4.25m0 1.5c1.252 0 2.25.998 2.25 2.25S9.252 10.25 8 10.25A2.24 2.24 0 0 1 5.75 8c0-1.252.998-2.25 2.25-2.25"/>
+ <path style="opacity:0.9;fill:currentColor" class="ColorScheme-Text" d="M9.5 8A1.5 1.5 0 0 1 8 9.5 1.5 1.5 0 0 1 6.5 8 1.5 1.5 0 0 1 8 6.5 1.5 1.5 0 0 1 9.5 8"/>
 </svg>
