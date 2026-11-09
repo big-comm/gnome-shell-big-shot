@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
+import { spawnSync } from 'node:child_process';
 import vm from 'node:vm';
 import test from 'node:test';
 import {computeScaledDimensions} from '../usr/share/gnome-shell/extensions/big-shot@communitybig.org/lib/core.js';
@@ -455,7 +456,8 @@ test('NVENC H.264 and H.265 pipelines negotiate NV12 before encoding', () => {
         const config = configs.find(candidate => candidate.id === id);
         const pipeline = ext._makePipelineString(config, '30/1', 1, undefined,
             {width: 2560, height: 1440});
-        assert.match(pipeline, /video\/x-raw,format=NV12 ! queue ! nvh26[45]enc/);
+        assert.match(pipeline,
+            /video\/x-raw,framerate=30\/1,format=NV12 ! queue ! nvh26[45]enc/);
         assert.match(pipeline, /rc-mode=constqp/);
         assert.doesNotMatch(pipeline, /videoscale/);
     }
@@ -466,8 +468,44 @@ test('NV12 normalizes odd recording dimensions even at full resolution', () => {
     const config = configs.find(candidate => candidate.id === 'nvidia-raw-h264-nvenc');
     const pipeline = ext._makePipelineString(config, null, 1, undefined,
         {width: 901, height: 721});
-    assert.match(pipeline, /videoscale ! video\/x-raw,width=902,height=722/);
-    assert.match(pipeline, /video\/x-raw,format=NV12/);
+    assert.match(pipeline,
+        /videoscale ! video\/x-raw,width=902,height=722,format=NV12 ! queue/);
+});
+
+// Splits a gst-launch description into its "!"-separated links.
+function pipelineLinks(pipeline) {
+    return pipeline.split(' ! ').map(link => link.trim());
+}
+
+test('recording pipelines never chain two bare caps', () => {
+    // gst-launch parses the second of two adjacent caps ("caps ! caps") as an
+    // element named "video", so the whole NVENC pipeline failed to start and
+    // every NVIDIA recording fell back to a slower encoder.
+    const {ext, configs} = fixture();
+    const sizes = [null, {width: 2560, height: 1440}, {width: 901, height: 721}];
+    for (const videorate of [true, false]) {
+        ext._availableElements = new Set(videorate ? ['videorate'] : []);
+        for (const config of configs) {
+            for (const framerate of ['60/1', null]) {
+                for (const downsize of [1, 0.5]) {
+                    for (const size of sizes) {
+                        // Downscaling without a size reads the live monitor.
+                        if (!size && downsize < 1)
+                            continue;
+                        const pipeline = ext._makePipelineString(
+                            config, framerate, downsize, undefined, size);
+                        const links = pipelineLinks(pipeline);
+                        links.forEach((link, i) => {
+                            const isCaps = link.startsWith('video/x-raw');
+                            const nextIsCaps = links[i + 1]?.startsWith('video/x-raw');
+                            assert.ok(!(isCaps && nextIsCaps),
+                                `${config.id}: adjacent caps in "${pipeline}"`);
+                        });
+                    }
+                }
+            }
+        }
+    }
 });
 
 test('NV12 retains selected downscaling and framerate', () => {
@@ -686,4 +724,29 @@ test('the video settings panel re-centres on its first allocation', async () => 
     const detachIdx = source.indexOf('    _detachVideoFromPanel() {');
     assert.match(source.slice(detachIdx, detachIdx + 400),
         /this\._videoContainer\.disconnect\(this\._videoFirstAllocationId\);/);
+});
+
+test('NVENC pipelines start in GStreamer when the encoders exist', (t) => {
+    // Real parse + negotiation check of the strings the service receives.
+    // Skipped where GStreamer or NVENC is missing (CI, non-NVIDIA hosts).
+    const has = name => spawnSync('gst-inspect-1.0', ['--exists', name]).status === 0;
+    const {ext, configs} = fixture();
+    ext._availableElements = new Set(['videorate']);
+    const nvenc = configs.filter(c => c.rawFormat === 'NV12' && c.elements.every(has));
+    if (spawnSync('gst-launch-1.0', ['--version']).error || nvenc.length === 0) {
+        t.skip('needs gst-launch-1.0 and NVENC');
+        return;
+    }
+    for (const config of nvenc) {
+        for (const size of [null, {width: 901, height: 721}]) {
+            const pipeline = ext._makePipelineString(config, '60/1', 1, undefined, size);
+            // The screencast service prepends this capsfilter to custom pipelines.
+            const launch = 'videotestsrc num-buffers=3 ! ' +
+                'video/x-raw,width=1280,height=720,framerate=60/1 ! ' +
+                `capsfilter caps=video/x-raw,max-framerate=60/1 ! ${pipeline} ! fakesink`;
+            const run = spawnSync('gst-launch-1.0', ['-q', ...launch.split(' ')],
+                {encoding: 'utf8', timeout: 30000});
+            assert.equal(run.status, 0, `${config.id}: ${run.stderr}\n${launch}`);
+        }
+    }
 });

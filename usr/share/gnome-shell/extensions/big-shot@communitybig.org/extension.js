@@ -4304,8 +4304,17 @@ export default class BigShotExtension extends Extension {
         // Unconstrained PipeWire format negotiation can crash the NVENC host
         // copy path on GStreamer 1.28.6. Negotiate a known 4:2:0 layout instead
         // of depending on the source's preferred raw format.
-        if (config.rawFormat)
-            stage.push(`video/x-raw,format=${config.rawFormat}`);
+        // gst-launch syntax cannot chain two bare caps ("caps ! caps"): the
+        // second one parses as an element named "video" and every NVENC
+        // pipeline failed, silently falling back to a slower encoder. Merge
+        // the format into the caps just added instead.
+        if (config.rawFormat) {
+            const last = stage.length - 1;
+            if (last >= 0 && stage[last].startsWith('video/x-raw'))
+                stage[last] += `,format=${config.rawFormat}`;
+            else
+                stage.push(`video/x-raw,format=${config.rawFormat}`);
+        }
 
         if (stage.length > 0)
             video = video.replace('queue', `${stage.join(' ! ')} ! queue`);
