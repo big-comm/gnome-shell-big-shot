@@ -1,5 +1,9 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
-  <path d="M10.5 2L15 6.5 8.5 13H4L1.5 10.5z" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-linejoin="round"/>
-  <path d="M7 5.5L10.5 9" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round"/>
-  <line x1="3" y1="14" x2="13" y2="14" stroke="#ffffff" stroke-width="1.2" stroke-linecap="round"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" version="1.1">
+ <defs>
+  <style id="current-color-scheme" type="text/css">
+   .ColorScheme-Text { color:#444444; }
+  </style>
+ </defs>
+ <path style="fill:currentColor" class="ColorScheme-Text" d="m9.984 1.455-9 8.5a.75.75 0 0 0-.015 1.076l2.5 2.5A.75.75 0 0 0 4 13.75h4.5a.75.75 0 0 0 .531-.219l6.5-6.5a.75.75 0 0 0 0-1.062l-4.5-4.5a.75.75 0 0 0-1.047-.014m.5 1.592L13.938 6.5l-5.749 5.75H4.311l-1.735-1.734z"/>
+ <path style="fill:currentColor" class="ColorScheme-Text" d="M6.576 5.076a.6.6 0 0 0 0 .848l3.5 3.5a.6.6 0 0 0 .848 0 .6.6 0 0 0 0-.848l-3.5-3.5a.6.6 0 0 0-.848 0M3 13.4a.6.6 0 0 0-.6.6.6.6 0 0 0 .6.6h10a.6.6 0 0 0 .6-.6.6.6 0 0 0-.6-.6Z"/>
 </svg>

@@ -1,7 +1,11 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
-  <!-- Stopwatch: wide crown, body sized so the outline survives 18px -->
-  <path d="M5.8 1.9 H10.2" fill="none" stroke="#ffffff" stroke-width="1.6" stroke-linecap="round"/>
-  <path d="M8 2.6 V4.2" fill="none" stroke="#ffffff" stroke-width="1.6" stroke-linecap="round"/>
-  <circle cx="8" cy="9.6" r="4.7" fill="none" stroke="#ffffff" stroke-width="1.6"/>
-  <path d="M8 9.6 V7.1 M8 9.6 L10 10.6" fill="none" stroke="#ffffff" stroke-width="1.4" stroke-linecap="round"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" version="1.1">
+ <defs>
+  <style id="current-color-scheme" type="text/css">
+   .ColorScheme-Text { color:#444444; }
+  </style>
+ </defs>
+ <path style="fill:currentColor" class="ColorScheme-Text" d="M5.8 1.1a.8.8 0 0 0-.8.8.8.8 0 0 0 .8.8h4.4a.8.8 0 0 0 .8-.8.8.8 0 0 0-.8-.8Z"/>
+ <path style="fill:currentColor" class="ColorScheme-Text" d="M8 1.8a.8.8 0 0 0-.8.8v1.6A.8.8 0 0 0 8 5a.8.8 0 0 0 .8-.8V2.6a.8.8 0 0 0-.8-.8"/>
+ <path style="fill:currentColor" class="ColorScheme-Text" d="M8 4.1a5.51 5.51 0 0 0-5.5 5.5c0 3.028 2.472 5.5 5.5 5.5s5.5-2.472 5.5-5.5S11.028 4.1 8 4.1m0 1.6c2.163 0 3.9 1.736 3.9 3.9s-1.737 3.9-3.9 3.9a3.89 3.89 0 0 1-3.9-3.9c0-2.164 1.737-3.9 3.9-3.9"/>
+ <path style="fill:currentColor" class="ColorScheme-Text" d="M8 6.4a.7.7 0 0 0-.7.7v2.5a.7.7 0 0 0 .266.267.7.7 0 0 0 .122.36l2 1a.7.7 0 0 0 .939-.315.7.7 0 0 0-.315-.937L8.7 9.168V7.1a.7.7 0 0 0-.7-.7"/>
 </svg>

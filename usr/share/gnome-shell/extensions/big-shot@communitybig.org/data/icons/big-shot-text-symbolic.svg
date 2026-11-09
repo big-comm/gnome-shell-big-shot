@@ -1,3 +1,8 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
-  <text x="3" y="13" font-family="sans-serif" font-size="13" font-weight="bold" fill="#ffffff">T</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" version="1.1">
+ <defs>
+  <style id="current-color-scheme" type="text/css">
+   .ColorScheme-Text { color:#444444; }
+  </style>
+ </defs>
+ <path style="fill:currentColor" class="ColorScheme-Text" d="M3 2v2h4v10h2V4h4V2Z"/>
 </svg>

@@ -1,6 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
-  <circle cx="5" cy="5" r="4" fill="#ffffff"/>
-  <text x="5" y="8" font-family="sans-serif" font-size="7" font-weight="bold" fill="#303030" text-anchor="middle">1</text>
-  <path d="M8.5 8.5L13 13" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round"/>
-  <path d="M15 11L13.5 13.5 11 12z" fill="#ffffff"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" version="1.1">
+ <defs>
+  <style id="current-color-scheme" type="text/css">
+   .ColorScheme-Text { color:#444444; }
+  </style>
+ </defs>
+ <path style="fill:currentColor" class="ColorScheme-Text" d="M5 1a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m.021 2.002h.868V8H4.832V5.11a22 22 0 0 1 .027-.995q-.035.042-.154.155-.112.104-.209.187l-.574.463-.512-.637z"/>
+ <path style="fill:currentColor" class="ColorScheme-Text" d="M8.5 7.75a.75.75 0 0 0-.531.219.75.75 0 0 0 0 1.062l4.5 4.5a.75.75 0 0 0 1.062 0 .75.75 0 0 0 0-1.062l-4.5-4.5A.75.75 0 0 0 8.5 7.75"/>
+ <path style="fill:currentColor" class="ColorScheme-Text" d="m15 11-1.5 2.5L11 12z"/>
 </svg>
