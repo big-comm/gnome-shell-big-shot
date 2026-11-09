@@ -79,6 +79,53 @@ function fixture() {
     return {ext, ui, events, logs, timers, bus, configs};
 }
 
+test('recording keeps the other screens undimmed by default', () => {
+    const {ext, ui} = fixture();
+    ui._screencastAreaIndicator = {opacity: 255};
+    ext._toolbar = {dimOutsideRecording: false};
+    ext._applyRecordingShade();
+    assert.equal(ui._screencastAreaIndicator.opacity, 0);
+
+    ext._toolbar = null;
+    ui._screencastAreaIndicator.opacity = 255;
+    ext._applyRecordingShade();
+    assert.equal(ui._screencastAreaIndicator.opacity, 0);
+});
+
+test('the toolbar option brings the GNOME shade back', () => {
+    const {ext, ui} = fixture();
+    ui._screencastAreaIndicator = {opacity: 0};
+    ext._toolbar = {dimOutsideRecording: true};
+    ext._applyRecordingShade();
+    assert.equal(ui._screencastAreaIndicator.opacity, 255);
+});
+
+test('the shade is cleared before the recording start awaits anything', () => {
+    // The Shell shows its shade right before calling the patched proxy;
+    // clearing it after an await would let one dimmed frame be painted.
+    const {ext, ui} = fixture();
+    ui._screencastAreaIndicator = {opacity: 255};
+    ext._toolbar = {dimOutsideRecording: false};
+    ext._detectPipelines = () => new Promise(() => {});
+    ext._screencastCommonAsync('/tmp/x.mp4', {}, assert.fail);
+    assert.equal(ui._screencastAreaIndicator.opacity, 0);
+});
+
+test('disabling the extension restores the GNOME shade', () => {
+    const {ext, ui} = fixture();
+    ui._screencastAreaIndicator = {opacity: 0};
+    ext._unpatchScreencast();
+    assert.equal(ui._screencastAreaIndicator.opacity, 255);
+});
+
+test('the dim option starts off in the toolbar', () => {
+    const toolbar = readFileSync(
+        'usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js',
+        'utf8');
+    assert.match(toolbar, /this\._dimOutsideRecording = false;/);
+    assert.match(toolbar, /get dimOutsideRecording\(\) \{ return this\._dimOutsideRecording; \}/);
+});
+
 const tick = async () => { for (let i = 0; i < 12; i++) await Promise.resolve(); };
 
 test('stop keeps recording visible until acknowledgement; repeated stops share one call', async () => {

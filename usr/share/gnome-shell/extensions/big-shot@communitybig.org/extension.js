@@ -2922,9 +2922,24 @@ export default class BigShotExtension extends Extension {
         }
     }
 
+    /**
+     * GNOME shades everything outside the recorded area, on every monitor,
+     * while a screencast runs. That blocks reading or working on the other
+     * screens, so it stays off unless the user asks for it in the toolbar.
+     */
+    _applyRecordingShade() {
+        const indicator = this._screenshotUI?._screencastAreaIndicator;
+        if (indicator)
+            indicator.opacity = this._toolbar?.dimOutsideRecording ? 255 : 0;
+    }
+
     _unpatchScreencast() {
         const ui = this._screenshotUI;
         const screencastProxy = ui?._screencastProxy;
+
+        // Hand the Shell its own recording shade back.
+        if (ui?._screencastAreaIndicator)
+            ui._screencastAreaIndicator.opacity = 255;
 
         if (screencastProxy) {
             if (this._origScreencast)
@@ -2965,6 +2980,9 @@ export default class BigShotExtension extends Extension {
     }
 
     async _screencastCommonAsync(_requestedPath, options, originalMethod, captureSize = null) {
+        // Before the first await: the Shell has just shown its shade and
+        // must not paint a frame with it when the user turned it off.
+        this._applyRecordingShade();
         const enableSerial = this._activeEnableSerial;
         const stopMethod = this._origStopScreencastAsync;
         // Share the background probe when it is still finishing.
