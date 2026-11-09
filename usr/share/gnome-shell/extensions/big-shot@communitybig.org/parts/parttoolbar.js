@@ -168,7 +168,7 @@ export class PartToolbar extends PartUI {
         const timerBox = boxLayout({ vertical: false });
         timerBox.add_child(new St.Icon({
             gicon: this._getIcon('big-shot-timer-symbolic'),
-            icon_size: 16,
+            icon_size: 18,
         }));
         timerBox.add_child(this._timerLabel);
         this._timerButton = new St.Button({
@@ -237,7 +237,7 @@ export class PartToolbar extends PartUI {
                 style_class: 'big-shot-edit-tool-btn',
                 toggle_mode: true,
                 can_focus: true,
-                child: new St.Icon({ gicon: this._getIcon(tool.icon), icon_size: 16 }),
+                child: new St.Icon({ gicon: this._getIcon(tool.icon), icon_size: 18 }),
                 accessible_name: tool.label(),
             });
             btn._toolId = tool.id;
@@ -404,7 +404,7 @@ export class PartToolbar extends PartUI {
         // Undo
         this._undoButton = new St.Button({
             style_class: 'big-shot-edit-tool-btn',
-            child: new St.Icon({ icon_name: 'edit-undo-symbolic', icon_size: 16 }),
+            child: new St.Icon({ icon_name: 'edit-undo-symbolic', icon_size: 18 }),
             can_focus: true,
             accessible_name: _('Undo'),
         });
@@ -416,7 +416,7 @@ export class PartToolbar extends PartUI {
         // Redo
         this._redoButton = new St.Button({
             style_class: 'big-shot-edit-tool-btn',
-            child: new St.Icon({ icon_name: 'edit-redo-symbolic', icon_size: 16 }),
+            child: new St.Icon({ icon_name: 'edit-redo-symbolic', icon_size: 18 }),
             can_focus: true,
             accessible_name: _('Redo'),
         });
@@ -432,7 +432,7 @@ export class PartToolbar extends PartUI {
         // Copy to clipboard
         this._copyButton = new St.Button({
             style_class: 'big-shot-edit-tool-btn',
-            child: new St.Icon({ icon_name: 'edit-copy-symbolic', icon_size: 16 }),
+            child: new St.Icon({ icon_name: 'edit-copy-symbolic', icon_size: 18 }),
             can_focus: true,
             accessible_name: _('Copy to Clipboard'),
         });
@@ -444,7 +444,7 @@ export class PartToolbar extends PartUI {
         // Save As (file chooser via portal)
         this._saveAsButton = new St.Button({
             style_class: 'big-shot-edit-tool-btn',
-            child: new St.Icon({ icon_name: 'document-save-as-symbolic', icon_size: 16 }),
+            child: new St.Icon({ icon_name: 'document-save-as-symbolic', icon_size: 18 }),
             can_focus: true,
             accessible_name: _('Save As…'),
         });
@@ -456,7 +456,7 @@ export class PartToolbar extends PartUI {
         // OCR — Extract text from screenshot
         this._ocrButton = new St.Button({
             style_class: 'big-shot-edit-tool-btn',
-            child: new St.Icon({ icon_name: 'big-shot-ocr-symbolic', icon_size: 16 }),
+            child: new St.Icon({ icon_name: 'big-shot-ocr-symbolic', icon_size: 18 }),
             can_focus: true,
             accessible_name: _('Extract Text (OCR)'),
         });
