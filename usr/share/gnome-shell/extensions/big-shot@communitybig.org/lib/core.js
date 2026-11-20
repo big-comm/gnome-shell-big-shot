@@ -77,3 +77,58 @@ export function recordingExtension(path, fallback = 'webm') {
         return fallback;
     return match[1];
 }
+
+/**
+ * Hardware encoders that their plugin registers only when the GPU answers a
+ * probe while GStreamer scans plugins, mapped to that plugin.
+ *
+ * The registry cache keeps the result of that probe. If it was written while
+ * the GPU was not ready (right after resume from suspend, for instance), the
+ * plugin is cached without its encoders, and GStreamer never rescans an
+ * unchanged plugin file: the encoder stays hidden until the cache is deleted,
+ * and recording silently falls back to a software encoder.
+ */
+export const GPU_PROBED_ENCODERS = Object.freeze({
+    nvh264enc: 'nvcodec',
+    nvh265enc: 'nvcodec',
+    vah264enc: 'va',
+    vah264lpenc: 'va',
+    vah265enc: 'va',
+    vah265lpenc: 'va',
+    vaapih264enc: 'vaapi',
+    vaapih265enc: 'vaapi',
+});
+
+/**
+ * Encoders that a stale registry may be hiding from the GPU pipelines.
+ *
+ * Only when no GPU pipeline is usable: that is the case that drops recording
+ * to software. A GPU that simply lacks one variant (no low-power VA entry
+ * point, no HEVC on an older NVENC) keeps a working pipeline and must not pay
+ * for a registry rebuild on every detection. Order is preserved and
+ * duplicates are dropped.
+ */
+export function hiddenGpuEncoders(gpuConfigs, availableElements) {
+    if (gpuConfigs.some(config =>
+        config.elements.every(element => availableElements.has(element))))
+        return [];
+
+    return [...new Set(gpuConfigs.flatMap(config => config.elements))]
+        .filter(element =>
+            Object.hasOwn(GPU_PROBED_ENCODERS, element) &&
+            !availableElements.has(element));
+}
+
+/**
+ * Path of the registry cache GStreamer reads, resolved the way gstregistry.c
+ * does: GST_REGISTRY_1_0, then GST_REGISTRY, then the per-arch file in the
+ * user cache directory. Returns null when the default path cannot be built.
+ */
+export function gstRegistryPath(getenv, userCacheDir, arch) {
+    const override = getenv('GST_REGISTRY_1_0') || getenv('GST_REGISTRY');
+    if (override)
+        return override;
+    if (!userCacheDir || !arch)
+        return null;
+    return `${userCacheDir}/gstreamer-1.0/registry.${arch}.bin`;
+}

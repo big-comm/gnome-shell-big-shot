@@ -34,6 +34,9 @@ let PartWebcam = null;
 let PartVideoAnnotation = null;
 let computeScaledDimensions = null;
 let recordingExtension = null;
+let GPU_PROBED_ENCODERS = null;
+let hiddenGpuEncoders = null;
+let gstRegistryPath = null;
 let shellMajor = 0;
 
 /**
@@ -101,6 +104,9 @@ function loadHeavyDeps() {
             PartVideoAnnotation = videoAnnotationMod.PartVideoAnnotation;
             computeScaledDimensions = coreMod.computeScaledDimensions;
             recordingExtension = coreMod.recordingExtension;
+            GPU_PROBED_ENCODERS = coreMod.GPU_PROBED_ENCODERS;
+            hiddenGpuEncoders = coreMod.hiddenGpuEncoders;
+            gstRegistryPath = coreMod.gstRegistryPath;
             shellMajor = coreMod.shellMajorVersion(configMod.PACKAGE_VERSION);
         })();
     }
@@ -349,6 +355,9 @@ const SCREENCAST_STOP_GRACE_MS = 12000;
 // already watching a stuck stop, so a few seconds is cheaper than the loss.
 const SCREENCAST_SIGINT_GRACE_MS = 5000;
 const SUBPROCESS_PROBE_CONCURRENCY = 4;
+// Detection also runs on unlock, right after a resume, when the GPU may not
+// answer yet. Retry the registry repair in the background at these delays.
+const GPU_REPAIR_RETRY_DELAYS_MS = Object.freeze([20000, 120000]);
 
 // =============================================================================
 // HELPER FUNCTIONS
@@ -614,6 +623,8 @@ export default class BigShotExtension extends Extension {
         this._enableDeferredId = 0;
         this._parts = [];
         this._availableConfigs = null; // null = not yet detected (lazy)
+        this._pipelineCacheStale = false; // set when a repair revives a GPU encoder
+        this._gpuRepairRetrying = false;
         this._availableElements = new Set();
         this._pipelineDetectionPromise = null;
         this._pipelineDetectionGeneration = (this._pipelineDetectionGeneration ?? 0) + 1;
@@ -831,15 +842,21 @@ export default class BigShotExtension extends Extension {
         this._pendingDelays.clear();
     }
 
-    async _runSubprocess(argv, flags) {
+    async _runSubprocess(argv, flags, env = null) {
         const registry = this._subprocesses;
         if (!registry)
             return { cancelled: true, successful: false, stdout: '', stderr: '' };
 
-        const task = {
-            cancelled: false,
-            proc: Gio.Subprocess.new(argv, flags),
-        };
+        let proc;
+        if (env) {
+            const launcher = new Gio.SubprocessLauncher({ flags });
+            for (const [name, value] of Object.entries(env))
+                launcher.setenv(name, value, true);
+            proc = launcher.spawnv(argv);
+        } else {
+            proc = Gio.Subprocess.new(argv, flags);
+        }
+        const task = { cancelled: false, proc };
         registry.add(task);
 
         try {
@@ -998,6 +1015,8 @@ export default class BigShotExtension extends Extension {
 
         this._screenshotUI = null;
         this._availableConfigs = null;
+        this._pipelineCacheStale = false;
+        this._gpuRepairRetrying = false;
         this._availableElements?.clear();
         this._availableElements = null;
         this._gpuVendors = null;
@@ -2366,15 +2385,104 @@ export default class BigShotExtension extends Extension {
         return [GpuVendor.NVIDIA, GpuVendor.AMD, GpuVendor.INTEL];
     }
 
-    async _checkGstreamerElement(name) {
+    async _checkGstreamerElement(name, env = null) {
         try {
             const result = await this._runSubprocess(
                 ['gst-inspect-1.0', '--exists', name],
                 Gio.SubprocessFlags.NONE,
+                env,
             );
             return !result.cancelled && result.successful;
         } catch {
             return false;
+        }
+    }
+
+    async _checkGstreamerPlugin(name) {
+        try {
+            const result = await this._runSubprocess(
+                ['gst-inspect-1.0', name],
+                Gio.SubprocessFlags.STDOUT_SILENCE | Gio.SubprocessFlags.STDERR_SILENCE,
+            );
+            return !result.cancelled && result.successful;
+        } catch {
+            return false;
+        }
+    }
+
+    _gstRegistryPath() {
+        let arch = null;
+        try {
+            const [, bytes] = GLib.file_get_contents('/proc/sys/kernel/arch');
+            arch = new TextDecoder().decode(bytes).trim() || null;
+        } catch {
+            // No arch sysctl; only an explicit GST_REGISTRY can be resolved.
+        }
+        return gstRegistryPath(name => GLib.getenv(name),
+            GLib.get_user_cache_dir(), arch);
+    }
+
+    /**
+     * Rebuild the GStreamer registry cache when it hides a GPU encoder.
+     *
+     * `elements` are GPU-probed encoders missing from the current registry
+     * (see GPU_PROBED_ENCODERS). When their plugin is cached, a fresh
+     * registry is built in a scratch file next to the real one; if the encoder
+     * shows up there, the real cache was stale and the scratch one replaces
+     * it atomically. The screencast service reads that same cache when it
+     * starts, so the encoder becomes usable for the next recording without
+     * the user deleting anything by hand.
+     *
+     * Returns the elements that are available after the repair.
+     */
+    async _repairStaleGstRegistry(elements, generation) {
+        const plugins = [...new Set(elements.map(e => GPU_PROBED_ENCODERS[e]))];
+        const cachedPlugins = new Set();
+        for (const plugin of plugins) {
+            if (await this._checkGstreamerPlugin(plugin))
+                cachedPlugins.add(plugin);
+        }
+        // Plugin not installed at all: nothing stale, the encoder is absent.
+        const suspects = elements.filter(e => cachedPlugins.has(GPU_PROBED_ENCODERS[e]));
+        if (suspects.length === 0 || generation !== this._pipelineDetectionGeneration)
+            return [];
+
+        const registryPath = this._gstRegistryPath();
+        if (!registryPath || !GLib.file_test(registryPath, GLib.FileTest.EXISTS))
+            return [];
+
+        // Same directory as the real cache, so the final move is a rename.
+        const scratchPath = `${registryPath}.big-shot-probe`;
+        const scratch = Gio.File.new_for_path(scratchPath);
+        const scratchEnv = { GST_REGISTRY_1_0: scratchPath, GST_REGISTRY: scratchPath };
+        try {
+            try { scratch.delete(null); } catch { /* no leftover */ }
+
+            const found = [];
+            for (const element of suspects) {
+                if (await this._checkGstreamerElement(element, scratchEnv))
+                    found.push(element);
+            }
+            if (found.length === 0 || generation !== this._pipelineDetectionGeneration)
+                return [];
+
+            scratch.move(Gio.File.new_for_path(registryPath),
+                Gio.FileCopyFlags.OVERWRITE, null, null);
+
+            const usable = [];
+            for (const element of found) {
+                if (await this._checkGstreamerElement(element))
+                    usable.push(element);
+            }
+            warn(usable.length > 0
+                ? `GStreamer registry cache hid ${usable.join(', ')}; rebuilt it`
+                : `GStreamer registry rebuilt but ${found.join(', ')} still missing from ${registryPath}`);
+            return usable;
+        } catch (e) {
+            warn(`Could not rebuild the GStreamer registry cache: ${e.message}`);
+            return [];
+        } finally {
+            try { scratch.delete(null); } catch { /* moved or never written */ }
         }
     }
 
@@ -2395,8 +2503,35 @@ export default class BigShotExtension extends Extension {
         return checks.filter(Boolean);
     }
 
+    /**
+     * Second chance for _repairStaleGstRegistry when the GPU was not ready
+     * during detection. Runs detached from the detection promise so a
+     * recording never waits on it; on success it marks the cached detection
+     * stale and the next recording re-detects, swapping the list in place.
+     */
+    async _retryGpuEncoderRepair(hidden, generation) {
+        if (this._gpuRepairRetrying)
+            return;
+        this._gpuRepairRetrying = true;
+        try {
+            for (const delayMs of GPU_REPAIR_RETRY_DELAYS_MS) {
+                if (!await this._wait(delayMs) ||
+                    generation !== this._pipelineDetectionGeneration)
+                    return;
+                const repaired = await this._repairStaleGstRegistry(hidden, generation);
+                if (repaired.length > 0) {
+                    if (generation === this._pipelineDetectionGeneration)
+                        this._pipelineCacheStale = true;
+                    return;
+                }
+            }
+        } finally {
+            this._gpuRepairRetrying = false;
+        }
+    }
+
     _detectPipelines() {
-        if (this._availableConfigs !== null)
+        if (this._availableConfigs !== null && !this._pipelineCacheStale)
             return Promise.resolve(this._availableConfigs);
         if (this._pipelineDetectionPromise)
             return this._pipelineDetectionPromise;
@@ -2411,6 +2546,7 @@ export default class BigShotExtension extends Extension {
     }
 
     async _runPipelineDetection(generation) {
+        this._pipelineCacheStale = false;
         const gpuVendors = await this._detectGpuVendors();
         if (generation !== this._pipelineDetectionGeneration || !this._screenshotUI)
             return [];
@@ -2436,6 +2572,21 @@ export default class BigShotExtension extends Extension {
 
         if (generation !== this._pipelineDetectionGeneration || !this._screenshotUI)
             return [];
+
+        const hidden = hiddenGpuEncoders(
+            candidates.filter(config => config.vendors.length > 0),
+            availableElements);
+        if (hidden.length > 0) {
+            const repaired = await this._repairStaleGstRegistry(hidden, generation);
+            for (const element of repaired)
+                availableElements.add(element);
+            if (generation !== this._pipelineDetectionGeneration || !this._screenshotUI)
+                return [];
+            if (repaired.length === 0) {
+                this._retryGpuEncoderRepair(hidden, generation).catch(e =>
+                    warn(`GPU encoder repair retry failed: ${e.message}`));
+            }
+        }
 
         const available = candidates.filter(config =>
             config.elements.every(element => availableElements.has(element)) &&
