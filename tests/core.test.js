@@ -2,8 +2,11 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 
 import {
+    GPU_PROBED_ENCODERS,
     computeOverlayRect,
     computeScaledDimensions,
+    gstRegistryPath,
+    hiddenGpuEncoders,
     recordingExtension,
     shellMajorVersion,
 } from '../usr/share/gnome-shell/extensions/big-shot@communitybig.org/lib/core.js';
@@ -48,4 +51,42 @@ test('parses the shell major version defensively', () => {
     assert.equal(shellMajorVersion('49.rc'), 49);
     assert.equal(shellMajorVersion('unknown'), 0);
     assert.equal(shellMajorVersion(undefined), 0);
+});
+
+test('flags GPU encoders hidden by the registry only when no GPU pipeline works', () => {
+    const nvenc264 = { elements: ['videoconvert', 'nvh264enc', 'h264parse'] };
+    const nvenc265 = { elements: ['videoconvert', 'nvh265enc', 'h265parse'] };
+    const base = ['videoconvert', 'h264parse', 'h265parse'];
+
+    // Stale registry: nvcodec cached without its encoders.
+    assert.deepEqual(hiddenGpuEncoders([nvenc264, nvenc265], new Set(base)),
+        ['nvh264enc', 'nvh265enc']);
+    // One working GPU pipeline is enough; a missing HEVC variant is no symptom.
+    assert.deepEqual(hiddenGpuEncoders([nvenc264, nvenc265],
+        new Set([...base, 'nvh264enc'])), []);
+    // No GPU pipeline candidates (vendor not present).
+    assert.deepEqual(hiddenGpuEncoders([], new Set(base)), []);
+    // Plain elements are never treated as GPU-probed.
+    assert.deepEqual(hiddenGpuEncoders([{ elements: ['x264enc'] }], new Set()), []);
+});
+
+test('every GPU-probed encoder maps to the plugin that registers it', () => {
+    for (const [element, plugin] of Object.entries(GPU_PROBED_ENCODERS)) {
+        const expected = element.startsWith('nv') ? 'nvcodec'
+            : element.startsWith('vaapi') ? 'vaapi' : 'va';
+        assert.equal(plugin, expected, element);
+    }
+});
+
+test('resolves the GStreamer registry path like gstregistry.c', () => {
+    const env = vars => name => vars[name] ?? null;
+    assert.equal(gstRegistryPath(env({}), '/home/u/.cache', 'x86_64'),
+        '/home/u/.cache/gstreamer-1.0/registry.x86_64.bin');
+    assert.equal(gstRegistryPath(env({ GST_REGISTRY: '/r.bin' }), '/c', 'x86_64'),
+        '/r.bin');
+    assert.equal(gstRegistryPath(
+        env({ GST_REGISTRY: '/r.bin', GST_REGISTRY_1_0: '/r10.bin' }), '/c', 'x86_64'),
+    '/r10.bin');
+    assert.equal(gstRegistryPath(env({}), '/c', null), null);
+    assert.equal(gstRegistryPath(env({}), null, 'x86_64'), null);
 });

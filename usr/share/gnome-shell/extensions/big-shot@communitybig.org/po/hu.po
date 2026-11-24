@@ -4,7 +4,7 @@ msgstr ""
 "Project-Id-Version: big-shot 1.0\n"
 "Report-Msgid-Bugs-To: https://github.com/BigCommunity/gnome-shell-big-shot/"
 "issues\n"
-"POT-Creation-Date: 2026-10-16 09:55-0300\n"
+"POT-Creation-Date: 2026-11-09 18:20-0300\n"
 "PO-Revision-Date: 2026-08-15 18:02-0300\n"
 "Last-Translator: Tales A. Mendonça <talesam@gmail.com>\n"
 "Language-Team: Hungarian\n"
@@ -14,82 +14,82 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: attranslate\n"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/drawing/overlay.js:177
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/drawing/overlay.js:179
 msgid "Drawing canvas"
 msgstr "Rajzoló vászon"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/drawing/overlay.js:832
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/drawing/overlay.js:834
 msgid "Text…"
 msgstr "Szöveg…"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/drawing/overlay.js:837
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/drawing/overlay.js:839
 msgid "Annotation text"
 msgstr "Megjegyzés szövege"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/drawing/overlay.js:865
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/drawing/overlay.js:867
 msgid "Confirm"
 msgstr "Megerősít"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/drawing/overlay.js:986
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/drawing/overlay.js:988
 msgid "Caption style — click to toggle highlight / neutral"
 msgstr "Feliratstílus — kattintson a kiemelés / semleges közötti váltáshoz."
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/drawing/overlay.js:1002
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/drawing/overlay.js:1004
 msgid "Caption (↑/↓ = size)…"
 msgstr "Felirat (↑/↓ = méret)…"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/drawing/overlay.js:1003
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/drawing/overlay.js:1005
 msgid "Zoom caption"
 msgstr "Felirat nagyítása"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:418
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:447
 msgid "BigShot from %d %t"
 msgstr "BigShot innen: %d %t"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1195
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1210
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1378
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1388
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1244
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1274
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1432
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1442
 msgid "Screenshot taken"
 msgstr "Képernyőkép készítve"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1371
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1941
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1425
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1997
 msgid "Screenshot copied"
 msgstr "Képernyőkép másolva"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1408
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1462
 msgid "Screenshots"
 msgstr "Képernyőképek"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1418
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:2120
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1472
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:2176
 #, javascript-format
 msgid "Screenshot from %s"
 msgstr "Képernyőkép innen: %s"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1467
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1521
 msgid "Screen Capture"
 msgstr "Képernyőrögzítés"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1486
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1528
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1560
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1540
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1582
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1614
 msgid "Screenshot captured"
 msgstr "Képernyőkép rögzítve"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1487
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1529
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1561
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1541
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1583
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1615
 msgid "You can paste the image from the clipboard"
 msgstr "Beillesztheti a képet a vágólapról"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1536
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1590
 msgid "Show in Files"
 msgstr "Megjelenítés a fájlokban"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1859
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1873
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1915
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1929
 msgid ""
 "Automatic installation is unavailable. Install Tesseract and its language "
 "packs with your package manager."
@@ -97,66 +97,67 @@ msgstr ""
 "Az automatikus telepítés nem érhető el. Telepítse a Tesseractot és nyelvi "
 "csomagjait a csomagkezelővel."
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1973
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:2029
 msgid "Extracting text..."
 msgstr "Szöveg kinyerése..."
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1995
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:2051
 #, javascript-format
 msgid "Text copied to clipboard! (%d chars)"
 msgstr "A szöveg a vágólapra másolva! (%d karakter)"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:1998
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:2054
 msgid "No text found in selection"
 msgstr "Nem található szöveg a kiválasztásban"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:2004
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:2060
 #, javascript-format
 msgid "OCR failed: %s"
 msgstr "Az OCR meghiúsult: %s"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:2145
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:2201
 msgid "Save Screenshot"
 msgstr "Képernyőkép mentése"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:2151
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:2207
 msgid "PNG Images"
 msgstr ""
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:3030
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:3141
 msgid "GNOME default"
 msgstr ""
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:3307
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:3425
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:3579
 msgid "Screencast recorded"
 msgstr ""
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:3380
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:3638
 msgid "Recording could not be stopped"
 msgstr "A felvételt nem sikerült leállítani"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:3381
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/extension.js:3639
 msgid ""
 "The recording service is not responding. Use Force stop in the recording "
 "controls to terminate it. The last video fragment may be incomplete."
 msgstr ""
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partaudio.js:98
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partaudio.js:160
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partaudio.js:101
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partaudio.js:163
 msgid "Desktop"
 msgstr "Asztal"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partaudio.js:110
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partaudio.js:168
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:631
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partaudio.js:113
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partaudio.js:171
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:662
 msgid "Mic"
 msgstr "Mikrofon"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partaudio.js:162
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partaudio.js:165
 msgid "Record Desktop Audio"
 msgstr "Asztali hang rögzítése"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partaudio.js:170
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partaudio.js:173
 msgid "Record Microphone"
 msgstr "Mikrofon rögzítése"
 
@@ -170,7 +171,7 @@ msgstr "Képkocka másodpercenként"
 
 #: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partindicator.js:116
 #: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partindicator.js:148
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partindicator.js:207
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partindicator.js:219
 msgid "Pause recording"
 msgstr ""
 
@@ -182,287 +183,299 @@ msgstr ""
 msgid "Force stop"
 msgstr ""
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partindicator.js:168
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partindicator.js:212
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partindicator.js:172
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partindicator.js:228
 msgid "Stop recording"
 msgstr ""
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partindicator.js:207
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partindicator.js:219
 msgid "Resume recording"
 msgstr ""
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partindicator.js:211
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/partindicator.js:227
 msgid "Force stop recording service (last fragment may be incomplete)"
 msgstr ""
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:42
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:43
 msgid "Select / Move"
 msgstr "Kiválasztás / Mozgatás"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:43
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:44
 msgid "Pen"
 msgstr "Toll"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:44
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:45
 msgid "Arrow"
 msgstr "Nyíl"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:45
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:46
 msgid "Line"
 msgstr "Sor"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:46
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:47
 msgid "Rectangle"
 msgstr "Téglalap"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:47
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:48
 msgid "Oval"
 msgstr "Oval"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:48
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:49
 msgid "Text"
 msgstr "Szöveg"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:49
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:50
 msgid "Highlighter"
 msgstr "Kiemelő"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:50
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:51
 msgid "Censor"
 msgstr "Cenzúra"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:51
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:52
 msgid "Blur"
 msgstr "Elmosódás"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:52
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:53
 msgid "Invert Colors"
 msgstr "Színek invertálása"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:53
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:54
 msgid "Magnify / Zoom"
 msgstr "Nagyítás / Zoom"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:54
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:55
 msgid "Number"
 msgstr "Szám"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:55
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:56
 msgid "Number with Arrow"
 msgstr "Szám nyíllal"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:56
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:57
 msgid "Number with Pointer"
 msgstr "Mutatóval rendelkező szám"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:57
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:58
 msgid "Eraser"
 msgstr "Radír"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:63
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:64
 #, javascript-format
 msgid "Software %s"
 msgstr ""
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:66
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:67
 #, javascript-format
 msgid "%s Low-Power"
 msgstr ""
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:141
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:149
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:148
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:156
 msgid "Show screenshot panel"
 msgstr "Képernyőkép panel megjelenítése"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:149
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:156
 msgid "Hide screenshot panel"
 msgstr "Képernyőkép panel elrejtése"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:175
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:182
 msgid "Screenshot timer"
 msgstr "Képernyőkép-időzítő"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:180
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:187
 #, javascript-format
 msgid "Screenshot timer: %d s"
 msgstr "Képernyőkép-időzítő: %d mp"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:181
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:188
 msgid "Screenshot timer: off"
 msgstr "Képernyőkép-időzítő: ki"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:258
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:261
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:265
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:268
 msgid "Color"
 msgstr "Szín"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:273
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:276
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:280
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:283
 msgid "Fill"
 msgstr "Kitöltés"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:286
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:293
 msgid "Decrease Size"
 msgstr "Méret csökkentése"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:303
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:310
 msgid "Brush Size"
 msgstr "Ecsetméret"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:327
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:334
 msgid "Increase Size"
 msgstr "Méret növelése"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:346
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:350
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:353
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:357
 msgid "Font"
 msgstr "Betűtípus"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:373
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:393
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1458
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1478
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:380
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:400
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1513
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1533
 msgid "Intensity"
 msgstr "Intenzitás"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:405
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:408
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:412
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:415
 msgid "Undo"
 msgstr "Visszavonás"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:417
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:420
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:424
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:427
 msgid "Redo"
 msgstr "Újra"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:433
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:436
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:440
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:443
 msgid "Copy to Clipboard"
 msgstr "Másolás a vágólapra"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:445
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:448
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:452
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:455
 msgid "Save As…"
 msgstr "Mentés másként…"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:457
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:460
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:464
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:467
 msgid "Extract Text (OCR)"
 msgstr "Szöveg kinyerése (OCR)"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:473
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:480
 msgid "OCR Language"
 msgstr "OCR nyelv"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:476
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:483
 msgid "Select OCR Language"
 msgstr "OCR nyelv kiválasztása"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:500
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:506
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1092
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:507
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:513
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1123
 msgid "Close"
 msgstr "Bezárás"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:506
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1092
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:513
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1123
 msgid "Done"
 msgstr "Kész"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:539
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:736
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:546
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:767
 msgid "Video Settings"
 msgstr "Videóbeállítások"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:583
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:590
 msgid "Quality"
 msgstr "Minőség"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:591
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:598
 msgid "Very High"
 msgstr "Nagyon magas"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:592
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:599
 msgid "High"
 msgstr "Magas"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:593
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:600
 msgid "Medium"
 msgstr "Közepes"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:594
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:601
 msgid "Low"
 msgstr "Alacsony"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:595
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:602
 msgid "Very Low"
 msgstr "Nagyon alacsony"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:596
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:603
 msgid "Super Low"
 msgstr "Rendkívül alacsony"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:608
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:615
 msgid "Recording quality (bitrate)"
 msgstr "Felvételi minőség (bitráta)"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:618
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:625
 msgid "Codec"
 msgstr "Kodek"
 
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:637
+msgid "Screens"
+msgstr "Képernyők"
+
 #: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:645
+msgid "Dim outside the recording"
+msgstr "Elsötétítés a felvételen kívül"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:653
+msgid "Darken everything outside the recorded area while recording"
+msgstr "Felvétel közben minden elsötétítése a felvett területen kívül"
+
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:676
 msgid "Camera"
 msgstr "Kamera"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:659
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:690
 msgid "Mask"
 msgstr "Maszk"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:690
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:721
 msgid "Size"
 msgstr "Méret"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:730
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:761
 msgid "Edit"
 msgstr "Szerkesztés"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:736
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:767
 msgid "Edit Screenshot"
 msgstr "Képernyőkép szerkesztése"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1306
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1361
 msgid "Custom"
 msgstr "Egyedi"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1568
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1623
 msgid "No Fill"
 msgstr "Kitöltés nélkül"
 
 #. TRANSLATORS: compact timer label, %d is a number of seconds.
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1658
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1714
 #, javascript-format
 msgid "%ds"
 msgstr "%ds"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1724
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1786
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1861
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1780
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1842
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1917
 msgid "Auto"
 msgstr "Automatikus"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1865
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1921
 msgid "Use best available codec"
 msgstr "Használja a legjobb elérhető kodeket"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1881
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1937
 msgid "Video codec"
 msgstr "Videó kodek"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1950
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:2006
 msgid "OCR Languages"
 msgstr "OCR nyelvek"
 
-#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:1962
+#: usr/share/gnome-shell/extensions/big-shot@communitybig.org/parts/parttoolbar.js:2018
 msgid "Auto (system)"
 msgstr "Automatikus (rendszer)"
 

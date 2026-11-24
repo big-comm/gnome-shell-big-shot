@@ -83,6 +83,9 @@ export class PartToolbar extends PartUI {
         // Video settings state
         // Default quality; see QUALITY_PRESETS in extension.js for the scale.
         this._videoQuality = 'medium';
+        // GNOME's shade over the screens outside the recording; off so the
+        // other monitors stay readable while recording.
+        this._dimOutsideRecording = false;
         this._selectedPipelineId = null; // null = auto cascade
         // Screenshot countdown, in seconds. 0 disables it.
         this._captureDelay = 0;
@@ -627,6 +630,30 @@ export class PartToolbar extends PartUI {
         codecBox.add_child(this._codecButtonsRow);
         this._videoContainer.add_child(codecBox);
         this._codecButtons = new Map();
+
+        // Row: shade the screens outside the recording (GNOME's default)
+        const shadeBox = boxLayout({ vertical: false, style: 'spacing: 8px;' });
+        shadeBox.add_child(new St.Label({
+            text: _('Screens'),
+            style: 'color: rgba(255,255,255,0.6); font-size: 12px; min-width: 50px;',
+            y_align: Clutter.ActorAlign.CENTER,
+        }));
+        this._dimOutsideButton = new St.Button({
+            style_class: 'screenshot-ui-show-pointer-button',
+            toggle_mode: true,
+            can_focus: true,
+            label: _('Dim outside the recording'),
+        });
+        this._dimOutsideButton.checked = this._dimOutsideRecording;
+        this._dimOutsideButton.connect('notify::checked', () => {
+            this._dimOutsideRecording = this._dimOutsideButton.checked;
+        });
+        this._dimOutsideButton.connect('enter-event', () => this._showTooltip(
+            this._dimOutsideButton,
+            _('Darken everything outside the recorded area while recording')));
+        this._dimOutsideButton.connect('leave-event', () => this._hideTooltip());
+        shadeBox.add_child(this._dimOutsideButton);
+        this._videoContainer.add_child(shadeBox);
 
         // Row 3: Microphone selection (visible when >1 mic available and mic is active)
         this._micRow = boxLayout({ vertical: false, style: 'spacing: 8px;' });
@@ -1677,6 +1704,7 @@ export class PartToolbar extends PartUI {
 
     // Video settings getters
     get videoQuality() { return this._videoQuality; }
+    get dimOutsideRecording() { return this._dimOutsideRecording; }
     _cycleCaptureDelay() {
         const steps = this._captureDelaySteps;
         const next = (steps.indexOf(this._captureDelay) + 1) % steps.length;
