@@ -237,7 +237,10 @@ export class PartAudio extends PartUI {
                 `pulsesrc device=${this._desktopDevice} provide-clock=false do-timestamp=true`,
                 'audioconvert',
                 'audioresample',
-                `capsfilter caps=audio/x-raw,format=S16LE,rate=48000,channels=${desktopChannels},layout=interleaved`,
+                // Do not pin format=S16LE here: avenc_aac and vorbisenc require F32LE,
+                // while fdkaacenc/voaacenc require S16LE. Leaving format unconstrained
+                // lets audioconvert negotiate the downstream encoder's native format.
+                `capsfilter caps=audio/x-raw,rate=48000,channels=${desktopChannels},layout=interleaved`,
                 'queue',
             ].join(' ! ');
         }
@@ -266,7 +269,7 @@ export class PartAudio extends PartUI {
                 `pulsesrc device=${micDeviceName} provide-clock=false do-timestamp=true`,
                 'audioconvert',
                 'audioresample',
-                `capsfilter caps=audio/x-raw,format=S16LE,rate=48000,channels=${targetMicChannels},layout=interleaved`,
+                `capsfilter caps=audio/x-raw,rate=48000,channels=${targetMicChannels},layout=interleaved`,
                 'queue',
             ].join(' ! ');
         }
@@ -276,7 +279,7 @@ export class PartAudio extends PartUI {
             const result = [
                 `${desktopSource} ! audiomixer name=am latency=100000000`,
                 `${micSource} ! am.`,
-                `am. ! audioconvert ! audioresample ! capsfilter caps=audio/x-raw,format=S16LE,rate=48000,channels=${desktopChannels},layout=interleaved ! queue`,
+                `am. ! audioconvert ! audioresample ! capsfilter caps=audio/x-raw,rate=48000,channels=${desktopChannels},layout=interleaved ! queue`,
             ].join(' ');
             return result;
         }
