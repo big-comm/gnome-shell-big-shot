@@ -330,12 +330,12 @@ const VIDEO_PIPELINES = [
 
 const AUDIO_PIPELINES = {
     vorbis: [
-        { element: 'vorbisenc', pipeline: 'vorbisenc ! queue' },
+        { element: 'vorbisenc', pipeline: 'audioconvert ! vorbisenc ! queue' },
     ],
     aac: [
-        { element: 'fdkaacenc', pipeline: 'fdkaacenc ! queue' },
-        { element: 'avenc_aac', pipeline: 'avenc_aac ! queue' },
-        { element: 'voaacenc', pipeline: 'voaacenc ! queue' },
+        { element: 'fdkaacenc', pipeline: 'audioconvert ! fdkaacenc ! queue' },
+        { element: 'avenc_aac', pipeline: 'audioconvert ! avenc_aac ! queue' },
+        { element: 'voaacenc', pipeline: 'audioconvert ! voaacenc ! queue' },
     ],
 };
 
@@ -860,12 +860,33 @@ export default class BigShotExtension extends Extension {
         registry.add(task);
 
         try {
-            // GJS resolves the promisified call to [stdout, stderr]; the
-            // gboolean return value is dropped because failures reject the
-            // promise instead. Older bindings prepended that boolean, so pick
-            // the strings by shape rather than by a fixed position — reading
-            // the wrong slot silently yields empty output, not an error.
-            const reply = await task.proc.communicate_utf8_async(null, null);
+            // Compatibility across GJS generations: older bindings
+            // auto-promisified communicate_utf8_async when the callback was
+            // omitted; GJS 1.88 (GNOME Shell 50) requires the explicit
+            // (stdin_buf, cancellable, callback) form. Try the historical call
+            // first and fall back only on the exact arity error, without
+            // mutating Gio.Subprocess.prototype globally.
+            const communicate = (...args) => task.proc.communicate_utf8_async(...args);
+            let reply;
+            try {
+                reply = await communicate(null, null);
+            } catch (e) {
+                if (!/At least 3 arguments required/.test(e.message ?? ''))
+                    throw e;
+                reply = await new Promise((resolve, reject) => {
+                    communicate(
+                        null,
+                        null,
+                        (proc, result) => {
+                            try {
+                                resolve(proc.communicate_utf8_finish(result));
+                            } catch (err) {
+                                reject(err);
+                            }
+                        },
+                    );
+                });
+            }
             const [stdout, stderr] = typeof reply[0] === 'boolean'
                 ? [reply[1], reply[2]]
                 : [reply[0], reply[1]];
@@ -1802,25 +1823,36 @@ export default class BigShotExtension extends Extension {
     // =========================================================================
 
     _getInstalledTessdataLanguages() {
-        const languages = [];
-        let enumerator = null;
-
-        try {
-            enumerator = Gio.File.new_for_path('/usr/share/tessdata').enumerate_children(
-                'standard::name', Gio.FileQueryInfoFlags.NONE, null);
-            let info = null;
-            while ((info = enumerator.next_file(null)) !== null) {
-                const name = info.get_name();
-                if (name.endsWith('.traineddata'))
-                    languages.push(name.slice(0, -'.traineddata'.length));
-            }
-        } catch {
-            // Tesseract may use a non-standard data directory.
-        } finally {
-            try { enumerator?.close(null); } catch { /* */ }
+        const languages = new Set();
+        const prefix = GLib.getenv('TESSDATA_PREFIX');
+        const dirs = [
+            '/usr/share/tessdata',
+            '/usr/share/tesseract-ocr/5/tessdata',
+            '/usr/share/tesseract-ocr/4.00/tessdata',
+        ];
+        if (prefix) {
+            dirs.unshift(prefix, GLib.build_filenamev([prefix, 'tessdata']));
         }
 
-        return languages;
+        for (const dir of dirs) {
+            let enumerator = null;
+            try {
+                enumerator = Gio.File.new_for_path(dir).enumerate_children(
+                    'standard::name', Gio.FileQueryInfoFlags.NONE, null);
+                let info = null;
+                while ((info = enumerator.next_file(null)) !== null) {
+                    const name = info.get_name();
+                    if (name.endsWith('.traineddata'))
+                        languages.add(name.slice(0, -'.traineddata'.length));
+                }
+            } catch {
+                // Tesseract may use a non-standard data directory.
+            } finally {
+                try { enumerator?.close(null); } catch { /* */ }
+            }
+        }
+
+        return [...languages];
     }
 
     /**
